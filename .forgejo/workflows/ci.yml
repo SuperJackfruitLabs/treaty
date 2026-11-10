@@ -28,7 +28,20 @@ jobs:
         run: bun run typecheck
       - name: Lint
         run: bun run lint
+      - name: Start nats-server for the relay's tests (pinned, checksum checked)
+        run: |
+          v=2.15.2
+          f="nats-server-v$v-linux-amd64"
+          curl -fsSL -o "/tmp/$f.tar.gz" "https://github.com/nats-io/nats-server/releases/download/v$v/$f.tar.gz"
+          echo "67cb8e10bc6f0c4b47f75a728529a20953dbae2a4f9a4a52ae8517d65ae303ff  /tmp/$f.tar.gz" | sha256sum -c
+          tar -xzf "/tmp/$f.tar.gz" -C /tmp
+          nohup "/tmp/$f/nats-server" -js -a 127.0.0.1 -p 4222 -sd /tmp/nats-store > /tmp/nats.log 2>&1 &
+          for i in $(seq 30); do (exec 3<>/dev/tcp/127.0.0.1/4222) 2>/dev/null && exit 0; sleep 1; done
+          cat /tmp/nats.log; exit 1
       - name: Test
+        env:
+          NATS_URL: nats://127.0.0.1:4222
+          TREATY_REQUIRE_NATS: "1"
         run: bun run test
 
   claude-triage:

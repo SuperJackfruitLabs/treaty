@@ -1,0 +1,15 @@
+{
+  "name": "@superjackfruitlabs/treaty-relay",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Receives CloudEvents from Workers over HTTPS, publishes them to NATS JetStream, and delivers them back to Workers over signed HTTP.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start": "bun src/main.ts"
+  },
+  "dependencies": {
+    "@nats-io/jetstream": "3.4.0",
+    "@nats-io/transport-node": "3.4.0"
+  }
+}

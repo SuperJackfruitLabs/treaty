@@ -23,3 +23,4 @@ export {
   parseType,
   type EventName,
 } from "./naming.ts";
+export { SIGNATURE_HEADER, signDelivery, verifyDelivery } from "./signature.ts";
