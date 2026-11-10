@@ -1,0 +1,328 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/gate.pending.v1.json",
+  "title": "SuperPipeline gate.pending",
+  "description": "A gate is waiting on a person (charter: a gate closes over chat; gate.v2). Pushed by SuperPipeline, and read back by the carrier's sweep from GET /v1/boards/:id/gates/pending, from one builder. Mirrors SuperPipeline's GatePendingBody (apps/api/src/board/views.ts). Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "event",
+    "boardId",
+    "boardName",
+    "cardId",
+    "gateId",
+    "stageKey",
+    "returnStageKey",
+    "cardTitle",
+    "producedBy",
+    "handoffSummary",
+    "options",
+    "ts"
+  ],
+  "properties": {
+    "event": {
+      "const": "gate.pending"
+    },
+    "boardId": {
+      "type": ["string", "null"]
+    },
+    "boardName": {
+      "type": "string",
+      "description": "What the board is called; empty string when it has no name, never absent."
+    },
+    "cardId": {
+      "type": "string"
+    },
+    "gateId": {
+      "type": "string"
+    },
+    "stageKey": {
+      "type": "string"
+    },
+    "returnStageKey": {
+      "type": "string"
+    },
+    "cardTitle": {
+      "type": "string"
+    },
+    "producedBy": {
+      "type": "string"
+    },
+    "handoffSummary": {
+      "type": ["string", "null"],
+      "description": "What the reviewer is asked to approve; null for a gate with no handoff."
+    },
+    "approvalSubject": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/subject"
+        },
+        {
+          "$ref": "#/$defs/variantSubjects"
+        }
+      ]
+    },
+    "reviewUrl": {
+      "type": "string",
+      "description": "Authenticated web route for reviewing the authoritative subject."
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "meaning", "needsComment"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "meaning": {
+            "$ref": "#/$defs/meaning"
+          },
+          "needsComment": {
+            "type": "boolean"
+          },
+          "delivery": {
+            "enum": ["automatic", "manual"],
+            "description": "Only on an option that approves a subject."
+          }
+        }
+      }
+    },
+    "deadline": {
+      "$ref": "#/$defs/deadline"
+    },
+    "quorum": {
+      "type": "object",
+      "description": "A quorum gate's progress; absent on a gate one approval passes.",
+      "required": ["required", "from", "approvals"],
+      "properties": {
+        "required": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "from": {
+          "enum": ["deciders", "admins"]
+        },
+        "approvals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["principalId", "at"],
+            "properties": {
+              "principalId": {
+                "type": "string"
+              },
+              "at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "variantId": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "release": {
+      "type": "object",
+      "description": "What holds an approval before it acts; absent when nothing does.",
+      "properties": {
+        "holdForMinutes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "notBefore": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "description": "The checks that ran before the gate opened; absent when the stage has none.",
+      "items": {
+        "type": "object",
+        "required": ["name", "provider", "status"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "provider": {
+            "enum": ["ci", "verdict"]
+          },
+          "status": {
+            "enum": ["pending", "passed", "failed", "overridden"]
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ts": {
+      "$ref": "#/$defs/timestamp",
+      "description": "When the gate opened, on the gate's own clock, so a re-read is byte-identical."
+    }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "meaning": {
+      "enum": ["approve", "reject", "revise", "choose", "defer"],
+      "description": "What choosing the option does (gate.v2 §2)."
+    },
+    "previewBlock": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "text"],
+          "properties": {
+            "type": {
+              "const": "text"
+            },
+            "label": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "label", "value"],
+          "properties": {
+            "type": {
+              "const": "field"
+            },
+            "label": {
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "label", "url"],
+          "properties": {
+            "type": {
+              "const": "link"
+            },
+            "label": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "subject": {
+      "type": "object",
+      "description": "A subject as a decision envelope carries it (gate.v2 §3): identity, expiry and the kind's bounded preview. The canonical payload stays behind the authenticated route.",
+      "required": [
+        "id",
+        "digest",
+        "schema",
+        "revision",
+        "expiresAt",
+        "preview",
+        "previewComplete"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "digest": {
+          "type": "string"
+        },
+        "schema": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "expiresAt": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "preview": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/previewBlock"
+          }
+        },
+        "previewComplete": {
+          "type": "boolean",
+          "description": "False when the preview was cut to its bounds; no approving option may then be offered."
+        }
+      }
+    },
+    "variantSubjects": {
+      "type": "object",
+      "description": "A variant gate's subjects. No top-level id or digest, so a reader that predates variants cannot mistake it for one subject.",
+      "required": ["variants"],
+      "not": {
+        "anyOf": [
+          {
+            "required": ["id"]
+          },
+          {
+            "required": ["digest"]
+          }
+        ]
+      },
+      "properties": {
+        "variants": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "label", "subject"],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "subject": {
+                "$ref": "#/$defs/subject"
+              }
+            }
+          }
+        }
+      }
+    },
+    "deadline": {
+      "type": "object",
+      "description": "When the decision is reminded about and escalated. Absent when its stage sets no timeout.",
+      "properties": {
+        "remindAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "escalateAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

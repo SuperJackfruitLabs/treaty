@@ -1,0 +1,229 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/elicitation.pending.v1.json",
+  "title": "SuperPipeline elicitation.pending",
+  "description": "An agent is blocked on a person's answer, or a broker approval request waits on one. Pushed by SuperPipeline and read back by the carrier's sweep, from one builder. Mirrors SuperPipeline's ElicitationPendingBody (apps/api/src/board/views.ts). Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "event",
+    "boardId",
+    "boardName",
+    "cardId",
+    "cardTitle",
+    "elicitationId",
+    "runId",
+    "stageKey",
+    "agentId",
+    "question",
+    "options",
+    "ts"
+  ],
+  "properties": {
+    "event": {
+      "const": "elicitation.pending"
+    },
+    "boardId": {
+      "type": ["string", "null"]
+    },
+    "boardName": {
+      "type": "string"
+    },
+    "cardId": {
+      "type": "string"
+    },
+    "cardTitle": {
+      "type": "string"
+    },
+    "elicitationId": {
+      "type": "string"
+    },
+    "runId": {
+      "type": "string"
+    },
+    "stageKey": {
+      "type": "string"
+    },
+    "agentId": {
+      "type": "string",
+      "description": "The agent that waits, and the one identity that may not answer."
+    },
+    "question": {
+      "type": "string",
+      "description": "May be empty: an agent can stop on options alone."
+    },
+    "options": {
+      "type": "array",
+      "description": "In the order the agent offered them. May be empty, and the body is still sent.",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "meaning", "needsComment"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "meaning": {
+            "$ref": "#/$defs/meaning"
+          },
+          "needsComment": {
+            "const": false
+          },
+          "scope": {
+            "enum": ["once", "run", "always"]
+          },
+          "requires": {
+            "const": "workspace-admin"
+          }
+        }
+      }
+    },
+    "approvalSubject": {
+      "$ref": "#/$defs/subject"
+    },
+    "freeText": {
+      "type": "object",
+      "required": ["maxLength"],
+      "properties": {
+        "maxLength": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "description": "Only on a question with no options: answered by typing, up to maxLength."
+    },
+    "approvalRequestId": {
+      "type": "string",
+      "description": "Only on a broker approval request: the same id as elicitationId. cardId, runId and stageKey are then empty strings."
+    },
+    "deadline": {
+      "$ref": "#/$defs/deadline"
+    },
+    "ts": {
+      "$ref": "#/$defs/timestamp"
+    }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "meaning": {
+      "enum": ["approve", "reject", "revise", "choose", "defer"],
+      "description": "What choosing the option does (gate.v2 §2)."
+    },
+    "previewBlock": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "text"],
+          "properties": {
+            "type": {
+              "const": "text"
+            },
+            "label": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "label", "value"],
+          "properties": {
+            "type": {
+              "const": "field"
+            },
+            "label": {
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "label", "url"],
+          "properties": {
+            "type": {
+              "const": "link"
+            },
+            "label": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "subject": {
+      "type": "object",
+      "description": "A subject as a decision envelope carries it (gate.v2 §3): identity, expiry and the kind's bounded preview. The canonical payload stays behind the authenticated route.",
+      "required": [
+        "id",
+        "digest",
+        "schema",
+        "revision",
+        "expiresAt",
+        "preview",
+        "previewComplete"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "digest": {
+          "type": "string"
+        },
+        "schema": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "expiresAt": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "preview": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/previewBlock"
+          }
+        },
+        "previewComplete": {
+          "type": "boolean",
+          "description": "False when the preview was cut to its bounds; no approving option may then be offered."
+        }
+      }
+    },
+    "deadline": {
+      "type": "object",
+      "description": "When the decision is reminded about and escalated. Absent when its stage sets no timeout.",
+      "properties": {
+        "remindAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "escalateAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

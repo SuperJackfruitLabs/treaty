@@ -4,6 +4,7 @@
     "": {
       "name": "treaty",
       "devDependencies": {
+        "@cfworker/json-schema": "4.1.1",
         "@types/bun": "1.2.8",
         "oxlint": "1.88.0",
         "prettier": "3.6.2",
@@ -18,8 +19,14 @@
       "name": "@superjackfruitlabs/treaty-ecosystem-identity",
       "version": "0.0.0",
     },
+    "packages/event-schemas": {
+      "name": "@superjackfruitlabs/treaty-event-schemas",
+      "version": "0.0.0",
+    },
   },
   "packages": {
+    "@cfworker/json-schema": ["@cfworker/json-schema@4.1.1", "", {}, "sha512-gAmrUZSGtKc3AiBL71iNWxDsyUC5uMaKKGdvzYsBoTW/xi42JQHl7eKV2OYzCUqvc+D2RCcf7EXY2iCyFIk6og=="],
+
     "@oxlint/binding-android-arm-eabi": ["@oxlint/binding-android-arm-eabi@1.88.0", "", { "os": "android", "cpu": "arm" }, "sha512-k6Fgkf86ubfeH4GvqYsRolfuVAp0pfYVZvifSlXNHPdMaWUOfxUrmLEeDD7hF6U2oJuhsVxhSWq86/xCJ+9MmA=="],
 
     "@oxlint/binding-android-arm64": ["@oxlint/binding-android-arm64@1.88.0", "", { "os": "android", "cpu": "arm64" }, "sha512-AsIyhl9o1ejwtac7NMbhKpMdSml6NWR0ljKjZERxC8OHYDAW8o/Om9n1QHVLi4VCEUo42Zte2/Op9kyoGpJZMg=="],
@@ -61,6 +68,8 @@
     "@superjackfruitlabs/treaty-cloudevents": ["@superjackfruitlabs/treaty-cloudevents@workspace:packages/cloudevents"],
 
     "@superjackfruitlabs/treaty-ecosystem-identity": ["@superjackfruitlabs/treaty-ecosystem-identity@workspace:packages/ecosystem-identity"],
+
+    "@superjackfruitlabs/treaty-event-schemas": ["@superjackfruitlabs/treaty-event-schemas@workspace:packages/event-schemas"],
 
     "@types/bun": ["@types/bun@1.2.8", "", { "dependencies": { "bun-types": "1.2.7" } }, "sha512-t8L1RvJVUghW5V+M/fL3Thbxcs0HwNsXsnTEBEfEVqGteiJToOlZ/fyOEaR1kZsNqnu+3XA4RI/qmnX4w6+S+w=="],
 

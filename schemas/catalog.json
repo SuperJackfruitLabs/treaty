@@ -1,0 +1,118 @@
+{
+  "catalog": "treaty events",
+  "version": 1,
+  "description": "Every event treaty has a schema for: its CloudEvents type, the schema its dataschema names, and the name the producer uses today. Run reports are not CloudEvents; they are listed with the schema their receiver owns.",
+  "events": [
+    {
+      "producer": "superpipeline",
+      "pushName": "gate.pending",
+      "type": "com.superjackfruit.superpipeline.gate.pending.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/gate.pending.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "elicitation.pending",
+      "type": "com.superjackfruit.superpipeline.elicitation.pending.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/elicitation.pending.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "card.created",
+      "type": "com.superjackfruit.superpipeline.card.created.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "card.updated",
+      "type": "com.superjackfruit.superpipeline.card.updated.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "card.moved",
+      "type": "com.superjackfruit.superpipeline.card.moved.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "card.advanced",
+      "type": "com.superjackfruit.superpipeline.card.advanced.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "card.completed",
+      "type": "com.superjackfruit.superpipeline.card.completed.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "card.rejected",
+      "type": "com.superjackfruit.superpipeline.card.rejected.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "card.failed",
+      "type": "com.superjackfruit.superpipeline.card.failed.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "card.blocked",
+      "type": "com.superjackfruit.superpipeline.card.blocked.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "card.deleted",
+      "type": "com.superjackfruit.superpipeline.card.deleted.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "card.resumed",
+      "type": "com.superjackfruit.superpipeline.card.resumed.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "card.comment.added",
+      "type": "com.superjackfruit.superpipeline.card_comment.added.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "card.comment.deleted",
+      "type": "com.superjackfruit.superpipeline.card_comment.deleted.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "gate.resolved",
+      "type": "com.superjackfruit.superpipeline.gate.resolved.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "link.added",
+      "type": "com.superjackfruit.superpipeline.link.added.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "link.removed",
+      "type": "com.superjackfruit.superpipeline.link.removed.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json"
+    }
+  ],
+  "elsewhere": [
+    {
+      "producer": "superpipeline",
+      "what": "run reports, POST /v1/runs on SuperWitness",
+      "schema": "https://docs.superwitness.dev/schemas/run-report.schema.json",
+      "owner": "superwitness",
+      "note": "Not a CloudEvent. SuperWitness owns and publishes the schema; treaty does not copy it."
+    }
+  ]
+}
