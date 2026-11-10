@@ -62,6 +62,23 @@ function text(
   return value;
 }
 
+/** https anywhere; plain http only where it never crosses a network the relay does not own. */
+export function allowedUrl(raw: string): boolean {
+  let url: URL;
+  try {
+    url = new URL(raw);
+  } catch {
+    return false;
+  }
+  if (url.protocol === "https:") return true;
+  if (url.protocol !== "http:") return false;
+  return (
+    url.hostname === "localhost" ||
+    url.hostname === "127.0.0.1" ||
+    /^[a-z0-9-]+$/i.test(url.hostname)
+  );
+}
+
 function positive(
   raw: string | undefined,
   fallback: number,
@@ -108,12 +125,10 @@ export function loadConfig(
           `subscriber name ${JSON.stringify(name)} must be letters, digits, _ or -`,
         );
       const url = text(s, "url", name);
-      if (
-        !url.startsWith("https://") &&
-        !url.startsWith("http://localhost") &&
-        !url.startsWith("http://127.0.0.1")
-      ) {
-        throw new Error(`${name}.url must be https (http only for localhost)`);
+      if (!allowedUrl(url)) {
+        throw new Error(
+          `${name}.url must be https (plain http only for localhost or a single-label host on the relay's own network)`,
+        );
       }
       const maxDeliver =
         s["maxDeliver"] === undefined ? 10 : Number(s["maxDeliver"]);

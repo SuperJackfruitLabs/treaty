@@ -1,0 +1,32 @@
+name: staging
+
+# A push to main deploys the relay to the staging plane: workbench runs that commit's
+# deploy/staging/deploy.sh through its forced-command key (estate provision/301-staging-deploy.sh).
+# GitHub runs deploys; on forge this workflow does nothing.
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: staging
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.server_url == 'https://github.com' && vars.STAGING_HOST != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Deploy this commit to staging
+        env:
+          KEY: ${{ secrets.STAGING_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.STAGING_KNOWN_HOSTS }}
+          HOST: ${{ vars.STAGING_HOST }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/staging && chmod 600 ~/.ssh/staging
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/staging "root@$HOST" treaty "$GITHUB_SHA"

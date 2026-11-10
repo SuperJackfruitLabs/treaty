@@ -15,5 +15,5 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true
   },
-  "include": ["packages", "apps", "scripts"]
+  "include": ["packages", "apps", "scripts", "deploy"]
 }
