@@ -1,0 +1,29 @@
+{
+  "name": "@superjackfruitlabs/treaty-outbox",
+  "version": "0.0.0",
+  "description": "Transactional outbox and deduplicating inbox for CloudEvents, on Durable Object SQLite and on Postgres.",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SuperJackfruitLabs/treaty.git",
+    "directory": "packages/outbox"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
