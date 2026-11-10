@@ -1,0 +1,32 @@
+{
+  "name": "@superjackfruitlabs/treaty-event-schemas",
+  "version": "0.0.0",
+  "description": "JSON Schemas for the events Super Jackfruit Labs products send, and the catalogue that names their CloudEvents types.",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SuperJackfruitLabs/treaty.git",
+    "directory": "packages/event-schemas"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./catalog.json": "./schemas/catalog.json",
+    "./superpipeline/*.json": "./schemas/superpipeline/*.json"
+  },
+  "files": [
+    "dist",
+    "schemas",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rm -rf dist schemas && mkdir -p schemas && cp -R ../../schemas/. schemas/ && tsc -p tsconfig.build.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json",
+  "title": "SuperPipeline record event",
+  "description": "A board event a push config subscribes to as a record event. The body names the cards and nothing else: a subscriber reads them back with its own credential, so a push never carries more than that credential could read. Mirrors SuperPipeline's RecordPushBody (apps/api/src/push/events.ts).",
+  "type": "object",
+  "required": ["event", "boardId", "seq", "ts", "cardIds"],
+  "properties": {
+    "event": {
+      "enum": [
+        "card.created",
+        "card.updated",
+        "card.moved",
+        "card.advanced",
+        "card.completed",
+        "card.rejected",
+        "card.failed",
+        "card.blocked",
+        "card.deleted",
+        "card.resumed",
+        "card.comment.added",
+        "card.comment.deleted",
+        "gate.resolved",
+        "link.added",
+        "link.removed"
+      ]
+    },
+    "boardId": {
+      "type": "string"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "ts": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "cardIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "The cards the event is about: one, or a link's two ends."
+    }
+  }
+}
