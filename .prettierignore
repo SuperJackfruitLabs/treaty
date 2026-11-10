@@ -2,3 +2,6 @@
 .forgejo/workflows/claude-review.yml
 bun.lock
 **/dist/
+fixtures/
+packages/*/corpus/
+packages/ecosystem-identity/README.md

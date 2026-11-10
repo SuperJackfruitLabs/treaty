@@ -9,23 +9,26 @@ products share.
 
 - **The event envelope:** a small CloudEvents 1.0 codec (binary mode), with conformance tests.
 - **Event schemas:** JSON Schemas for each event type, including audit events.
-- **The identity fixture corpus,** moved from AgentPod's `fixtures/ecosystem-identity/` once
-  products consume it from here.
+- **The identity fixture corpus** (`fixtures/ecosystem-identity/`), moved from AgentPod with
+  its history: the id grammar, token claims, the card prompt, the run join key and the chat
+  events a gate, question or permission crosses Matrix on.
 - **The relay** that lets Cloudflare Workers and Durable Objects publish to NATS JetStream and
   receive events by HTTP push.
 
 ## Packages
 
-| Package                                                                                                          | What it holds                                                          |
-| ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| [`@superjackfruitlabs/treaty-cloudevents`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-cloudevents) | The CloudEvents 1.0 envelope. Constants only so far; the codec is next |
+| Package                                                                                                                        | What it holds                                                          |
+| ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| [`@superjackfruitlabs/treaty-cloudevents`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-cloudevents)               | The CloudEvents 1.0 envelope. Constants only so far; the codec is next |
+| [`@superjackfruitlabs/treaty-ecosystem-identity`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-ecosystem-identity) | The identity fixture corpus, as plain JSON                             |
 
 Packages are published to npm from GitHub Actions, with provenance, when a `vX.Y.Z` tag is
 pushed. The plan is in [`docs/2026-11-02-treaty-plan.md`](docs/2026-11-02-treaty-plan.md).
 
 ## Status
 
-Scaffolded on 2026-11-10. Nothing has been published or consumed yet.
+Scaffolded on 2026-11-10. The fixture corpus moved here the same day. Nothing has been
+published or consumed yet.
 
 ## Licence
 

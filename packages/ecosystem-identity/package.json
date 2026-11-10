@@ -1,0 +1,32 @@
+{
+  "name": "@superjackfruitlabs/treaty-ecosystem-identity",
+  "version": "0.0.0",
+  "description": "The identity fixture corpus Super Jackfruit Labs products check their ids, tokens, prompts and chat events against.",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SuperJackfruitLabs/treaty.git",
+    "directory": "packages/ecosystem-identity"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./*.json": "./corpus/*.json"
+  },
+  "files": [
+    "dist",
+    "corpus",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rm -rf dist corpus && mkdir corpus && cp ../../fixtures/ecosystem-identity/*.json corpus/ && cp ../../fixtures/ecosystem-identity/README.md README.md && tsc -p tsconfig.build.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
