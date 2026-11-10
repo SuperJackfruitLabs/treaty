@@ -32,6 +32,18 @@ Forge is primary and push-mirrors to GitHub. Open pull requests on forge only. C
 run on forge (`.forgejo/workflows`). Release and publishing jobs go in `.github/workflows` and
 run only on GitHub, guarded with `if: github.server_url == 'https://github.com'`.
 
+The repository is public. Never commit secrets or keys.
+
+## Releases
+
+- A `vX.Y.Z` tag on main publishes every non-private package in `packages/` to npm, under
+  `@superjackfruitlabs/treaty-*`, at the tag's version (`.github/workflows/release.yml`). Only
+  the operator pushes tags. Versions start at 0.0.1.
+- `package.json` versions on main stay `0.0.0`. The tag is the only source of the version.
+- npm trusts the workflow through OIDC, with provenance. No npm token is stored.
+- A new package must be bootstrapped once by hand before the workflow can publish it. See the
+  comment at the top of `release.yml`.
+
 ## Shared kit
 
 `.forgejo/workflows/claude-review.yml`, the `claude-triage` job in `ci.yml`, and

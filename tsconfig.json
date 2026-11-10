@@ -15,5 +15,5 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true
   },
-  "include": ["packages", "apps"]
+  "include": ["packages", "apps", "scripts"]
 }

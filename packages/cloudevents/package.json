@@ -1,11 +1,29 @@
 {
-  "name": "@superjackfruit/treaty-cloudevents",
+  "name": "@superjackfruitlabs/treaty-cloudevents",
   "version": "0.0.0",
-  "description": "The suite's CloudEvents 1.0 envelope. Empty until step 3 of the treaty plan.",
+  "description": "The CloudEvents 1.0 envelope shared by Super Jackfruit Labs products.",
   "license": "MIT",
-  "private": true,
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SuperJackfruitLabs/treaty.git",
+    "directory": "packages/cloudevents"
+  },
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

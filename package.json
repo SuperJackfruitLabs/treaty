@@ -10,9 +10,10 @@
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint --deny-warnings packages apps",
+    "lint": "oxlint --deny-warnings packages apps scripts",
     "test": "bun test",
-    "check": "bun run fmt:check && bun run typecheck && bun run lint && bun run test"
+    "check": "bun run fmt:check && bun run typecheck && bun run lint && bun run test && bun run build",
+    "build": "bun run --filter './packages/*' build"
   },
   "devDependencies": {
     "@types/bun": "1.2.8",

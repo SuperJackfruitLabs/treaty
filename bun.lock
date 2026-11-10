@@ -11,7 +11,7 @@
       },
     },
     "packages/cloudevents": {
-      "name": "@superjackfruit/treaty-cloudevents",
+      "name": "@superjackfruitlabs/treaty-cloudevents",
       "version": "0.0.0",
     },
   },
@@ -54,7 +54,7 @@
 
     "@oxlint/binding-win32-x64-msvc": ["@oxlint/binding-win32-x64-msvc@1.88.0", "", { "os": "win32", "cpu": "x64" }, "sha512-3Sz6rVWe8Dy+ufsXurFN1GX2dX43F/lQMSLelK9gFjiba7nHvLlqlhR5cHlWVnCpSqUY1hN9pyCX9XToe6ve6g=="],
 
-    "@superjackfruit/treaty-cloudevents": ["@superjackfruit/treaty-cloudevents@workspace:packages/cloudevents"],
+    "@superjackfruitlabs/treaty-cloudevents": ["@superjackfruitlabs/treaty-cloudevents@workspace:packages/cloudevents"],
 
     "@types/bun": ["@types/bun@1.2.8", "", { "dependencies": { "bun-types": "1.2.7" } }, "sha512-t8L1RvJVUghW5V+M/fL3Thbxcs0HwNsXsnTEBEfEVqGteiJToOlZ/fyOEaR1kZsNqnu+3XA4RI/qmnX4w6+S+w=="],
 

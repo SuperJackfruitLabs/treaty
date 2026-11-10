@@ -14,9 +14,18 @@ products share.
 - **The relay** that lets Cloudflare Workers and Durable Objects publish to NATS JetStream and
   receive events by HTTP push.
 
+## Packages
+
+| Package                                                                                                          | What it holds                                                          |
+| ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| [`@superjackfruitlabs/treaty-cloudevents`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-cloudevents) | The CloudEvents 1.0 envelope. Constants only so far; the codec is next |
+
+Packages are published to npm from GitHub Actions, with provenance, when a `vX.Y.Z` tag is
+pushed. The plan is in [`docs/2026-11-02-treaty-plan.md`](docs/2026-11-02-treaty-plan.md).
+
 ## Status
 
-Empty. Created on 2026-11-02. Nothing here is published or consumed yet.
+Scaffolded on 2026-11-10. Nothing has been published or consumed yet.
 
 ## Licence
 
