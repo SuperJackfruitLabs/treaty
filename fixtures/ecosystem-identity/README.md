@@ -2,11 +2,25 @@
 
 Three products need the same identifiers to mean the same thing across a Bun/Postgres hub
 (AgentPod), a Cloudflare Workers/D1 board (superpipeline), and eventually a Rust client. No auth
-or contract *library* can be shared across those runtimes, and a published npm package would
-couple two deploy pipelines with very different cadences — superpipeline deploys on every merge to
-main, AgentPod deploys by hand.
+or contract *library* can be shared across those runtimes.
 
 So: **each repo owns its own types; this corpus proves they agree.**
+
+## Where it lives
+
+The corpus started in AgentPod and moved to treaty on 2026-11-10, with its history. Treaty's
+copy is the source. It is plain data, published to npm as
+`@superjackfruitlabs/treaty-ecosystem-identity` (`packages/ecosystem-identity`), so a
+TypeScript consumer pins a version and imports a file by its subpath:
+
+```ts
+import grammar from "@superjackfruitlabs/treaty-ecosystem-identity/id_grammar.json" with { type: "json" };
+```
+
+Each consumer moves to its pinned version on its own schedule, so the products keep their
+separate release cadences. Go and Swift read the same files without TypeScript.
+
+Until AgentPod deletes its own copy, its CI fails when its JSON files differ from treaty's.
 
 That is not a new bet. This repo already keeps five hand-written Go mirrors of zod schemas
 honest with golden-fixture round-trip tests and no drift
@@ -39,7 +53,7 @@ bare `z.string()` cannot catch and the one most likely to reach production.
 
 ## How AgentPod consumes it
 
-`packages/contract/src/ids.ts` holds the validators; `packages/contract/src/ecosystem-identity.test.ts`
+AgentPod's `packages/contract/src/ids.ts` holds the validators; `packages/contract/src/ecosystem-identity.test.ts`
 drives them from these files. It runs under the `contract` CI job with everything else:
 
 ```bash
@@ -71,9 +85,9 @@ already mints.
 
 ## How superpipeline (or any peer) consumes it
 
-1. Copy `id_grammar.json` and `run_join_key.json` into the peer repo. Copy, do not symlink or
-   submodule — decoupled release cadence is the whole reason this is a file corpus rather
-   than a package.
+1. Install `@superjackfruitlabs/treaty-ecosystem-identity` at a pinned version. A repo that
+   cannot use npm copies the files it needs from a release tag. Do not symlink or submodule:
+   each repo moves to a new corpus version when it is ready.
 2. Write the equivalent test in that repo's own language and test runner: for each entity the
    repo owns or consumes, map it to that repo's own validator and assert every `accept` value
    parses and every `reject` value does not.
@@ -94,12 +108,10 @@ corpus working. The failure is cheap; the silent disagreement it replaces is not
 
 ## Deliberately out of scope
 
-**Matrix event envelopes.** The Application Service does not exist, so fixtures for it would
-be invented rather than observed. The seam is real and empty on both sides (supermessage's
-`customEvents.ts` is a renderer registry with zero renderers, whose own comment says it *"does
-not — and must not — invent those schemas"*), and this corpus takes the same position.
+**JSON Schemas for events.** `matrix_gate_events.json` pins the chat events by example. The
+schemas every event's `dataschema` points at are treaty plan step 4, in `schemas/`.
 
 ## Background
 
-`docs/strategy/2026-08-13-ecosystem-identity-decisions.md` — the four decisions this serves,
+AgentPod's `docs/strategy/2026-08-13-ecosystem-identity-decisions.md` — the four decisions this serves,
 and the "how two repos share one contract" question left open there that this answers.

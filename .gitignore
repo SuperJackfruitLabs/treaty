@@ -3,3 +3,5 @@ node_modules/
 .DS_Store
 dist/
 packages/*/LICENSE
+packages/*/corpus/
+packages/ecosystem-identity/README.md
