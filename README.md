@@ -22,6 +22,7 @@ products share.
 | [`@superjackfruitlabs/treaty-cloudevents`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-cloudevents)               | The CloudEvents 1.0 envelope: binary mode over HTTP and NATS, and the suite's subject and type names                             |
 | [`@superjackfruitlabs/treaty-ecosystem-identity`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-ecosystem-identity) | The identity fixture corpus, as plain JSON                                                                                       |
 | [`@superjackfruitlabs/treaty-event-schemas`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-event-schemas)           | JSON Schemas for SuperPipeline's `gate.pending`, `elicitation.pending` and record events, and the catalogue of CloudEvents types |
+| [`@superjackfruitlabs/treaty-outbox`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-outbox)                         | A transactional outbox and a deduplicating inbox for CloudEvents, on Durable Object SQLite and on Postgres                       |
 
 Packages are published to npm from GitHub Actions, with provenance, when a `vX.Y.Z` tag is
 pushed. The plan is in [`docs/2026-11-02-treaty-plan.md`](docs/2026-11-02-treaty-plan.md).
@@ -29,7 +30,7 @@ pushed. The plan is in [`docs/2026-11-02-treaty-plan.md`](docs/2026-11-02-treaty
 ## Status
 
 Scaffolded on 2026-11-10. The fixture corpus moved here the same day and every product reads it
-from the package. The CloudEvents codec and the first event schemas followed.
+from the package. The CloudEvents codec, the first event schemas and the outbox followed.
 
 ## Licence
 

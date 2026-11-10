@@ -5,6 +5,7 @@
       "name": "treaty",
       "devDependencies": {
         "@cfworker/json-schema": "4.1.1",
+        "@electric-sql/pglite": "0.3.14",
         "@types/bun": "1.2.8",
         "oxlint": "1.88.0",
         "prettier": "3.6.2",
@@ -23,9 +24,15 @@
       "name": "@superjackfruitlabs/treaty-event-schemas",
       "version": "0.0.0",
     },
+    "packages/outbox": {
+      "name": "@superjackfruitlabs/treaty-outbox",
+      "version": "0.0.0",
+    },
   },
   "packages": {
     "@cfworker/json-schema": ["@cfworker/json-schema@4.1.1", "", {}, "sha512-gAmrUZSGtKc3AiBL71iNWxDsyUC5uMaKKGdvzYsBoTW/xi42JQHl7eKV2OYzCUqvc+D2RCcf7EXY2iCyFIk6og=="],
+
+    "@electric-sql/pglite": ["@electric-sql/pglite@0.3.14", "", {}, "sha512-3DB258dhqdsArOI1fIt7cb9RpUOgcDg5hXWVgVHAeqVQ/qxtFy605QKs4gx6mFq3jWsSPqDN8TgSEsqC3OfV9Q=="],
 
     "@oxlint/binding-android-arm-eabi": ["@oxlint/binding-android-arm-eabi@1.88.0", "", { "os": "android", "cpu": "arm" }, "sha512-k6Fgkf86ubfeH4GvqYsRolfuVAp0pfYVZvifSlXNHPdMaWUOfxUrmLEeDD7hF6U2oJuhsVxhSWq86/xCJ+9MmA=="],
 
@@ -70,6 +77,8 @@
     "@superjackfruitlabs/treaty-ecosystem-identity": ["@superjackfruitlabs/treaty-ecosystem-identity@workspace:packages/ecosystem-identity"],
 
     "@superjackfruitlabs/treaty-event-schemas": ["@superjackfruitlabs/treaty-event-schemas@workspace:packages/event-schemas"],
+
+    "@superjackfruitlabs/treaty-outbox": ["@superjackfruitlabs/treaty-outbox@workspace:packages/outbox"],
 
     "@types/bun": ["@types/bun@1.2.8", "", { "dependencies": { "bun-types": "1.2.7" } }, "sha512-t8L1RvJVUghW5V+M/fL3Thbxcs0HwNsXsnTEBEfEVqGteiJToOlZ/fyOEaR1kZsNqnu+3XA4RI/qmnX4w6+S+w=="],
 
