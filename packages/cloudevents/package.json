@@ -1,0 +1,11 @@
+{
+  "name": "@superjackfruit/treaty-cloudevents",
+  "version": "0.0.0",
+  "description": "The suite's CloudEvents 1.0 envelope. Empty until step 3 of the treaty plan.",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}
