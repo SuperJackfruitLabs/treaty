@@ -57,26 +57,26 @@ Each step lands as its own pull request in treaty. Where a step changes another 
 repository gets its own pull request. The producer always moves first, and an old shape is
 removed only in a later, separate change.
 
-| Step | What | Done when |
-|---|---|---|
-| **1. Scaffold** | Workspace, `packages/` and `apps/`, CI (format, typecheck, tests), and package publishing | CI is green on an empty package |
-| **2. Move the fixture corpus** | Bring AgentPod's `fixtures/ecosystem-identity/` across with its history (31 commits), and publish it as a package | Every consumer checks against treaty's copy. See [Step 2's consumers](#step-2s-consumers) |
-| **3. CloudEvents codec** | About 100 lines, binary mode, over NATS headers and HTTP, plus helpers for subjects and types (see [Naming](#naming)) | It passes conformance tests built from the Go SDK's test vectors |
-| **4. First event schemas** | JSON Schemas for what SuperPipeline already sends: `gate.pending`, `elicitation.pending`, `gate.resolved`, its record events and run reports. Each event's `dataschema` points at its schema | SuperPipeline's current payloads validate, unchanged |
-| **5. Outbox and consumer helpers** | Write the event in the same transaction as the change it records, on Durable Object SQLite and on Postgres. Consumers deduplicate on the CloudEvents `id` | Replaying the same event twice changes nothing |
-| **6. Relay** (`apps/relay`) | Workers send events to it over HTTPS, and it publishes them to JetStream with `Nats-Msg-Id` set to the event `id`. A push consumer delivers events back to Workers over signed HTTP, with retries | estate deploys it next to NATS on staging, behind a public TLS hostname |
-| **7. First real traffic** | SuperPipeline publishes gate events through the relay, and AgentPod consumes them. The existing direct push keeps running until this is proven | A gate decided in chat closes on the board through NATS, end to end on staging |
+| Step                               | What                                                                                                                                                                                              | Done when                                                                                 |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| **1. Scaffold**                    | Workspace, `packages/` and `apps/`, CI (format, typecheck, tests), and package publishing                                                                                                         | CI is green on an empty package                                                           |
+| **2. Move the fixture corpus**     | Bring AgentPod's `fixtures/ecosystem-identity/` across with its history (31 commits), and publish it as a package                                                                                 | Every consumer checks against treaty's copy. See [Step 2's consumers](#step-2s-consumers) |
+| **3. CloudEvents codec**           | About 100 lines, binary mode, over NATS headers and HTTP, plus helpers for subjects and types (see [Naming](#naming))                                                                             | It passes conformance tests built from the Go SDK's test vectors                          |
+| **4. First event schemas**         | JSON Schemas for what SuperPipeline already sends: `gate.pending`, `elicitation.pending`, `gate.resolved`, its record events and run reports. Each event's `dataschema` points at its schema      | SuperPipeline's current payloads validate, unchanged                                      |
+| **5. Outbox and consumer helpers** | Write the event in the same transaction as the change it records, on Durable Object SQLite and on Postgres. Consumers deduplicate on the CloudEvents `id`                                         | Replaying the same event twice changes nothing                                            |
+| **6. Relay** (`apps/relay`)        | Workers send events to it over HTTPS, and it publishes them to JetStream with `Nats-Msg-Id` set to the event `id`. A push consumer delivers events back to Workers over signed HTTP, with retries | estate deploys it next to NATS on staging, behind a public TLS hostname                   |
+| **7. First real traffic**          | SuperPipeline publishes gate events through the relay, and AgentPod consumes them. The existing direct push keeps running until this is proven                                                    | A gate decided in chat closes on the board through NATS, end to end on staging            |
 
 ### Step 2's consumers
 
 Counted on 2026-11-02 as files that reference `ecosystem-identity`, excluding Markdown:
 
-| Repository | Files | Order |
-|---|---|---|
-| SuperPipeline | 17 | After treaty publishes |
-| SuperMessage | 2 | After treaty publishes |
-| accounts | 1 | After treaty publishes |
-| AgentPod | its own tests | Moves last, then deletes its copy in a separate pull request |
+| Repository    | Files         | Order                                                        |
+| ------------- | ------------- | ------------------------------------------------------------ |
+| SuperPipeline | 17            | After treaty publishes                                       |
+| SuperMessage  | 2             | After treaty publishes                                       |
+| accounts      | 1             | After treaty publishes                                       |
+| AgentPod      | its own tests | Moves last, then deletes its copy in a separate pull request |
 
 Until AgentPod's copy is deleted, a drift check fails CI if the two copies differ.
 
@@ -94,11 +94,11 @@ Until AgentPod's copy is deleted, a drift check fails CI if the two copies diffe
 
 These steps are in other repositories and follow treaty's steps:
 
-| Repository | Change | After treaty step |
-|---|---|---|
-| estate | NATS JetStream on staging, its public TLS hostname, the two streams, and the relay | 6 |
-| SuperPipeline | Publish its existing events through the relay, then drop the direct push | 6, then 7 |
-| AgentPod | Consume gate events from NATS without breaking on duplicates | 7 |
+| Repository    | Change                                                                             | After treaty step |
+| ------------- | ---------------------------------------------------------------------------------- | ----------------- |
+| estate        | NATS JetStream on staging, its public TLS hostname, the two streams, and the relay | 6                 |
+| SuperPipeline | Publish its existing events through the relay, then drop the direct push           | 6, then 7         |
+| AgentPod      | Consume gate events from NATS without breaking on duplicates                       | 7                 |
 
 ## Later, not in this plan
 
