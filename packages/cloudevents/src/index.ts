@@ -1,18 +1,25 @@
 /**
- * The suite's event envelope: CloudEvents 1.0 in binary mode.
- *
- * Step 1 of the treaty plan only scaffolds this package. The codec lands in step 3.
+ * The suite's event envelope: CloudEvents 1.0 in binary content mode, over HTTP and NATS
+ * headers, and the suite's names for event subjects and types.
  */
-
-/** The CloudEvents `specversion` every suite event carries. */
-export const SPEC_VERSION = "1.0" as const;
-
-/** The four attributes CloudEvents 1.0 requires on every event. */
-export const REQUIRED_ATTRIBUTES = [
-  "id",
-  "source",
-  "specversion",
-  "type",
-] as const;
-
-export type RequiredAttribute = (typeof REQUIRED_ATTRIBUTES)[number];
+export {
+  REQUIRED_ATTRIBUTES,
+  SPEC_VERSION,
+  type RequiredAttribute,
+} from "./constants.ts";
+export { CloudEventError, percentDecode, percentEncode } from "./encoding.ts";
+export {
+  fromBinary,
+  toBinary,
+  validate,
+  type BinaryMessage,
+  type Binding,
+  type CloudEvent,
+} from "./codec.ts";
+export {
+  eventSubject,
+  eventType,
+  parseSubject,
+  parseType,
+  type EventName,
+} from "./naming.ts";
