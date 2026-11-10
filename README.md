@@ -17,6 +17,7 @@ products share.
 ## Status
 
 Empty. Created on 2026-11-02. Nothing here is published or consumed yet.
+The plan is in [docs/2026-11-02-treaty-plan.md](docs/2026-11-02-treaty-plan.md).
 
 ## Licence
 
