@@ -1,0 +1,60 @@
+# The relay on the staging plane (estate docs/2026-10-22-workbench.md): NATS with JetStream, the
+# relay on the shared `suite-staging` network as `relay`, and a signature-checking sink the smoke
+# subscribes. Secrets come from /opt/suite-staging/env/treaty/, minted on the box.
+name: staging-treaty
+
+services:
+  nats:
+    image: nats:2.15.2-alpine
+    command: ["-js", "-sd", "/data", "-m", "8222"]
+    volumes:
+      - nats:/data
+    networks: [internal]
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "-qO-",
+          "http://127.0.0.1:8222/healthz?js-enabled-only=true",
+        ]
+      interval: 5s
+      retries: 20
+
+  relay:
+    build:
+      context: ../..
+      dockerfile: apps/relay/Dockerfile
+    image: staging-treaty-relay:${TREATY_SHA:-dev}
+    env_file: /opt/suite-staging/env/treaty/relay.env
+    environment:
+      NATS_URL: nats://nats:4222
+      PORT: "8080"
+    depends_on:
+      nats:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8798:8080"
+    networks:
+      internal: {}
+      suite-staging:
+        aliases: [relay]
+    restart: unless-stopped
+
+  sink:
+    image: staging-treaty-relay:${TREATY_SHA:-dev}
+    command: ["bun", "deploy/staging/sink.ts"]
+    env_file: /opt/suite-staging/env/treaty/sink.env
+    ports:
+      - "127.0.0.1:8799:9000"
+    networks: [internal]
+    restart: unless-stopped
+
+volumes:
+  nats: {}
+
+networks:
+  internal: {}
+  suite-staging:
+    external: true

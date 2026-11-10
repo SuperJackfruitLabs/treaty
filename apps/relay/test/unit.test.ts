@@ -3,7 +3,12 @@ import {
   fromBinary,
   verifyDelivery,
 } from "../../../packages/cloudevents/src/index.ts";
-import { loadConfig, type Producer, type Subscriber } from "../src/config.ts";
+import {
+  allowedUrl,
+  loadConfig,
+  type Producer,
+  type Subscriber,
+} from "../src/config.ts";
 import { deliverOne, retryDelayMs, type Delivered } from "../src/deliver.ts";
 import { ingest, type Publisher } from "../src/ingest.ts";
 import { subjectMatches } from "../src/subjects.ts";
@@ -324,6 +329,24 @@ describe("loadConfig", () => {
   for (const [name, env] of bad) {
     test(`refuses ${name}`, () => {
       expect(() => loadConfig(env)).toThrow();
+    });
+  }
+});
+
+describe("subscriber URLs", () => {
+  const cases: Array<[string, boolean]> = [
+    ["https://hub.example.com/events", true],
+    ["http://localhost:9000/e", true],
+    ["http://127.0.0.1:9000/e", true],
+    ["http://sink:9000/events", true],
+    ["http://hub.example.com/events", false],
+    ["http://10.0.0.5/events", false],
+    ["ftp://sink/e", false],
+    ["not a url", false],
+  ];
+  for (const [url, ok] of cases) {
+    test(`${url} is ${ok ? "allowed" : "refused"}`, () => {
+      expect(allowedUrl(url)).toBe(ok);
     });
   }
 });
