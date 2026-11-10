@@ -1,0 +1,377 @@
+{
+  "corpus": "cloudevents/binary-mode",
+  "version": 1,
+  "authoredAt": "2026-11-10",
+  "authoredFrom": "The CloudEvents HTTP protocol binding (binary content mode, header encoding) and NATS protocol binding 1.0.3-wip; full-event and min-event are the Go SDK's FullEvent and MinEvent (cloudevents/sdk-go v2/test/event_mocks.go) in canonical string form: Go writes exint 42 as \"42\", exbinary [0,1,2,3] as base64 \"AAECAw==\", times in RFC 3339 with trailing zeros trimmed, and SetData(\"text/json\", \"hello\") as the JSON string \"hello\".",
+  "howToRead": {
+    "encode": "Encoding `event` must give exactly `http` and `nats` (header names lower-case; `body` is the data as UTF-8 text). Decoding either must give `event` back.",
+    "decode": "Decoding `headers` and `body` with `binding` must give `event`. These are messages other senders produce: Go's HTTP header canonicalisation, quoted strings, unnecessary percent-encoding.",
+    "reject": "Decoding must fail.",
+    "percent": "percentEncode(decoded) = encoded, and percentDecode(encoded) = decoded. `decodeOnly` entries need only decode."
+  },
+  "encode": [
+    {
+      "name": "full-event",
+      "event": {
+        "attributes": {
+          "specversion": "1.0",
+          "id": "full-event",
+          "source": "http://example.com/source",
+          "type": "com.example.FullEvent",
+          "subject": "topic",
+          "time": "2020-03-21T12:34:56.78Z",
+          "dataschema": "http://example.com/schema",
+          "datacontenttype": "text/json",
+          "exbool": "true",
+          "exint": "42",
+          "exstring": "exstring",
+          "exbinary": "AAECAw==",
+          "exurl": "http://example.com/source",
+          "extime": "2020-03-21T12:34:56.78Z"
+        },
+        "body": "\"hello\""
+      },
+      "http": {
+        "headers": {
+          "ce-specversion": "1.0",
+          "ce-id": "full-event",
+          "ce-source": "http://example.com/source",
+          "ce-type": "com.example.FullEvent",
+          "ce-subject": "topic",
+          "ce-time": "2020-03-21T12:34:56.78Z",
+          "ce-dataschema": "http://example.com/schema",
+          "content-type": "text/json",
+          "ce-exbool": "true",
+          "ce-exint": "42",
+          "ce-exstring": "exstring",
+          "ce-exbinary": "AAECAw==",
+          "ce-exurl": "http://example.com/source",
+          "ce-extime": "2020-03-21T12:34:56.78Z"
+        },
+        "body": "\"hello\""
+      },
+      "nats": {
+        "headers": {
+          "ce-specversion": "1.0",
+          "ce-id": "full-event",
+          "ce-source": "http://example.com/source",
+          "ce-type": "com.example.FullEvent",
+          "ce-subject": "topic",
+          "ce-time": "2020-03-21T12:34:56.78Z",
+          "ce-dataschema": "http://example.com/schema",
+          "ce-datacontenttype": "text/json",
+          "ce-exbool": "true",
+          "ce-exint": "42",
+          "ce-exstring": "exstring",
+          "ce-exbinary": "AAECAw==",
+          "ce-exurl": "http://example.com/source",
+          "ce-extime": "2020-03-21T12:34:56.78Z"
+        },
+        "body": "\"hello\""
+      }
+    },
+    {
+      "name": "min-event",
+      "event": {
+        "attributes": {
+          "specversion": "1.0",
+          "id": "min-event",
+          "source": "http://example.com/source",
+          "type": "com.example.MinEvent"
+        }
+      },
+      "http": {
+        "headers": {
+          "ce-specversion": "1.0",
+          "ce-id": "min-event",
+          "ce-source": "http://example.com/source",
+          "ce-type": "com.example.MinEvent"
+        },
+        "body": ""
+      },
+      "nats": {
+        "headers": {
+          "ce-specversion": "1.0",
+          "ce-id": "min-event",
+          "ce-source": "http://example.com/source",
+          "ce-type": "com.example.MinEvent"
+        },
+        "body": ""
+      }
+    },
+    {
+      "name": "unicode-subject",
+      "event": {
+        "attributes": {
+          "specversion": "1.0",
+          "id": "unicode-subject",
+          "source": "http://example.com/source",
+          "type": "com.example.MinEvent",
+          "subject": "Euro € 😀"
+        }
+      },
+      "http": {
+        "headers": {
+          "ce-specversion": "1.0",
+          "ce-id": "unicode-subject",
+          "ce-source": "http://example.com/source",
+          "ce-type": "com.example.MinEvent",
+          "ce-subject": "Euro%20%E2%82%AC%20%F0%9F%98%80"
+        },
+        "body": ""
+      },
+      "nats": {
+        "headers": {
+          "ce-specversion": "1.0",
+          "ce-id": "unicode-subject",
+          "ce-source": "http://example.com/source",
+          "ce-type": "com.example.MinEvent",
+          "ce-subject": "Euro%20%E2%82%AC%20%F0%9F%98%80"
+        },
+        "body": ""
+      }
+    },
+    {
+      "name": "reserved-characters",
+      "event": {
+        "attributes": {
+          "specversion": "1.0",
+          "id": "reserved-characters",
+          "source": "http://example.com/source",
+          "type": "com.example.MinEvent",
+          "subject": "say \"100%\" now"
+        }
+      },
+      "http": {
+        "headers": {
+          "ce-specversion": "1.0",
+          "ce-id": "reserved-characters",
+          "ce-source": "http://example.com/source",
+          "ce-type": "com.example.MinEvent",
+          "ce-subject": "say%20%22100%25%22%20now"
+        },
+        "body": ""
+      },
+      "nats": {
+        "headers": {
+          "ce-specversion": "1.0",
+          "ce-id": "reserved-characters",
+          "ce-source": "http://example.com/source",
+          "ce-type": "com.example.MinEvent",
+          "ce-subject": "say%20%22100%25%22%20now"
+        },
+        "body": ""
+      }
+    }
+  ],
+  "decode": [
+    {
+      "name": "go-http-canonical-header-names",
+      "binding": "http",
+      "headers": {
+        "Ce-Specversion": "1.0",
+        "Ce-Id": "min-event",
+        "Ce-Source": "http://example.com/source",
+        "Ce-Type": "com.example.MinEvent",
+        "Content-Type": "text/json"
+      },
+      "body": "\"hello\"",
+      "event": {
+        "attributes": {
+          "specversion": "1.0",
+          "id": "min-event",
+          "source": "http://example.com/source",
+          "type": "com.example.MinEvent",
+          "datacontenttype": "text/json"
+        },
+        "body": "\"hello\""
+      }
+    },
+    {
+      "name": "http-quoted-string",
+      "binding": "http",
+      "headers": {
+        "ce-specversion": "1.0",
+        "ce-id": "min-event",
+        "ce-source": "http://example.com/source",
+        "ce-type": "com.example.MinEvent",
+        "ce-subject": "\"a \\\"quoted\\\" topic\""
+      },
+      "body": "",
+      "event": {
+        "attributes": {
+          "specversion": "1.0",
+          "id": "min-event",
+          "source": "http://example.com/source",
+          "type": "com.example.MinEvent",
+          "subject": "a \"quoted\" topic"
+        }
+      }
+    },
+    {
+      "name": "unnecessary-and-lower-case-encoding",
+      "binding": "nats",
+      "headers": {
+        "ce-specversion": "1.0",
+        "ce-id": "min-event",
+        "ce-source": "http://example.com/source",
+        "ce-type": "com.example.MinEvent",
+        "ce-subject": "%74opic%e2%82%ac"
+      },
+      "body": "",
+      "event": {
+        "attributes": {
+          "specversion": "1.0",
+          "id": "min-event",
+          "source": "http://example.com/source",
+          "type": "com.example.MinEvent",
+          "subject": "topic€"
+        }
+      }
+    },
+    {
+      "name": "other-headers-ignored",
+      "binding": "nats",
+      "headers": {
+        "ce-specversion": "1.0",
+        "ce-id": "min-event",
+        "ce-source": "http://example.com/source",
+        "ce-type": "com.example.MinEvent",
+        "Nats-Msg-Id": "min-event",
+        "x-trace": "1"
+      },
+      "body": "",
+      "event": {
+        "attributes": {
+          "specversion": "1.0",
+          "id": "min-event",
+          "source": "http://example.com/source",
+          "type": "com.example.MinEvent"
+        }
+      }
+    }
+  ],
+  "reject": [
+    {
+      "name": "missing-id",
+      "binding": "http",
+      "headers": {
+        "ce-specversion": "1.0",
+        "ce-source": "http://example.com/source",
+        "ce-type": "com.example.MinEvent"
+      },
+      "why": "id is required"
+    },
+    {
+      "name": "wrong-specversion",
+      "binding": "nats",
+      "headers": {
+        "ce-specversion": "0.3",
+        "ce-id": "min-event",
+        "ce-source": "http://example.com/source",
+        "ce-type": "com.example.MinEvent"
+      },
+      "why": "only 1.0 is spoken"
+    },
+    {
+      "name": "http-ce-datacontenttype",
+      "binding": "http",
+      "headers": {
+        "ce-specversion": "1.0",
+        "ce-id": "min-event",
+        "ce-source": "http://example.com/source",
+        "ce-type": "com.example.MinEvent",
+        "ce-datacontenttype": "text/json"
+      },
+      "why": "HTTP carries it as Content-Type only"
+    },
+    {
+      "name": "structured-mode",
+      "binding": "http",
+      "headers": {
+        "ce-specversion": "1.0",
+        "ce-id": "min-event",
+        "ce-source": "http://example.com/source",
+        "ce-type": "com.example.MinEvent",
+        "content-type": "application/cloudevents+json; charset=utf-8"
+      },
+      "why": "a Content-Type starting application/cloudevents means structured (or batched) mode, whatever else the headers say; this codec speaks binary mode only"
+    },
+    {
+      "name": "invalid-utf8",
+      "binding": "nats",
+      "headers": {
+        "ce-specversion": "1.0",
+        "ce-id": "min-event",
+        "ce-source": "http://example.com/source",
+        "ce-type": "com.example.MinEvent",
+        "ce-subject": "%C0%AF"
+      },
+      "why": "an encoded byte sequence that is not UTF-8 must be rejected"
+    },
+    {
+      "name": "truncated-utf8",
+      "binding": "nats",
+      "headers": {
+        "ce-specversion": "1.0",
+        "ce-id": "min-event",
+        "ce-source": "http://example.com/source",
+        "ce-type": "com.example.MinEvent",
+        "ce-subject": "%E2%82"
+      },
+      "why": "an encoded byte sequence that is not UTF-8 must be rejected"
+    },
+    {
+      "name": "malformed-percent",
+      "binding": "http",
+      "headers": {
+        "ce-specversion": "1.0",
+        "ce-id": "min-event",
+        "ce-source": "http://example.com/source",
+        "ce-type": "com.example.MinEvent",
+        "ce-subject": "100%"
+      },
+      "why": "% must be followed by two hex digits"
+    },
+    {
+      "name": "bad-attribute-name",
+      "binding": "nats",
+      "headers": {
+        "ce-specversion": "1.0",
+        "ce-id": "min-event",
+        "ce-source": "http://example.com/source",
+        "ce-type": "com.example.MinEvent",
+        "ce-Ex_Bad": "x"
+      },
+      "why": "attribute names are a-z0-9 only; header names are compared lower-cased, so ex_bad still fails"
+    }
+  ],
+  "percent": [
+    {
+      "decoded": "Euro € 😀",
+      "encoded": "Euro%20%E2%82%AC%20%F0%9F%98%80"
+    },
+    {
+      "decoded": "say \"100%\" now",
+      "encoded": "say%20%22100%25%22%20now"
+    },
+    {
+      "decoded": "http://example.com/source",
+      "encoded": "http://example.com/source"
+    },
+    {
+      "decoded": "tab\there",
+      "encoded": "tab%09here"
+    },
+    {
+      "decoded": "Abc",
+      "encoded": "%41bc",
+      "decodeOnly": true
+    },
+    {
+      "decoded": "€",
+      "encoded": "%e2%82%ac",
+      "decodeOnly": true
+    }
+  ]
+}

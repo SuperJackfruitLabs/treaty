@@ -17,10 +17,10 @@ products share.
 
 ## Packages
 
-| Package                                                                                                                        | What it holds                                                          |
-| ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
-| [`@superjackfruitlabs/treaty-cloudevents`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-cloudevents)               | The CloudEvents 1.0 envelope. Constants only so far; the codec is next |
-| [`@superjackfruitlabs/treaty-ecosystem-identity`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-ecosystem-identity) | The identity fixture corpus, as plain JSON                             |
+| Package                                                                                                                        | What it holds                                                                                        |
+| ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| [`@superjackfruitlabs/treaty-cloudevents`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-cloudevents)               | The CloudEvents 1.0 envelope: binary mode over HTTP and NATS, and the suite's subject and type names |
+| [`@superjackfruitlabs/treaty-ecosystem-identity`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-ecosystem-identity) | The identity fixture corpus, as plain JSON                                                           |
 
 Packages are published to npm from GitHub Actions, with provenance, when a `vX.Y.Z` tag is
 pushed. The plan is in [`docs/2026-11-02-treaty-plan.md`](docs/2026-11-02-treaty-plan.md).
