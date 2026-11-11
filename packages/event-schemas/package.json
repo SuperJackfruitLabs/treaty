@@ -23,7 +23,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "rm -rf dist schemas && mkdir -p schemas && cp -R ../../schemas/. schemas/ && tsc -p tsconfig.build.json"
+    "build": "rm -rf dist schemas && mkdir -p schemas && cp ../../schemas/catalog.json ../../schemas/README.md schemas/ && cp -R ../../schemas/superpipeline schemas/ && tsc -p tsconfig.build.json"
   },
   "publishConfig": {
     "access": "public",

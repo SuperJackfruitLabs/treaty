@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.superpipeline.question.answer.v2.json",
+  "title": "dev.superpipeline.question.answer.v2",
+  "description": "A person's structured answer to a question.v2: the question's id, an option id or free text (or both, for an option that asks for input), an m.reference to the question's message, and on a subject-bound question the binding copied from what the person saw. Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "msgtype",
+    "body",
+    "suite_event_type",
+    "elicitation_id",
+    "m.relates_to"
+  ],
+  "properties": {
+    "msgtype": {
+      "const": "m.text"
+    },
+    "body": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "suite_event_type": {
+      "const": "dev.superpipeline.question.answer.v2"
+    },
+    "elicitation_id": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "option_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "text": {
+      "type": "string",
+      "maxLength": 16000
+    },
+    "subject": {
+      "type": "object",
+      "required": ["id", "digest"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 512,
+          "minLength": 1
+        },
+        "digest": {
+          "type": "string",
+          "maxLength": 512,
+          "minLength": 1
+        }
+      }
+    },
+    "m.relates_to": {
+      "type": "object",
+      "required": ["rel_type", "event_id"],
+      "properties": {
+        "rel_type": {
+          "const": "m.reference"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "anyOf": [
+    {
+      "required": ["option_id"]
+    },
+    {
+      "required": ["text"],
+      "properties": {
+        "text": {
+          "pattern": "\\S"
+        }
+      }
+    }
+  ]
+}

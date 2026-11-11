@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.agentpod.check.failed.v2.json",
+  "title": "dev.agentpod.check.failed.v2",
+  "description": "The structured half of a failed check's notice: the check, and the stage the card went back to (null: it could not go back and waits for a person). Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "suite_event_type",
+    "schema_version",
+    "board_id",
+    "card_id",
+    "stage_key",
+    "check",
+    "returned_to"
+  ],
+  "properties": {
+    "suite_event_type": {
+      "const": "dev.agentpod.check.failed.v2"
+    },
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "board_id": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "card_id": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "card_title": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "stage_key": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "check": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/check"
+        },
+        {
+          "properties": {
+            "status": {
+              "const": "failed"
+            },
+            "detail": {
+              "type": "string",
+              "maxLength": 300,
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "returned_to": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        }
+      ]
+    },
+    "m.relates_to": {
+      "type": "object",
+      "required": ["rel_type", "event_id"],
+      "properties": {
+        "rel_type": {
+          "const": "m.reference"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "$defs": {
+    "check": {
+      "type": "object",
+      "required": ["name", "provider", "status"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40,
+          "pattern": "^[^/\\s]([^/]*[^/\\s])?$"
+        },
+        "provider": {
+          "enum": ["ci", "verdict"]
+        },
+        "status": {
+          "enum": ["pending", "passed", "failed", "overridden"]
+        },
+        "url": {
+          "type": "string",
+          "maxLength": 2048,
+          "pattern": "^https://[^\\s<>]+$"
+        }
+      }
+    }
+  }
+}

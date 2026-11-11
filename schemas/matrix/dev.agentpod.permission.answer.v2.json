@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.agentpod.permission.answer.v2.json",
+  "title": "dev.agentpod.permission.answer.v2",
+  "description": "A person's answer to a permission.v2: the request's id, an option id, the subject binding copied from what they saw, and an m.reference to the prose message. Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "msgtype",
+    "body",
+    "schema_version",
+    "suite_event_type",
+    "request_id",
+    "option_id",
+    "subject",
+    "m.relates_to"
+  ],
+  "properties": {
+    "msgtype": {
+      "const": "m.text"
+    },
+    "body": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "suite_event_type": {
+      "const": "dev.agentpod.permission.answer.v2"
+    },
+    "request_id": {
+      "type": "string",
+      "maxLength": 600,
+      "minLength": 1
+    },
+    "option_id": {
+      "type": "string",
+      "maxLength": 600,
+      "minLength": 1
+    },
+    "subject": {
+      "type": "object",
+      "required": ["id", "digest"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 512,
+          "minLength": 1
+        },
+        "digest": {
+          "type": "string",
+          "maxLength": 512,
+          "minLength": 1
+        }
+      }
+    },
+    "m.relates_to": {
+      "type": "object",
+      "required": ["rel_type", "event_id"],
+      "properties": {
+        "rel_type": {
+          "const": "m.reference"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

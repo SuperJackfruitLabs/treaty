@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.superpipeline.delivery.answer.v2.json",
+  "title": "dev.superpipeline.delivery.answer.v2",
+  "description": "A person's answer to a delivery.v2: record_live_url with the https link as text, or switch_to_automatic, referencing the follow-up's message. Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "msgtype",
+    "body",
+    "schema_version",
+    "suite_event_type",
+    "gate_id",
+    "option_id",
+    "m.relates_to"
+  ],
+  "properties": {
+    "msgtype": {
+      "const": "m.text"
+    },
+    "body": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "suite_event_type": {
+      "const": "dev.superpipeline.delivery.answer.v2"
+    },
+    "gate_id": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "option_id": {
+      "enum": ["record_live_url", "switch_to_automatic"]
+    },
+    "text": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "m.relates_to": {
+      "type": "object",
+      "required": ["rel_type", "event_id"],
+      "properties": {
+        "rel_type": {
+          "const": "m.reference"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "option_id": {
+            "const": "record_live_url"
+          }
+        }
+      },
+      "then": {
+        "required": ["text"],
+        "properties": {
+          "text": {
+            "type": "string",
+            "pattern": "^https://[^\\s<>]+$"
+          }
+        }
+      }
+    }
+  ]
+}

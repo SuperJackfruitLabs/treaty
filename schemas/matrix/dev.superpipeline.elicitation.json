@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.superpipeline.elicitation.json",
+  "title": "question card (v1, embedded)",
+  "description": "An agent's question as it rides inside the prose message under the `dev.superpipeline.elicitation` content key. Options may be empty and are at most four (a client draws four buttons); the prose lists every option. Answered by an ordinary reply naming an option's number, id or label, never by reference. Readers ignore properties they do not know. x-uniqueBy lists paths whose values must not repeat (JSON Schema cannot say so): `a[].b` is field b of each item of list a.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "board_id",
+    "card_id",
+    "elicitation_id",
+    "run_id",
+    "stage_key",
+    "card_title",
+    "asked_by",
+    "prompt",
+    "options"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "board_id": {
+      "type": "string"
+    },
+    "card_id": {
+      "type": "string"
+    },
+    "elicitation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "stage_key": {
+      "type": "string"
+    },
+    "card_title": {
+      "type": "string"
+    },
+    "asked_by": {
+      "type": "string"
+    },
+    "prompt": {
+      "type": "string"
+    },
+    "options": {
+      "type": "array",
+      "maxItems": 4,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": ["id", "label"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "deep_link": {
+      "type": "string"
+    }
+  },
+  "x-uniqueBy": ["options[].id"]
+}

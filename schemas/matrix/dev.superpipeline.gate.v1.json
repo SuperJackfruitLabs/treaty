@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.superpipeline.gate.v1.json",
+  "title": "dev.superpipeline.gate.v1",
+  "description": "The legacy custom event a v1 gate is sent as beside its prose message: the embedded card plus `body`. Readers ignore properties they do not know. x-uniqueBy lists paths whose values must not repeat (JSON Schema cannot say so): `a[].b` is field b of each item of list a.",
+  "type": "object",
+  "required": [
+    "body",
+    "schema_version",
+    "board_id",
+    "card_id",
+    "gate_id",
+    "stage_key",
+    "return_stage_key",
+    "card_title",
+    "produced_by",
+    "prompt",
+    "options"
+  ],
+  "properties": {
+    "body": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "board_id": {
+      "type": "string"
+    },
+    "card_id": {
+      "type": "string"
+    },
+    "gate_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stage_key": {
+      "type": "string"
+    },
+    "return_stage_key": {
+      "type": "string"
+    },
+    "card_title": {
+      "type": "string"
+    },
+    "produced_by": {
+      "type": "string"
+    },
+    "prompt": {
+      "type": "string"
+    },
+    "handoff_summary": {
+      "type": "string"
+    },
+    "options": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": ["id", "label"],
+        "properties": {
+          "id": {
+            "enum": ["approve", "request_changes", "reject"]
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "deep_link": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "description": "Fields dropped deliberately (tenant_id, run_id, task_id, expires_at): a sender that has them was built against a superseded sketch.",
+      "not": {
+        "anyOf": [
+          {
+            "required": ["tenant_id"]
+          },
+          {
+            "required": ["run_id"]
+          },
+          {
+            "required": ["task_id"]
+          },
+          {
+            "required": ["expires_at"]
+          }
+        ]
+      }
+    }
+  ],
+  "x-uniqueBy": ["options[].id"]
+}

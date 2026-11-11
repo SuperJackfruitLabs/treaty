@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.agentpod.checks.waiting.v2.json",
+  "title": "dev.agentpod.checks.waiting.v2",
+  "description": "The card an escalation of overdue checks posts, so a suite client can offer Override on each pending or failed check. An override references this event. Readers ignore properties they do not know. x-uniqueBy lists paths whose values must not repeat (JSON Schema cannot say so): `a[].b` is field b of each item of list a.",
+  "type": "object",
+  "required": [
+    "msgtype",
+    "body",
+    "suite_event_type",
+    "schema_version",
+    "board_id",
+    "card_id",
+    "card_title",
+    "stage_key",
+    "checks"
+  ],
+  "properties": {
+    "msgtype": {
+      "const": "m.text"
+    },
+    "body": {
+      "type": "string"
+    },
+    "suite_event_type": {
+      "const": "dev.agentpod.checks.waiting.v2"
+    },
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "board_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "card_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "card_title": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "stage_key": {
+      "type": "string"
+    },
+    "checks": {
+      "$ref": "#/$defs/checks"
+    },
+    "deep_link": {
+      "type": "string"
+    }
+  },
+  "x-uniqueBy": ["checks[].name"],
+  "$defs": {
+    "check": {
+      "type": "object",
+      "required": ["name", "provider", "status"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40,
+          "pattern": "^[^/\\s]([^/]*[^/\\s])?$"
+        },
+        "provider": {
+          "enum": ["ci", "verdict"]
+        },
+        "status": {
+          "enum": ["pending", "passed", "failed", "overridden"]
+        },
+        "url": {
+          "type": "string",
+          "maxLength": 2048,
+          "pattern": "^https://[^\\s<>]+$"
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "$ref": "#/$defs/check"
+      }
+    }
+  }
+}

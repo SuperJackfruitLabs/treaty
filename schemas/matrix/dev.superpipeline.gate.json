@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.superpipeline.gate.json",
+  "title": "gate card (v1, embedded)",
+  "description": "A superpipeline approval gate as it rides inside the prose message under the `dev.superpipeline.gate` content key: the body of the legacy dev.superpipeline.gate.v1 event without its `body`. schema_version is a floor. Answered by dev.superpipeline.gate.decision.v1 referencing the carrying message. Readers ignore properties they do not know. x-uniqueBy lists paths whose values must not repeat (JSON Schema cannot say so): `a[].b` is field b of each item of list a.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "board_id",
+    "card_id",
+    "gate_id",
+    "stage_key",
+    "return_stage_key",
+    "card_title",
+    "produced_by",
+    "prompt",
+    "options"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "board_id": {
+      "type": "string"
+    },
+    "card_id": {
+      "type": "string"
+    },
+    "gate_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stage_key": {
+      "type": "string"
+    },
+    "return_stage_key": {
+      "type": "string"
+    },
+    "card_title": {
+      "type": "string"
+    },
+    "produced_by": {
+      "type": "string"
+    },
+    "prompt": {
+      "type": "string"
+    },
+    "handoff_summary": {
+      "type": "string"
+    },
+    "options": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": ["id", "label"],
+        "properties": {
+          "id": {
+            "enum": ["approve", "request_changes", "reject"]
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "deep_link": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "description": "Fields dropped deliberately (tenant_id, run_id, task_id, expires_at): a sender that has them was built against a superseded sketch.",
+      "not": {
+        "anyOf": [
+          {
+            "required": ["tenant_id"]
+          },
+          {
+            "required": ["run_id"]
+          },
+          {
+            "required": ["task_id"]
+          },
+          {
+            "required": ["expires_at"]
+          }
+        ]
+      }
+    }
+  ],
+  "x-uniqueBy": ["options[].id"]
+}

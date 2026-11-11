@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.superpipeline.attention.answer.v2.json",
+  "title": "dev.superpipeline.attention.answer.v2",
+  "description": "A person's answer to an attention.v2, naming the wait they were shown (board, card, wait id) and referencing the card's message. A resume carries its instruction as text. Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "suite_event_type",
+    "board_id",
+    "card_id",
+    "wait_id",
+    "option_id",
+    "m.relates_to"
+  ],
+  "properties": {
+    "msgtype": {
+      "const": "m.text"
+    },
+    "body": {
+      "type": "string"
+    },
+    "suite_event_type": {
+      "const": "dev.superpipeline.attention.answer.v2"
+    },
+    "board_id": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "card_id": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "wait_id": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "option_id": {
+      "type": "string",
+      "maxLength": 200,
+      "pattern": "^(resume_here|archive|resume_at:.+)$"
+    },
+    "text": {
+      "type": "string",
+      "maxLength": 16000
+    },
+    "m.relates_to": {
+      "type": "object",
+      "required": ["rel_type", "event_id"],
+      "properties": {
+        "rel_type": {
+          "const": "m.reference"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "option_id": {
+            "pattern": "^resume"
+          }
+        }
+      },
+      "then": {
+        "required": ["text"],
+        "properties": {
+          "text": {
+            "pattern": "\\S",
+            "maxLength": 2730
+          }
+        }
+      }
+    }
+  ]
+}

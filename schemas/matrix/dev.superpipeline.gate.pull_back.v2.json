@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.superpipeline.gate.pull_back.v2.json",
+  "title": "dev.superpipeline.gate.pull_back.v2",
+  "description": "A person pulling a held approval back before its release time, as request changes. Needs a non-blank comment of at most 8192 UTF-8 bytes and an m.reference to the gate's message. Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "suite_event_type",
+    "gate_id",
+    "comment",
+    "m.relates_to"
+  ],
+  "properties": {
+    "msgtype": {
+      "const": "m.text"
+    },
+    "body": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "suite_event_type": {
+      "const": "dev.superpipeline.gate.pull_back.v2"
+    },
+    "gate_id": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "comment": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "m.relates_to": {
+      "type": "object",
+      "required": ["rel_type", "event_id"],
+      "properties": {
+        "rel_type": {
+          "const": "m.reference"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

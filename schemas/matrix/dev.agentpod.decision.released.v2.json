@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.agentpod.decision.released.v2.json",
+  "title": "dev.agentpod.decision.released.v2",
+  "description": "The reply posted when a held approval reached its release time and went ahead (released) or was blocked, referencing the gate's own event. Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "suite_event_type",
+    "schema_version",
+    "gate_id",
+    "board_id",
+    "card_id",
+    "outcome",
+    "released_at",
+    "m.relates_to"
+  ],
+  "properties": {
+    "suite_event_type": {
+      "const": "dev.agentpod.decision.released.v2"
+    },
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "gate_id": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "board_id": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "card_id": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "outcome": {
+      "enum": ["released", "blocked"]
+    },
+    "released_at": {
+      "type": "string",
+      "maxLength": 40,
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,9})?)?(Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 300,
+      "minLength": 1
+    },
+    "m.relates_to": {
+      "type": "object",
+      "required": ["rel_type", "event_id"],
+      "properties": {
+        "rel_type": {
+          "const": "m.reference"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "if": {
+    "properties": {
+      "outcome": {
+        "const": "released"
+      }
+    }
+  },
+  "then": {
+    "not": {
+      "required": ["reason"]
+    }
+  }
+}

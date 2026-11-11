@@ -1,0 +1,33 @@
+{
+  "name": "@superjackfruitlabs/treaty-matrix-events",
+  "version": "0.0.0",
+  "description": "The board-room Matrix event contract: JSON Schemas, builders and parsers for the gates, questions, follow-ups and waiting cards Super Jackfruit Labs products carry into chat, and the answers back.",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SuperJackfruitLabs/treaty.git",
+    "directory": "packages/matrix-events"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./schemas/*.json": "./schemas/*.json",
+    "./examples.json": "./examples.json"
+  },
+  "files": [
+    "dist",
+    "schemas",
+    "examples.json",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rm -rf dist schemas examples.json && mkdir -p schemas && cp ../../schemas/matrix/*.json schemas/ && cp ../../fixtures/matrix-events/examples.json examples.json && tsc -p tsconfig.build.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
