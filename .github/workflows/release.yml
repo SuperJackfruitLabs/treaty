@@ -1,6 +1,8 @@
 name: release
 
-# A `vX.Y.Z` tag publishes every non-private package in packages/ to npm at that version.
+# A `vX.Y.Z` tag publishes every non-private package in packages/ to npm at that version, and
+# deploys the relay to production: the production host runs that tag's
+# deploy/production/release.sh through its forced-command key (estate provision/302-prod-deploy.sh).
 # GitHub runs releases; forge runs CI and review. On forge this workflow does nothing.
 #
 # npm trusts this workflow through OIDC (trusted publishing), so no npm token is stored.
@@ -90,3 +92,25 @@ jobs:
             fi
             (cd "$dir" && npm publish --provenance --access public --ignore-scripts)
           done
+
+  deploy-relay:
+    needs: [check]
+    if: github.server_url == 'https://github.com' && vars.PROD_HOST != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: deploy-relay
+      cancel-in-progress: false
+    steps:
+      - name: Deploy this tag's relay to production
+        env:
+          KEY: ${{ secrets.PROD_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.PROD_KNOWN_HOSTS }}
+          HOST: ${{ vars.PROD_HOST }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/prod && chmod 600 ~/.ssh/prod
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/prod "root@$HOST" treaty "$GITHUB_REF_NAME"
+      - name: The public hostname answers
+        run: curl -sf --retry 10 --retry-delay 3 --retry-all-errors https://relay.superjackfruit.com/healthz | grep -q '"ok":true'

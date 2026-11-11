@@ -1,20 +1,21 @@
 #!/usr/bin/env bash
-# The relay's staging smoke: an event sent in is stored once, a resend is a duplicate, and the
-# sink receives it once, signed. Usage: smoke.sh <relay url> <sink url>
+# The relay's smoke: an event sent in is stored once, a resend is a duplicate, and the sink
+# receives it once, signed. Usage: smoke.sh <relay url> <sink url>
+# Staging by default; production's release.sh sets SMOKE_ENV, SMOKE_SUBJECT and SMOKE_SOURCE.
 set -euo pipefail
 relay=$1
 sink=$2
-# shellcheck disable=SC1091
-. /opt/suite-staging/env/treaty/smoke.env # SMOKE_TOKEN
+# shellcheck disable=SC1090,SC1091
+. "${SMOKE_ENV:-/opt/suite-staging/env/treaty/smoke.env}" # SMOKE_TOKEN
 
 curl -sf "$relay/healthz" | grep -q '"ok":true' || { echo "smoke: relay is not healthy"; exit 1; }
 
 id="smoke-$(date +%s)-$RANDOM"
-subject=evt.staging_smoke.treaty.smoke.ping
+subject=${SMOKE_SUBJECT:-evt.staging_smoke.treaty.smoke.ping}
 send() {
   curl -s -X POST "$relay/v1/events/$subject" \
     -H "authorization: Bearer $SMOKE_TOKEN" \
-    -H "ce-specversion: 1.0" -H "ce-id: $id" -H "ce-source: /staging/smoke" \
+    -H "ce-specversion: 1.0" -H "ce-id: $id" -H "ce-source: ${SMOKE_SOURCE:-/staging/smoke}" \
     -H "ce-type: com.superjackfruit.treaty.smoke.ping.v1" \
     -H "content-type: application/json" \
     --data '{"ping":true}'

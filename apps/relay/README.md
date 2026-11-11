@@ -46,3 +46,12 @@ Delivery is at least once: a subscriber handles each event once with `handleOnce
 `bun apps/relay/src/main.ts`. The NATS tests (`test/nats.test.ts`) need a JetStream server:
 start `nats-server -js` and set `NATS_URL`. CI downloads a pinned `nats-server`, checks its
 checksum and runs them with `TREATY_REQUIRE_NATS=1`, so they cannot be skipped there.
+
+## Deploys
+
+- **Staging:** a merge to `main` runs `deploy/staging/deploy.sh` on the staging plane
+  (`staging-relay.superjackfruit.com`).
+- **Production:** a `v*` tag runs `deploy/production/release.sh` on the production host
+  (`relay.superjackfruit.com`), beside the AgentPod hub. It builds the tag's image, recreates the
+  relay and the sink (NATS keeps its data), runs the smoke, and puts the previous release back if
+  the smoke fails. The host's secrets and tunnel route come from estate's provisioning.
