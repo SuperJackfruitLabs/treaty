@@ -893,11 +893,58 @@ function cardInvalid(out: Examples): void {
   }
 }
 
+/**
+ * Invalid cases made from a valid one by breaking one rule, for the rules no source case breaks.
+ * Taken from the first valid case that has what the rule is about, so they track the builders.
+ */
+function derivedInvalid(out: Examples): void {
+  const bad = (type: string, why: string, body: unknown) =>
+    (out[type] ??= { valid: {}, invalid: [] }).invalid.push({
+      why,
+      refusedBy: "schema",
+      body,
+    });
+  const firstValid = (
+    type: string,
+    has: (c: Record<string, unknown>) => boolean,
+  ): Record<string, unknown> => {
+    const found = Object.values(out[type]?.valid ?? {}).find(
+      (c): c is Record<string, unknown> =>
+        typeof c === "object" &&
+        c !== null &&
+        has(c as Record<string, unknown>),
+    );
+    if (!found) throw new Error(`no valid ${type} case to derive from`);
+    return found;
+  };
+  const subjectOf = (c: Record<string, unknown>) =>
+    typeof c.subject === "object" && c.subject !== null
+      ? (c.subject as Record<string, unknown>)
+      : null;
+
+  for (const type of [
+    "dev.superpipeline.gate.v2",
+    "dev.superpipeline.question.v2",
+    "dev.superpipeline.delivery.v2",
+    "dev.agentpod.permission.v2",
+  ]) {
+    const c = firstValid(
+      type,
+      (v) => typeof subjectOf(v)?.revision === "number",
+    );
+    bad(type, "a subject revision that is not a whole number", {
+      ...c,
+      subject: { ...subjectOf(c), revision: 1.5 },
+    });
+  }
+}
+
 export function buildExamples(): unknown {
   const schemas: Examples = {};
   fromSourceCorpus(schemas);
   built(schemas);
   cardInvalid(schemas);
+  derivedInvalid(schemas);
   const sorted = Object.fromEntries(
     Object.entries(schemas).sort(([a], [b]) => (a < b ? -1 : 1)),
   );

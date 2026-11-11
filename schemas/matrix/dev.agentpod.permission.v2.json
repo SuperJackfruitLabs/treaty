@@ -173,7 +173,8 @@
           "minLength": 1
         },
         "revision": {
-          "type": "number"
+          "type": "integer",
+          "minimum": 0
         },
         "expires_at": {
           "type": ["string", "null"],

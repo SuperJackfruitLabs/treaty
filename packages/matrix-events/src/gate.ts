@@ -318,7 +318,7 @@ const RawSubject = z.object({
   id: z.string().min(1).max(SUBJECT_KEY_MAX),
   digest: z.string().min(1).max(SUBJECT_KEY_MAX),
   schema: z.string().min(1).max(PREVIEW_FIELD_MAX),
-  revision: z.number().finite(),
+  revision: z.number().int().nonnegative(),
   expiresAt: z.string().max(PREVIEW_FIELD_MAX).nullish().catch(null),
   preview: z.array(z.unknown()).optional().catch(undefined),
   /** False when the board had to cut or drop blocks to fit the bounds. Absent from older boards. */

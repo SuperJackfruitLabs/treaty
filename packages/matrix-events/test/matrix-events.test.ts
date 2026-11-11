@@ -121,6 +121,17 @@ describe("a gate", () => {
     expect(gateOptionsV2(g).some((o) => o.meaning === "approve")).toBe(false);
   });
 
+  test("a subject whose revision is not a whole number is not carried, and takes the approvals with it", () => {
+    const d = gate({ approvalSubject: subject({ revision: 1.5 }) });
+    expect(gateSubjectV2(d)).toBeNull();
+    expect(gateOptionsV2(d).map((o) => o.id)).toEqual([
+      "request_changes",
+      "reject",
+    ]);
+    expect(
+      gateSubjectV2(gate({ approvalSubject: subject({ revision: 0 }) })),
+    ).not.toBeNull();
+  });
   test("a preview cut here is not complete, though the board said it was", () => {
     const s = gateSubjectV2(
       gate({
