@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.superpipeline.attention.outcome.v1.json",
+  "title": "dev.superpipeline.attention.outcome.v1",
+  "description": "The receipt that closes a waiting card: which card, which wait, what was decided (an option id, or settled_elsewhere) and by whom, referencing the card's message. Keyed by wait, not gate: a wait has no gate. Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "suite_event_type",
+    "board_id",
+    "card_id",
+    "wait_id",
+    "decision",
+    "decided_by",
+    "m.relates_to"
+  ],
+  "properties": {
+    "suite_event_type": {
+      "const": "dev.superpipeline.attention.outcome.v1"
+    },
+    "board_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "card_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "wait_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decision": {
+      "type": "string",
+      "pattern": "^(resume_here|archive|resume_at:.+|settled_elsewhere)$"
+    },
+    "decided_by": {
+      "type": ["string", "null"]
+    },
+    "m.relates_to": {
+      "type": "object",
+      "required": ["rel_type", "event_id"],
+      "properties": {
+        "rel_type": {
+          "const": "m.reference"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "not": {
+    "required": ["gate_id"]
+  }
+}

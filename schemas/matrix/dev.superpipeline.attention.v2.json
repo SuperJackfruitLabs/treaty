@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.superpipeline.attention.v2.json",
+  "title": "dev.superpipeline.attention.v2",
+  "description": "Nothing is frozen on a waiting card, so it carries no subject.",
+  "type": "object",
+  "required": [
+    "msgtype",
+    "body",
+    "suite_event_type",
+    "schema_version",
+    "board_id",
+    "card_id",
+    "card_title",
+    "stage_key",
+    "stage_name",
+    "wait_id",
+    "reason",
+    "detail",
+    "summary",
+    "failure_count",
+    "options"
+  ],
+  "properties": {
+    "msgtype": {
+      "const": "m.text"
+    },
+    "body": {
+      "type": "string"
+    },
+    "suite_event_type": {
+      "const": "dev.superpipeline.attention.v2"
+    },
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "board_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "card_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "card_title": {
+      "type": "string"
+    },
+    "stage_key": {
+      "type": "string"
+    },
+    "stage_name": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "wait_id": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 64,
+      "minLength": 1
+    },
+    "detail": {
+      "type": ["string", "null"]
+    },
+    "summary": {
+      "type": ["string", "null"]
+    },
+    "failure_count": {
+      "type": ["integer", "null"],
+      "minimum": 1
+    },
+    "options": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "meaning", "needs_comment"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 200,
+            "pattern": "^(resume_here|archive|resume_at:.+)$"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1
+          },
+          "meaning": {
+            "enum": ["approve", "reject", "revise", "choose", "defer"]
+          },
+          "needs_comment": {
+            "type": "boolean"
+          },
+          "input": {
+            "$ref": "#/$defs/input"
+          }
+        },
+        "if": {
+          "properties": {
+            "id": {
+              "const": "archive"
+            }
+          }
+        },
+        "then": {
+          "not": {
+            "required": ["input"]
+          }
+        },
+        "else": {
+          "required": ["input"],
+          "properties": {
+            "input": {
+              "properties": {
+                "kind": {
+                  "const": "text"
+                },
+                "required": {
+                  "const": true
+                },
+                "max_length": {
+                  "maximum": 2730
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "deadline": {
+      "$ref": "#/$defs/deadline"
+    },
+    "deep_link": {
+      "type": "string"
+    }
+  },
+  "not": {
+    "required": ["subject"]
+  },
+  "x-uniqueBy": ["options[].id"],
+  "$defs": {
+    "input": {
+      "type": "object",
+      "required": ["kind", "label", "required", "max_length"],
+      "properties": {
+        "kind": {
+          "enum": ["text", "url"]
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "max_length": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4000
+        }
+      }
+    },
+    "deadline": {
+      "type": "object",
+      "anyOf": [
+        {
+          "required": ["remind_at"]
+        },
+        {
+          "required": ["escalate_at"]
+        }
+      ],
+      "properties": {
+        "remind_at": {
+          "type": "string",
+          "maxLength": 40,
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,9})?)?(Z|[+-]\\d{2}:\\d{2})$"
+        },
+        "escalate_at": {
+          "type": "string",
+          "maxLength": 40,
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,9})?)?(Z|[+-]\\d{2}:\\d{2})$"
+        }
+      }
+    }
+  }
+}

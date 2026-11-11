@@ -1,0 +1,392 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.superpipeline.gate.v2.json",
+  "title": "dev.superpipeline.gate.v2",
+  "description": "A gate in the decision envelope: an m.room.message with a real body and the suite_event_type marker, beside the v1 card. Options are carried as the gate offers them; a client draws by meaning, never by id. A subject-bound gate carries its subject, a variant gate carries subject.variants with no identity of its own, and a quorum, release, checks or deadline only when they apply. Readers ignore properties they do not know. x-uniqueBy lists paths whose values must not repeat (JSON Schema cannot say so): `a[].b` is field b of each item of list a.",
+  "type": "object",
+  "required": [
+    "msgtype",
+    "body",
+    "suite_event_type",
+    "schema_version",
+    "board_id",
+    "card_id",
+    "gate_id",
+    "stage_key",
+    "return_stage_key",
+    "card_title",
+    "produced_by",
+    "prompt",
+    "options"
+  ],
+  "properties": {
+    "msgtype": {
+      "const": "m.text"
+    },
+    "body": {
+      "type": "string"
+    },
+    "suite_event_type": {
+      "const": "dev.superpipeline.gate.v2"
+    },
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "board_id": {
+      "type": "string"
+    },
+    "card_id": {
+      "type": "string"
+    },
+    "gate_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stage_key": {
+      "type": "string"
+    },
+    "return_stage_key": {
+      "type": "string"
+    },
+    "card_title": {
+      "type": "string"
+    },
+    "produced_by": {
+      "type": "string"
+    },
+    "prompt": {
+      "type": "string"
+    },
+    "handoff_summary": {
+      "type": "string"
+    },
+    "options": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "$ref": "#/$defs/gateOption"
+      }
+    },
+    "subject": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/subject"
+        },
+        {
+          "type": "object",
+          "required": ["variants"],
+          "not": {
+            "anyOf": [
+              {
+                "required": ["id"]
+              },
+              {
+                "required": ["digest"]
+              }
+            ]
+          },
+          "properties": {
+            "variants": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 3,
+              "items": {
+                "$ref": "#/$defs/variant"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "quorum": {
+      "$ref": "#/$defs/quorum"
+    },
+    "release": {
+      "$ref": "#/$defs/release"
+    },
+    "checks": {
+      "$ref": "#/$defs/checks"
+    },
+    "deadline": {
+      "$ref": "#/$defs/deadline"
+    },
+    "deep_link": {
+      "type": "string"
+    }
+  },
+  "x-uniqueBy": [
+    "options[].id",
+    "subject.variants[].id",
+    "subject.variants[].subject.id",
+    "quorum.approvals[].principal_id",
+    "checks[].name"
+  ],
+  "$defs": {
+    "previewBlock": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "text"],
+          "properties": {
+            "type": {
+              "const": "text"
+            },
+            "label": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "text": {
+              "type": "string",
+              "maxLength": 4000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "label", "value"],
+          "properties": {
+            "type": {
+              "const": "field"
+            },
+            "label": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "value": {
+              "type": "string",
+              "maxLength": 200
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "label", "url"],
+          "properties": {
+            "type": {
+              "const": "link"
+            },
+            "label": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "url": {
+              "type": "string",
+              "maxLength": 4000,
+              "pattern": "^https?://[^\\s<>]+$"
+            }
+          }
+        }
+      ]
+    },
+    "subject": {
+      "type": "object",
+      "description": "The exact thing an approving answer approves, re-bounded by the carrier. The sender still lists approving options when preview_complete is false; a client must not offer them, and the carrier refuses an approving answer to an incomplete preview.",
+      "required": [
+        "id",
+        "digest",
+        "schema",
+        "revision",
+        "expires_at",
+        "preview",
+        "preview_complete"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 512,
+          "minLength": 1
+        },
+        "digest": {
+          "type": "string",
+          "maxLength": 512,
+          "minLength": 1
+        },
+        "schema": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "revision": {
+          "type": "number"
+        },
+        "expires_at": {
+          "type": ["string", "null"],
+          "maxLength": 200
+        },
+        "preview": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "$ref": "#/$defs/previewBlock"
+          }
+        },
+        "preview_complete": {
+          "type": "boolean"
+        }
+      }
+    },
+    "deadline": {
+      "type": "object",
+      "anyOf": [
+        {
+          "required": ["remind_at"]
+        },
+        {
+          "required": ["escalate_at"]
+        }
+      ],
+      "properties": {
+        "remind_at": {
+          "type": "string",
+          "maxLength": 40,
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,9})?)?(Z|[+-]\\d{2}:\\d{2})$"
+        },
+        "escalate_at": {
+          "type": "string",
+          "maxLength": 40,
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,9})?)?(Z|[+-]\\d{2}:\\d{2})$"
+        }
+      }
+    },
+    "quorumApproval": {
+      "type": "object",
+      "required": ["principal_id", "at"],
+      "properties": {
+        "principal_id": {
+          "type": "string",
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "at": {
+          "type": "string",
+          "maxLength": 40,
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,9})?)?(Z|[+-]\\d{2}:\\d{2})$"
+        },
+        "variant_id": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        }
+      }
+    },
+    "quorum": {
+      "type": "object",
+      "required": ["required", "from", "approvals"],
+      "properties": {
+        "required": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 5
+        },
+        "from": {
+          "enum": ["deciders", "admins"]
+        },
+        "approvals": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "$ref": "#/$defs/quorumApproval"
+          }
+        }
+      }
+    },
+    "release": {
+      "type": "object",
+      "anyOf": [
+        {
+          "required": ["hold_for_minutes"]
+        },
+        {
+          "required": ["not_before"]
+        }
+      ],
+      "properties": {
+        "hold_for_minutes": {
+          "type": "integer",
+          "minimum": 5,
+          "maximum": 10080
+        },
+        "not_before": {
+          "type": "string",
+          "maxLength": 40,
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,9})?)?(Z|[+-]\\d{2}:\\d{2})$"
+        }
+      }
+    },
+    "check": {
+      "type": "object",
+      "required": ["name", "provider", "status"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40,
+          "pattern": "^[^/\\s]([^/]*[^/\\s])?$"
+        },
+        "provider": {
+          "enum": ["ci", "verdict"]
+        },
+        "status": {
+          "enum": ["pending", "passed", "failed", "overridden"]
+        },
+        "url": {
+          "type": "string",
+          "maxLength": 2048,
+          "pattern": "^https://[^\\s<>]+$"
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "$ref": "#/$defs/check"
+      }
+    },
+    "gateOption": {
+      "type": "object",
+      "required": ["id", "label", "meaning", "needs_comment"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "meaning": {
+          "enum": ["approve", "reject", "revise", "choose", "defer"]
+        },
+        "needs_comment": {
+          "type": "boolean"
+        },
+        "delivery": {
+          "enum": ["automatic", "manual"]
+        }
+      }
+    },
+    "variant": {
+      "type": "object",
+      "required": ["id", "label", "subject"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 64,
+          "minLength": 1
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 80,
+          "minLength": 1
+        },
+        "subject": {
+          "$ref": "#/$defs/subject"
+        }
+      }
+    }
+  }
+}

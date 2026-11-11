@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.agentpod.permission.outcome.v1.json",
+  "title": "dev.agentpod.permission.outcome.v1",
+  "description": "The receipt that closes a permission card: selected (with the option), expired or cancelled, referencing the prose message. decided_by is a label, never an mxid. Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "suite_event_type",
+    "request_id",
+    "session_id",
+    "request_seq",
+    "outcome",
+    "option_id",
+    "decided_by",
+    "m.relates_to"
+  ],
+  "properties": {
+    "suite_event_type": {
+      "const": "dev.agentpod.permission.outcome.v1"
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "request_seq": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "outcome": {
+      "enum": ["selected", "expired", "cancelled"]
+    },
+    "option_id": {
+      "type": ["string", "null"]
+    },
+    "decided_by": {
+      "type": ["string", "null"]
+    },
+    "m.relates_to": {
+      "type": "object",
+      "required": ["rel_type", "event_id"],
+      "properties": {
+        "rel_type": {
+          "const": "m.reference"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "selected"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "option_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "option_id": {
+            "type": "null"
+          },
+          "decided_by": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}

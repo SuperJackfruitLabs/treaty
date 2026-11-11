@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.superpipeline.gate.decision.v1.json",
+  "title": "dev.superpipeline.gate.decision.v1",
+  "description": "A person's answer to a v1 gate: an ordinary m.room.message carrying suite_event_type, one of the three GateDecision ids, and an m.reference to the gate's message (m.in_reply_to is a quoting hint and never binds). Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "body",
+    "schema_version",
+    "suite_event_type",
+    "gate_id",
+    "option_id",
+    "m.relates_to"
+  ],
+  "properties": {
+    "msgtype": {
+      "const": "m.text"
+    },
+    "body": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "gate_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "comment": {
+      "type": ["string", "null"]
+    },
+    "m.relates_to": {
+      "type": "object",
+      "required": ["rel_type", "event_id"],
+      "properties": {
+        "rel_type": {
+          "const": "m.reference"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "suite_event_type": {
+      "const": "dev.superpipeline.gate.decision.v1"
+    },
+    "option_id": {
+      "enum": ["approve", "request_changes", "reject"]
+    }
+  }
+}

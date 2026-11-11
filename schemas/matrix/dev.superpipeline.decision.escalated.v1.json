@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.superpipeline.decision.escalated.v1.json",
+  "title": "dev.superpipeline.decision.escalated.v1",
+  "description": "The notice posted when a waiting decision passes its stage's escalation time and the workspace's owners and admins are invited, in reply to the waiting card. Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "msgtype",
+    "body",
+    "suite_event_type",
+    "schema_version",
+    "board_id",
+    "card_id",
+    "decision_kind",
+    "decision_id",
+    "waiting_since",
+    "escalated_at",
+    "m.relates_to"
+  ],
+  "properties": {
+    "msgtype": {
+      "const": "m.text"
+    },
+    "body": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "board_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "card_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decision_kind": {
+      "enum": ["gate", "question", "delivery", "attention", "checks"]
+    },
+    "decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "waiting_since": {
+      "type": "string",
+      "maxLength": 40,
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,9})?)?(Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "suite_event_type": {
+      "const": "dev.superpipeline.decision.escalated.v1"
+    },
+    "escalated_at": {
+      "type": "string",
+      "maxLength": 40,
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,9})?)?(Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "deep_link": {
+      "type": "string"
+    },
+    "m.relates_to": {
+      "type": "object",
+      "required": ["m.in_reply_to"],
+      "properties": {
+        "m.in_reply_to": {
+          "type": "object",
+          "required": ["event_id"],
+          "properties": {
+            "event_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    }
+  },
+  "not": {
+    "required": ["reminded_at"]
+  }
+}

@@ -27,3 +27,22 @@ changing what one means, is a new version published beside the old one.
   `https://docs.superwitness.dev/schemas/run-report.schema.json`. The catalogue points at it.
 - **SuperPipeline's other pushed events** (`delivery.pending`, `attention.pending`, the decision
   notices, `check.failed` and the rest) come in a later change.
+
+## Matrix (`matrix/`)
+
+One schema per board-room Matrix event, named by its type string: the gates, questions,
+follow-ups, waiting cards, notices and receipts a board's work crosses chat on, the answers a
+person sends back, and AgentPod's harness permission envelope. Plain data, so SuperMessage's Rust
+core and a Swift client read them without TypeScript. Published in
+`@superjackfruitlabs/treaty-matrix-events` (`packages/matrix-events`), which also holds the
+TypeScript that builds and reads them.
+
+- Three files describe a card that rides inside a prose message under a content key rather than as
+  an event of its own: `dev.superpipeline.gate`, `dev.superpipeline.elicitation` and
+  `dev.agentpod.permission`.
+- `x-uniqueBy` lists the paths whose values must not repeat, the one rule JSON Schema cannot state:
+  `options[].id` is the `id` of every option.
+- `fixtures/matrix-events/examples.json` is the corpus they are checked against, built by
+  `scripts/matrix-examples.ts` from `fixtures/ecosystem-identity/matrix_gate_events.json` and from
+  this package's builders. Each invalid case says what refuses it: the schema, a uniqueness rule, or
+  only the carrier, against what it recorded when it posted.

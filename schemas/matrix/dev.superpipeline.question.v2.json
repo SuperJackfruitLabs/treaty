@@ -1,0 +1,331 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.superpipeline.question.v2.json",
+  "title": "dev.superpipeline.question.v2",
+  "description": "An agent's question in the decision envelope, beside the v1 card. Options say what they mean and may ask for input; a question with no options carries free_text. A strict decision or a board-dispatched harness permission carries its subject; a SuperToolkit approval request carries approval_request_id and belongs to no card, run or stage. Readers ignore properties they do not know. x-uniqueBy lists paths whose values must not repeat (JSON Schema cannot say so): `a[].b` is field b of each item of list a.",
+  "type": "object",
+  "required": [
+    "msgtype",
+    "body",
+    "suite_event_type",
+    "schema_version",
+    "elicitation_id",
+    "board_id",
+    "card_id",
+    "run_id",
+    "stage_key",
+    "card_title",
+    "asked_by",
+    "question",
+    "options"
+  ],
+  "properties": {
+    "msgtype": {
+      "const": "m.text"
+    },
+    "body": {
+      "type": "string"
+    },
+    "suite_event_type": {
+      "const": "dev.superpipeline.question.v2"
+    },
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "elicitation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "board_id": {
+      "type": "string"
+    },
+    "card_id": {
+      "type": "string"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "stage_key": {
+      "type": "string"
+    },
+    "card_title": {
+      "type": "string"
+    },
+    "asked_by": {
+      "type": "string"
+    },
+    "question": {
+      "type": "string"
+    },
+    "options": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "meaning", "needs_comment"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "meaning": {
+            "enum": ["approve", "reject", "revise", "choose", "defer"]
+          },
+          "needs_comment": {
+            "type": "boolean"
+          },
+          "input": {
+            "$ref": "#/$defs/input"
+          },
+          "scope": {
+            "enum": ["once", "run", "always"]
+          },
+          "requires": {
+            "enum": ["workspace-admin"]
+          }
+        }
+      }
+    },
+    "free_text": {
+      "type": "object",
+      "required": ["max_length"],
+      "properties": {
+        "max_length": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2000
+        }
+      }
+    },
+    "subject": {
+      "$ref": "#/$defs/subject"
+    },
+    "approval_request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "deadline": {
+      "$ref": "#/$defs/deadline"
+    },
+    "deep_link": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "description": "free_text only on a question with no options: text alone answers only a question with nothing to choose.",
+      "if": {
+        "required": ["free_text"]
+      },
+      "then": {
+        "properties": {
+          "options": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "description": "A SuperToolkit approval request belongs to no card: it names its request, links nowhere, is bound to an stk-capability/v1 subject, and only a workspace owner or admin may approve it.",
+      "if": {
+        "required": ["card_id"],
+        "properties": {
+          "card_id": {
+            "const": ""
+          }
+        }
+      },
+      "then": {
+        "required": ["approval_request_id"],
+        "not": {
+          "required": ["deep_link"]
+        },
+        "properties": {
+          "subject": {
+            "properties": {
+              "schema": {
+                "const": "stk-capability/v1"
+              }
+            }
+          },
+          "options": {
+            "items": {
+              "if": {
+                "required": ["meaning"],
+                "properties": {
+                  "meaning": {
+                    "const": "approve"
+                  }
+                }
+              },
+              "then": {
+                "required": ["requires"],
+                "properties": {
+                  "requires": {
+                    "const": "workspace-admin"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "x-uniqueBy": ["options[].id"],
+  "$defs": {
+    "previewBlock": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "text"],
+          "properties": {
+            "type": {
+              "const": "text"
+            },
+            "label": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "text": {
+              "type": "string",
+              "maxLength": 4000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "label", "value"],
+          "properties": {
+            "type": {
+              "const": "field"
+            },
+            "label": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "value": {
+              "type": "string",
+              "maxLength": 200
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "label", "url"],
+          "properties": {
+            "type": {
+              "const": "link"
+            },
+            "label": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "url": {
+              "type": "string",
+              "maxLength": 4000,
+              "pattern": "^https?://[^\\s<>]+$"
+            }
+          }
+        }
+      ]
+    },
+    "subject": {
+      "type": "object",
+      "description": "The exact thing an approving answer approves, re-bounded by the carrier. The sender still lists approving options when preview_complete is false; a client must not offer them, and the carrier refuses an approving answer to an incomplete preview.",
+      "required": [
+        "id",
+        "digest",
+        "schema",
+        "revision",
+        "expires_at",
+        "preview",
+        "preview_complete"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 512,
+          "minLength": 1
+        },
+        "digest": {
+          "type": "string",
+          "maxLength": 512,
+          "minLength": 1
+        },
+        "schema": {
+          "type": "string",
+          "maxLength": 200,
+          "minLength": 1
+        },
+        "revision": {
+          "type": "number"
+        },
+        "expires_at": {
+          "type": ["string", "null"],
+          "maxLength": 200
+        },
+        "preview": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "$ref": "#/$defs/previewBlock"
+          }
+        },
+        "preview_complete": {
+          "type": "boolean"
+        }
+      }
+    },
+    "input": {
+      "type": "object",
+      "required": ["kind", "label", "required", "max_length"],
+      "properties": {
+        "kind": {
+          "enum": ["text", "url"]
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "max_length": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4000
+        }
+      }
+    },
+    "deadline": {
+      "type": "object",
+      "anyOf": [
+        {
+          "required": ["remind_at"]
+        },
+        {
+          "required": ["escalate_at"]
+        }
+      ],
+      "properties": {
+        "remind_at": {
+          "type": "string",
+          "maxLength": 40,
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,9})?)?(Z|[+-]\\d{2}:\\d{2})$"
+        },
+        "escalate_at": {
+          "type": "string",
+          "maxLength": 40,
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,9})?)?(Z|[+-]\\d{2}:\\d{2})$"
+        }
+      }
+    }
+  }
+}

@@ -6,3 +6,4 @@ packages/*/LICENSE
 packages/*/corpus/
 packages/ecosystem-identity/README.md
 packages/*/schemas/
+packages/matrix-events/examples.json

@@ -32,6 +32,10 @@
       "name": "@superjackfruitlabs/treaty-event-schemas",
       "version": "0.0.0",
     },
+    "packages/matrix-events": {
+      "name": "@superjackfruitlabs/treaty-matrix-events",
+      "version": "0.0.0",
+    },
     "packages/outbox": {
       "name": "@superjackfruitlabs/treaty-outbox",
       "version": "0.0.0",
@@ -95,6 +99,8 @@
     "@superjackfruitlabs/treaty-ecosystem-identity": ["@superjackfruitlabs/treaty-ecosystem-identity@workspace:packages/ecosystem-identity"],
 
     "@superjackfruitlabs/treaty-event-schemas": ["@superjackfruitlabs/treaty-event-schemas@workspace:packages/event-schemas"],
+
+    "@superjackfruitlabs/treaty-matrix-events": ["@superjackfruitlabs/treaty-matrix-events@workspace:packages/matrix-events"],
 
     "@superjackfruitlabs/treaty-outbox": ["@superjackfruitlabs/treaty-outbox@workspace:packages/outbox"],
 

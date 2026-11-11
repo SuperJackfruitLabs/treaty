@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.superpipeline.check.override.v2.json",
+  "title": "dev.superpipeline.check.override.v2",
+  "description": "A workspace owner or admin overriding a check from chat: the board, card and check name, a non-blank comment of at most 8192 UTF-8 bytes, and an m.reference to the checks.waiting card. Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "suite_event_type",
+    "board_id",
+    "card_id",
+    "check_name",
+    "comment",
+    "m.relates_to"
+  ],
+  "properties": {
+    "msgtype": {
+      "const": "m.text"
+    },
+    "body": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "suite_event_type": {
+      "const": "dev.superpipeline.check.override.v2"
+    },
+    "board_id": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "card_id": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "check_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40,
+      "pattern": "^[^/\\s]([^/]*[^/\\s])?$"
+    },
+    "comment": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "m.relates_to": {
+      "type": "object",
+      "required": ["rel_type", "event_id"],
+      "properties": {
+        "rel_type": {
+          "const": "m.reference"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

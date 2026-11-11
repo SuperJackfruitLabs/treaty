@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.agentpod.decision.pulled_back.v2.json",
+  "title": "dev.agentpod.decision.pulled_back.v2",
+  "description": "The reply posted when a held approval was pulled back before its release time, returned for changes. pulled_back_by is a label, never a principal id or an mxid. Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "suite_event_type",
+    "schema_version",
+    "gate_id",
+    "board_id",
+    "card_id",
+    "pulled_back_by",
+    "comment",
+    "at",
+    "m.relates_to"
+  ],
+  "properties": {
+    "suite_event_type": {
+      "const": "dev.agentpod.decision.pulled_back.v2"
+    },
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "gate_id": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "board_id": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "card_id": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "pulled_back_by": {
+      "type": ["string", "null"]
+    },
+    "comment": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "at": {
+      "type": "string",
+      "maxLength": 40,
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,9})?)?(Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "m.relates_to": {
+      "type": "object",
+      "required": ["rel_type", "event_id"],
+      "properties": {
+        "rel_type": {
+          "const": "m.reference"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

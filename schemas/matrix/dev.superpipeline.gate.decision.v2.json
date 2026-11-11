@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/matrix/dev.superpipeline.gate.decision.v2.json",
+  "title": "dev.superpipeline.gate.decision.v2",
+  "description": "A person's answer to a gate.v2: any option id the gate offered (the carrier checks it against what it recorded), an m.reference to the gate's message, and on a subject-bound gate the subject binding {id, digest} copied from what the person saw. Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "msgtype",
+    "body",
+    "schema_version",
+    "suite_event_type",
+    "gate_id",
+    "option_id",
+    "m.relates_to"
+  ],
+  "properties": {
+    "msgtype": {
+      "const": "m.text"
+    },
+    "body": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "gate_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "comment": {
+      "type": ["string", "null"]
+    },
+    "m.relates_to": {
+      "type": "object",
+      "required": ["rel_type", "event_id"],
+      "properties": {
+        "rel_type": {
+          "const": "m.reference"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "suite_event_type": {
+      "const": "dev.superpipeline.gate.decision.v2"
+    },
+    "option_id": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1
+    },
+    "subject": {
+      "type": "object",
+      "required": ["id", "digest"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 512,
+          "minLength": 1
+        },
+        "digest": {
+          "type": "string",
+          "maxLength": 512,
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
