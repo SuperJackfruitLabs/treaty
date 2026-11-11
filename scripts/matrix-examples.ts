@@ -951,6 +951,26 @@ function derivedInvalid(out: Examples): void {
     );
     bad(type, "no options: nothing to answer with", { ...c, options: [] });
   }
+
+  const permission = firstValid(
+    "dev.agentpod.permission.v2",
+    (v) => Array.isArray(v.options) && v.options.length > 0,
+  );
+  const option = (permission.options as unknown[])[0] as Record<
+    string,
+    unknown
+  >;
+  bad(
+    "dev.agentpod.permission.v2",
+    "twenty-one options: more than any decision card carries",
+    {
+      ...permission,
+      options: Array.from({ length: 21 }, (_, n) => ({
+        ...option,
+        id: `o${n}`,
+      })),
+    },
+  );
 }
 
 export function buildExamples(): unknown {

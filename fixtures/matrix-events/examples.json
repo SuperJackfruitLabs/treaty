@@ -1582,6 +1582,203 @@
               ]
             }
           }
+        },
+        {
+          "why": "twenty-one options: more than any decision card carries",
+          "refusedBy": "schema",
+          "body": {
+            "msgtype": "m.text",
+            "body": "Permission needed: Run the test suite\n\n1. Allow once\n2. Always allow\n3. Reject\n4. Never allow\n\nReply with the number, or the option's name.",
+            "suite_event_type": "dev.agentpod.permission.v2",
+            "schema_version": 1,
+            "request_id": "acps_3f0c:12",
+            "session_id": "acps_3f0c",
+            "request_seq": 12,
+            "title": "Run the test suite",
+            "tool_kind": "execute",
+            "options": [
+              {
+                "id": "o0",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o1",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o2",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o3",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o4",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o5",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o6",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o7",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o8",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o9",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o10",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o11",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o12",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o13",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o14",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o15",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o16",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o17",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o18",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o19",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              },
+              {
+                "id": "o20",
+                "label": "Allow once",
+                "meaning": "approve",
+                "scope": "once"
+              }
+            ],
+            "subject": {
+              "id": "acps_3f0c:12",
+              "digest": "bb03bfd8ee6d757e6957d029cd6a7b8e004f16386755ce672e3f97f445563878",
+              "schema": "harness-permission/v1",
+              "revision": 1,
+              "expires_at": "2026-11-07T10:30:00.000Z",
+              "preview": [
+                {
+                  "type": "field",
+                  "label": "Tool",
+                  "value": "Run the test suite"
+                },
+                {
+                  "type": "field",
+                  "label": "Kind",
+                  "value": "execute"
+                },
+                {
+                  "type": "text",
+                  "label": "Command",
+                  "text": "bun test"
+                },
+                {
+                  "type": "field",
+                  "label": "Location",
+                  "value": "apps/hub"
+                }
+              ],
+              "preview_complete": true
+            },
+            "dev.agentpod.permission": {
+              "schema_version": 1,
+              "session_id": "acps_3f0c",
+              "request_seq": 12,
+              "title": "Run the test suite",
+              "options": [
+                {
+                  "option_id": "allow_once",
+                  "name": "Allow once"
+                },
+                {
+                  "option_id": "allow_always",
+                  "name": "Always allow"
+                },
+                {
+                  "option_id": "reject_once",
+                  "name": "Reject"
+                },
+                {
+                  "option_id": "reject_always",
+                  "name": "Never allow"
+                }
+              ]
+            }
+          }
         }
       ]
     },
