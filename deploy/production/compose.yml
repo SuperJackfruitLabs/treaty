@@ -1,0 +1,63 @@
+# The relay in production (treaty plan, retiring the direct gate push): NATS with JetStream, the
+# relay and the smoke's signature-checking sink, on one host beside the AgentPod hub. Secrets come
+# from /etc/treaty/, minted on the host by estate's provisioning. Deployed by release.sh on a tag.
+#
+# Only the relay is published, on loopback; the host's tunnel carries it to the public hostname.
+# The hub runs on the host, so the relay reaches it as `hub` through the host gateway. The bridge
+# has a fixed name so the host firewall can let it, and only it, reach the hub's port.
+name: treaty
+
+services:
+  nats:
+    image: nats:2.15.2-alpine
+    command: ["-js", "-sd", "/data", "-m", "8222"]
+    volumes:
+      - nats:/data
+    networks: [relay]
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "-qO-",
+          "http://127.0.0.1:8222/healthz?js-enabled-only=true",
+        ]
+      interval: 5s
+      retries: 20
+
+  relay:
+    build:
+      context: ../..
+      dockerfile: apps/relay/Dockerfile
+    image: treaty-relay:${TREATY_TAG:?TREATY_TAG is the release tag}
+    env_file: /etc/treaty/relay.env
+    environment:
+      NATS_URL: nats://nats:4222
+      PORT: "8080"
+    extra_hosts:
+      - "hub:host-gateway"
+    depends_on:
+      nats:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8797:8080"
+    networks: [relay]
+    restart: unless-stopped
+
+  sink:
+    image: treaty-relay:${TREATY_TAG:?TREATY_TAG is the release tag}
+    command: ["bun", "deploy/staging/sink.ts"]
+    env_file: /etc/treaty/sink.env
+    ports:
+      - "127.0.0.1:8796:9000"
+    networks: [relay]
+    restart: unless-stopped
+
+volumes:
+  nats: {}
+
+networks:
+  relay:
+    driver_opts:
+      com.docker.network.bridge.name: treaty0

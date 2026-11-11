@@ -1,7 +1,7 @@
 /**
- * Staging only: a subscriber that stands in for a Worker. It checks each delivery's signature
- * with verifyDelivery, as a Worker would, and keeps the ids it accepted, so the smoke can see
- * an event arrive once and signed. It answers 401 to a delivery that is not signed by the relay.
+ * The smoke's subscriber, on staging and in production: it stands in for a Worker. It checks
+ * each delivery's signature with verifyDelivery, as a Worker would, and keeps the ids it
+ * accepted, so the smoke can see an event arrive once and signed. It answers 401 to a delivery that is not signed by the relay.
  */
 import { verifyDelivery } from "../../packages/cloudevents/src/index.ts";
 
