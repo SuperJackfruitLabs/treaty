@@ -937,6 +937,20 @@ function derivedInvalid(out: Examples): void {
       subject: { ...subjectOf(c), revision: 1.5 },
     });
   }
+
+  for (const type of [
+    "dev.superpipeline.gate.v2",
+    "dev.superpipeline.attention.v2",
+    "dev.agentpod.permission.v2",
+    "dev.superpipeline.question.v2",
+  ]) {
+    const c = firstValid(
+      type,
+      (v) =>
+        Array.isArray(v.options) && v.options.length > 0 && !("free_text" in v),
+    );
+    bad(type, "no options: nothing to answer with", { ...c, options: [] });
+  }
 }
 
 export function buildExamples(): unknown {

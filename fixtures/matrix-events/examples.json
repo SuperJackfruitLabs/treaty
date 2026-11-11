@@ -1512,6 +1512,76 @@
               ]
             }
           }
+        },
+        {
+          "why": "no options: nothing to answer with",
+          "refusedBy": "schema",
+          "body": {
+            "msgtype": "m.text",
+            "body": "Permission needed: Run the test suite\n\n1. Allow once\n2. Always allow\n3. Reject\n4. Never allow\n\nReply with the number, or the option's name.",
+            "suite_event_type": "dev.agentpod.permission.v2",
+            "schema_version": 1,
+            "request_id": "acps_3f0c:12",
+            "session_id": "acps_3f0c",
+            "request_seq": 12,
+            "title": "Run the test suite",
+            "tool_kind": "execute",
+            "options": [],
+            "subject": {
+              "id": "acps_3f0c:12",
+              "digest": "bb03bfd8ee6d757e6957d029cd6a7b8e004f16386755ce672e3f97f445563878",
+              "schema": "harness-permission/v1",
+              "revision": 1,
+              "expires_at": "2026-11-07T10:30:00.000Z",
+              "preview": [
+                {
+                  "type": "field",
+                  "label": "Tool",
+                  "value": "Run the test suite"
+                },
+                {
+                  "type": "field",
+                  "label": "Kind",
+                  "value": "execute"
+                },
+                {
+                  "type": "text",
+                  "label": "Command",
+                  "text": "bun test"
+                },
+                {
+                  "type": "field",
+                  "label": "Location",
+                  "value": "apps/hub"
+                }
+              ],
+              "preview_complete": true
+            },
+            "dev.agentpod.permission": {
+              "schema_version": 1,
+              "session_id": "acps_3f0c",
+              "request_seq": 12,
+              "title": "Run the test suite",
+              "options": [
+                {
+                  "option_id": "allow_once",
+                  "name": "Allow once"
+                },
+                {
+                  "option_id": "allow_always",
+                  "name": "Always allow"
+                },
+                {
+                  "option_id": "reject_once",
+                  "name": "Reject"
+                },
+                {
+                  "option_id": "reject_always",
+                  "name": "Never allow"
+                }
+              ]
+            }
+          }
         }
       ]
     },
@@ -2220,6 +2290,28 @@
               "id": "x",
               "digest": "y"
             }
+          }
+        },
+        {
+          "why": "no options: nothing to answer with",
+          "refusedBy": "schema",
+          "body": {
+            "msgtype": "m.text",
+            "body": "A card is waiting on you — \"Ship the release\" at Build is blocked.\n\nStaging DB down\n\n```\nthe staging database is down\n```\n\n- Resume here\n- Resume at Plan\n- Archive\n\nChoose in an updated app, or [open the card](https://superpipeline.dev/b/brd_7c1f/c/crd_6b40) on the board.",
+            "suite_event_type": "dev.superpipeline.attention.v2",
+            "schema_version": 1,
+            "board_id": "brd_7c1f",
+            "card_id": "crd_6b40",
+            "card_title": "Ship the release",
+            "stage_key": "build",
+            "stage_name": "Build",
+            "wait_id": "wait_0123456789abcdef",
+            "reason": "blocked",
+            "detail": "the staging database is down",
+            "summary": "Staging DB down",
+            "failure_count": null,
+            "options": [],
+            "deep_link": "https://superpipeline.dev/b/brd_7c1f/c/crd_6b40"
           }
         }
       ]
@@ -6936,6 +7028,52 @@
             },
             "deep_link": "https://superpipeline.dev/b/brd_7c1f/c/crd_6b40"
           }
+        },
+        {
+          "why": "no options: nothing to answer with",
+          "refusedBy": "schema",
+          "body": {
+            "msgtype": "m.text",
+            "body": "Approval needed — \"Announce the release\" at stage `approve`.\n\nPost:\n```\nOur next release ships today.\n\nThanks to everyone who tested it.\n```\n\nAccount: @fixture_account on X\n\nApproval expires: 2030-01-02T03:04:05Z\n\n[Open the card](https://superpipeline.dev/b/brd_7c1f/c/crd_6b40)",
+            "suite_event_type": "dev.superpipeline.gate.v2",
+            "schema_version": 1,
+            "board_id": "brd_7c1f",
+            "card_id": "crd_6b40",
+            "gate_id": "gate_8f3a",
+            "stage_key": "approve",
+            "return_stage_key": "draft",
+            "card_title": "Announce the release",
+            "produced_by": "agt_31d0",
+            "prompt": "Approve \"Announce the release\"?",
+            "handoff_summary": "Our next release ships today.\n\nThanks to everyone who tested it.",
+            "options": [],
+            "subject": {
+              "id": "aps_2c9e71",
+              "digest": "sha256:9b2f4e0c1a7d",
+              "schema": "social-publish/v1",
+              "revision": 1,
+              "expires_at": "2030-01-02T03:04:05Z",
+              "preview": [
+                {
+                  "type": "text",
+                  "label": "Post",
+                  "text": "Our next release ships today.\n\nThanks to everyone who tested it."
+                },
+                {
+                  "type": "field",
+                  "label": "Account",
+                  "value": "@fixture_account on X"
+                },
+                {
+                  "type": "field",
+                  "label": "Approval expires",
+                  "value": "2030-01-02T03:04:05Z"
+                }
+              ],
+              "preview_complete": true
+            },
+            "deep_link": "https://superpipeline.dev/b/brd_7c1f/c/crd_6b40"
+          }
         }
       ]
     },
@@ -8402,6 +8540,26 @@
               ],
               "preview_complete": true
             },
+            "deep_link": "https://superpipeline.dev/b/brd_7c1f/c/crd_51d0"
+          }
+        },
+        {
+          "why": "no options: nothing to answer with",
+          "refusedBy": "schema",
+          "body": {
+            "msgtype": "m.text",
+            "body": "An agent is waiting on you — \"Upgrade the build image\" at stage `build`.\n\nThe tests need network access. May I run them?\n\n1. Run the tests\n2. Skip them\n3. Something else\n\nReply with the number, or the option's name. [Open the card](https://superpipeline.dev/b/brd_7c1f/c/crd_51d0)",
+            "suite_event_type": "dev.superpipeline.question.v2",
+            "schema_version": 1,
+            "elicitation_id": "elc_7f3c",
+            "board_id": "brd_7c1f",
+            "card_id": "crd_51d0",
+            "run_id": "run_12",
+            "stage_key": "build",
+            "card_title": "Upgrade the build image",
+            "asked_by": "agt_31d0",
+            "question": "The tests need network access. May I run them?",
+            "options": [],
             "deep_link": "https://superpipeline.dev/b/brd_7c1f/c/crd_51d0"
           }
         }

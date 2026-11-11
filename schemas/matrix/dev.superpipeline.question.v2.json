@@ -119,7 +119,7 @@
   },
   "allOf": [
     {
-      "description": "free_text only on a question with no options: text alone answers only a question with nothing to choose.",
+      "description": "free_text only on a question with no options: text alone answers only a question with nothing to choose. Without free_text, there is at least one option to answer with.",
       "if": {
         "required": ["free_text"]
       },
@@ -127,6 +127,13 @@
         "properties": {
           "options": {
             "maxItems": 0
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "options": {
+            "minItems": 1
           }
         }
       }
