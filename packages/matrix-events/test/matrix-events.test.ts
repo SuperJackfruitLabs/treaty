@@ -11,6 +11,7 @@ import {
   gateV2Content,
   parseGateDecision,
   parseQuestionAnswer,
+  permissionOptionsV2,
   questionOptionsV2,
   uniqueByViolations,
   type AttentionPendingDelivery,
@@ -121,6 +122,17 @@ describe("a gate", () => {
     expect(gateOptionsV2(g).some((o) => o.meaning === "approve")).toBe(false);
   });
 
+  test("a subject whose revision is not a whole number is not carried, and takes the approvals with it", () => {
+    const d = gate({ approvalSubject: subject({ revision: 1.5 }) });
+    expect(gateSubjectV2(d)).toBeNull();
+    expect(gateOptionsV2(d).map((o) => o.id)).toEqual([
+      "request_changes",
+      "reject",
+    ]);
+    expect(
+      gateSubjectV2(gate({ approvalSubject: subject({ revision: 0 }) })),
+    ).not.toBeNull();
+  });
   test("a preview cut here is not complete, though the board said it was", () => {
     const s = gateSubjectV2(
       gate({
@@ -216,6 +228,20 @@ describe("a question, a follow-up and a waiting card", () => {
     expect(
       (attentionV2Content(a).options as Array<{ id: string }>).map((o) => o.id),
     ).toEqual(["resume_here"]);
+  });
+});
+
+describe("a permission", () => {
+  test("carries the first twenty options a harness offered, in its order", () => {
+    const offered = Array.from({ length: 25 }, (_, n) => ({
+      optionId: `o${n}`,
+      name: `Option ${n}`,
+      kind: "allow_once",
+    }));
+    const ids = permissionOptionsV2(offered).map((o) => o.id);
+    expect(ids).toHaveLength(20);
+    expect(ids[0]).toBe("o0");
+    expect(ids[19]).toBe("o19");
   });
 });
 

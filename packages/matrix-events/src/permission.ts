@@ -70,7 +70,13 @@ const AcpOption = z.object({
   kind: z.string().optional(),
 });
 
-/** The options a harness offered, in its order, with meanings; one with no usable id is dropped. */
+/** As many options as a gate.v2 carries; the prose message still lists every one. */
+const OPTIONS_MAX = 20;
+
+/**
+ * The options a harness offered, in its order, with meanings; one with no usable id is dropped,
+ * and none past the twentieth is carried.
+ */
 export function permissionOptionsV2(rawOptions: unknown): PermissionOptionV2[] {
   if (!Array.isArray(rawOptions)) return [];
   const seen = new Set<string>();
@@ -87,6 +93,7 @@ export function permissionOptionsV2(rawOptions: unknown): PermissionOptionV2[] {
       meaning: mapped.meaning,
       ...(mapped.scope ? { scope: mapped.scope } : {}),
     });
+    if (out.length === OPTIONS_MAX) break;
   }
   return out;
 }
