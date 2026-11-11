@@ -6,6 +6,7 @@ COPY apps/relay/package.json apps/relay/
 COPY packages/cloudevents/package.json packages/cloudevents/
 COPY packages/ecosystem-identity/package.json packages/ecosystem-identity/
 COPY packages/event-schemas/package.json packages/event-schemas/
+COPY packages/matrix-events/package.json packages/matrix-events/
 COPY packages/outbox/package.json packages/outbox/
 RUN bun install --frozen-lockfile --production
 COPY packages/cloudevents/src packages/cloudevents/src
