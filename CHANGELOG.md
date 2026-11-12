@@ -5,6 +5,8 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- `treaty-event-schemas`: `card.ready` v1, the event a board opted into scheduling sends when a
+  card becomes ready to claim, with the end of its placement window.
 - Releases run on the suite's shared release workflow: the tag gate reads forge CI's result for
   the tag's commit, the packages publish to npm before the relay deploys, a failed relay smoke
   check puts the previous release back, and every tag gets release notes on GitHub.

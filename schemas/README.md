@@ -19,6 +19,7 @@ names each event's CloudEvents `type` and the `dataschema` it points at, which i
 | `decision.pulled_back.v1.json`   | `decision.pulled_back`                           | `DecisionPulledBackBody`, same file                             |
 | `check.failed.v1.json`           | `check.failed`                                   | `CheckFailedBody`, same file                                    |
 | `check.overridden.v1.json`       | `check.overridden`                               | `CheckOverriddenBody`, same file                                |
+| `card.ready.v1.json`             | `card.ready`                                     | `CardReadyBody`, `apps/api/src/board/placement-window.ts`       |
 
 The schemas are written from SuperPipeline's types. SuperPipeline's own test validates the bodies
 its builders produce against them, so a type that moves without its schema fails there.
@@ -32,6 +33,10 @@ Every body a schema accepts there must also pass the carrier's own check in
 `@superjackfruitlabs/treaty-matrix-events` (`isDeliveryPending`, `isCheckFailed` and the rest),
 except `boardId: null`: SuperPipeline's type allows it and the carrier refuses it, as it cannot
 route an event to no board.
+
+`card.ready` is not a chat event: no carrier reads it. A board opted into scheduling sends it
+when a card becomes ready to claim, so a placement service can place the card inside the board's
+placement window instead of waiting for its next sweep.
 
 ## Not here
 
