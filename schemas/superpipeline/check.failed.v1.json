@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/check.failed.v1.json",
+  "title": "SuperPipeline check.failed",
+  "description": "A check on a card's arrival at a stage failed, and the card went back to returnedTo (charter 2026-11-09, a gate may be decided by checks). One per failed check. Mirrors SuperPipeline's CheckFailedBody (apps/api/src/board/views.ts). Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "event",
+    "boardId",
+    "cardId",
+    "cardTitle",
+    "stageKey",
+    "arrivalId",
+    "check",
+    "returnedTo"
+  ],
+  "properties": {
+    "event": {
+      "const": "check.failed"
+    },
+    "boardId": {
+      "type": ["string", "null"],
+      "description": "Null only on a board not yet initialised; a carrier needs it to route the event."
+    },
+    "cardId": {
+      "type": "string"
+    },
+    "cardTitle": {
+      "type": "string"
+    },
+    "stageKey": {
+      "type": "string"
+    },
+    "arrivalId": {
+      "type": "string",
+      "description": "The card's arrival at the stage this check belongs to: one per arrival, so a carrier says each once."
+    },
+    "check": {
+      "type": "object",
+      "required": ["name", "provider", "status"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "provider": {
+          "enum": ["ci", "verdict"]
+        },
+        "status": {
+          "const": "failed"
+        },
+        "detail": {
+          "type": "string",
+          "description": "What the result said."
+        },
+        "url": {
+          "type": "string",
+          "description": "Where the result is."
+        }
+      }
+    },
+    "returnedTo": {
+      "type": ["string", "null"],
+      "description": "The stage the card went back to; null when it could not go back and waits for a person."
+    }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

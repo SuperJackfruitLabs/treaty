@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/check.overridden.v1.json",
+  "title": "SuperPipeline check.overridden",
+  "description": "A workspace owner or admin passed a check by hand (charter 2026-11-09, a gate may be decided by checks \u00a75). by is a principal id. Mirrors SuperPipeline's CheckOverriddenBody (apps/api/src/board/views.ts). Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "event",
+    "boardId",
+    "cardId",
+    "cardTitle",
+    "stageKey",
+    "arrivalId",
+    "check",
+    "by",
+    "comment",
+    "at"
+  ],
+  "properties": {
+    "event": {
+      "const": "check.overridden"
+    },
+    "boardId": {
+      "type": ["string", "null"],
+      "description": "Null only on a board not yet initialised; a carrier needs it to route the event."
+    },
+    "cardId": {
+      "type": "string"
+    },
+    "cardTitle": {
+      "type": "string"
+    },
+    "stageKey": {
+      "type": "string"
+    },
+    "arrivalId": {
+      "type": "string",
+      "description": "The card's arrival at the stage this check belongs to: one per arrival, so a carrier says each once."
+    },
+    "check": {
+      "type": "object",
+      "required": ["name", "provider", "status"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "provider": {
+          "enum": ["ci", "verdict"]
+        },
+        "status": {
+          "const": "overridden"
+        }
+      }
+    },
+    "by": {
+      "type": "string"
+    },
+    "comment": {
+      "type": "string",
+      "pattern": "\\S",
+      "description": "Why, as the person wrote it; the board refuses a blank one."
+    },
+    "at": {
+      "$ref": "#/$defs/timestamp"
+    }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

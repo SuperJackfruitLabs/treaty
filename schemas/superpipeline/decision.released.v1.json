@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/decision.released.v1.json",
+  "title": "SuperPipeline decision.released",
+  "description": "A held approval reached its release time and acted, or was blocked (charter 2026-11-09, an approval may wait for its release time \u00a75-7). Mirrors SuperPipeline's DecisionReleasedBody (apps/api/src/board/views.ts). Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "event",
+    "boardId",
+    "cardId",
+    "gateId",
+    "decision",
+    "releaseAt",
+    "releasedAt",
+    "outcome"
+  ],
+  "properties": {
+    "event": {
+      "const": "decision.released"
+    },
+    "boardId": {
+      "type": ["string", "null"],
+      "description": "Null only on a board not yet initialised; a carrier needs it to route the event."
+    },
+    "cardId": {
+      "type": "string"
+    },
+    "gateId": {
+      "type": "string"
+    },
+    "decision": {
+      "type": "string",
+      "description": "The gate's decision that was held, such as approve_automatic."
+    },
+    "releaseAt": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "releasedAt": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "outcome": {
+      "enum": ["released", "blocked"]
+    },
+    "reason": {
+      "type": "string",
+      "description": "Why a release was blocked; only on outcome blocked."
+    }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

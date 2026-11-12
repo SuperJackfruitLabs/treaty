@@ -17,6 +17,60 @@
     },
     {
       "producer": "superpipeline",
+      "pushName": "delivery.pending",
+      "type": "com.superjackfruit.superpipeline.delivery.pending.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/delivery.pending.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "attention.pending",
+      "type": "com.superjackfruit.superpipeline.attention.pending.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/attention.pending.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "decision.reminded",
+      "type": "com.superjackfruit.superpipeline.decision.reminded.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/decision.timeout.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "decision.escalated",
+      "type": "com.superjackfruit.superpipeline.decision.escalated.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/decision.timeout.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "gate.approval_recorded",
+      "type": "com.superjackfruit.superpipeline.gate.approval_recorded.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/gate.approval_recorded.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "decision.released",
+      "type": "com.superjackfruit.superpipeline.decision.released.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/decision.released.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "decision.pulled_back",
+      "type": "com.superjackfruit.superpipeline.decision.pulled_back.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/decision.pulled_back.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "check.failed",
+      "type": "com.superjackfruit.superpipeline.check.failed.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/check.failed.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "check.overridden",
+      "type": "com.superjackfruit.superpipeline.check.overridden.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/check.overridden.v1.json"
+    },
+    {
+      "producer": "superpipeline",
       "pushName": "card.created",
       "type": "com.superjackfruit.superpipeline.card.created.v1",
       "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json"

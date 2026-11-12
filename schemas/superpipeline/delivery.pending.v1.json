@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/delivery.pending.v1.json",
+  "title": "SuperPipeline delivery.pending",
+  "description": "A post approved for manual delivery still owes the board its live link (charter: the decision envelope covers questions and follow-ups \u00a73). Pushed when the gate is resolved approve_manual, and read back by the carrier's sweep from GET /v1/boards/:id/deliveries/pending, from one builder. Mirrors SuperPipeline's DeliveryPendingBody (apps/api/src/board/views.ts). Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "event",
+    "boardId",
+    "boardName",
+    "cardId",
+    "cardTitle",
+    "gateId",
+    "stageKey",
+    "approvalSubject",
+    "options",
+    "ts"
+  ],
+  "properties": {
+    "event": {
+      "const": "delivery.pending"
+    },
+    "boardId": {
+      "type": ["string", "null"],
+      "description": "Null only on a board not yet initialised; a carrier needs it to route the event."
+    },
+    "boardName": {
+      "type": "string",
+      "description": "Empty string when the board has no name, never absent."
+    },
+    "cardId": {
+      "type": "string"
+    },
+    "cardTitle": {
+      "type": "string"
+    },
+    "gateId": {
+      "type": "string"
+    },
+    "stageKey": {
+      "type": "string"
+    },
+    "approvalSubject": {
+      "$ref": "#/$defs/subject"
+    },
+    "options": {
+      "type": "array",
+      "description": "record_live_url always; switch_to_automatic only when the subject's preview was complete.",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "meaning", "needsComment"],
+        "properties": {
+          "id": {
+            "enum": ["record_live_url", "switch_to_automatic"]
+          },
+          "label": {
+            "type": "string"
+          },
+          "meaning": {
+            "$ref": "#/$defs/meaning"
+          },
+          "needsComment": {
+            "const": false
+          },
+          "input": {
+            "$ref": "#/$defs/input"
+          },
+          "delivery": {
+            "const": "automatic"
+          }
+        }
+      }
+    },
+    "deadline": {
+      "$ref": "#/$defs/deadline"
+    },
+    "ts": {
+      "$ref": "#/$defs/timestamp",
+      "description": "When the gate was resolved."
+    }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "meaning": {
+      "enum": ["approve", "reject", "revise", "choose", "defer"],
+      "description": "What choosing the option does (gate.v2 \u00a72)."
+    },
+    "input": {
+      "type": "object",
+      "description": "What choosing the option asks the person to type.",
+      "required": ["kind", "label", "required", "maxLength"],
+      "properties": {
+        "kind": {
+          "enum": ["text", "url"]
+        },
+        "label": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "maxLength": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "previewBlock": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "text"],
+          "properties": {
+            "type": {
+              "const": "text"
+            },
+            "label": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "label", "value"],
+          "properties": {
+            "type": {
+              "const": "field"
+            },
+            "label": {
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["type", "label", "url"],
+          "properties": {
+            "type": {
+              "const": "link"
+            },
+            "label": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "subject": {
+      "type": "object",
+      "description": "A subject as a decision envelope carries it (gate.v2 \u00a73): identity, expiry and the kind's bounded preview. The canonical payload stays behind the authenticated route.",
+      "required": [
+        "id",
+        "digest",
+        "schema",
+        "revision",
+        "expiresAt",
+        "preview",
+        "previewComplete"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "digest": {
+          "type": "string"
+        },
+        "schema": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "expiresAt": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "pattern": "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])T([01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(\\.\\d+)?(Z|[+-]([01]\\d|2[0-3]):[0-5]\\d)$",
+          "description": "RFC 3339 with seconds and an explicit offset, or null. The pattern states it for a validator that does not assert format."
+        },
+        "preview": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/previewBlock"
+          }
+        },
+        "previewComplete": {
+          "type": "boolean",
+          "description": "False when the preview was cut to its bounds; no approving option may then be offered."
+        }
+      }
+    },
+    "deadline": {
+      "type": "object",
+      "description": "When the decision is reminded about and escalated. Absent when its stage sets no timeout.",
+      "properties": {
+        "remindAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "escalateAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

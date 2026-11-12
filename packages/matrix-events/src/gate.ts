@@ -12,6 +12,7 @@ import { quorumField } from "./quorum.ts";
 import { releaseField, releaseSentence, releaseV2 } from "./release.ts";
 import { checksField, checksSentence, checksV2 } from "./checks.ts";
 import { isHttpsUrl } from "./safe-url.ts";
+import { isSubjectExpiry } from "./expiry.ts";
 import type { GatePendingDelivery } from "./deliveries.ts";
 
 export const GATE_EVENT_TYPE = "dev.superpipeline.gate.v1";
@@ -319,7 +320,15 @@ const RawSubject = z.object({
   digest: z.string().min(1).max(SUBJECT_KEY_MAX),
   schema: z.string().min(1).max(PREVIEW_FIELD_MAX),
   revision: z.number().int().nonnegative(),
-  expiresAt: z.string().max(PREVIEW_FIELD_MAX).nullish().catch(null),
+  /**
+   * Strict (`isSubjectExpiry`): a loosely spelled expiry refuses the whole subject, since carrying
+   * it would emit an event its schema refuses, and dropping it would carry an approval with no
+   * expiry. A value that is not a string at all is read as none, as before.
+   */
+  expiresAt: z
+    .unknown()
+    .refine((v) => typeof v !== "string" || isSubjectExpiry(v))
+    .transform((v) => (typeof v === "string" ? v : null)),
   preview: z.array(z.unknown()).optional().catch(undefined),
   /** False when the board had to cut or drop blocks to fit the bounds. Absent from older boards. */
   previewComplete: z.boolean().optional().catch(undefined),

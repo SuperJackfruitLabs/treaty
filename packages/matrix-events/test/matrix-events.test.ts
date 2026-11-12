@@ -1,4 +1,6 @@
 import { describe, expect, test } from "bun:test";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { z } from "../src/check.ts";
 import {
   attentionV2Content,
@@ -10,10 +12,13 @@ import {
   gateOptionsV2,
   gateSubjectV2,
   gateV2Content,
+  isSubjectExpiry,
   parseGateDecision,
   parseQuestionAnswer,
   permissionOptionsV2,
   questionOptionsV2,
+  SUBJECT_EXPIRY_PATTERN,
+  subjectV2,
   uniqueByViolations,
   type AttentionPendingDelivery,
   type DeliveryPendingDelivery,
@@ -338,5 +343,92 @@ describe("board rooms", () => {
       false,
       false,
     ]);
+  });
+});
+
+describe("a subject's expiry is strict (RFC 3339, seconds and an offset)", () => {
+  // The lists SuperPipeline's own subject-expiry test holds: what it sends, and what it refuses.
+  const ACCEPTED = [
+    "2030-01-02T03:04:05Z",
+    "2030-01-02T03:04:05.123Z",
+    "2030-01-02T08:34:05+05:30",
+    "2030-01-01T22:04:05-05:00",
+  ];
+  const REFUSED = [
+    "2030-01-02",
+    "Jan 2 2030",
+    "Wed, 02 Jan 2030 03:04:05 GMT",
+    "2030-01-02T03:04:05",
+    "2030-01-02T03:04Z",
+    "2030-01-02 03:04:05Z",
+    "2030-01-02T03:04:05+0530",
+    "2030-01-02t03:04:05z",
+    "2030-02-30T03:04:05Z",
+    "1893553445000",
+    "",
+  ];
+  const subject = (expiresAt: unknown) => ({
+    id: "aps_1",
+    digest: "sha256:1",
+    schema: "social-publish/v1",
+    revision: 1,
+    expiresAt,
+    preview: [{ type: "text", text: "hello" }],
+    previewComplete: true,
+  });
+
+  test.each(ACCEPTED)("isSubjectExpiry accepts %s", (v) =>
+    expect(isSubjectExpiry(v)).toBe(true),
+  );
+  test.each(REFUSED)("isSubjectExpiry refuses %j", (v) =>
+    expect(isSubjectExpiry(v)).toBe(false),
+  );
+
+  test.each(ACCEPTED)("subjectV2 carries %s unchanged", (v) =>
+    expect(subjectV2(subject(v))?.expires_at).toBe(v),
+  );
+  test.each(REFUSED)(
+    "subjectV2 refuses a subject whose expiry is %j, so no approving option is offered",
+    (v) => {
+      expect(subjectV2(subject(v))).toBeNull();
+      const d = gate({
+        options: [
+          { id: "approve", label: "Approve", meaning: "approve" },
+          { id: "reject", label: "Reject", meaning: "reject" },
+        ],
+        approvalSubject: subject(v),
+      });
+      expect(gateSubjectV2(d)).toBeNull();
+    },
+  );
+
+  test("no expiry, or one that is not a string, is still read as none", () => {
+    expect(subjectV2(subject(null))?.expires_at).toBeNull();
+    expect(subjectV2(subject(undefined))?.expires_at).toBeNull();
+    const { expiresAt: _, ...absent } = subject(null);
+    expect(subjectV2(absent)?.expires_at).toBeNull();
+    expect(subjectV2(subject(1893553445000))?.expires_at).toBeNull();
+  });
+
+  test("the schemas carry the same pattern and format", () => {
+    for (const name of [
+      "dev.superpipeline.gate.v2",
+      "dev.superpipeline.question.v2",
+      "dev.superpipeline.delivery.v2",
+      "dev.agentpod.permission.v2",
+    ]) {
+      const schema = JSON.parse(
+        readFileSync(
+          join(import.meta.dir, `../../../schemas/matrix/${name}.json`),
+          "utf8",
+        ),
+      );
+      const e = schema.$defs.subject.properties.expires_at;
+      expect({ name, pattern: e.pattern, format: e.format }).toEqual({
+        name,
+        pattern: SUBJECT_EXPIRY_PATTERN,
+        format: "date-time",
+      });
+    }
   });
 });

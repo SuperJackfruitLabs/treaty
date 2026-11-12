@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/decision.pulled_back.v1.json",
+  "title": "SuperPipeline decision.pulled_back",
+  "description": "A held approval was pulled back before its release time, as request changes (charter 2026-11-09, an approval may wait for its release time \u00a74). pulledBackBy is a principal id. Mirrors SuperPipeline's DecisionPulledBackBody (apps/api/src/board/views.ts). Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "event",
+    "boardId",
+    "cardId",
+    "gateId",
+    "pulledBackBy",
+    "at",
+    "comment"
+  ],
+  "properties": {
+    "event": {
+      "const": "decision.pulled_back"
+    },
+    "boardId": {
+      "type": ["string", "null"],
+      "description": "Null only on a board not yet initialised; a carrier needs it to route the event."
+    },
+    "cardId": {
+      "type": "string"
+    },
+    "gateId": {
+      "type": "string"
+    },
+    "pulledBackBy": {
+      "type": "string"
+    },
+    "at": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "comment": {
+      "type": "string",
+      "pattern": "\\S",
+      "description": "Why, as the person wrote it; the board refuses a blank one."
+    }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

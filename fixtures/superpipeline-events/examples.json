@@ -898,6 +898,1107 @@
           }
         }
       ]
+    },
+    "delivery.pending.v1": {
+      "valid": {
+        "both-options": {
+          "event": "delivery.pending",
+          "boardId": "brd_134a0ddb6d434478",
+          "boardName": "Fixture board",
+          "cardId": "crd_0f3c9a2b7d4e4a11",
+          "cardTitle": "Sanitized approval fixture",
+          "gateId": "gat_5d1e2f3a4b5c6d7e",
+          "stageKey": "approve",
+          "approvalSubject": {
+            "id": "aps_2b7c9d0e1f2a3b4c",
+            "digest": "sha256:9f2c1a7e5b3d4c6a8e0f1b2d3c4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e",
+            "schema": "social-publish/v1",
+            "revision": 1,
+            "expiresAt": "2030-01-02T03:04:05Z",
+            "preview": [
+              {
+                "type": "text",
+                "label": "Post",
+                "text": "Shipping the new board view today."
+              }
+            ],
+            "previewComplete": true
+          },
+          "options": [
+            {
+              "id": "record_live_url",
+              "label": "I posted it — add the link",
+              "meaning": "defer",
+              "needsComment": false,
+              "input": {
+                "kind": "url",
+                "label": "Live link",
+                "required": true,
+                "maxLength": 2000
+              }
+            },
+            {
+              "id": "switch_to_automatic",
+              "label": "Post it automatically instead",
+              "meaning": "approve",
+              "needsComment": false,
+              "delivery": "automatic"
+            }
+          ],
+          "ts": "2026-11-10T09:30:00.000Z"
+        },
+        "cut-preview-with-deadline": {
+          "event": "delivery.pending",
+          "boardId": "brd_134a0ddb6d434478",
+          "boardName": "Fixture board",
+          "cardId": "crd_0f3c9a2b7d4e4a11",
+          "cardTitle": "Sanitized approval fixture",
+          "gateId": "gat_5d1e2f3a4b5c6d7e",
+          "stageKey": "approve",
+          "approvalSubject": {
+            "id": "aps_2b7c9d0e1f2a3b4c",
+            "digest": "sha256:9f2c1a7e5b3d4c6a8e0f1b2d3c4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e",
+            "schema": "social-publish/v1",
+            "revision": 1,
+            "expiresAt": null,
+            "preview": [
+              {
+                "type": "text",
+                "label": "Post",
+                "text": "Shipping the new board view today."
+              }
+            ],
+            "previewComplete": false
+          },
+          "options": [
+            {
+              "id": "record_live_url",
+              "label": "I posted it — add the link",
+              "meaning": "defer",
+              "needsComment": false,
+              "input": {
+                "kind": "url",
+                "label": "Live link",
+                "required": true,
+                "maxLength": 2000
+              }
+            }
+          ],
+          "ts": "2026-11-10T09:30:00.000Z",
+          "deadline": {
+            "remindAt": "2026-11-10T10:30:00.000Z",
+            "escalateAt": "2026-11-10T13:30:00.000Z"
+          }
+        }
+      },
+      "invalid": [
+        {
+          "why": "the event names itself",
+          "body": {
+            "event": "gate.pending",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Fixture board",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "cardTitle": "Sanitized approval fixture",
+            "gateId": "gat_5d1e2f3a4b5c6d7e",
+            "stageKey": "approve",
+            "approvalSubject": {
+              "id": "aps_2b7c9d0e1f2a3b4c",
+              "digest": "sha256:9f2c1a7e5b3d4c6a8e0f1b2d3c4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e",
+              "schema": "social-publish/v1",
+              "revision": 1,
+              "expiresAt": "2030-01-02T03:04:05Z",
+              "preview": [
+                {
+                  "type": "text",
+                  "label": "Post",
+                  "text": "Shipping the new board view today."
+                }
+              ],
+              "previewComplete": true
+            },
+            "options": [
+              {
+                "id": "record_live_url",
+                "label": "I posted it — add the link",
+                "meaning": "defer",
+                "needsComment": false,
+                "input": {
+                  "kind": "url",
+                  "label": "Live link",
+                  "required": true,
+                  "maxLength": 2000
+                }
+              },
+              {
+                "id": "switch_to_automatic",
+                "label": "Post it automatically instead",
+                "meaning": "approve",
+                "needsComment": false,
+                "delivery": "automatic"
+              }
+            ],
+            "ts": "2026-11-10T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "an option is record_live_url or switch_to_automatic",
+          "body": {
+            "event": "delivery.pending",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Fixture board",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "cardTitle": "Sanitized approval fixture",
+            "gateId": "gat_5d1e2f3a4b5c6d7e",
+            "stageKey": "approve",
+            "approvalSubject": {
+              "id": "aps_2b7c9d0e1f2a3b4c",
+              "digest": "sha256:9f2c1a7e5b3d4c6a8e0f1b2d3c4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e",
+              "schema": "social-publish/v1",
+              "revision": 1,
+              "expiresAt": "2030-01-02T03:04:05Z",
+              "preview": [
+                {
+                  "type": "text",
+                  "label": "Post",
+                  "text": "Shipping the new board view today."
+                }
+              ],
+              "previewComplete": true
+            },
+            "options": [
+              {
+                "id": "approve",
+                "label": "I posted it — add the link",
+                "meaning": "defer",
+                "needsComment": false,
+                "input": {
+                  "kind": "url",
+                  "label": "Live link",
+                  "required": true,
+                  "maxLength": 2000
+                }
+              }
+            ],
+            "ts": "2026-11-10T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "a follow-up always carries its subject",
+          "body": {
+            "event": "delivery.pending",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Fixture board",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "cardTitle": "Sanitized approval fixture",
+            "gateId": "gat_5d1e2f3a4b5c6d7e",
+            "stageKey": "approve",
+            "options": [
+              {
+                "id": "record_live_url",
+                "label": "I posted it — add the link",
+                "meaning": "defer",
+                "needsComment": false,
+                "input": {
+                  "kind": "url",
+                  "label": "Live link",
+                  "required": true,
+                  "maxLength": 2000
+                }
+              },
+              {
+                "id": "switch_to_automatic",
+                "label": "Post it automatically instead",
+                "meaning": "approve",
+                "needsComment": false,
+                "delivery": "automatic"
+              }
+            ],
+            "ts": "2026-11-10T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "a subject's expiry has seconds",
+          "body": {
+            "event": "delivery.pending",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Fixture board",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "cardTitle": "Sanitized approval fixture",
+            "gateId": "gat_5d1e2f3a4b5c6d7e",
+            "stageKey": "approve",
+            "approvalSubject": {
+              "id": "aps_2b7c9d0e1f2a3b4c",
+              "digest": "sha256:9f2c1a7e5b3d4c6a8e0f1b2d3c4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e",
+              "schema": "social-publish/v1",
+              "revision": 1,
+              "expiresAt": "2030-01-02T03:04Z",
+              "preview": [
+                {
+                  "type": "text",
+                  "label": "Post",
+                  "text": "Shipping the new board view today."
+                }
+              ],
+              "previewComplete": true
+            },
+            "options": [
+              {
+                "id": "record_live_url",
+                "label": "I posted it — add the link",
+                "meaning": "defer",
+                "needsComment": false,
+                "input": {
+                  "kind": "url",
+                  "label": "Live link",
+                  "required": true,
+                  "maxLength": 2000
+                }
+              },
+              {
+                "id": "switch_to_automatic",
+                "label": "Post it automatically instead",
+                "meaning": "approve",
+                "needsComment": false,
+                "delivery": "automatic"
+              }
+            ],
+            "ts": "2026-11-10T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "a subject's expiry has an offset with a colon",
+          "body": {
+            "event": "delivery.pending",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Fixture board",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "cardTitle": "Sanitized approval fixture",
+            "gateId": "gat_5d1e2f3a4b5c6d7e",
+            "stageKey": "approve",
+            "approvalSubject": {
+              "id": "aps_2b7c9d0e1f2a3b4c",
+              "digest": "sha256:9f2c1a7e5b3d4c6a8e0f1b2d3c4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e",
+              "schema": "social-publish/v1",
+              "revision": 1,
+              "expiresAt": "2030-01-02T03:04:05+0530",
+              "preview": [
+                {
+                  "type": "text",
+                  "label": "Post",
+                  "text": "Shipping the new board view today."
+                }
+              ],
+              "previewComplete": true
+            },
+            "options": [
+              {
+                "id": "record_live_url",
+                "label": "I posted it — add the link",
+                "meaning": "defer",
+                "needsComment": false,
+                "input": {
+                  "kind": "url",
+                  "label": "Live link",
+                  "required": true,
+                  "maxLength": 2000
+                }
+              },
+              {
+                "id": "switch_to_automatic",
+                "label": "Post it automatically instead",
+                "meaning": "approve",
+                "needsComment": false,
+                "delivery": "automatic"
+              }
+            ],
+            "ts": "2026-11-10T09:30:00.000Z"
+          }
+        }
+      ]
+    },
+    "attention.pending.v1": {
+      "valid": {
+        "blocked": {
+          "event": "attention.pending",
+          "boardId": "brd_134a0ddb6d434478",
+          "boardName": "Attention board",
+          "cardId": "crd_0f3c9a2b7d4e4a11",
+          "cardTitle": "Add login",
+          "stageKey": "build",
+          "stageName": "Build",
+          "waitId": "wait_3c4d5e6f7a8b9c0d",
+          "reason": "blocked",
+          "detail": "the staging database is down",
+          "summary": "Staging DB down",
+          "failureCount": null,
+          "earlierStages": [
+            {
+              "key": "plan",
+              "name": "Plan"
+            }
+          ],
+          "options": [
+            {
+              "id": "resume_here",
+              "label": "Resume here",
+              "meaning": "approve",
+              "needsComment": false,
+              "input": {
+                "kind": "text",
+                "label": "What should the next attempt do?",
+                "required": true,
+                "maxLength": 2730
+              }
+            },
+            {
+              "id": "resume_at:plan",
+              "label": "Resume at Plan",
+              "meaning": "choose",
+              "needsComment": false,
+              "input": {
+                "kind": "text",
+                "label": "What should the next attempt do?",
+                "required": true,
+                "maxLength": 2730
+              }
+            },
+            {
+              "id": "archive",
+              "label": "Archive",
+              "meaning": "reject",
+              "needsComment": false
+            }
+          ],
+          "ts": "2026-11-10T09:30:00.000Z"
+        },
+        "breaker-tripped": {
+          "event": "attention.pending",
+          "boardId": "brd_134a0ddb6d434478",
+          "boardName": "Attention board",
+          "cardId": "crd_0f3c9a2b7d4e4a11",
+          "cardTitle": "Add login",
+          "stageKey": "build",
+          "stageName": "Build",
+          "waitId": "wait_3c4d5e6f7a8b9c0d",
+          "reason": "repeated-failure",
+          "detail": "flaky",
+          "summary": null,
+          "failureCount": 3,
+          "earlierStages": [],
+          "options": [
+            {
+              "id": "resume_here",
+              "label": "Resume here",
+              "meaning": "approve",
+              "needsComment": false,
+              "input": {
+                "kind": "text",
+                "label": "What should the next attempt do?",
+                "required": true,
+                "maxLength": 2730
+              }
+            },
+            {
+              "id": "archive",
+              "label": "Archive",
+              "meaning": "reject",
+              "needsComment": false
+            }
+          ],
+          "ts": "2026-11-10T09:30:00.000Z",
+          "deadline": {
+            "escalateAt": "2026-11-11T09:30:00.000Z"
+          }
+        }
+      },
+      "invalid": [
+        {
+          "why": "the reason is one of three",
+          "body": {
+            "event": "attention.pending",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Attention board",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "cardTitle": "Add login",
+            "stageKey": "build",
+            "stageName": "Build",
+            "waitId": "wait_3c4d5e6f7a8b9c0d",
+            "reason": "review",
+            "detail": "the staging database is down",
+            "summary": "Staging DB down",
+            "failureCount": null,
+            "earlierStages": [
+              {
+                "key": "plan",
+                "name": "Plan"
+              }
+            ],
+            "options": [
+              {
+                "id": "resume_here",
+                "label": "Resume here",
+                "meaning": "approve",
+                "needsComment": false,
+                "input": {
+                  "kind": "text",
+                  "label": "What should the next attempt do?",
+                  "required": true,
+                  "maxLength": 2730
+                }
+              },
+              {
+                "id": "resume_at:plan",
+                "label": "Resume at Plan",
+                "meaning": "choose",
+                "needsComment": false,
+                "input": {
+                  "kind": "text",
+                  "label": "What should the next attempt do?",
+                  "required": true,
+                  "maxLength": 2730
+                }
+              },
+              {
+                "id": "archive",
+                "label": "Archive",
+                "meaning": "reject",
+                "needsComment": false
+              }
+            ],
+            "ts": "2026-11-10T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "detail is present, null when there is none",
+          "body": {
+            "event": "attention.pending",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Attention board",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "cardTitle": "Add login",
+            "stageKey": "build",
+            "stageName": "Build",
+            "waitId": "wait_3c4d5e6f7a8b9c0d",
+            "reason": "blocked",
+            "summary": "Staging DB down",
+            "failureCount": null,
+            "earlierStages": [
+              {
+                "key": "plan",
+                "name": "Plan"
+              }
+            ],
+            "options": [
+              {
+                "id": "resume_here",
+                "label": "Resume here",
+                "meaning": "approve",
+                "needsComment": false,
+                "input": {
+                  "kind": "text",
+                  "label": "What should the next attempt do?",
+                  "required": true,
+                  "maxLength": 2730
+                }
+              },
+              {
+                "id": "resume_at:plan",
+                "label": "Resume at Plan",
+                "meaning": "choose",
+                "needsComment": false,
+                "input": {
+                  "kind": "text",
+                  "label": "What should the next attempt do?",
+                  "required": true,
+                  "maxLength": 2730
+                }
+              },
+              {
+                "id": "archive",
+                "label": "Archive",
+                "meaning": "reject",
+                "needsComment": false
+              }
+            ],
+            "ts": "2026-11-10T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "waitId is required",
+          "body": {
+            "event": "attention.pending",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Attention board",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "cardTitle": "Add login",
+            "stageKey": "build",
+            "stageName": "Build",
+            "reason": "blocked",
+            "detail": "the staging database is down",
+            "summary": "Staging DB down",
+            "failureCount": null,
+            "earlierStages": [
+              {
+                "key": "plan",
+                "name": "Plan"
+              }
+            ],
+            "options": [
+              {
+                "id": "resume_here",
+                "label": "Resume here",
+                "meaning": "approve",
+                "needsComment": false,
+                "input": {
+                  "kind": "text",
+                  "label": "What should the next attempt do?",
+                  "required": true,
+                  "maxLength": 2730
+                }
+              },
+              {
+                "id": "resume_at:plan",
+                "label": "Resume at Plan",
+                "meaning": "choose",
+                "needsComment": false,
+                "input": {
+                  "kind": "text",
+                  "label": "What should the next attempt do?",
+                  "required": true,
+                  "maxLength": 2730
+                }
+              },
+              {
+                "id": "archive",
+                "label": "Archive",
+                "meaning": "reject",
+                "needsComment": false
+              }
+            ],
+            "ts": "2026-11-10T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "an attention option never asks for a comment",
+          "body": {
+            "event": "attention.pending",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Attention board",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "cardTitle": "Add login",
+            "stageKey": "build",
+            "stageName": "Build",
+            "waitId": "wait_3c4d5e6f7a8b9c0d",
+            "reason": "blocked",
+            "detail": "the staging database is down",
+            "summary": "Staging DB down",
+            "failureCount": null,
+            "earlierStages": [
+              {
+                "key": "plan",
+                "name": "Plan"
+              }
+            ],
+            "options": [
+              {
+                "id": "archive",
+                "label": "Archive",
+                "meaning": "reject",
+                "needsComment": true
+              }
+            ],
+            "ts": "2026-11-10T09:30:00.000Z"
+          }
+        }
+      ]
+    },
+    "decision.timeout.v1": {
+      "valid": {
+        "reminded": {
+          "event": "decision.reminded",
+          "boardId": "brd_134a0ddb6d434478",
+          "boardName": "Timeout board",
+          "cardId": "crd_0f3c9a2b7d4e4a11",
+          "cardTitle": "Add login",
+          "stageKey": "review",
+          "stageName": "Review",
+          "decisionKind": "gate",
+          "decisionId": "gat_5d1e2f3a4b5c6d7e",
+          "waitingSince": "2026-11-10T09:00:00.000Z",
+          "remindedAt": "2026-11-10T10:01:00.000Z",
+          "ts": "2026-11-10T10:01:00.000Z"
+        },
+        "escalated": {
+          "event": "decision.escalated",
+          "boardId": "brd_134a0ddb6d434478",
+          "boardName": "Timeout board",
+          "cardId": "crd_0f3c9a2b7d4e4a11",
+          "cardTitle": "Add login",
+          "stageKey": "review",
+          "stageName": "Review",
+          "decisionKind": "checks",
+          "decisionId": "arr_7e8f9a0b1c2d3e4f",
+          "waitingSince": "2026-11-10T09:00:00.000Z",
+          "ts": "2026-11-10T13:01:00.000Z",
+          "escalatedAt": "2026-11-10T13:01:00.000Z"
+        }
+      },
+      "invalid": [
+        {
+          "why": "a reminder says when it reminded",
+          "body": {
+            "event": "decision.reminded",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Timeout board",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "cardTitle": "Add login",
+            "stageKey": "review",
+            "stageName": "Review",
+            "decisionKind": "gate",
+            "decisionId": "gat_5d1e2f3a4b5c6d7e",
+            "waitingSince": "2026-11-10T09:00:00.000Z",
+            "ts": "2026-11-10T10:01:00.000Z"
+          }
+        },
+        {
+          "why": "an escalation says when it escalated",
+          "body": {
+            "event": "decision.escalated",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Timeout board",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "cardTitle": "Add login",
+            "stageKey": "review",
+            "stageName": "Review",
+            "decisionKind": "checks",
+            "decisionId": "arr_7e8f9a0b1c2d3e4f",
+            "waitingSince": "2026-11-10T09:00:00.000Z",
+            "ts": "2026-11-10T13:01:00.000Z",
+            "escalatedAt": null,
+            "remindedAt": "2026-11-10T10:01:00.000Z"
+          }
+        },
+        {
+          "why": "the decision kind is one of five",
+          "body": {
+            "event": "decision.reminded",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Timeout board",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "cardTitle": "Add login",
+            "stageKey": "review",
+            "stageName": "Review",
+            "decisionKind": "card",
+            "decisionId": "gat_5d1e2f3a4b5c6d7e",
+            "waitingSince": "2026-11-10T09:00:00.000Z",
+            "remindedAt": "2026-11-10T10:01:00.000Z",
+            "ts": "2026-11-10T10:01:00.000Z"
+          }
+        },
+        {
+          "why": "only the two timeout events",
+          "body": {
+            "event": "decision.expired",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Timeout board",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "cardTitle": "Add login",
+            "stageKey": "review",
+            "stageName": "Review",
+            "decisionKind": "gate",
+            "decisionId": "gat_5d1e2f3a4b5c6d7e",
+            "waitingSince": "2026-11-10T09:00:00.000Z",
+            "remindedAt": "2026-11-10T10:01:00.000Z",
+            "ts": "2026-11-10T10:01:00.000Z"
+          }
+        }
+      ]
+    },
+    "gate.approval_recorded.v1": {
+      "valid": {
+        "first-of-two": {
+          "event": "gate.approval_recorded",
+          "boardId": "brd_134a0ddb6d434478",
+          "cardId": "crd_0f3c9a2b7d4e4a11",
+          "gateId": "gat_5d1e2f3a4b5c6d7e",
+          "approval": {
+            "principalId": "usr_a",
+            "at": "2026-11-10T09:30:00.000Z"
+          },
+          "quorum": {
+            "required": 2,
+            "from": "deciders",
+            "approvals": [
+              {
+                "principalId": "usr_a",
+                "at": "2026-11-10T09:30:00.000Z"
+              }
+            ]
+          }
+        },
+        "variant-gate": {
+          "event": "gate.approval_recorded",
+          "boardId": "brd_134a0ddb6d434478",
+          "cardId": "crd_0f3c9a2b7d4e4a11",
+          "gateId": "gat_5d1e2f3a4b5c6d7e",
+          "approval": {
+            "principalId": "usr_b",
+            "at": "2026-11-10T09:40:00.000Z",
+            "variantId": "short"
+          },
+          "quorum": {
+            "required": 3,
+            "from": "admins",
+            "approvals": [
+              {
+                "principalId": "usr_a",
+                "at": "2026-11-10T09:30:00.000Z",
+                "variantId": "short"
+              },
+              {
+                "principalId": "usr_b",
+                "at": "2026-11-10T09:40:00.000Z",
+                "variantId": "short"
+              }
+            ]
+          }
+        }
+      },
+      "invalid": [
+        {
+          "why": "quorum is required",
+          "body": {
+            "event": "gate.approval_recorded",
+            "boardId": "brd_134a0ddb6d434478",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "gateId": "gat_5d1e2f3a4b5c6d7e",
+            "approval": {
+              "principalId": "usr_a",
+              "at": "2026-11-10T09:30:00.000Z"
+            }
+          }
+        },
+        {
+          "why": "an approval names who approved",
+          "body": {
+            "event": "gate.approval_recorded",
+            "boardId": "brd_134a0ddb6d434478",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "gateId": "gat_5d1e2f3a4b5c6d7e",
+            "approval": {
+              "at": "2026-11-10T09:30:00.000Z"
+            },
+            "quorum": {
+              "required": 2,
+              "from": "deciders",
+              "approvals": [
+                {
+                  "principalId": "usr_a",
+                  "at": "2026-11-10T09:30:00.000Z"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "why": "quorum.from is deciders or admins",
+          "body": {
+            "event": "gate.approval_recorded",
+            "boardId": "brd_134a0ddb6d434478",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "gateId": "gat_5d1e2f3a4b5c6d7e",
+            "approval": {
+              "principalId": "usr_a",
+              "at": "2026-11-10T09:30:00.000Z"
+            },
+            "quorum": {
+              "required": 2,
+              "from": "anyone",
+              "approvals": [
+                {
+                  "principalId": "usr_a",
+                  "at": "2026-11-10T09:30:00.000Z"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "decision.released.v1": {
+      "valid": {
+        "released": {
+          "event": "decision.released",
+          "boardId": "brd_134a0ddb6d434478",
+          "cardId": "crd_0f3c9a2b7d4e4a11",
+          "gateId": "gat_5d1e2f3a4b5c6d7e",
+          "decision": "approve_automatic",
+          "releaseAt": "2026-11-10T10:00:00.000Z",
+          "releasedAt": "2026-11-10T10:00:05.000Z",
+          "outcome": "released"
+        },
+        "blocked": {
+          "event": "decision.released",
+          "boardId": "brd_134a0ddb6d434478",
+          "cardId": "crd_0f3c9a2b7d4e4a11",
+          "gateId": "gat_5d1e2f3a4b5c6d7e",
+          "decision": "approve_automatic",
+          "releaseAt": "2026-11-10T10:00:00.000Z",
+          "releasedAt": "2026-11-10T10:00:05.000Z",
+          "outcome": "blocked",
+          "reason": "the approved subject changed before the release time"
+        }
+      },
+      "invalid": [
+        {
+          "why": "the outcome is released or blocked",
+          "body": {
+            "event": "decision.released",
+            "boardId": "brd_134a0ddb6d434478",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "gateId": "gat_5d1e2f3a4b5c6d7e",
+            "decision": "approve_automatic",
+            "releaseAt": "2026-11-10T10:00:00.000Z",
+            "releasedAt": "2026-11-10T10:00:05.000Z",
+            "outcome": "pulled_back"
+          }
+        },
+        {
+          "why": "releasedAt is a date-time",
+          "body": {
+            "event": "decision.released",
+            "boardId": "brd_134a0ddb6d434478",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "gateId": "gat_5d1e2f3a4b5c6d7e",
+            "decision": "approve_automatic",
+            "releaseAt": "2026-11-10T10:00:00.000Z",
+            "releasedAt": "soon",
+            "outcome": "released"
+          }
+        },
+        {
+          "why": "decision is required",
+          "body": {
+            "event": "decision.released",
+            "boardId": "brd_134a0ddb6d434478",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "gateId": "gat_5d1e2f3a4b5c6d7e",
+            "releaseAt": "2026-11-10T10:00:00.000Z",
+            "releasedAt": "2026-11-10T10:00:05.000Z",
+            "outcome": "released"
+          }
+        }
+      ]
+    },
+    "decision.pulled_back.v1": {
+      "valid": {
+        "pulled-back": {
+          "event": "decision.pulled_back",
+          "boardId": "brd_134a0ddb6d434478",
+          "cardId": "crd_0f3c9a2b7d4e4a11",
+          "gateId": "gat_5d1e2f3a4b5c6d7e",
+          "pulledBackBy": "usr_decider",
+          "at": "2026-11-10T09:45:00.000Z",
+          "comment": "wrong image"
+        }
+      },
+      "invalid": [
+        {
+          "why": "a pull-back says why",
+          "body": {
+            "event": "decision.pulled_back",
+            "boardId": "brd_134a0ddb6d434478",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "gateId": "gat_5d1e2f3a4b5c6d7e",
+            "pulledBackBy": "usr_decider",
+            "at": "2026-11-10T09:45:00.000Z",
+            "comment": "  "
+          }
+        },
+        {
+          "why": "pulledBackBy is required",
+          "body": {
+            "event": "decision.pulled_back",
+            "boardId": "brd_134a0ddb6d434478",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "gateId": "gat_5d1e2f3a4b5c6d7e",
+            "at": "2026-11-10T09:45:00.000Z",
+            "comment": "wrong image"
+          }
+        }
+      ]
+    },
+    "check.failed.v1": {
+      "valid": {
+        "returned": {
+          "event": "check.failed",
+          "boardId": "brd_134a0ddb6d434478",
+          "cardId": "crd_0f3c9a2b7d4e4a11",
+          "cardTitle": "Ship the login page",
+          "stageKey": "review",
+          "arrivalId": "arr_7e8f9a0b1c2d3e4f",
+          "check": {
+            "name": "build",
+            "provider": "ci",
+            "status": "failed",
+            "detail": "CI context \"unit\" failed on 3f2a9c1d7e5b",
+            "url": "https://ci/unit/1"
+          },
+          "returnedTo": "build"
+        },
+        "parked-no-detail": {
+          "event": "check.failed",
+          "boardId": "brd_134a0ddb6d434478",
+          "cardId": "crd_0f3c9a2b7d4e4a11",
+          "cardTitle": "Ship the login page",
+          "stageKey": "review",
+          "arrivalId": "arr_7e8f9a0b1c2d3e4f",
+          "check": {
+            "name": "quality",
+            "provider": "verdict",
+            "status": "failed"
+          },
+          "returnedTo": null
+        }
+      },
+      "invalid": [
+        {
+          "why": "the check's status is failed",
+          "body": {
+            "event": "check.failed",
+            "boardId": "brd_134a0ddb6d434478",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "cardTitle": "Ship the login page",
+            "stageKey": "review",
+            "arrivalId": "arr_7e8f9a0b1c2d3e4f",
+            "check": {
+              "name": "build",
+              "provider": "ci",
+              "status": "passed",
+              "detail": "CI context \"unit\" failed on 3f2a9c1d7e5b",
+              "url": "https://ci/unit/1"
+            },
+            "returnedTo": "build"
+          }
+        },
+        {
+          "why": "the provider is ci or verdict",
+          "body": {
+            "event": "check.failed",
+            "boardId": "brd_134a0ddb6d434478",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "cardTitle": "Ship the login page",
+            "stageKey": "review",
+            "arrivalId": "arr_7e8f9a0b1c2d3e4f",
+            "check": {
+              "name": "build",
+              "provider": "github",
+              "status": "failed",
+              "detail": "CI context \"unit\" failed on 3f2a9c1d7e5b",
+              "url": "https://ci/unit/1"
+            },
+            "returnedTo": "build"
+          }
+        },
+        {
+          "why": "returnedTo is present, null when it could not go back",
+          "body": {
+            "event": "check.failed",
+            "boardId": "brd_134a0ddb6d434478",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "cardTitle": "Ship the login page",
+            "stageKey": "review",
+            "arrivalId": "arr_7e8f9a0b1c2d3e4f",
+            "check": {
+              "name": "build",
+              "provider": "ci",
+              "status": "failed",
+              "detail": "CI context \"unit\" failed on 3f2a9c1d7e5b",
+              "url": "https://ci/unit/1"
+            }
+          }
+        }
+      ]
+    },
+    "check.overridden.v1": {
+      "valid": {
+        "overridden": {
+          "event": "check.overridden",
+          "boardId": "brd_134a0ddb6d434478",
+          "cardId": "crd_0f3c9a2b7d4e4a11",
+          "cardTitle": "Ship the login page",
+          "stageKey": "review",
+          "arrivalId": "arr_7e8f9a0b1c2d3e4f",
+          "check": {
+            "name": "build",
+            "provider": "ci",
+            "status": "overridden"
+          },
+          "by": "usr_admin",
+          "comment": "flaky runner",
+          "at": "2026-11-10T09:50:00.000Z"
+        }
+      },
+      "invalid": [
+        {
+          "why": "the check's status is overridden",
+          "body": {
+            "event": "check.overridden",
+            "boardId": "brd_134a0ddb6d434478",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "cardTitle": "Ship the login page",
+            "stageKey": "review",
+            "arrivalId": "arr_7e8f9a0b1c2d3e4f",
+            "check": {
+              "name": "build",
+              "provider": "ci",
+              "status": "failed"
+            },
+            "by": "usr_admin",
+            "comment": "flaky runner",
+            "at": "2026-11-10T09:50:00.000Z"
+          }
+        },
+        {
+          "why": "an override says why",
+          "body": {
+            "event": "check.overridden",
+            "boardId": "brd_134a0ddb6d434478",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "cardTitle": "Ship the login page",
+            "stageKey": "review",
+            "arrivalId": "arr_7e8f9a0b1c2d3e4f",
+            "check": {
+              "name": "build",
+              "provider": "ci",
+              "status": "overridden"
+            },
+            "by": "usr_admin",
+            "comment": "",
+            "at": "2026-11-10T09:50:00.000Z"
+          }
+        },
+        {
+          "why": "at is a date-time",
+          "body": {
+            "event": "check.overridden",
+            "boardId": "brd_134a0ddb6d434478",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "cardTitle": "Ship the login page",
+            "stageKey": "review",
+            "arrivalId": "arr_7e8f9a0b1c2d3e4f",
+            "check": {
+              "name": "build",
+              "provider": "ci",
+              "status": "overridden"
+            },
+            "by": "usr_admin",
+            "comment": "flaky runner",
+            "at": "2026-11-10"
+          }
+        }
+      ]
     }
   }
 }

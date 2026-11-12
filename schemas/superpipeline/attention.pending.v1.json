@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/attention.pending.v1.json",
+  "title": "SuperPipeline attention.pending",
+  "description": "A card has come to rest on a person for a reason that is neither a question nor a review (charter: waiting cards and broker approvals reach chat \u00a71-2). Pushed when the card parks, and read back by the carrier's sweep from GET /v1/boards/:id/attention/pending, from one builder. Mirrors SuperPipeline's AttentionPendingBody (apps/api/src/board/views.ts). It has no subject: nothing is frozen, so nothing is bound. Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "event",
+    "boardId",
+    "boardName",
+    "cardId",
+    "cardTitle",
+    "stageKey",
+    "stageName",
+    "waitId",
+    "reason",
+    "detail",
+    "summary",
+    "failureCount",
+    "earlierStages",
+    "options",
+    "ts"
+  ],
+  "properties": {
+    "event": {
+      "const": "attention.pending"
+    },
+    "boardId": {
+      "type": ["string", "null"],
+      "description": "Null only on a board not yet initialised; a carrier needs it to route the event."
+    },
+    "boardName": {
+      "type": "string",
+      "description": "Empty string when the board has no name, never absent."
+    },
+    "cardId": {
+      "type": "string"
+    },
+    "cardTitle": {
+      "type": "string"
+    },
+    "stageKey": {
+      "type": "string"
+    },
+    "stageName": {
+      "type": "string",
+      "description": "The stage's name, or its key when the board no longer has that stage."
+    },
+    "waitId": {
+      "type": "string",
+      "description": "Names this wait. A card that parks again is a new wait; an answer naming an ended one is refused."
+    },
+    "reason": {
+      "enum": ["repeated-failure", "blocked", "not-authorised"]
+    },
+    "detail": {
+      "type": ["string", "null"],
+      "description": "The run's own words; null when the park gave none."
+    },
+    "summary": {
+      "type": ["string", "null"]
+    },
+    "failureCount": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "description": "How many attempts failed, when the breaker tripped; null otherwise."
+    },
+    "earlierStages": {
+      "type": "array",
+      "description": "The stages before this one, in order.",
+      "items": {
+        "type": "object",
+        "required": ["key", "name"],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "options": {
+      "type": "array",
+      "description": "resume_here (approve), one resume_at:<stageKey> (choose) per earlier stage, archive (reject).",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "meaning", "needsComment"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "meaning": {
+            "$ref": "#/$defs/meaning"
+          },
+          "needsComment": {
+            "const": false
+          },
+          "input": {
+            "$ref": "#/$defs/input"
+          }
+        }
+      }
+    },
+    "deadline": {
+      "$ref": "#/$defs/deadline"
+    },
+    "ts": {
+      "$ref": "#/$defs/timestamp",
+      "description": "When the card came to rest."
+    }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "meaning": {
+      "enum": ["approve", "reject", "revise", "choose", "defer"],
+      "description": "What choosing the option does (gate.v2 \u00a72)."
+    },
+    "input": {
+      "type": "object",
+      "description": "What choosing the option asks the person to type.",
+      "required": ["kind", "label", "required", "maxLength"],
+      "properties": {
+        "kind": {
+          "enum": ["text", "url"]
+        },
+        "label": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "maxLength": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "deadline": {
+      "type": "object",
+      "description": "When the decision is reminded about and escalated. Absent when its stage sets no timeout.",
+      "properties": {
+        "remindAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "escalateAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}
