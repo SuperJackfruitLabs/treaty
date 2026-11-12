@@ -158,6 +158,12 @@
       "pushName": "link.removed",
       "type": "com.superjackfruit.superpipeline.link.removed.v1",
       "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "card.ready",
+      "type": "com.superjackfruit.superpipeline.card.ready.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/card.ready.v1.json"
     }
   ],
   "elsewhere": [

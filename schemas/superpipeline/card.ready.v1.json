@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/card.ready.v1.json",
+  "title": "SuperPipeline card.ready",
+  "description": "A card became ready to be claimed on a board opted into scheduling: it reached a stage an agent may claim from in a claimable state, or was resumed or returned there. A placement service reacts to it at once instead of waiting for its sweep; it is a hint, and the board read stays the truth. Sent only by a board with a placement window (charter: SuperDispatch owns the scheduler). Mirrors SuperPipeline's CardReadyBody (apps/api/src/board/placement-window.ts). Readers ignore properties they do not know.",
+  "type": "object",
+  "required": ["event", "boardId", "cardId", "stageKey", "readyAt", "ts"],
+  "properties": {
+    "event": {
+      "const": "card.ready"
+    },
+    "boardId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Never null: the event is routed by its board."
+    },
+    "cardId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stageKey": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The stage the card is ready at."
+    },
+    "readyAt": {
+      "$ref": "#/$defs/timestamp",
+      "description": "When the card became ready: where its placement window starts."
+    },
+    "placementWindowUntil": {
+      "$ref": "#/$defs/timestamp",
+      "description": "Until when the board holds the card back from pull so it can be placed. Absent when the board has no window. A hold made inside the window is claimable by its agent at once."
+    },
+    "ts": {
+      "$ref": "#/$defs/timestamp"
+    }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
