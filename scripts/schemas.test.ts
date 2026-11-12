@@ -36,8 +36,8 @@ describe("schemas/superpipeline", () => {
   );
 
   test("every schema has examples, and every example set has a schema", () => {
-    expect(files.map((f) => f.replace(/\.json$/, "")).sort()).toEqual(
-      Object.keys(examples).sort(),
+    expect(files.map((f) => f.replace(/\.json$/, "")).toSorted()).toEqual(
+      Object.keys(examples).toSorted(),
     );
   });
 
@@ -157,6 +157,8 @@ describe("schemas/catalog.json", () => {
     const listed = catalog.events
       .filter((e) => e.dataschema.endsWith("/record.v1.json"))
       .map((e) => e.pushName);
-    expect(listed.sort()).toEqual([...record.properties.event.enum].sort());
+    expect(listed.toSorted()).toEqual(
+      [...record.properties.event.enum].toSorted(),
+    );
   });
 });

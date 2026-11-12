@@ -8,5 +8,5 @@
   "typescript(require-array-sort-compare)": 1,
   "typescript(unbound-method)": 1,
   "unicorn(consistent-function-scoping)": 4,
-  "unicorn(no-array-sort)": 11
+  "unicorn(no-array-sort)": 1
 }

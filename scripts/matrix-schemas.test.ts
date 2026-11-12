@@ -68,8 +68,8 @@ describe("schemas/matrix", () => {
   );
 
   test("every schema has examples, and every example set has a schema", () => {
-    expect(files.map((f) => f.replace(/\.json$/, "")).sort()).toEqual(
-      Object.keys(corpus.schemas).sort(),
+    expect(files.map((f) => f.replace(/\.json$/, "")).toSorted()).toEqual(
+      Object.keys(corpus.schemas).toSorted(),
     );
   });
 

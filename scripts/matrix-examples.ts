@@ -37,7 +37,7 @@ export function buildExamples(): unknown {
   cardInvalid(schemas);
   derivedInvalid(schemas);
   const sorted = Object.fromEntries(
-    Object.entries(schemas).sort(([a], [b]) => (a < b ? -1 : 1)),
+    Object.entries(schemas).toSorted(([a], [b]) => (a < b ? -1 : 1)),
   );
   return {
     corpus: "matrix-events",

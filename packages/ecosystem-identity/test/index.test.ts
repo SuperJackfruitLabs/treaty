@@ -6,11 +6,11 @@ import { CORPUS_FILES } from "../src/index.ts";
 const CORPUS = join(import.meta.dir, "../../../fixtures/ecosystem-identity");
 const onDisk = readdirSync(CORPUS)
   .filter((name) => name.endsWith(".json"))
-  .sort();
+  .toSorted();
 
 describe("the corpus", () => {
   test("lists exactly the JSON files in fixtures/ecosystem-identity", () => {
-    expect<string[]>([...CORPUS_FILES].sort()).toEqual(onDisk);
+    expect<string[]>([...CORPUS_FILES].toSorted()).toEqual(onDisk);
   });
 
   for (const name of onDisk) {
