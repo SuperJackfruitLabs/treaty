@@ -10,7 +10,7 @@
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint --deny-warnings packages apps scripts deploy",
+    "lint": "bun scripts/lint.mjs",
     "test": "bun test",
     "check": "bun run fmt:check && bun run typecheck && bun run lint && bun run test && bun run build",
     "build": "bun run --filter './packages/*' build"
@@ -20,6 +20,7 @@
     "@electric-sql/pglite": "0.3.14",
     "@types/bun": "1.2.8",
     "oxlint": "1.88.0",
+    "oxlint-tsgolint": "7.0.2004",
     "prettier": "3.6.2",
     "typescript": "5.9.2"
   }

@@ -1,0 +1,12 @@
+{
+  "eslint(no-shadow)": 1,
+  "eslint(no-underscore-dangle)": 1,
+  "typescript(await-thenable)": 3,
+  "typescript(no-misused-promises)": 2,
+  "typescript(no-non-null-assertion)": 25,
+  "typescript(no-unsafe-type-assertion)": 40,
+  "typescript(require-array-sort-compare)": 1,
+  "typescript(unbound-method)": 1,
+  "unicorn(consistent-function-scoping)": 4,
+  "unicorn(no-array-sort)": 11
+}
