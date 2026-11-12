@@ -13,9 +13,7 @@ const SIZE_LIMIT = 1000;
 const SKIP = new Set(["node_modules", "dist", "corpus", "schemas"]);
 
 /** Files over SIZE_LIMIT and the most lines each may have. Lower these; never raise them. */
-const OVERSIZE: Record<string, number> = {
-  "scripts/matrix-examples.ts": 1033,
-};
+const OVERSIZE: Record<string, number> = {};
 /** Files in the largest runtime import cycle. Lower it; never raise it. */
 const LARGEST_CYCLE = 0;
 
