@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/decision.timeout.v1.json",
+  "title": "SuperPipeline decision.reminded and decision.escalated",
+  "description": "A waiting decision passed its stage's timeout (charter: unanswered decisions remind, then escalate \u00a72-3). Each is sent at most once per wait: remindedAt rides on decision.reminded, escalatedAt on decision.escalated. Mirrors SuperPipeline's DecisionNoticeBody (apps/api/src/board/decision-timeouts.ts). Readers ignore properties they do not know.",
+  "type": "object",
+  "required": [
+    "event",
+    "boardId",
+    "boardName",
+    "cardId",
+    "cardTitle",
+    "stageKey",
+    "stageName",
+    "decisionKind",
+    "decisionId",
+    "waitingSince",
+    "ts"
+  ],
+  "properties": {
+    "event": {
+      "enum": ["decision.reminded", "decision.escalated"]
+    },
+    "boardId": {
+      "type": ["string", "null"],
+      "description": "Null only on a board not yet initialised; a carrier needs it to route the event."
+    },
+    "boardName": {
+      "type": "string",
+      "description": "Empty string when the board has no name, never absent."
+    },
+    "cardId": {
+      "type": "string"
+    },
+    "cardTitle": {
+      "type": "string"
+    },
+    "stageKey": {
+      "type": "string"
+    },
+    "stageName": {
+      "type": "string"
+    },
+    "decisionKind": {
+      "enum": ["gate", "question", "delivery", "attention", "checks"]
+    },
+    "decisionId": {
+      "type": "string",
+      "description": "The gate id (gate, delivery), the elicitation id (question), the wait id (attention) or the check set's arrival id (checks)."
+    },
+    "waitingSince": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "remindedAt": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "escalatedAt": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "ts": {
+      "$ref": "#/$defs/timestamp"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "event": {
+            "const": "decision.reminded"
+          }
+        }
+      },
+      "then": {
+        "required": ["remindedAt"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event": {
+            "const": "decision.escalated"
+          }
+        }
+      },
+      "then": {
+        "required": ["escalatedAt"]
+      }
+    }
+  ],
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

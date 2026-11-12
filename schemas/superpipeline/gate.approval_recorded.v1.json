@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/gate.approval_recorded.v1.json",
+  "title": "SuperPipeline gate.approval_recorded",
+  "description": "An approval on a quorum gate that did not yet reach its quorum (charter 2026-11-09, a gate may need more than one approver \u00a77). The gate is still pending; the approval that reaches the quorum resolves it and sends none. Mirrors SuperPipeline's GateApprovalRecordedBody (apps/api/src/board/views.ts). Readers ignore properties they do not know.",
+  "type": "object",
+  "required": ["event", "boardId", "cardId", "gateId", "approval", "quorum"],
+  "properties": {
+    "event": {
+      "const": "gate.approval_recorded"
+    },
+    "boardId": {
+      "type": ["string", "null"],
+      "description": "Null only on a board not yet initialised; a carrier needs it to route the event."
+    },
+    "cardId": {
+      "type": "string"
+    },
+    "gateId": {
+      "type": "string"
+    },
+    "approval": {
+      "$ref": "#/$defs/approval"
+    },
+    "quorum": {
+      "type": "object",
+      "description": "The gate's quorum after this approval; approvals oldest first, this one among them.",
+      "required": ["required", "from", "approvals"],
+      "properties": {
+        "required": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "from": {
+          "enum": ["deciders", "admins"]
+        },
+        "approvals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/approval"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "approval": {
+      "type": "object",
+      "required": ["principalId", "at"],
+      "properties": {
+        "principalId": {
+          "type": "string"
+        },
+        "at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "variantId": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
