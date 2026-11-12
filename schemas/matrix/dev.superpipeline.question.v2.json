@@ -277,6 +277,9 @@
         },
         "expires_at": {
           "type": ["string", "null"],
+          "description": "When the binding lapses: an RFC 3339 date-time with seconds and an explicit offset (2030-01-02T03:04:05Z, 2030-01-02T08:34:05.5+05:30), or null for none. The pattern states it for a validator that does not assert format.",
+          "format": "date-time",
+          "pattern": "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])T([01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(\\.\\d+)?(Z|[+-]([01]\\d|2[0-3]):[0-5]\\d)$",
           "maxLength": 200
         },
         "preview": {

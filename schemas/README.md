@@ -40,6 +40,9 @@ TypeScript that builds and reads them.
 - Three files describe a card that rides inside a prose message under a content key rather than as
   an event of its own: `dev.superpipeline.gate`, `dev.superpipeline.elicitation` and
   `dev.agentpod.permission`.
+- `subject.expires_at` (gate.v2, question.v2, delivery.v2, permission.v2) is an RFC 3339 date-time with
+  seconds and an explicit offset, or null. It carries both `"format": "date-time"` and a `pattern`,
+  because a validator need not assert `format`; `isSubjectExpiry` is the same rule in TypeScript.
 - `x-uniqueBy` lists the paths whose values must not repeat, the one rule JSON Schema cannot state:
   `options[].id` is the `id` of every option.
 - `fixtures/matrix-events/examples.json` is the corpus they are checked against, built by

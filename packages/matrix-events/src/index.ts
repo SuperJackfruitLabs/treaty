@@ -18,6 +18,7 @@ export * from "./decision-timeout.ts";
 export * from "./deliveries.ts";
 export * from "./delivery.ts";
 export * from "./elicitation.ts";
+export * from "./expiry.ts";
 export * from "./gate.ts";
 export * from "./permission.ts";
 export * from "./question.ts";
