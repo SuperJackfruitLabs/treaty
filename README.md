@@ -26,7 +26,9 @@ products share.
 | [`@superjackfruitlabs/treaty-outbox`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-outbox)                         | A transactional outbox and a deduplicating inbox for CloudEvents, on Durable Object SQLite and on Postgres                                                                                             |
 
 Packages are published to npm from GitHub Actions, with provenance, when a `vX.Y.Z` tag is
-pushed. The plan is in [`docs/2026-11-02-treaty-plan.md`](docs/2026-11-02-treaty-plan.md).
+pushed. Each release's notes are on the
+[GitHub releases page](https://github.com/SuperJackfruitLabs/treaty/releases), and
+[`CHANGELOG.md`](CHANGELOG.md) lists them all. The plan is in [`docs/2026-11-02-treaty-plan.md`](docs/2026-11-02-treaty-plan.md).
 
 ## Status
 

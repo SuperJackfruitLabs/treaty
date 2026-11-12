@@ -36,16 +36,25 @@ The repository is public. Never commit secrets or keys.
 
 ## Releases
 
-- A `vX.Y.Z` tag on main publishes every non-private package in `packages/` to npm, under
-  `@superjackfruitlabs/treaty-*`, at the tag's version (`.github/workflows/release.yml`). Only
-  the operator pushes tags. Versions start at 0.0.1.
+- A `vX.Y.Z` tag on main runs the suite's shared release workflow
+  (`.github/workflows/release.yml`, settings in `.github/release-config.json`): the gate checks
+  forge CI passed for the tag's commit (or runs `deploy/release/check.sh` at the tag when it cannot
+  read that), `deploy/release/publish.sh` publishes every non-private package in `packages/` to
+  npm under `@superjackfruitlabs/treaty-*` at the tag's version, then the production host deploys
+  the relay through its forced-command key (`treaty <tag>`), the public health check runs, and the
+  release notes go up on GitHub. Only the operator pushes tags. Versions start at 0.0.1.
 - `package.json` versions on main stay `0.0.0`. The tag is the only source of the version.
-- npm trusts the workflow through OIDC, with provenance. No npm token is stored.
-- A new package must be bootstrapped once by hand before the workflow can publish it. See the
-  comment at the top of `release.yml`.
+- npm trusts the workflow through OIDC (environment `npm`), with provenance. No npm token is
+  stored. A new package must be bootstrapped once by hand: see the top of
+  `deploy/release/publish.sh`.
+- `CHANGELOG.md` keeps an `## Unreleased` section; write an entry there with each change people
+  will notice. Before a tag, a release-prep PR runs `sh .github/release/prep-release.sh vX.Y.Z`.
 
 ## Shared kit
 
 `.forgejo/workflows/claude-review.yml`, the `claude-triage` job in `ci.yml`, and
 `.github/claude/claude-ci.mjs` are copies of the shared claude-ci kit. Change the master and
 sync; never edit a copy.
+
+`.github/workflows/release.yml` and `.github/release/` are copies of the shared release kit
+(estate `release/`). Change the master and sync; never edit a copy.
