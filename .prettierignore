@@ -6,3 +6,5 @@ fixtures/
 packages/*/corpus/
 packages/ecosystem-identity/README.md
 packages/*/schemas/
+.github/release/
+.github/workflows/release.yml
