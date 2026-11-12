@@ -5,6 +5,8 @@ deploys the event relay to production.
 
 ## Unreleased
 
+## v0.0.13 — 2026-11-12
+
 - `treaty-event-schemas`: `card.ready` v1, the event a board opted into scheduling sends when a
   card becomes ready to claim, with the end of its placement window.
 - Releases run on the suite's shared release workflow: the tag gate reads forge CI's result for
