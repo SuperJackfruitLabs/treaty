@@ -27,4 +27,5 @@ the old one; an additive change bumps `schema_version` inside the content, and r
 properties they do not know.
 
 The board-room names (`boardRoomAlias`, `boardSpeakerMxid`) are the names existing rooms have, in
-the AgentPod appservice's namespace.
+the AgentPod appservice's namespace. `boardRoomNames(carrier)` gives each carrier its own set:
+`agentpod` returns those same names, `superexchange` names inside SuperExchange's namespace.

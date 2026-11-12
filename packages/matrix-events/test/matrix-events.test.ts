@@ -3,6 +3,7 @@ import { z } from "../src/check.ts";
 import {
   attentionV2Content,
   boardRoomAlias,
+  boardRoomNames,
   boardSpeakerMxid,
   deliveryV2Content,
   gateEventContent,
@@ -310,5 +311,32 @@ describe("board rooms", () => {
     expect(boardSpeakerMxid("id.agentpod.dev")).toBe(
       "@agent_superpipeline:id.agentpod.dev",
     );
+  });
+
+  test("agentpod's set is exactly the names existing rooms have", () => {
+    const names = boardRoomNames("agentpod");
+    for (const id of ["brd_7c1f", "brd 1/x"])
+      expect(names.alias(id)).toBe(boardRoomAlias(id));
+    expect(names.speakerMxid("id.agentpod.dev")).toBe(
+      boardSpeakerMxid("id.agentpod.dev"),
+    );
+  });
+
+  test("superexchange's names sit in its own exclusive namespace, apart from agentpod's", () => {
+    const names = boardRoomNames("superexchange");
+    expect(names.alias("brd 1/x")).toBe("superexchange_board_brd_1_x");
+    expect(names.speakerMxid("staging-id.agentpod.dev")).toBe(
+      "@superexchange_board:staging-id.agentpod.dev",
+    );
+    // The registrations' exclusive patterns: each carrier's names match its own and never the other's.
+    const own = { user: /^@superexchange_.*:/, alias: /^#superexchange_.*:/ };
+    const hubs = { user: /^@agent_.*:/, alias: /^#agentpod_.*:/ };
+    const mxid = names.speakerMxid("d");
+    const alias = `#${names.alias("brd_1")}:d`;
+    expect([own.user.test(mxid), own.alias.test(alias)]).toEqual([true, true]);
+    expect([hubs.user.test(mxid), hubs.alias.test(alias)]).toEqual([
+      false,
+      false,
+    ]);
   });
 });
