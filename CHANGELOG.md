@@ -12,6 +12,10 @@ deploys the event relay to production.
 - Releases run on the suite's shared release workflow: the tag gate reads forge CI's result for
   the tag's commit, the packages publish to npm before the relay deploys, a failed relay smoke
   check puts the previous release back, and every tag gets release notes on GitHub.
+- Contributors: lint is type-aware and a ratchet (per-rule counts may fall, never rise), and an
+  architecture test holds the repository to no import cycles, files under 1,000 lines and the
+  existing layer order (`docs/code-quality.md`). The matrix examples builder is split into
+  smaller files; the corpus it writes and the packages' exports are unchanged.
 
 ## v0.0.12 — 2026-11-12
 

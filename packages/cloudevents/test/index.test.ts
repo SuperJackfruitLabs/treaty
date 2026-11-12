@@ -7,7 +7,7 @@ describe("the envelope constants", () => {
   });
 
   test("list exactly the four attributes CloudEvents 1.0 requires", () => {
-    expect([...REQUIRED_ATTRIBUTES].sort()).toEqual([
+    expect([...REQUIRED_ATTRIBUTES].toSorted()).toEqual([
       "id",
       "source",
       "specversion",

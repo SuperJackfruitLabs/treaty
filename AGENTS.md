@@ -26,6 +26,18 @@ treaty holds what software must check. The plan is `docs/2026-11-02-treaty-plan.
 
 `bun run check` runs what CI runs: format, typecheck, lint, tests. Run it before pushing.
 
+- **Lint is a ratchet** (`bun run lint`, `scripts/lint.mjs`): per-rule counts in
+  `scripts/lint-baseline.json` may fall, never rise. After a cleanup run `bun run lint --update`;
+  it refuses to raise a count. Shipped source stays clean of the rules in `SRC_CLEAN`.
+- **The architecture test** (`scripts/architecture.test.ts`) holds no runtime import cycle, no
+  code file over 1,000 lines, and the layer order: packages at the bottom, the relay above them,
+  `scripts/` and `deploy/` on top. A package's `src/` imports nothing outside the package. Never
+  raise a recorded number to make a change fit; split the file or break the edge.
+- **Restructures** pin behaviour first (a characterization test committed against the old code),
+  move code verbatim, and leave the packages' exports and the generated corpora byte-identical.
+
+`docs/code-quality.md` explains each check.
+
 ## Hosting
 
 Forge is primary and push-mirrors to GitHub. Open pull requests on forge only. CI and review
