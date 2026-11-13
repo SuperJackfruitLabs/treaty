@@ -1,5 +1,5 @@
 #!/bin/sh
-# The release's publish step (`publish` in .github/release-config.json): publishes every
+# The release's publish step (the .github/release/publish.sh hook): publishes every
 # non-private package in packages/ to npm at the tag's version, with provenance. npm trusts the
 # release workflow through OIDC (trusted publishing, environment `npm`), so no token is stored.
 # A version already on npm is skipped, so a re-run finishes what a failed run started.

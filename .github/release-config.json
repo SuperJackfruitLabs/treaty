@@ -3,15 +3,20 @@
   "ci": {
     "forge": "https://forge.superjackfruit.com",
     "repo": "SuperJackfruitLabs/treaty",
-    "context": "ci / check (push)",
-    "check_command": "bash deploy/release/check.sh"
+    "context": "ci / check (push)"
   },
-  "publish": { "script": "deploy/release/publish.sh", "environment": "npm" },
-  "deploy": { "ssh_command": "treaty" },
+  "publish": {
+    "environment": "npm"
+  },
+  "deploy": {
+    "ssh_command": "treaty"
+  },
   "smoke": {
     "url": "https://relay.superjackfruit.com/healthz",
     "retries": 10,
     "delay_s": 3
   },
-  "rollback": { "ssh_command": "treaty" }
+  "rollback": {
+    "ssh_command": "treaty"
+  }
 }

@@ -69,4 +69,5 @@ The repository is public. Never commit secrets or keys.
 sync; never edit a copy.
 
 `.github/workflows/release.yml` and `.github/release/` are copies of the shared release kit
-(estate `release/`). Change the master and sync; never edit a copy.
+(estate `release/`). Change the master and sync; never edit a copy. The exceptions are this
+repo's own release hooks, `.github/release/ci-check.sh` and `.github/release/publish.sh`.
