@@ -1,0 +1,7 @@
+.astro/
+dist/
+node_modules/
+.wrangler/
+# Written by scripts/generate.mjs before every build, from treaty's schemas and fixtures.
+src/content/docs/events/
+src/content/docs/matrix/

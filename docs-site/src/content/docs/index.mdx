@@ -1,0 +1,47 @@
+---
+title: Treaty
+description: "The suite's contracts as code: the CloudEvents envelope, the event and Matrix schemas, the shared fixtures and the event relay."
+template: splash
+hero:
+  tagline: "The suite's contracts as code. Treaty defines what crosses between products; the products carry it. It holds no product's data."
+  actions:
+    - text: Browse the event catalogue
+      link: /events/
+      icon: right-arrow
+    - text: What Treaty is
+      link: /what-it-is/
+      variant: minimal
+    - text: GitHub
+      link: https://github.com/SuperJackfruitLabs/treaty
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+<CardGrid>
+  <Card title="The envelope" icon="seti:json">
+    Every event is a CloudEvents 1.0 event in binary content mode, over HTTP and NATS headers, with
+    one naming rule for subjects and types. [The envelope and subjects](/envelope/)
+  </Card>
+  <Card title="The schemas" icon="document">
+    A JSON Schema for every body SuperPipeline sends and for every board-room Matrix event, with
+    the valid and refused cases each must hold to. [Event catalogue](/events/) ·
+    [Matrix events](/matrix/)
+  </Card>
+  <Card title="The relay" icon="random">
+    Workers publish to NATS JetStream over HTTPS, and subscribers receive each event as a signed
+    HTTP request, at least once. [The relay](/relay/)
+  </Card>
+  <Card title="The packages" icon="seti:npm">
+    Five MIT packages on npm under `@superjackfruitlabs/treaty-*`, all at one version.
+    [Which package](/packages/)
+  </Card>
+</CardGrid>
+
+<LinkCard
+  title="Versioning and compatibility"
+  description="The producer moves first, readers accept both shapes, and the old shape is removed last."
+  href="/versioning/"
+/>
+<LinkCard title="Status" description="What ships in v0.0.13, and what is not decided yet." href="/status/" />

@@ -1,0 +1,117 @@
+/*
+ * A neutral suite look: the lab's ink and paper, with jackfruit amber as the one accent.
+ *
+ * Treaty is not a product with a colour of its own. Its docs wear the lab's grounds, the warm
+ * ink and paper the suite frame uses for its own surfaces (frontdoor `tokens.css`, the --sjl-*
+ * values), and spend the lab's jackfruit amber (#d98a1f) sparingly: links, the active sidebar
+ * item, the asides' rule. Every value is one of Starlight's seven-step gray ramp plus the accent
+ * triple it derives everything else from, so no component needs restyling.
+ *
+ * `html:root` rather than `:root` is load-bearing: this file can be bundled ahead of Starlight's
+ * own props.css, and at equal specificity Starlight's defaults would win with a build that
+ * succeeds and a page that looks untouched.
+ *
+ * Contrast (WCAG 2.x), measured on the grounds each pair sits on:
+ *   dark   links #f2b45c on #0b0a0c 10.8:1 (10.3:1 on the surface) · body #d6cfca 12.8:1 ·
+ *          muted #a59c96 7.3:1 (7.0:1 on the surface) · active sidebar item #1a1206 on
+ *          #f2b45c 10.1:1 · note aside text #f2b45c on #2a1b08 9.1:1
+ *   light  links #8a5410 on #f3efe9 5.5:1 (6.3:1 on white) · body #3d3631 10.4:1 · muted
+ *          #6b625b 5.2:1 · active sidebar item #fff on #8a5410 6.3:1 · note aside text
+ *          #6e420b on #f8ead3 7.2:1
+ * The amber itself, #d98a1f, is 2.4:1 on paper, so in light it is never text: it is the
+ * asides' rule and the mark.
+ */
+html:root {
+  /* dark: ink */
+  --sl-color-white: #ece7e3; /* text */
+  --sl-color-gray-1: #ece7e3;
+  --sl-color-gray-2: #d6cfca; /* body */
+  --sl-color-gray-3: #a59c96; /* muted */
+  --sl-color-gray-4: #7d746e;
+  --sl-color-gray-5: #2e2a31; /* line */
+  --sl-color-gray-6: #121116; /* surface */
+  --sl-color-gray-7: #0f0e12;
+  --sl-color-black: #0b0a0c; /* ground */
+
+  --sl-color-accent-low: #2a1b08;
+  --sl-color-accent: #d98a1f; /* jackfruit amber */
+  --sl-color-accent-high: #f2b45c;
+  --sl-color-text-invert: #1a1206;
+
+  --sl-font: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --sl-font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+}
+
+html:root[data-theme='light'] {
+  /* light: paper */
+  --sl-color-white: #1f1b18; /* text */
+  --sl-color-gray-1: #2b2622;
+  --sl-color-gray-2: #3d3631; /* body */
+  --sl-color-gray-3: #6b625b; /* muted */
+  --sl-color-gray-4: #8a817a;
+  --sl-color-gray-5: #e2dbd3; /* line */
+  --sl-color-gray-6: #f2eee9; /* inset */
+  --sl-color-gray-7: #ffffff; /* surface */
+  --sl-color-black: #f3efe9; /* ground */
+
+  --sl-color-accent-low: #f8ead3;
+  --sl-color-accent: #8a5410;
+  --sl-color-accent-high: #6e420b;
+  --sl-color-text-invert: #ffffff;
+}
+
+html:root[data-theme='light'] .sl-link-button.primary,
+html:root[data-theme='light'] .sl-link-button.primary:hover {
+  color: #ffffff;
+}
+
+/* One accent: notes are amber rather than Starlight's blue. */
+.starlight-aside--note {
+  --sl-color-asides-text-accent: var(--sl-color-accent-high);
+  --sl-color-asides-border: #d98a1f;
+  background-color: var(--sl-color-accent-low);
+}
+
+.site-title,
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* The generated field tables are wide: let them scroll inside the page, never the page itself. */
+.sl-markdown-content table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
+.sl-markdown-content table code {
+  white-space: nowrap;
+}
+/* Prose cells get room to read, so a narrow screen scrolls the table rather than stacking words. */
+.sl-markdown-content td {
+  min-width: 7rem;
+}
+.sl-markdown-content td:nth-child(4):not(:last-child) {
+  min-width: 18rem;
+}
+/* The last column of a field table holds the long ones (patterns): those may break anywhere. */
+.sl-markdown-content table td:last-child code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Starlight cycles card icons through several hues; here they all wear the one accent. */
+.sl-markdown-content .card,
+.card {
+  --sl-card-border: var(--sl-color-accent);
+  --sl-card-bg: var(--sl-color-accent-low);
+}
+.sl-markdown-content details {
+  margin-block: 0.5rem;
+}
+.sl-markdown-content details summary {
+  cursor: pointer;
+}

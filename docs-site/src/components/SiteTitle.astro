@@ -1,0 +1,39 @@
+---
+/**
+ * The wordmark: the lab's mark beside `Treaty`, in the text colour.
+ *
+ * Treaty has no mark of its own; it is the lab's, so the lab's mark stands beside the name.
+ * The component keeps everything Starlight's stock one does: the same link target, the same
+ * `.site-title sl-flex` classes, and `translate="no"` so a page translation leaves the name
+ * alone. The alt is empty on purpose: the name beside it already says it.
+ */
+const { siteTitle, siteTitleHref } = Astro.locals.starlightRoute;
+---
+
+<a href={siteTitleHref} class="site-title sl-flex">
+  <img class="mark" src="/favicon.svg" alt="" width="28" height="28" />
+  <span translate="no">{siteTitle}</span>
+</a>
+
+<style>
+  /* Replacing the component discards the styles Starlight scoped to it, so its own rules are
+     restored here (text-decoration among them), with only the colour changed. */
+  .site-title {
+    align-items: center;
+    gap: 0.6rem;
+    font-size: var(--sl-text-h4);
+    font-weight: 600;
+    color: var(--sl-color-white);
+    text-decoration: none;
+    white-space: nowrap;
+    min-width: 0;
+  }
+  span {
+    overflow: hidden;
+  }
+  .mark {
+    flex: none;
+    width: 1.75rem;
+    height: auto;
+  }
+</style>
