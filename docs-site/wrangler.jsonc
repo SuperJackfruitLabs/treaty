@@ -1,0 +1,14 @@
+// treaty.superjackfruit.com: a Worker with static assets and no script.
+//
+// A Worker rather than a Pages project, as the suite's other docs sites are. The custom domain is
+// declared here, so `wrangler deploy` attaches it (the superjackfruit.com zone is in the same
+// Cloudflare account). Deployed by scripts/deploy-sites.sh, from .github/workflows/sites.yml on
+// merge to main.
+{
+  "name": "treaty-docs",
+  "compatibility_date": "2026-10-01",
+  "assets": { "directory": "./dist", "not_found_handling": "404-page" },
+  "routes": [{ "pattern": "treaty.superjackfruit.com", "custom_domain": true }],
+  "workers_dev": false,
+  "preview_urls": false
+}

@@ -1,0 +1,518 @@
+{
+  "$comment": "Who sends and who reads each schema's events. Hand-kept: treaty's schemas and catalogue name the producer of SuperPipeline's events, and nothing in them names a consumer. scripts/check-claims.mjs fails the build when a schema has no entry here, an entry names no schema, or a producer disagrees with schemas/catalog.json.",
+  "products": {
+    "SuperPipeline": "https://docs.superpipeline.dev",
+    "SuperExchange": "https://docs.superexchange.dev",
+    "AgentPod": "https://docs.agentpod.dev",
+    "SuperDispatch": "https://docs.superdispatch.dev",
+    "SuperMessage": "https://docs.supermessage.dev"
+  },
+  "carrierNote": "The carrier is whichever service carries the board's chat: AgentPod's hub, or SuperExchange for a board that has moved to it.",
+  "schemas": {
+    "superpipeline/attention.pending.v1": {
+      "relayed": true,
+      "producers": [
+        "SuperPipeline"
+      ],
+      "consumers": [
+        {
+          "product": "SuperExchange",
+          "how": "Posts it to the board's room, for the boards it carries. Receives it through the relay."
+        },
+        {
+          "product": "AgentPod",
+          "how": "The hub's board chat posts it, for the boards it still carries."
+        },
+        {
+          "product": "SuperDispatch",
+          "how": "Takes it as a nudge to look at the board soon, on a board opted into scheduling. Reads nothing from its data."
+        }
+      ]
+    },
+    "superpipeline/card.ready.v1": {
+      "relayed": true,
+      "producers": [
+        "SuperPipeline"
+      ],
+      "consumers": [
+        {
+          "product": "SuperDispatch",
+          "how": "Places the card at once, alone, inside the board's placement window. A hint, not a fact: it reads the board before it places anything."
+        }
+      ]
+    },
+    "superpipeline/check.failed.v1": {
+      "relayed": true,
+      "producers": [
+        "SuperPipeline"
+      ],
+      "consumers": [
+        {
+          "product": "SuperExchange",
+          "how": "Posts it to the board's room, for the boards it carries. Receives it through the relay."
+        },
+        {
+          "product": "AgentPod",
+          "how": "The hub's board chat posts it, for the boards it still carries."
+        },
+        {
+          "product": "SuperDispatch",
+          "how": "Takes it as a nudge to look at the board soon, on a board opted into scheduling. Reads nothing from its data."
+        }
+      ]
+    },
+    "superpipeline/check.overridden.v1": {
+      "relayed": true,
+      "producers": [
+        "SuperPipeline"
+      ],
+      "consumers": [
+        {
+          "product": "SuperExchange",
+          "how": "Posts it to the board's room, for the boards it carries. Receives it through the relay."
+        },
+        {
+          "product": "AgentPod",
+          "how": "The hub's board chat posts it, for the boards it still carries."
+        },
+        {
+          "product": "SuperDispatch",
+          "how": "Takes it as a nudge to look at the board soon, on a board opted into scheduling. Reads nothing from its data."
+        }
+      ]
+    },
+    "superpipeline/decision.pulled_back.v1": {
+      "relayed": true,
+      "producers": [
+        "SuperPipeline"
+      ],
+      "consumers": [
+        {
+          "product": "SuperExchange",
+          "how": "Posts it to the board's room, for the boards it carries. Receives it through the relay."
+        },
+        {
+          "product": "AgentPod",
+          "how": "The hub's board chat posts it, for the boards it still carries."
+        },
+        {
+          "product": "SuperDispatch",
+          "how": "Takes it as a nudge to look at the board soon, on a board opted into scheduling. Reads nothing from its data."
+        }
+      ]
+    },
+    "superpipeline/decision.released.v1": {
+      "relayed": true,
+      "producers": [
+        "SuperPipeline"
+      ],
+      "consumers": [
+        {
+          "product": "SuperExchange",
+          "how": "Posts it to the board's room, for the boards it carries. Receives it through the relay."
+        },
+        {
+          "product": "AgentPod",
+          "how": "The hub's board chat posts it, for the boards it still carries."
+        },
+        {
+          "product": "SuperDispatch",
+          "how": "Takes it as a nudge to look at the board soon, on a board opted into scheduling. Reads nothing from its data."
+        }
+      ]
+    },
+    "superpipeline/decision.timeout.v1": {
+      "relayed": true,
+      "producers": [
+        "SuperPipeline"
+      ],
+      "consumers": [
+        {
+          "product": "SuperExchange",
+          "how": "Posts it to the board's room, for the boards it carries. Receives it through the relay."
+        },
+        {
+          "product": "AgentPod",
+          "how": "The hub's board chat posts it, for the boards it still carries."
+        },
+        {
+          "product": "SuperDispatch",
+          "how": "Takes it as a nudge to look at the board soon, on a board opted into scheduling. Reads nothing from its data."
+        }
+      ]
+    },
+    "superpipeline/delivery.pending.v1": {
+      "relayed": true,
+      "producers": [
+        "SuperPipeline"
+      ],
+      "consumers": [
+        {
+          "product": "SuperExchange",
+          "how": "Posts it to the board's room, for the boards it carries. Receives it through the relay."
+        },
+        {
+          "product": "AgentPod",
+          "how": "The hub's board chat posts it, for the boards it still carries."
+        },
+        {
+          "product": "SuperDispatch",
+          "how": "Takes it as a nudge to look at the board soon, on a board opted into scheduling. Reads nothing from its data."
+        }
+      ]
+    },
+    "superpipeline/elicitation.pending.v1": {
+      "relayed": true,
+      "producers": [
+        "SuperPipeline"
+      ],
+      "consumers": [
+        {
+          "product": "SuperExchange",
+          "how": "Posts it to the board's room, for the boards it carries. Receives it through the relay."
+        },
+        {
+          "product": "AgentPod",
+          "how": "The hub's board chat posts it, for the boards it still carries."
+        },
+        {
+          "product": "SuperDispatch",
+          "how": "Takes it as a nudge to look at the board soon, on a board opted into scheduling. Reads nothing from its data."
+        }
+      ]
+    },
+    "superpipeline/gate.approval_recorded.v1": {
+      "relayed": true,
+      "producers": [
+        "SuperPipeline"
+      ],
+      "consumers": [
+        {
+          "product": "SuperExchange",
+          "how": "Posts it to the board's room, for the boards it carries. Receives it through the relay."
+        },
+        {
+          "product": "AgentPod",
+          "how": "The hub's board chat posts it, for the boards it still carries."
+        },
+        {
+          "product": "SuperDispatch",
+          "how": "Takes it as a nudge to look at the board soon, on a board opted into scheduling. Reads nothing from its data."
+        }
+      ]
+    },
+    "superpipeline/gate.pending.v1": {
+      "relayed": true,
+      "producers": [
+        "SuperPipeline"
+      ],
+      "consumers": [
+        {
+          "product": "SuperExchange",
+          "how": "Posts it to the board's room, for the boards it carries. Receives it through the relay."
+        },
+        {
+          "product": "AgentPod",
+          "how": "The hub's board chat posts it, for the boards it still carries."
+        },
+        {
+          "product": "SuperDispatch",
+          "how": "Takes it as a nudge to look at the board soon, on a board opted into scheduling. Reads nothing from its data."
+        }
+      ]
+    },
+    "superpipeline/record.v1": {
+      "relayed": false,
+      "producers": [
+        "SuperPipeline"
+      ],
+      "consumers": [],
+      "note": "Record events are not relayed. SuperPipeline pushes them directly to each endpoint that has a push config subscribed to them, and treaty names no product that reads them."
+    },
+    "matrix/dev.superpipeline.gate.v2": {
+      "group": "cards",
+      "sentBy": [
+        "AgentPod",
+        "SuperExchange"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.superpipeline.gate.v1": {
+      "group": "cards",
+      "sentBy": [
+        "AgentPod",
+        "SuperExchange"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.superpipeline.gate": {
+      "group": "cards",
+      "sentBy": [
+        "AgentPod",
+        "SuperExchange"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.superpipeline.question.v2": {
+      "group": "cards",
+      "sentBy": [
+        "AgentPod",
+        "SuperExchange"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.superpipeline.elicitation": {
+      "group": "cards",
+      "sentBy": [
+        "AgentPod",
+        "SuperExchange"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.superpipeline.delivery.v2": {
+      "group": "cards",
+      "sentBy": [
+        "AgentPod",
+        "SuperExchange"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.superpipeline.attention.v2": {
+      "group": "cards",
+      "sentBy": [
+        "AgentPod",
+        "SuperExchange"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.agentpod.checks.waiting.v2": {
+      "group": "cards",
+      "sentBy": [
+        "AgentPod",
+        "SuperExchange"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.superpipeline.gate.decision.v2": {
+      "group": "answers",
+      "sentBy": [
+        "SuperMessage"
+      ],
+      "readBy": [
+        "AgentPod",
+        "SuperExchange"
+      ]
+    },
+    "matrix/dev.superpipeline.gate.decision.v1": {
+      "group": "answers",
+      "sentBy": [
+        "SuperMessage"
+      ],
+      "readBy": [
+        "AgentPod",
+        "SuperExchange"
+      ]
+    },
+    "matrix/dev.superpipeline.question.answer.v2": {
+      "group": "answers",
+      "sentBy": [
+        "SuperMessage"
+      ],
+      "readBy": [
+        "AgentPod",
+        "SuperExchange"
+      ]
+    },
+    "matrix/dev.superpipeline.delivery.answer.v2": {
+      "group": "answers",
+      "sentBy": [
+        "SuperMessage"
+      ],
+      "readBy": [
+        "AgentPod",
+        "SuperExchange"
+      ]
+    },
+    "matrix/dev.superpipeline.attention.answer.v2": {
+      "group": "answers",
+      "sentBy": [
+        "SuperMessage"
+      ],
+      "readBy": [
+        "AgentPod",
+        "SuperExchange"
+      ]
+    },
+    "matrix/dev.superpipeline.gate.pull_back.v2": {
+      "group": "answers",
+      "sentBy": [
+        "SuperMessage"
+      ],
+      "readBy": [
+        "AgentPod",
+        "SuperExchange"
+      ]
+    },
+    "matrix/dev.superpipeline.check.override.v2": {
+      "group": "answers",
+      "sentBy": [
+        "SuperMessage"
+      ],
+      "readBy": [
+        "AgentPod",
+        "SuperExchange"
+      ]
+    },
+    "matrix/dev.superpipeline.gate.outcome.v1": {
+      "group": "receipts",
+      "sentBy": [
+        "AgentPod",
+        "SuperExchange"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.superpipeline.attention.outcome.v1": {
+      "group": "receipts",
+      "sentBy": [
+        "AgentPod",
+        "SuperExchange"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.superpipeline.decision.reminded.v1": {
+      "group": "notices",
+      "sentBy": [
+        "AgentPod",
+        "SuperExchange"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.superpipeline.decision.escalated.v1": {
+      "group": "notices",
+      "sentBy": [
+        "AgentPod",
+        "SuperExchange"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.agentpod.gate.progress.v2": {
+      "group": "notices",
+      "sentBy": [
+        "AgentPod",
+        "SuperExchange"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.agentpod.decision.released.v2": {
+      "group": "notices",
+      "sentBy": [
+        "AgentPod",
+        "SuperExchange"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.agentpod.decision.pulled_back.v2": {
+      "group": "notices",
+      "sentBy": [
+        "AgentPod",
+        "SuperExchange"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.agentpod.check.failed.v2": {
+      "group": "notices",
+      "sentBy": [
+        "AgentPod",
+        "SuperExchange"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.agentpod.check.overridden.v2": {
+      "group": "notices",
+      "sentBy": [
+        "AgentPod",
+        "SuperExchange"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.agentpod.permission.v2": {
+      "group": "permissions",
+      "sentBy": [
+        "AgentPod"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.agentpod.permission.v1": {
+      "group": "permissions",
+      "sentBy": [
+        "AgentPod"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.agentpod.permission": {
+      "group": "permissions",
+      "sentBy": [
+        "AgentPod"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.agentpod.permission.answer.v2": {
+      "group": "permissions",
+      "sentBy": [
+        "SuperMessage"
+      ],
+      "readBy": [
+        "AgentPod"
+      ]
+    },
+    "matrix/dev.agentpod.permission.outcome.v1": {
+      "group": "permissions",
+      "sentBy": [
+        "AgentPod"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    }
+  }
+}

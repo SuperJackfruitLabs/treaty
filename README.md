@@ -1,6 +1,8 @@
 # treaty
 
-The suite's contracts as code. The [charter](https://github.com/SuperJackfruitLabs/charter)
+The suite's contracts as code. Documentation, with a page for every event: **[treaty.superjackfruit.com](https://treaty.superjackfruit.com)**.
+
+The [charter](https://github.com/SuperJackfruitLabs/charter)
 records the agreements between products in prose. treaty holds the parts of those agreements
 that software must check, so no single product is the authority over a contract several
 products share.

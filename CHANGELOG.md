@@ -5,6 +5,10 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- Documentation at [treaty.superjackfruit.com](https://treaty.superjackfruit.com): what treaty is,
+  the envelope, versioning, the relay, the packages and fixtures, and a page for every event and
+  Matrix event schema, generated from the schemas and fixtures at build time.
+
 ## v0.0.13 — 2026-11-12
 
 - `treaty-event-schemas`: `card.ready` v1, the event a board opted into scheduling sends when a

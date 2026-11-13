@@ -11,24 +11,76 @@ permissions:
   contents: read
 
 jobs:
-  check:
+  # Which parts changed. A pull request or push that only touches the docs site (docs-site/, its
+  # deploy script or its workflow) runs just the docs build; anything else, a change to the
+  # workflows themselves, or an event with no base to compare against runs everything. The docs
+  # are generated from schemas/, fixtures/, the packages, the relay and CHANGELOG.md, so a change
+  # to any of those builds them too. `check` always runs and skips its steps rather than the job:
+  # the release's tag gate reads the `ci / check (push)` status and accepts only success, and a
+  # docs-only commit is the code its parent tested.
+  changes:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 5
+    outputs:
+      app: ${{ steps.plan.outputs.app }}
+      docs: ${{ steps.plan.outputs.docs }}
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          fetch-depth: 0
+      - id: plan
+        env:
+          EVENT: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          base=""
+          if [ "$EVENT" = pull_request ]; then base="$(git merge-base "$PR_BASE" HEAD 2>/dev/null || true)"; fi
+          if [ "$EVENT" = push ] && [ -n "$BEFORE" ] && ! printf %s "$BEFORE" | grep -qE '^0+$'; then base="$BEFORE"; fi
+          app=true; docs=true
+          if [ -n "$base" ] && files="$(git diff --name-only "$base" HEAD)"; then
+            site='^(docs-site/|scripts/deploy-sites\.sh$|\.github/workflows/sites\.yml$)'
+            source='^(schemas/|fixtures/|packages/|apps/relay/src/|CHANGELOG\.md$)'
+            other="$(printf '%s\n' "$files" | grep -vE "$site" | grep -v '^$' || true)"
+            [ -z "$other" ] && app=false
+            printf '%s\n' "$files" | grep -qE "$site|$source" || docs=false
+            printf '%s\n' "$other" | grep -qE '^\.(forgejo|github)/' && { app=true; docs=true; }
+          fi
+          { echo "app=$app"; echo "docs=$docs"; } >> "$GITHUB_OUTPUT"
+          echo "base=${base:-none} app=$app docs=$docs"
+
+  check:
+    needs: [changes]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      APP: ${{ needs.changes.outputs.app }}
+    steps:
+      - name: Docs site only
+        if: env.APP != 'true'
+        run: echo "Only the docs site changed; the packages' and relay's checks are skipped."
+      - uses: actions/checkout@v4
+        if: env.APP == 'true'
+        with:
+          persist-credentials: false
       - uses: oven-sh/setup-bun@v2
+        if: env.APP == 'true'
         with:
           bun-version-file: .bun-version
-      - run: bun install --frozen-lockfile
+      - if: env.APP == 'true'
+        run: bun install --frozen-lockfile
       - name: Format
+        if: env.APP == 'true'
         run: bun run fmt:check
       - name: Typecheck
+        if: env.APP == 'true'
         run: bun run typecheck
       - name: Lint
+        if: env.APP == 'true'
         run: bun run lint
       - name: Start nats-server for the relay's tests (pinned, checksum checked)
+        if: env.APP == 'true'
         run: |
           v=2.15.2
           f="nats-server-v$v-linux-amd64"
@@ -39,10 +91,28 @@ jobs:
           for i in $(seq 30); do (exec 3<>/dev/tcp/127.0.0.1/4222) 2>/dev/null && exit 0; sleep 1; done
           cat /tmp/nats.log; exit 1
       - name: Test
+        if: env.APP == 'true'
         env:
           NATS_URL: nats://127.0.0.1:4222
           TREATY_REQUIRE_NATS: "1"
         run: bun run test
+
+  docs:
+    needs: [changes]
+    if: needs.changes.outputs.docs == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          # Astro 7 needs Node 22.23.4 or newer; a runner's cached 22 can be older.
+          node-version: 24
+      - name: Generate the event pages, check every claim, build the docs site
+        working-directory: docs-site
+        run: npm ci && npm run build
 
   claude-triage:
     # Shared kit fragment (claude-ci), Forgejo Actions: the last job of the product's CI
@@ -53,7 +123,7 @@ jobs:
     # Read-only and a no-op until the repository has a CLAUDE_CI_API_KEY secret. It checks out
     # nothing: the script comes from the base branch and the logs through the API. Forks get
     # no secrets and skip. On a GitHub mirror of the product it does nothing.
-    needs: [check]
+    needs: [changes, check, docs]
     if: failure() && github.event_name == 'pull_request' && github.server_url != 'https://github.com'
     runs-on: ubuntu-latest
     timeout-minutes: 10
