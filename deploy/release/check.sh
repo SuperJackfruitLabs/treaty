@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# The release gate's fallback (`ci.check_command` in .github/release-config.json): when the
+# The release gate's fallback (the .github/release/ci-check.sh hook): when the
 # forge's CI result for the tag's commit cannot be read, the release runs what forge CI runs, at
 # the tag, with a NATS server for the relay's tests.
 set -euo pipefail
