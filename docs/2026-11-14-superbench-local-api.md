@@ -1,8 +1,9 @@
 # SuperBench local API v1
 
-Status: producer-first contract proposal. The operator ruled SuperBench a
-standalone product; charter's 2026-11-14 lifecycle boundary amendment remains
-under review. This contract is not evidence that suite adapters are deployed.
+Status: the host-local ownership and wire boundary was accepted in charter
+#37/#38 and treaty #29. This contract is not evidence that suite adapters are
+deployed. The proposed [checkpoint-generation extension](2026-11-15-superbench-checkpoint-generations.md)
+adds multi-repository evidence beside v1; it does not replace these operations.
 
 The canonical request is `schemas/superbench/operation.v1.json`; shared positive,
 negative and lexical-decoder vectors are `fixtures/superbench-api/operations.json`.

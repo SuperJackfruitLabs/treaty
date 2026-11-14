@@ -5,6 +5,9 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- Add a proposed SuperBench checkpoint-generation manifest and shared validation
+  cases for complete multi-repository vectors, generation pins and sealed recovery.
+
 - Extend the proposed SuperBench local API with initial-setup outcomes and
   retained ownership on creation failure; add shared creation cases and reject
   request-level setup bypass flags.
