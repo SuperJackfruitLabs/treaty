@@ -2,22 +2,41 @@
 title: Treaty
 description: "The suite's contracts as code: the CloudEvents envelope, the event and Matrix schemas, the shared fixtures and the event relay."
 template: splash
-hero:
-  tagline: "Meet the suite's contracts as code. Treaty defines what crosses between products; your products carry it, and Treaty holds none of their data."
-  actions:
-    - text: Browse the event catalogue
-      link: /events/
-      icon: right-arrow
-    - text: What Treaty is
-      link: /what-it-is/
-      variant: minimal
-    - text: GitHub
-      link: https://github.com/SuperJackfruitLabs/treaty
-      icon: external
-      variant: minimal
 ---
 
 import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+import BentoHome from '@superjackfruit/docs-theme/components/BentoHome.astro';
+import FlowSteps from '@superjackfruit/docs-theme/components/FlowSteps.astro';
+
+<BentoHome
+  claim="Meet the suite's contracts as code."
+  sub="Treaty defines what crosses between products; your products carry it, and Treaty holds none of their data."
+  actions={[
+    { text: 'Browse the event catalogue', link: '/events/' },
+    { text: 'What Treaty is', link: '/what-it-is/', variant: 'secondary' },
+    { text: 'GitHub', link: 'https://github.com/SuperJackfruitLabs/treaty', variant: 'secondary' },
+  ]}
+  quickstart={{
+    label: 'Quick start: install a package',
+    command: 'npm install @superjackfruitlabs/treaty-event-schemas@0.0.13',
+    note: "Treaty's JSON Schemas for the SuperPipeline event bodies it holds. Treaty has no hosted service to try without installing anything, so start by validating a body you build against its schema. Which package says which of the five packages you need.",
+  }}
+  agent={{ task: 'Then help me send or read a suite event: name the package, the schema, the CloudEvents type and the subject, and pin an exact treaty version.' }}
+  ask={{ examples: ['Which package validates a gate.pending body?', 'What does the relay do when my endpoint answers 500?', 'How do I check a delivery is from the relay?', 'Can Treaty negotiate my salary?'] }}
+  flowTitle="How a contract travels: card.ready, from SuperPipeline to SuperDispatch"
+>
+  <FlowSteps
+    label="Contract step"
+    steps={[
+      { label: 'Define', body: 'Treaty holds the schema for card.ready v1 and its catalogue entry: the CloudEvents type com.superjackfruit.superpipeline.card.ready.v1 and the subject evt.<workspace>.superpipeline.card.ready. A release publishes it in treaty-event-schemas.', items: [{ text: 'card.ready.v1.json', card: true }] },
+      { label: 'Build', body: "SuperPipeline builds the body itself, and its own tests validate what it builds against the schema in treaty-event-schemas, at a pinned version. A body that drifts from the schema fails in SuperPipeline, not in a reader.", items: [{ text: 'SuperPipeline' }, { text: 'schema ✓', win: true }] },
+      { label: 'Publish', body: 'SuperPipeline POSTs the event to the relay at /v1/events/<subject>, in HTTP binary mode, with its bearer token. The relay checks the token, that the subject is one the producer may publish to, and that the type matches the subject. A 202 means JetStream accepted it.', items: [{ text: 'POST → 202', card: true }] },
+      { label: 'Store', body: 'The relay stores the event in the JetStream WORK stream, with the event id as Nats-Msg-Id, so a resend inside the duplicate window is stored once.', items: [{ text: 'WORK: evt.>', card: true }] },
+      { label: 'Deliver', body: 'The relay makes signed delivery attempts, with the x-treaty-signature header, to every subscriber whose filter matches. A 408, 429, 5xx or network failure is tried again after a backoff (1 s, 2 s, 4 s, doubling up to 5 minutes), up to maxDeliver tries; any other non-2xx answer is dropped. The same event can arrive more than once.', items: [{ text: 'SuperDispatch', win: true }] },
+      { label: 'Act', body: "SuperDispatch checks the signature with treaty-cloudevents' verifyDelivery before it trusts the request, then places the card inside the board's placement window. card.ready is a hint: it reads the board before it places anything.", items: [{ text: 'placed ✓', win: true }] },
+    ]}
+  />
+</BentoHome>
 
 <CardGrid>
   <Card title="The envelope" icon="seti:json">
