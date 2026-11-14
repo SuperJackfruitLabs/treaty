@@ -2,22 +2,16 @@
 
 ## Verdict
 
-**Publishable: false.**
+**Publishable: true.**
 
 The 13-page voice rollout now meets the approved page-kind and exact-material boundaries, and the
 claims that can be checked in this repository match code, tests or configuration at PR base
 `4bd7d7d08d813a80f9751d8cbd6f25f3feba122f`. Verification found and corrected seven additional
-factual overclaims or omissions, and the required docs checks pass.
-
-Two current deployment-state claims remain unverified: `status.md` says the relay is in production
-and has been there since v0.0.7, while `relay.md` says it currently runs in both production and
-staging. The public repository proves the configured main/tag deployment and rollback paths, not
-what is live in private infrastructure. Publication becomes clear when either:
-
-1. the operator supplies a pinned private-estate revision and file:line evidence for both current
-   live-state claims; or
-2. the pages are narrowed to the repository-verifiable claim that the workflows are configured to
-   deploy main to staging and version tags to production, with rollback after a failed smoke check.
+factual overclaims or omissions, and the required docs checks pass. The two deployment-state
+claims are now verified from the operator-supplied evidence pinned to `estate@05c7a45` and the
+operator's live checks on 2026-11-14. The ledger records only the minimum non-sensitive evidence:
+the production and staging provisioner paths, approved production line references, public Treaty
+revisions, and the permitted image tag. It contains no private host name or credential detail.
 
 ## What I checked
 
@@ -31,6 +25,9 @@ what is live in private infrastructure. Publication becomes clear when either:
   action-bearing examples, no running gag, and literal tables/code/warnings/recovery.
 - Checked privacy: the pages add no private host, person, agent, team, credential value or customer
   material. Product names, loopback addresses and synthetic placeholders are the only identifiers.
+- Checked the two deployment-state claims against the supplied `estate@05c7a45` evidence and the
+  live checks verified on the hosts by the operator's session, 2026-11-14. Production was running
+  `treaty-relay:v0.0.13`; staging was running the relay built from Treaty main at `4bd7d7d`.
 
 The detailed page-to-source mapping is in
 `docs/reviews/2026-11-15-docs-voice-treaty-rollout.md`.
