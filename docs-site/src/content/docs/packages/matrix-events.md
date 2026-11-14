@@ -6,8 +6,8 @@ description: "@superjackfruitlabs/treaty-matrix-events: the board-room Matrix ev
 [`@superjackfruitlabs/treaty-matrix-events`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-matrix-events)
 is the board-room Matrix event contract: every event a board's work crosses chat on, as data and as
 TypeScript, so the carriers (AgentPod's hub and SuperExchange) and SuperMessage check the same
-rules. **Use it** if you post board cards into Matrix, read the answers people send back, or
-render them.
+rules. Use it when you post board cards into Matrix, read the answers people send back, or render
+them.
 
 - **`schemas/*.json`:** one JSON Schema per type, named by its type string. The contract for
   readers in any language. The [Matrix catalogue](/matrix/) has a page for each.
@@ -21,7 +21,10 @@ import { gateV2Content, parseGateDecision } from "@superjackfruitlabs/treaty-mat
 import gateV2 from "@superjackfruitlabs/treaty-matrix-events/schemas/dev.superpipeline.gate.v2.json" with { type: "json" };
 ```
 
-Nothing in it touches a database, a homeserver or a log. Judging an answer against what was
+Those imports let you build the card and validate it against the same schema that readers in other
+languages use.
+
+Nothing in the package touches your database, homeserver or log. Judging an answer against what was
 posted, and acting on it, stay with the carrier.
 
 ## Some of what it exports
@@ -37,7 +40,7 @@ posted, and acting on it, stay with the carrier.
 
 ## The rules it keeps
 
-- **Type strings never change.** A breaking change is a new type (`.v2` to `.v3`) beside the old
+- **Type strings never change.** We publish a breaking change as a new type (`.v2` to `.v3`) beside the old
   one; an additive change bumps `schema_version` inside the content. See
   [Versioning](/versioning/).
 - **A subject's `expires_at`** (on gate.v2, question.v2, delivery.v2 and permission.v2) is an RFC
