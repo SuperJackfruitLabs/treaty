@@ -66,3 +66,10 @@ TypeScript that builds and reads them.
   `scripts/matrix-examples.ts` from `fixtures/ecosystem-identity/matrix_gate_events.json` and from
   this package's builders. Each invalid case says what refuses it: the schema, a uniqueness rule, or
   only the carrier, against what it recorded when it posted.
+
+## SuperBench local operations (`superbench/`)
+
+`operation.v1.json` describes the local Unix-peer operator API, not an event.
+Its corpus is `fixtures/superbench-api/operations.json`; the transport/authority
+contract is [the local API proposal](../docs/2026-11-14-superbench-local-api.md).
+No CloudEvents catalogue entry or remote token audience is implied.
