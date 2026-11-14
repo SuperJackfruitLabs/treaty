@@ -3,10 +3,10 @@ title: The relay
 description: "The relay carries events from Cloudflare Workers into NATS JetStream and delivers them back to subscribers over signed HTTP, at least once."
 ---
 
-Cloudflare Workers and Durable Objects cannot hold a NATS connection. The relay stands between
-them and NATS JetStream: a producer POSTs an event to it over HTTPS, it stores the event in
-JetStream, and it POSTs the event on to every subscriber whose filter matches, signed. It is a
-Bun service in `apps/relay`, and the only part of Treaty that runs.
+Cloudflare Workers and Durable Objects cannot hold a NATS connection, so we give them an HTTP
+bridge. A producer POSTs an event to the relay over HTTPS, the relay stores it in NATS JetStream,
+and every matching subscriber receives a signed POST. The relay is a Bun service in `apps/relay`
+and the only part of Treaty that runs.
 
 It keeps two JetStream streams: `WORK` holds `evt.>`, and `AUDIT` holds `audit.>`, so a slow audit
 consumer never holds up work and purging work never touches audit. Subscribers read `WORK`.
@@ -19,8 +19,14 @@ producer ──POST /v1/events/<subject>──▶ relay ──▶ JetStream (WOR
 
 ## Publishing an event
 
-`POST /v1/events/<subject>` with the event in HTTP binary mode (see [the envelope](/envelope/))
-and `Authorization: Bearer <producer token>`. The relay:
+Send `POST /v1/events/<subject>` with the event in HTTP binary mode (see [the
+envelope](/envelope/)) and this header:
+
+```http
+Authorization: Bearer <token>
+```
+
+The relay then:
 
 1. knows the producer by its token: it stores only the token's SHA-256;
 2. checks the subject is a suite subject, and one the producer may publish to (its patterns use
@@ -44,13 +50,14 @@ and `Authorization: Bearer <producer token>`. The relay:
 | 422 | `type_does_not_match_subject` | The `type` names another product, entity or verb. |
 | 503 | `publish_failed` | JetStream did not take it. Send it again. |
 
-A producer keeps the event in an [outbox](/packages/outbox/) until it gets a 202, and sends the
-same `id` on every retry.
+Keep the event in an [outbox](/packages/outbox/) until the producer gets a 202, and send the same
+`id` on every retry. A 202 is your receipt that JetStream accepted the event; `duplicate: true`
+means the resend was already stored inside the duplicate window.
 
 ## Subscribing
 
-A subscriber is a URL that accepts signed POSTs. The relay's operator adds it to the relay's
-configuration, `TREATY_RELAY_SUBSCRIBERS`, with:
+A subscriber is a URL that accepts signed POSTs. Add it to `TREATY_RELAY_SUBSCRIBERS` with these
+fields:
 
 | Field | What |
 | --- | --- |
@@ -60,13 +67,13 @@ configuration, `TREATY_RELAY_SUBSCRIBERS`, with:
 | `filter` | A subject filter, for example `evt.*.superpipeline.>` for every SuperPipeline event, or `evt.*.superpipeline.gate.pending` for one. |
 | `maxDeliver` | How many times one event is tried. Default `10`. |
 
-Each subscriber gets its own durable consumer on the `WORK` stream, starting from everything the
-stream holds, so a subscriber added later still receives what is retained.
+Once configured, the subscriber has its own durable consumer on the `WORK` stream. It starts with
+everything the stream still holds, so adding a subscriber later does not skip retained events.
 
 ## Delivery and retries
 
-Every event is POSTed to the subscriber's URL as an HTTP binary-mode CloudEvent with the
-`x-treaty-signature` header. The subscriber's status decides what happens next:
+The relay POSTs every event to the subscriber's URL as an HTTP binary-mode CloudEvent with the
+`x-treaty-signature` header. Your response status decides what happens next:
 
 | Answer | What the relay does |
 | --- | --- |
@@ -83,8 +90,8 @@ delivering that event to that subscriber; the relay keeps no separate dead-lette
 it.
 
 **Delivery is at least once.** The same event can arrive more than once. Handle each `(source,
-id)` once, with `handleOnce()` from `@superjackfruitlabs/treaty-outbox`, in the same transaction as
-what the event changes.
+id)` once with `handleOnce()` from `@superjackfruitlabs/treaty-outbox`, in the same transaction as
+what the event changes. Your handler can then accept retries without applying the change twice.
 
 ## Verifying a delivery
 
@@ -96,7 +103,7 @@ x-treaty-signature: t=<unix seconds>,v1=<hex HMAC-SHA256>
 
 over `<t>.<event id>.<body>`, with the subscriber's secret as the key. Binding the id stops a
 captured body from being replayed under another id, and the timestamp bounds how long a captured
-request is accepted. Check it with `verifyDelivery()` before believing anything in the request:
+request is accepted. Check it with `verifyDelivery()` before you trust anything in the request:
 
 ```ts
 import {
@@ -130,7 +137,8 @@ time. It uses Web Crypto only, so it runs in Workers, Bun and Node. `signDeliver
 half, which the relay uses.
 
 A 400 or 401 is a 4xx the relay does not retry, which is what you want for a request that is not
-from the relay.
+from the relay. After the check passes, your handler has both a decoded event and proof that the
+relay signed this body for this event id.
 
 ## Settings
 
@@ -152,5 +160,6 @@ from the relay.
 
 ## Where it runs
 
-The relay runs in production and on staging. A merge to main deploys staging; a `v*` tag deploys
-production, and a release whose smoke check fails puts the previous one back.
+The relay runs in production and on staging. The repository's deployment flow sends a merge to
+main to staging and a `v*` tag to production; when a release smoke check fails, the release flow
+puts the previous version back.

@@ -153,6 +153,12 @@ const deliver = read(join(relaySrc, 'deliver.ts'));
 const nats = read(join(relaySrc, 'nats.ts'));
 const relay = page('relay.md');
 
+// The publishing example must use the bearer shape parsed by ingest.ts. Keep the placeholder
+// obviously synthetic and mechanically reject the malformed legacy wording.
+if (!/\^Bearer \(\.\+\)\$/.test(ingest) || !relay.includes('Authorization: Bearer <token>'))
+  fail('relay.md: the producer authorization header');
+if (relay.includes('Bearer *** token>')) fail('relay.md: malformed legacy bearer placeholder');
+
 const envNames = new Set([...config.matchAll(/env\["([A-Z_]+)"\]/g)].map((m) => m[1]));
 if (envNames.size < 7) fail(`read only ${envNames.size} settings from the relay's config.ts`);
 const settingRows = new Map(
