@@ -57,14 +57,17 @@ checked against does (`.forgejo/workflows/ci.yml`).
 
 ## What is deliberate about it
 
-**A neutral suite look.** Treaty is not a product with a colour, so the site wears the lab's ink
-and paper and spends jackfruit amber sparingly (`src/styles/theme.css`, with the measured contrast
-of every pairing). `public/favicon.svg` is the lab's mark, copied from frontdoor's
-`packages/frame/src/brand/lab.svg`. It is not in frontdoor's product list.
+**The suite's docs theme, as a lab site.** Treaty is the suite's shared contracts, not a sold
+product (the operator's decision of 2026-11-14), so it wears the lab's look through
+`@superjackfruit/docs-theme`'s `site` option rather than a product colour: vibekit's graphite
+accent, the lab's mark beside the name, and no house of its own on the suite's street. The theme
+brings the header, the footers, the 404, Copy and Open as Markdown, the edit link and llms.txt. It
+and the tarballs it needs (frontdoor, vibekit) are vendored in `vendor/`, as the other docs sites
+vendor them. `public/favicon.svg` is the lab's mark, copied from frontdoor's
+`packages/frame/src/brand/lab.svg`.
 
-**For agents**: `/llms.txt`, `/llms-full.txt` and `/llms-small.txt` (`starlight-llms-txt`), with
-every generated page in the full file. Search is Starlight's Pagefind; the sitemap and the 404 page
-are Starlight's.
+**For agents**: `/llms.txt`, `/llms-full.txt` and `/llms-small.txt` (`starlight-llms-txt`, through the theme), with
+every generated page in the full file. Search is Starlight's Pagefind and the sitemap is Starlight's; the 404 page is the theme's.
 
 ## Publishing
 

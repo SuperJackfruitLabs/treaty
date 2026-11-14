@@ -3,8 +3,8 @@ title: Which package
 description: "The five @superjackfruitlabs/treaty-* packages on npm, what each holds, and when to use it."
 ---
 
-Five packages, all MIT, all published together at the version of each treaty release (v0.0.13
-today). Pin an exact version.
+Treaty gives you five MIT packages, all published together at the version of each release (v0.0.13
+today). Choose the boundary you need from the table below, then pin its exact version.
 
 | You want to | Use |
 | --- | --- |
@@ -17,6 +17,9 @@ today). Pin an exact version.
 ```sh
 npm install @superjackfruitlabs/treaty-cloudevents@0.0.13
 ```
+
+That command gives your project the CloudEvents codec and types at the same version this page
+documents; a later Treaty release will not move the pin underneath you.
 
 Every package is an ES module with its TypeScript types. The data packages (`event-schemas`,
 `matrix-events`, `ecosystem-identity`) export their JSON files by subpath, so a reader in another

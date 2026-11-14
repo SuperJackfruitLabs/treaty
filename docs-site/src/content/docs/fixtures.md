@@ -3,9 +3,10 @@ title: Fixtures and pinned versions
 description: "The shared corpora of valid and refused cases, where each is published, and how a product tests against a pinned treaty version."
 ---
 
-A schema says what is allowed. A fixture corpus shows it: realistic cases that must pass and,
-just as important, cases that must fail, each with the reason. Products in different languages run
-the same cases, so they agree without sharing code.
+A schema tells you what is allowed; a fixture corpus makes the promise executable. We keep
+realistic cases that must pass and, just as importantly, cases that must fail with the reason.
+Run those same cases in products written in different languages and they can agree without sharing
+code.
 
 ## The corpora
 
@@ -21,7 +22,7 @@ first valid case in full, the others folded, and every refused case with its rea
 
 ### The Matrix corpus says what refuses each case
 
-Each invalid case in `fixtures/matrix-events/examples.json` names what refuses it:
+When a Matrix case is invalid, `fixtures/matrix-events/examples.json` names what refuses it:
 
 - `schema`: the type's JSON Schema;
 - `unique`: an `x-uniqueBy` rule of that schema, the one rule JSON Schema cannot state;
@@ -33,15 +34,15 @@ from the package's own builders (cases labelled `built:`). Never edit it by hand
 
 ### Negative cases are the point
 
-A corpus of valid examples alone proves little: a well-formed id of the wrong entity passes every
+A corpus of valid examples alone proves little—a well-formed id of the wrong entity passes every
 check that only looks at shape. So the identity corpus gives every entity a `reject` list (wrong
 prefix, too short, wrong alphabet, empty, prefix only, and a valid id of a different entity), and
 every schema's examples carry refused cases.
 
 ## Testing against a pinned version
 
-A product pins an exact treaty version and tests its own code against that version's data. The
-three ways products do it today:
+Pin an exact Treaty version in your product, then test your own code against that version's data.
+Products do that in three ways today:
 
 - **Validate what you build.** SuperPipeline's tests validate the bodies its builders produce
   against the schemas in `@superjackfruitlabs/treaty-event-schemas`. A type that moves without its
@@ -52,8 +53,9 @@ three ways products do it today:
   `include_str!`, so it keeps copies. Its CI downloads the pinned package with `npm pack` and fails
   when a copy differs from it.
 
-Moving to a newer treaty release is then one change in the product: bump the pin (and the copies),
-run the tests, and fix what they report. A release of treaty alone changes nothing for anyone.
+To move to a newer Treaty release, bump the pin (and any vendored copies), run the tests, and fix
+what they report. Once those tests pass, your product and the pinned contract agree; a Treaty
+release on its own changed nothing underneath you.
 
 ```ts
 import grammar from "@superjackfruitlabs/treaty-ecosystem-identity/id_grammar.json" with { type: "json" };

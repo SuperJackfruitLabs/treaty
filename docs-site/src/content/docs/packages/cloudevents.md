@@ -4,8 +4,8 @@ description: "@superjackfruitlabs/treaty-cloudevents: the CloudEvents 1.0 codec 
 ---
 
 [`@superjackfruitlabs/treaty-cloudevents`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-cloudevents)
-is the suite's event envelope. **Use it** in anything that sends an event, receives one, or
-receives a delivery from [the relay](/relay/). It has no dependencies and runs in Workers, Bun and
+is the suite's event envelope. Reach for it when you send or receive an event, or when your service
+accepts a delivery from [the relay](/relay/). It has no dependencies and runs in Workers, Bun and
 Node.
 
 ```ts
@@ -31,6 +31,9 @@ const subject = eventSubject("ws_123", name); // evt.ws_123.superpipeline.gate.p
 const { headers, body: bytes } = toBinary(event, "http");
 ```
 
+You now have the subject that files the event and the HTTP headers and body that carry it—both
+produced from the same event name rather than assembled by hand.
+
 ## What it exports
 
 | Export | What |
@@ -44,9 +47,10 @@ const { headers, body: bytes } = toBinary(event, "http");
 | `eventType()`, `parseType()`, `EventName` | Build and read `com.superjackfruit.<product>.<entity>.<verb>.v<N>`. |
 | `signDelivery()`, `verifyDelivery()`, `SIGNATURE_HEADER` | Sign and check a relay delivery, in the `x-treaty-signature` header. |
 | `percentEncode()`, `percentDecode()` | The header-value encoding both bindings use. |
-| `CloudEventError` | What every function here throws. |
+| `CloudEventError` | The error used when the codec, naming helpers or signature verifier refuses input. |
 
-The rules each one applies are on [The envelope and subjects](/envelope/), and verifying a
+When you need the exact rules behind those exports, see [The envelope and subjects](/envelope/);
+verifying a
 delivery is on [The relay](/relay/#verifying-a-delivery).
 
 Its test cases are plain data in `fixtures/cloudevents/binary-mode.json`, built from the Go SDK's

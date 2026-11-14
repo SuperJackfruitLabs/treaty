@@ -6,8 +6,8 @@ description: "@superjackfruitlabs/treaty-matrix-events: the board-room Matrix ev
 [`@superjackfruitlabs/treaty-matrix-events`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-matrix-events)
 is the board-room Matrix event contract: every event a board's work crosses chat on, as data and as
 TypeScript, so the carriers (AgentPod's hub and SuperExchange) and SuperMessage check the same
-rules. **Use it** if you post board cards into Matrix, read the answers people send back, or
-render them.
+rules. Use it when you post board cards into Matrix, read the answers people send back, or render
+them.
 
 - **`schemas/*.json`:** one JSON Schema per type, named by its type string. The contract for
   readers in any language. The [Matrix catalogue](/matrix/) has a page for each.
@@ -21,7 +21,10 @@ import { gateV2Content, parseGateDecision } from "@superjackfruitlabs/treaty-mat
 import gateV2 from "@superjackfruitlabs/treaty-matrix-events/schemas/dev.superpipeline.gate.v2.json" with { type: "json" };
 ```
 
-Nothing in it touches a database, a homeserver or a log. Judging an answer against what was
+Those imports let you build the card and validate it against the same schema that readers in other
+languages use.
+
+Nothing in the package touches your database, homeserver or log. Judging an answer against what was
 posted, and acting on it, stay with the carrier.
 
 ## Some of what it exports
@@ -31,13 +34,13 @@ posted, and acting on it, stay with the carrier.
 | `gateV2Content()`, `questionV2Content()`, `deliveryV2Content()`, `attentionV2Content()` | Build a card's Matrix content from what SuperPipeline sent. |
 | `parseGateDecision()`, `parseQuestionAnswer()`, `parseDeliveryAnswer()`, `parseAttentionAnswer()` | Read a person's answer into what a carrier acts on, or `null`. |
 | `isGatePending()`, `isElicitationPending()`, `isDeliveryPending()`, `isAttentionPending()` | Check a SuperPipeline body before building from it. |
-| `isSubjectExpiry()` | The strict RFC 3339 rule for a subject's `expires_at`, the same as the schemas' `pattern`. |
+| `isSubjectExpiry()` | Check the strict RFC 3339 rule for a subject's `expires_at`, which the schemas express with `format` and `pattern`. |
 | `uniqueByViolations()` | Check the `x-uniqueBy` rules JSON Schema cannot state. |
 | `boardRoomNames()` | The board room's alias and speaker for a carrier: `agentpod` or `superexchange`. |
 
 ## The rules it keeps
 
-- **Type strings never change.** A breaking change is a new type (`.v2` to `.v3`) beside the old
+- **Type strings never change.** We publish a breaking change as a new type (`.v2` to `.v3`) beside the old
   one; an additive change bumps `schema_version` inside the content. See
   [Versioning](/versioning/).
 - **A subject's `expires_at`** (on gate.v2, question.v2, delivery.v2 and permission.v2) is an RFC
