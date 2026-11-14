@@ -1,0 +1,2983 @@
+{
+  "version": "superbench.checkpoint-fixtures.v1",
+  "valid": [
+    {
+      "name": "two-repository-genesis",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mixed-object-formats-with-sha256-coordinator",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "beta",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha256",
+            "commit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          }
+        ],
+        "previous_manifest_commit": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    },
+    {
+      "name": "sha1-previous-generation",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "previous_manifest_commit": "cccccccccccccccccccccccccccccccccccccccc"
+      }
+    },
+    {
+      "name": "ssh-identity-and-scp",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "ssh://build-user@example.invalid:2222/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "git@example.invalid:team/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "local-absolute-path-with-spaces",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "/srv/git/example alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "/srv/git/example-beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "file-url-identities",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "file:///srv/git/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "file://localhost/srv/git/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unicode-task-reference",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/feature/café",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "one-member",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "thirty-two-members",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "repo00",
+        "members": [
+          {
+            "name": "repo00",
+            "repository": "https://example.invalid/repo00.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo00",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo01",
+            "repository": "https://example.invalid/repo01.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo01",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo02",
+            "repository": "https://example.invalid/repo02.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo02",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo03",
+            "repository": "https://example.invalid/repo03.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo03",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo04",
+            "repository": "https://example.invalid/repo04.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo04",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo05",
+            "repository": "https://example.invalid/repo05.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo05",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo06",
+            "repository": "https://example.invalid/repo06.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo06",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo07",
+            "repository": "https://example.invalid/repo07.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo07",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo08",
+            "repository": "https://example.invalid/repo08.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo08",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo09",
+            "repository": "https://example.invalid/repo09.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo09",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo10",
+            "repository": "https://example.invalid/repo10.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo10",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo11",
+            "repository": "https://example.invalid/repo11.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo11",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo12",
+            "repository": "https://example.invalid/repo12.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo12",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo13",
+            "repository": "https://example.invalid/repo13.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo13",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo14",
+            "repository": "https://example.invalid/repo14.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo14",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo15",
+            "repository": "https://example.invalid/repo15.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo15",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo16",
+            "repository": "https://example.invalid/repo16.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo16",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo17",
+            "repository": "https://example.invalid/repo17.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo17",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo18",
+            "repository": "https://example.invalid/repo18.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo18",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo19",
+            "repository": "https://example.invalid/repo19.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo19",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo20",
+            "repository": "https://example.invalid/repo20.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo20",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo21",
+            "repository": "https://example.invalid/repo21.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo21",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo22",
+            "repository": "https://example.invalid/repo22.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo22",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo23",
+            "repository": "https://example.invalid/repo23.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo23",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo24",
+            "repository": "https://example.invalid/repo24.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo24",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo25",
+            "repository": "https://example.invalid/repo25.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo25",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo26",
+            "repository": "https://example.invalid/repo26.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo26",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo27",
+            "repository": "https://example.invalid/repo27.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo27",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo28",
+            "repository": "https://example.invalid/repo28.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo28",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo29",
+            "repository": "https://example.invalid/repo29.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo29",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo30",
+            "repository": "https://example.invalid/repo30.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo30",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo31",
+            "repository": "https://example.invalid/repo31.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo31",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "scp-bracketed-ipv6",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "git@[::1]:team/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "scp-opaque-path-colon",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "git@example.invalid:team/alpha:variant.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "scp-opaque-path-space",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "git@example.invalid:team/alpha beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "scp-opaque-path-query-and-fragment",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "git@example.invalid:team/alpha?variant#literal.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "astral-unicode-task-reference",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/feature/🧪",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "repository-exact-4096-ascii-bytes",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "wrong-version",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v2",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "uppercase-bench-id",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "short-generation",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "2222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "null-previous",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "previous_manifest_commit": null
+      }
+    },
+    {
+      "name": "empty-members",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": []
+      }
+    },
+    {
+      "name": "unknown-holder",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "holder": "example-holder"
+      }
+    },
+    {
+      "name": "unknown-lease-token",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "lease_token": "example-not-a-capability"
+      }
+    },
+    {
+      "name": "unknown-host-path",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "host_path": "/example/host/path"
+      }
+    },
+    {
+      "name": "unknown-embedded-digest",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "digest": "0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    {
+      "name": "missing-generation",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "too-many-members",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "repo00",
+            "repository": "https://example.invalid/repo00.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo00",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo01",
+            "repository": "https://example.invalid/repo01.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo01",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo02",
+            "repository": "https://example.invalid/repo02.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo02",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo03",
+            "repository": "https://example.invalid/repo03.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo03",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo04",
+            "repository": "https://example.invalid/repo04.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo04",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo05",
+            "repository": "https://example.invalid/repo05.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo05",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo06",
+            "repository": "https://example.invalid/repo06.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo06",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo07",
+            "repository": "https://example.invalid/repo07.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo07",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo08",
+            "repository": "https://example.invalid/repo08.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo08",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo09",
+            "repository": "https://example.invalid/repo09.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo09",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo10",
+            "repository": "https://example.invalid/repo10.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo10",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo11",
+            "repository": "https://example.invalid/repo11.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo11",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo12",
+            "repository": "https://example.invalid/repo12.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo12",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo13",
+            "repository": "https://example.invalid/repo13.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo13",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo14",
+            "repository": "https://example.invalid/repo14.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo14",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo15",
+            "repository": "https://example.invalid/repo15.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo15",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo16",
+            "repository": "https://example.invalid/repo16.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo16",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo17",
+            "repository": "https://example.invalid/repo17.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo17",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo18",
+            "repository": "https://example.invalid/repo18.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo18",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo19",
+            "repository": "https://example.invalid/repo19.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo19",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo20",
+            "repository": "https://example.invalid/repo20.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo20",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo21",
+            "repository": "https://example.invalid/repo21.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo21",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo22",
+            "repository": "https://example.invalid/repo22.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo22",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo23",
+            "repository": "https://example.invalid/repo23.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo23",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo24",
+            "repository": "https://example.invalid/repo24.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo24",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo25",
+            "repository": "https://example.invalid/repo25.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo25",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo26",
+            "repository": "https://example.invalid/repo26.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo26",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo27",
+            "repository": "https://example.invalid/repo27.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo27",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo28",
+            "repository": "https://example.invalid/repo28.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo28",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo29",
+            "repository": "https://example.invalid/repo29.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo29",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo30",
+            "repository": "https://example.invalid/repo30.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo30",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo31",
+            "repository": "https://example.invalid/repo31.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo31",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "repo32",
+            "repository": "https://example.invalid/repo32.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/repo32",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unknown-member-checkout-path",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "path": "/example/checkout"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sha256-with-sha1-commit",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha256",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "uppercase-commit",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsupported-object-format",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha512",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "invalid-repository-name",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "Alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty-repository",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "option-repository",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "-example",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "nul-repository",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/a\u0000.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "newline-repository",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/a\n.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "oversize-repository",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-00",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "main",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-01",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-02",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/foo..bar",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-03",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/foo@{bar",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-04",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/.hidden",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-05",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/foo.lock",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-06",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/foo.lock/bar",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-07",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/foo/",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-08",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/foo.",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-09",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/foo//bar",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-10",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/foo bar",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-11",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/foo~bar",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-12",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/foo^bar",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-13",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/foo:bar",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-14",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/foo?bar",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-15",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/foo*bar",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-16",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/foo[bar",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-17",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/foo\\bar",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-18",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/foobar",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsafe-task-ref-19",
+      "reason": "schema",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/foo\nbar",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsorted-members",
+      "reason": "member_order",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "duplicate-member-name",
+      "reason": "member_order",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "missing-coordinator",
+      "reason": "coordinator",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "missing",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "wrong-generation-pin",
+      "reason": "pin_scope",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/33333333333333333333333333333333/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "wrong-member-pin",
+      "reason": "pin_scope",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "duplicate-repository-task-pair",
+      "reason": "duplicate_target",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "previous-format-does-not-match-coordinator",
+      "reason": "previous_format",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "previous_manifest_commit": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    },
+    {
+      "name": "http-username",
+      "reason": "repository_identity",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://identity@example.invalid/repo.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "http-password",
+      "reason": "repository_identity",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example-user:example-password@example.invalid/repo.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ssh-password",
+      "reason": "repository_identity",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "ssh://git:example-password@example.invalid/repo.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ssh-empty-password",
+      "reason": "repository_identity",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "ssh://git:@example.invalid/repo.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "url-query",
+      "reason": "repository_identity",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/repo.git?example=value",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty-url-query",
+      "reason": "repository_identity",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/repo.git?",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "url-fragment",
+      "reason": "repository_identity",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/repo.git#example",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty-url-fragment",
+      "reason": "repository_identity",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/repo.git#",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ssh-query",
+      "reason": "repository_identity",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "ssh://git@example.invalid/repo.git?example=value",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "remote-file-host",
+      "reason": "repository_identity",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "file://remote.invalid/srv/git/repo.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "file-query",
+      "reason": "repository_identity",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "file:///srv/git/repo.git?",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "file-userinfo",
+      "reason": "repository_identity",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "file://example@localhost/srv/git/repo.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "relative-local-path",
+      "reason": "repository_identity",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "../repo.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unknown-url-scheme",
+      "reason": "repository_identity",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "example://host/repo.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "helper-remote",
+      "reason": "repository_identity",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "ext::example-command",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "scp-password",
+      "reason": "repository_identity",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "git:example-password@example.invalid:repo.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty-ssh-username",
+      "reason": "repository_identity",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "ssh://@example.invalid/repo.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "bare-scp-host",
+      "reason": "repository_identity",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "example.invalid:repo.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "malformed-scp-ipv6",
+      "reason": "repository_identity",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "git@[not-an-ip]:repo.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      }
+    },
+    {
+      "name": "scp-unicode-username",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "équipe@example.invalid:repo.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      },
+      "reason": "repository_identity"
+    },
+    {
+      "name": "scp-whitespace-username",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "build user@example.invalid:repo.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      },
+      "reason": "repository_identity"
+    },
+    {
+      "name": "scp-punctuation-host",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "git@example!invalid:repo.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      },
+      "reason": "repository_identity"
+    },
+    {
+      "name": "scp-leading-hyphen-host",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "git@-example.invalid:repo.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      },
+      "reason": "repository_identity"
+    },
+    {
+      "name": "lone-high-surrogate-task-ref",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/task-\ud800",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      },
+      "reason": "unicode_scalars"
+    },
+    {
+      "name": "lone-low-surrogate-task-ref",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "https://example.invalid/alpha.git",
+            "task_ref": "refs/heads/task-\udc00",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      },
+      "reason": "unicode_scalars"
+    },
+    {
+      "name": "lone-surrogate-absolute-repository",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "/srv/git/repo-\ud800.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      },
+      "reason": "unicode_scalars"
+    },
+    {
+      "name": "repository-unicode-exceeds-4096-utf8-bytes",
+      "body": {
+        "version": "superbench.checkpoint.v1",
+        "bench_id": "11111111111111111111111111111111",
+        "generation_id": "22222222222222222222222222222222",
+        "checkpoint_repository": "alpha",
+        "members": [
+          {
+            "name": "alpha",
+            "repository": "/éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/alpha",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "name": "beta",
+            "repository": "https://example.invalid/beta.git",
+            "task_ref": "refs/heads/bench/example",
+            "pin_ref": "refs/tags/superbench/pins/11111111111111111111111111111111/22222222222222222222222222222222/beta",
+            "object_format": "sha1",
+            "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      },
+      "reason": "repository_identity"
+    }
+  ]
+}
