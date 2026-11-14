@@ -5,6 +5,9 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- Propose versioned SuperBench workspace requests for aggregate creation,
+  initialization, member-targeted execution and whole-bench reconciliation.
+
 - Add a proposed SuperBench checkpoint-generation manifest and shared validation
   cases for complete multi-repository vectors, generation pins and sealed recovery.
 
