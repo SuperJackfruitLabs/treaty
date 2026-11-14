@@ -5,6 +5,8 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- Add proposed SuperBench local-operation schema and shared conformance vectors.
+
 - Documentation at [treaty.superjackfruit.com](https://treaty.superjackfruit.com): what treaty is,
   the envelope, versioning, the relay, the packages and fixtures, and a page for every event and
   Matrix event schema, generated from the schemas and fixtures at build time.
