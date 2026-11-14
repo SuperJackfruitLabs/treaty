@@ -27,3 +27,32 @@ for (const { name, body } of vectors.invalid) {
     expect(validator.validate(body).valid).toBe(false);
   });
 }
+
+const creation: {
+  version: string;
+  cases: Array<{
+    name: string;
+    scenario: string;
+    request: Record<string, unknown>;
+    expect: {
+      status: number;
+      ok: boolean;
+      held_lease_token: boolean;
+      ready_for_acquisition: boolean;
+    };
+  }>;
+} = read("fixtures/superbench-api/creation.json");
+test("creation lifecycle examples remain valid requests with consistent acquisition readiness", () => {
+  expect(creation.version).toBe("superbench.creation.v1");
+  expect(new Set(creation.cases.map((item) => item.name)).size).toBe(
+    creation.cases.length,
+  );
+  for (const item of creation.cases) {
+    expect(validator.validate(item.request).errors).toEqual([]);
+    expect(["create", "recover"]).toContain(item.request.operation);
+    expect(item.request.initialize).toBe(true);
+    expect(item.expect.ok).toBe(item.expect.status === 200);
+    expect(item.expect.ready_for_acquisition).toBe(item.expect.ok);
+    expect(item.expect.held_lease_token).toBe(!item.expect.ok);
+  }
+});

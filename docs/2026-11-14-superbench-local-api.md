@@ -55,11 +55,51 @@ A receipt-save failure after core effects is operation_in_doubt with any availab
 retained result. No timeout or transport error proves a writer stopped or permits
 reassignment. Errors do not erase the core's lease/checkpoint evidence.
 
+## Creation and initial setup
+
+`create` and `recover` accept optional `initialize: true`. The new CLI requests
+it by default. Omitted `initialize` preserves legacy cold registration for old
+clients; `false`, null, an unrelated operation or a setup-bypass flag is rejected.
+Older producers reject the new field before effects. A client that requires a
+warm bench must send it and must not fall back to a cold request after rejection.
+This is producer-first rollout, not a new authorization or identity claim.
+
+With `initialize: true`, the registered
+checkout is reserved in the same authoritative transaction that publishes it,
+before any setup can start or another holder can acquire it. Repositories with
+setup instructions or a supported frozen dependency lockfile are prepared before
+success. A repository without setup can become ready without running a command.
+No caller-provided setup-bypass or holder claim is accepted in these requests.
+
+Success means the initial setup, if present, stopped/fenced, produced durable
+output evidence and reached its confirmed checkpoint/release. On setup or
+checkpoint failure, a preserved registered checkout can return a held lease in
+`result.bench.lease`, including its token to the authenticated operator that
+submitted the operation. A reserved initialization that never launched a command
+can also retain ownership. Status still redacts tokens. An error response or an
+existing path is never permission to start an agent; reconcile using the
+returned capability and current status. Even successful creation returns ready
+for acquisition, not permission to write without a separate lease/run. Retrying creation with a new ID does
+not rerun initialization on an already registered key.
+
+A single request receipt covers registration, setup and completion. An interrupted
+receipt is never automatically redispatched, including when only registration
+completed. Cached results remain historical; replay never recreates ownership.
+The local administrative cold-create path is not a socket operation. Legacy cold requests remain compatible. Clients must honor `ok`/error before
+using paths and must request initialization to rely on warm completion.
+
+Canonical `fixtures/superbench-api/creation.json` gives ready and retained-failure
+outcomes without embedding setup implementation. Node checks the request shapes
+and case consistency; the producer executes the lifecycle assertions with actual
+Git and process fencing. These cases do not claim suite-consumer deployment.
+
 ## Execution limits
 
 A manual `lease` returns mode `cooperative`; it coordinates trusted writers but
-cannot prove that a process launched outside SuperBench stopped. Only `run` and
-`setup` create mode `supervised` execution on Linux with an atomic cgroup fence.
+cannot prove that a process launched outside SuperBench stopped. `run`, `setup` and initial preparation for `create`/`recover` use mode
+`supervised` execution on Linux with an atomic cgroup fence. A returned
+cooperative lease can follow fenced preparation; its external writer is still
+cooperative.
 Suite adapters must not treat a cooperative lease as proof of fenced execution.
 The current implementation does not yet expose terminal attachment or a managed
 external-writer registration protocol.

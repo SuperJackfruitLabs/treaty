@@ -92,6 +92,23 @@
       "holder": "run_example",
       "request_id": "setup-example",
       "offline": true
+    },
+    "create-initialize": {
+      "version": "superbench.v1",
+      "operation": "create",
+      "key": "card_example",
+      "repository": "https://example.invalid/repository.git",
+      "request_id": "create-example",
+      "initialize": true
+    },
+    "recover-initialize": {
+      "version": "superbench.v1",
+      "operation": "recover",
+      "key": "card_example",
+      "repository": "https://example.invalid/repository.git",
+      "branch": "card/card_example",
+      "request_id": "recover-example",
+      "initialize": true
     }
   },
   "invalid": [
@@ -373,6 +390,109 @@
     {
       "name": "root is not an object",
       "body": []
+    },
+    {
+      "name": "create cannot bypass initialization through a request flag",
+      "body": {
+        "version": "superbench.v1",
+        "operation": "create",
+        "key": "initial-setup",
+        "repository": "https://example.invalid/workspace/repository.git",
+        "request_id": "initial-setup",
+        "skip_setup": true
+      }
+    },
+    {
+      "name": "recover cannot bypass initialization through a request flag",
+      "body": {
+        "version": "superbench.v1",
+        "operation": "recover",
+        "key": "initial-setup",
+        "repository": "https://example.invalid/workspace/repository.git",
+        "request_id": "initial-setup",
+        "skip_setup": true,
+        "branch": "bench/initial-setup"
+      }
+    },
+    {
+      "name": "create rejects initialize false",
+      "body": {
+        "version": "superbench.v1",
+        "operation": "create",
+        "key": "card_example",
+        "repository": "https://example.invalid/repository.git",
+        "request_id": "create-example",
+        "initialize": false
+      }
+    },
+    {
+      "name": "create rejects initialize null",
+      "body": {
+        "version": "superbench.v1",
+        "operation": "create",
+        "key": "card_example",
+        "repository": "https://example.invalid/repository.git",
+        "request_id": "create-example",
+        "initialize": null
+      }
+    },
+    {
+      "name": "create rejects initialize \"true\"",
+      "body": {
+        "version": "superbench.v1",
+        "operation": "create",
+        "key": "card_example",
+        "repository": "https://example.invalid/repository.git",
+        "request_id": "create-example",
+        "initialize": "true"
+      }
+    },
+    {
+      "name": "recover rejects initialize false",
+      "body": {
+        "version": "superbench.v1",
+        "operation": "recover",
+        "key": "card_example",
+        "repository": "https://example.invalid/repository.git",
+        "branch": "card/card_example",
+        "request_id": "recover-example",
+        "initialize": false
+      }
+    },
+    {
+      "name": "recover rejects initialize null",
+      "body": {
+        "version": "superbench.v1",
+        "operation": "recover",
+        "key": "card_example",
+        "repository": "https://example.invalid/repository.git",
+        "branch": "card/card_example",
+        "request_id": "recover-example",
+        "initialize": null
+      }
+    },
+    {
+      "name": "recover rejects initialize \"true\"",
+      "body": {
+        "version": "superbench.v1",
+        "operation": "recover",
+        "key": "card_example",
+        "repository": "https://example.invalid/repository.git",
+        "branch": "card/card_example",
+        "request_id": "recover-example",
+        "initialize": "true"
+      }
+    },
+    {
+      "name": "initialize is not a lease authority field",
+      "body": {
+        "version": "superbench.v1",
+        "operation": "lease",
+        "key": "card_example",
+        "holder": "run_example",
+        "request_id": "lease-example",
+        "initialize": true
+      }
     }
   ],
   "decode_rejections": [

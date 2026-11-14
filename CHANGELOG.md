@@ -5,6 +5,10 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- Extend the proposed SuperBench local API with initial-setup outcomes and
+  retained ownership on creation failure; add shared creation cases and reject
+  request-level setup bypass flags.
+
 - Add proposed SuperBench local-operation schema and shared conformance vectors.
 
 - Documentation at [treaty.superjackfruit.com](https://treaty.superjackfruit.com): what treaty is,
