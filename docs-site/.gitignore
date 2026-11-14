@@ -5,3 +5,5 @@ node_modules/
 # Written by scripts/generate.mjs before every build, from treaty's schemas and fixtures.
 src/content/docs/events/
 src/content/docs/matrix/
+# The suite docs theme and the tarballs it needs, vendored like the other docs sites'.
+!vendor/*.tgz
