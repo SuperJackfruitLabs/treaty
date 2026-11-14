@@ -3,14 +3,16 @@ title: The envelope and subjects
 description: "Every suite event is a CloudEvents 1.0 event in binary content mode, filed under a subject and typed by one naming rule."
 ---
 
-Every event a product sends to another is a [CloudEvents 1.0](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md)
-event in **binary content mode**: the context attributes travel as headers and the body is the
-event's data, untouched. `@superjackfruitlabs/treaty-cloudevents` is the codec.
+When one product sends an event to another, we give it the same envelope every time: a
+[CloudEvents 1.0](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md) event in
+**binary content mode**. The context attributes travel as headers while the body remains the
+event's untouched data. `@superjackfruitlabs/treaty-cloudevents` is the codec you can use to read
+and write that envelope.
 
 ## Attributes
 
-An event is its attributes as canonical strings plus its data as bytes, so the same shape crosses
-every binding and every language.
+Think of an event as canonical-string attributes plus data bytes. That small common denominator
+lets you carry the same shape across each binding and language.
 
 - **Required:** `id`, `source`, `specversion` and `type`. `specversion` is always `1.0`.
 - **Names:** every attribute name, extensions included, is 1 to 20 characters of `a-z0-9`.
@@ -19,7 +21,8 @@ every binding and every language.
 - **`dataschema`** names the JSON Schema the data follows: the schema's `$id`, its address on the
   public repository. The [catalogue](/events/) lists every one.
 
-`validate()` throws unless the attributes are a valid context.
+Call `validate()` when you need to enforce that boundary; it throws unless the attributes form a
+valid context.
 
 ## Over HTTP and over NATS
 
@@ -29,9 +32,10 @@ every binding and every language.
 | `datacontenttype` | the `Content-Type` header; a `ce-datacontenttype` header is an error | `ce-datacontenttype`, like every other attribute |
 | Quoted header values | unquoted, then percent-decoded | percent-decoded |
 
-`toBinary(event, binding)` and `fromBinary(message, binding)` convert, with `binding` one of
-`http` or `nats`. Structured and batched content modes are refused: a `Content-Type` of
-`application/cloudevents…` fails to decode.
+Use `toBinary(event, binding)` and `fromBinary(message, binding)` to cross the boundary, with
+`binding` set to `http` or `nats`. The result is a binary-mode message for that transport, or a
+decoded event on the way back. Structured and batched content modes are refused: a `Content-Type`
+of `application/cloudevents…` fails to decode.
 
 **Header encoding** follows both protocol bindings. A sender percent-encodes space, `"`, `%` and
 every character outside U+0021 to U+007E, one `%XY` per UTF-8 byte, in upper-case hex. A receiver
@@ -44,7 +48,7 @@ non-ASCII text over NATS will not round-trip through this codec, which follows t
 
 ## Subjects
 
-A subject is where an event is filed in NATS:
+A subject is where we file an event in NATS:
 
 ```
 evt.<workspace>.<product>.<entity>.<verb>
@@ -58,7 +62,8 @@ subscriber to `evt.*.superpipeline.>` receives every SuperPipeline event in ever
   digits or `_`. A two-word entity is joined with `_`: SuperPipeline's `card.comment.added` is the
   entity `card_comment` and the verb `added`.
 
-`eventSubject(workspace, name)` builds one and `parseSubject(subject)` reads one back.
+Use `eventSubject(workspace, name)` to build one and `parseSubject(subject)` to read one back. You
+then have one subject grammar for publishing and filtering.
 
 ## Types
 
@@ -67,7 +72,7 @@ com.superjackfruit.<product>.<entity>.<verb>.v<N>
 ```
 
 `<N>` is a positive whole number. `eventType(name, version)` builds one and `parseType(type)` reads
-it back.
+it back, so the version remains explicit at both ends.
 
 **The version lives in `type` and `dataschema`, never in the subject**, so a subscriber's filter
 catches every version of an event and the subscriber decides which shapes it reads. See
