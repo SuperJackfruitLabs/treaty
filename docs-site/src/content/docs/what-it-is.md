@@ -18,8 +18,8 @@ Treaty publishes definitions and nothing else. Here is what you can reach for:
 
 - **[The envelope](/envelope/):** CloudEvents 1.0 in binary content mode, and the suite's names
   for event subjects and types.
-- **[Event schemas](/events/):** a JSON Schema for each body SuperPipeline sends, and a catalogue
-  that names each event's CloudEvents `type` and the `dataschema` it points at.
+- **[Event schemas](/events/):** the JSON Schemas Treaty holds for SuperPipeline event bodies, and
+  a catalogue that names each event's CloudEvents `type` and the `dataschema` it points at.
 - **[Matrix event schemas](/matrix/):** one JSON Schema per board-room Matrix event, with the
   TypeScript that builds the content and parses the answers.
 - **[Fixtures](/fixtures/):** shared corpora of valid and refused cases, including the identity

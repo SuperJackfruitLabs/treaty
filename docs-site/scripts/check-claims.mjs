@@ -43,6 +43,15 @@ const page = (name) => {
 const handWritten = new Map([...pages].filter(([f]) => !/^(events|matrix)\//.test(f)));
 const has = (text, s) => text.includes('`' + s + '`');
 
+// These pages describe the subset of SuperPipeline bodies whose schemas treaty actually holds.
+// Keep the wording aligned with status.md, which names bodies owned elsewhere or not yet covered.
+for (const [name, wording] of [
+  ['index.mdx', 'every body SuperPipeline sends'],
+  ['what-it-is.md', 'each body SuperPipeline sends'],
+]) {
+  if (page(name).includes(wording)) fail(`${name}: overclaims treaty's SuperPipeline schema coverage`);
+}
+
 for (const [name, text] of pages) {
   const front = text.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? '';
   if (!/^title: \S/m.test(front)) fail(`${name}: no title`);
@@ -157,7 +166,14 @@ const relay = page('relay.md');
 // obviously synthetic and mechanically reject the malformed legacy wording.
 if (!/\^Bearer \(\.\+\)\$/.test(ingest) || !relay.includes('Authorization: Bearer <token>'))
   fail('relay.md: the producer authorization header');
-if (relay.includes('Bearer *** token>')) fail('relay.md: malformed legacy bearer placeholder');
+if (relay.includes('Bearer <producer token> token>'))
+  fail('relay.md: malformed legacy bearer placeholder');
+
+// deliverOne drops every response outside 2xx and the explicit retry set, not only other 4xx.
+if (!relay.includes('Any other response, including 3xx and other 4xx'))
+  fail('relay.md: the complete dropped-response class');
+if (relay.includes('every matching subscriber receives a signed POST'))
+  fail('relay.md: delivery attempts must not be described as guaranteed receipt');
 
 const envNames = new Set([...config.matchAll(/env\["([A-Z_]+)"\]/g)].map((m) => m[1]));
 if (envNames.size < 7) fail(`read only ${envNames.size} settings from the relay's config.ts`);
@@ -267,6 +283,15 @@ for (const dir of ['cloudevents', 'outbox']) {
   const text = page(`packages/${dir}.md`);
   for (const n of names) if (!has(text, n) && !has(text, n + '()')) fail(`packages/${dir}.md does not name the export ${n}`);
 }
+if (page('packages/cloudevents.md').includes('What every function here throws'))
+  fail('packages/cloudevents.md: not every export throws CloudEventError');
+const sqliteOutbox = read(join(repo, 'packages/outbox/src/sqlite.ts'));
+if (
+  !sqliteOutbox.includes('ON CONFLICT (source, id) DO NOTHING') ||
+  !sqliteOutbox.includes('DELETE FROM treaty_outbox WHERE seq = ?') ||
+  !page('packages/outbox.md').includes('While an event is still pending')
+)
+  fail('packages/outbox.md: duplicate enqueue applies only while the outbox row remains');
 const identity = read(join(repo, 'packages/ecosystem-identity/src/index.ts'));
 const corpusFiles = [...(identity.match(/CORPUS_FILES = \[([\s\S]*?)\]/)?.[1] ?? '').matchAll(/"([^"]+)"/g)].map((m) => m[1]);
 const onDisk = readdirSync(join(repo, 'fixtures/ecosystem-identity')).filter((f) => f.endsWith('.json')).sort();

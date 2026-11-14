@@ -34,7 +34,7 @@ posted, and acting on it, stay with the carrier.
 | `gateV2Content()`, `questionV2Content()`, `deliveryV2Content()`, `attentionV2Content()` | Build a card's Matrix content from what SuperPipeline sent. |
 | `parseGateDecision()`, `parseQuestionAnswer()`, `parseDeliveryAnswer()`, `parseAttentionAnswer()` | Read a person's answer into what a carrier acts on, or `null`. |
 | `isGatePending()`, `isElicitationPending()`, `isDeliveryPending()`, `isAttentionPending()` | Check a SuperPipeline body before building from it. |
-| `isSubjectExpiry()` | The strict RFC 3339 rule for a subject's `expires_at`, the same as the schemas' `pattern`. |
+| `isSubjectExpiry()` | Check the strict RFC 3339 rule for a subject's `expires_at`, which the schemas express with `format` and `pattern`. |
 | `uniqueByViolations()` | Check the `x-uniqueBy` rules JSON Schema cannot state. |
 | `boardRoomNames()` | The board room's alias and speaker for a carrier: `agentpod` or `superexchange`. |
 

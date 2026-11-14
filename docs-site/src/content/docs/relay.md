@@ -5,8 +5,8 @@ description: "The relay carries events from Cloudflare Workers into NATS JetStre
 
 Cloudflare Workers and Durable Objects cannot hold a NATS connection, so we give them an HTTP
 bridge. A producer POSTs an event to the relay over HTTPS, the relay stores it in NATS JetStream,
-and every matching subscriber receives a signed POST. The relay is a Bun service in `apps/relay`
-and the only part of Treaty that runs.
+and the relay makes signed delivery attempts to every matching subscriber. It is a Bun service in
+`apps/relay` and the only part of Treaty that runs.
 
 It keeps two JetStream streams: `WORK` holds `evt.>`, and `AUDIT` holds `audit.>`, so a slow audit
 consumer never holds up work and purging work never touches audit. Subscribers read `WORK`.
@@ -79,7 +79,7 @@ The relay POSTs every event to the subscriber's URL as an HTTP binary-mode Cloud
 | --- | --- |
 | 2xx | Delivered. Acknowledged. |
 | 408, 429, 5xx, or a network failure | Redelivered after a backoff: 1 s, 2 s, 4 s and so on, doubling up to 5 minutes, until `maxDeliver` tries. |
-| Any other 4xx | Dropped and logged: retrying cannot help. |
+| Any other response, including 3xx and other 4xx | Dropped and logged: retrying cannot help. |
 | (a stored message that is not a valid event) | Dropped and logged. |
 
 An unacknowledged delivery is retried after 30 seconds. After `maxDeliver` tries JetStream stops

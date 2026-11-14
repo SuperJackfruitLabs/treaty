@@ -47,5 +47,6 @@ The change and its outgoing event now commit together, while a repeated incoming
 | `Backoff`, `DEFAULT_BACKOFF` | When to retry a failed send. The default waits 1 minute after the first failure, doubling to at most 1 hour, and parks an event as dead after 12 attempts. |
 | `DrainOptions` | `nowMs`, `limit` (default 100 events), `leaseMs` (default 60 s: how long a claimed event is hidden from another drain) and `backoff`. |
 
-Enqueuing the same `(source, id)` twice does nothing, so your retried request does not send its
-event twice.
+While an event is still pending, enqueuing the same `(source, id)` again does nothing. After a
+successful drain deletes that row, the at-least-once boundary still applies, so receivers use
+`handleOnce()` to make any later repeat harmless.

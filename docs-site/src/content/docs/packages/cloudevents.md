@@ -47,7 +47,7 @@ produced from the same event name rather than assembled by hand.
 | `eventType()`, `parseType()`, `EventName` | Build and read `com.superjackfruit.<product>.<entity>.<verb>.v<N>`. |
 | `signDelivery()`, `verifyDelivery()`, `SIGNATURE_HEADER` | Sign and check a relay delivery, in the `x-treaty-signature` header. |
 | `percentEncode()`, `percentDecode()` | The header-value encoding both bindings use. |
-| `CloudEventError` | What every function here throws. |
+| `CloudEventError` | The error used when the codec, naming helpers or signature verifier refuses input. |
 
 When you need the exact rules behind those exports, see [The envelope and subjects](/envelope/);
 verifying a
