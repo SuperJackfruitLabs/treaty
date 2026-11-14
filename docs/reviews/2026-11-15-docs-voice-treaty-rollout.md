@@ -1,0 +1,102 @@
+# Claims ledger — Treaty docs voice rollout
+
+Status: draft-stage evidence for the 13-page voice rollout.
+
+## Immutable revisions and scope
+
+- PR base: `4bd7d7d08d813a80f9751d8cbd6f25f3feba122f` (merge of Treaty PR #28).
+- Voice guide: `SuperJackfruitLabs/sketchbook@29690e4397467bcf92ea7ef7e88b4e89cffba88f`, `ideas/2026-11-14-docs-voice-guide-v1/README.md`.
+- Reference rollout: `SuperJackfruitLabs/superdispatch`, merged PR #32; its ledger shape and published narrator were used as the standard, not as a source of wording.
+- Scope: all 13 hand-written, published pages under `docs-site/src/content/docs/`, the claims ratchet, and this ledger.
+- Generated `events/` and `matrix/` pages, product code, configuration, schemas, fixtures and release machinery are unchanged.
+- Product evidence below is pinned to the PR base.
+
+## Page-by-page voice review
+
+All pages pass narrator, exactness, vocabulary/privacy, originality and claims. These rows also apply the page-kind-specific parts of the rubric.
+
+| Page | Kind | Narrator and momentum | Step payoffs | Running gag | Exact/safety material |
+| --- | --- | --- | --- | --- | --- |
+| `index.mdx` | home/reference | pass — the hero and cards guide you toward a boundary | not applicable — no action-bearing steps | not applicable — reference page | pass — product names and links remain literal |
+| `what-it-is.md` | concept | pass — shared `we`, direct `you`, and a clear boundary | not applicable | not applicable | pass — lists and repository/package links remain literal |
+| `status.md` | status/reference | pass — direct opening and candid wet-paint transition | not applicable | not applicable | pass — versions, dates and open items remain literal |
+| `versioning.md` | concept | pass — the three-release journey now has a shared narrator | not applicable — numbered rules explain a process rather than ask for actions | not applicable | pass — type strings, package versions and compatibility rules remain exact |
+| `envelope.md` | reference | pass — direct guidance frames the tables and grammars | pass — each function-oriented action states what it returns or protects | not applicable | pass — attributes, regex-like grammars, tables and examples remain literal |
+| `fixtures.md` | task/reference | pass — the reader is guided from corpus to pinned upgrade | pass — the pin/test/fix sequence ends with the observable agreement | not applicable | pass — paths, imports and refusal classes remain literal |
+| `relay.md` | task/reference | pass — a real `we`/`you` narrator carries publishing, subscribing and verification | pass — publishing ends at a 202 receipt, subscribing at a durable consumer, deduplication at one effect, and signature verification at a trusted decoded event | not applicable — no running gag on a task page | pass — header, route, statuses, tables, code, warnings, settings and recovery remain literal |
+| `packages/index.md` | quick reference | pass — it helps the reader choose a boundary | pass — the install command ends with the pinned result | not applicable | pass — package names, version and command remain literal |
+| `packages/cloudevents.md` | reference | pass — direct use case and code payoff | pass — the example ends with the subject and wire message it produced | not applicable | pass — code and export table remain literal |
+| `packages/event-schemas.md` | reference | pass — direct use case and code payoff | pass — the imports end with the catalogue/schema result | not applicable | pass — imports and export table remain literal |
+| `packages/ecosystem-identity.md` | reference | pass — direct testing use case and code payoff | pass — the imports end with grammar and corpus discovery | not applicable | pass — file list and import stay literal |
+| `packages/matrix-events.md` | reference | pass — direct carrier use case and code payoff | pass — the imports end with a built and validated card | not applicable | pass — types, exports and rules remain literal |
+| `packages/outbox.md` | task/reference | pass — direct problem statement and outcome | pass — the example ends with atomic output and duplicate suppression | not applicable | pass — code, defaults and export table remain literal |
+
+Candour passes across the set: unfinished contracts, placeholder retention, at-least-once delivery, retry/drop behavior, cross-language boundaries and deployment evidence limits remain explicit. No private host, person, agent, team, credential or customer/private-message name was added. Loopback addresses, public product names, synthetic ids and placeholder tokens are the only examples.
+
+## Claims checked at the PR base
+
+Each row covers every material command, route, setting, default, field, enum, limit, version and behavioral statement on the page. The docs claims ratchet performs the exhaustive schema/page comparisons described below.
+
+| Page | Material checked | Base evidence |
+| --- | --- | --- |
+| `index.mdx` | CloudEvents binary mode; HTTP/NATS bindings; schemas and refused cases; relay path and at-least-once delivery; five MIT packages at one version; producer-first compatibility | `packages/cloudevents/src/codec.ts:1-100`; `scripts/schemas.test.ts:33-65`; `scripts/matrix-schemas.test.ts:65-118`; `apps/relay/src/ingest.ts:38-116`; `apps/relay/src/deliver.ts:30-84`; five `packages/*/package.json:1-6`; `scripts/release-version.ts:1-8,30-53` |
+| `what-it-is.md` | contracts-only boundary; charter/Treaty split; envelope, schemas, Matrix contract, fixtures, outbox and relay roles; pure Matrix helpers; no product data; plain JSON; MIT/package count | `AGENTS.md:1-18`; `packages/matrix-events/src/index.ts:1-9,12-28`; `packages/outbox/src/sqlite.ts:1-9,60-78,138-160`; `apps/relay/src/ingest.ts:38-116`; `apps/relay/src/deliver.ts:35-84`; `packages/ecosystem-identity/src/index.ts:1-18`; five `packages/*/package.json:1-6`; `LICENSE:1-21` |
+| `status.md` | v0.0.13/date; five packages; `card.ready`; Matrix contract; relay version history; current producer/consumer map; bearer auth and placeholder retention; missing schemas; SuperWitness-owned run reports | `CHANGELOG.md:12-84`; `schemas/catalog.json:1-178`; `docs-site/src/data/parties.json:1-43,224-230,232-518`; `apps/relay/src/config.ts:1-12,94-175`; `apps/relay/src/nats.ts:25-64`; `packages/matrix-events/src/index.ts:1-28` |
+| `versioning.md` | readers allow unknown properties; additive versus breaking changes; versions in CloudEvents types and Matrix type/schema version; producer-first sequence; five packages share a tag version; main stays 0.0.0; exact pins isolate consumers | No schema under `schemas/superpipeline/*.json` or `schemas/matrix/*.json` sets `additionalProperties: false` (all 41 files inspected); `packages/cloudevents/src/naming.ts:1-6,29-80`; `schemas/catalog.json:5-178`; `docs-site/scripts/generate.mjs:399-405`; `scripts/release-version.ts:1-8,18-53`; five `packages/*/package.json:1-6`; `deploy/release/publish.sh:1-26` |
+| `envelope.md` | CloudEvents 1.0 binary context; required attributes; name limit; HTTP/NATS content-type and percent encoding; structured/batched refusal; subject/type grammars; positive version; WORK/AUDIT streams; catalogue linkage and producer map | `packages/cloudevents/src/constants.ts:1-12`; `packages/cloudevents/src/codec.ts:1-100`; `packages/cloudevents/src/encoding.ts:1-69`; `packages/cloudevents/src/naming.ts:1-81`; `apps/relay/src/nats.ts:25-64`; `schemas/catalog.json:5-178`; `docs-site/src/data/parties.json:11-230` |
+| `fixtures.md` | four corpora and publication locations; refusal classes; generated Matrix corpus; negative cases; pinned-version usage and imports; Go/Swift plain-data boundary | `fixtures/ecosystem-identity/README.md:1-45`; `packages/ecosystem-identity/src/index.ts:1-18`; `scripts/schemas.test.ts:24-65`; `scripts/matrix-schemas.test.ts:20-118`; `scripts/matrix-examples.ts:1-448`; `packages/matrix-events/package.json:12-27`; `packages/event-schemas/package.json:12-29` |
+| `relay.md` | route/auth; subject and type checks; SHA-256 token storage; body limit; all response statuses; duplicate handling; subscriber fields/default; URL constraints; durable consumer and replay policy; retry/drop rules; signature form/tolerance; seven settings/defaults; intended staging/tag/rollback flow | `apps/relay/src/ingest.ts:26-116`; `apps/relay/src/config.ts:14-35,65-175`; `apps/relay/src/deliver.ts:30-84`; `apps/relay/src/nats.ts:25-147`; `packages/cloudevents/src/signature.ts:1-66`; `.github/workflows/staging.yml:1-32`; `.github/workflows/release.yml:10-12,381-486` |
+| `packages/index.md` | five public MIT ES-module packages; exact current install version; JSON subpath exports; tag-version publication with provenance | five `packages/*/package.json:1-31`; `CHANGELOG.md:12-22`; `scripts/release-version.ts:1-8,30-53`; `deploy/release/publish.sh:1-26` |
+| `packages/cloudevents.md` | no dependencies; Workers/Bun/Node Web Crypto boundary; example API; every export; binary-mode fixture origin | `packages/cloudevents/package.json:1-29`; `packages/cloudevents/src/index.ts:1-31`; `packages/cloudevents/src/codec.ts:16-100`; `packages/cloudevents/src/naming.ts:10-81`; `packages/cloudevents/src/signature.ts:1-66`; `fixtures/cloudevents/README.md:1-33` |
+| `packages/event-schemas.md` | draft 2020-12 schemas; catalogue fields; imports/subpaths; `SCHEMA_BASE`; every catalogue entry backed by a held schema; exclusions | `packages/event-schemas/src/index.ts:1-13`; `packages/event-schemas/package.json:1-31`; `schemas/catalog.json:1-178`; `scripts/schemas.test.ts:103-163`; `docs-site/scripts/check-claims.mjs:52-125,224-268` |
+| `packages/ecosystem-identity.md` | five corpus files and contents; subpath export; no product type dependency; accept/reject cases | `packages/ecosystem-identity/src/index.ts:1-20`; `packages/ecosystem-identity/package.json:1-29`; `fixtures/ecosystem-identity/README.md:1-45`; `packages/ecosystem-identity/test/index.test.ts:1-53`; `packages/ecosystem-identity/test/token-claims.test.ts:1-116` |
+| `packages/matrix-events.md` | schema/corpus/TypeScript surfaces; builders and parsers; pure boundary; named exports; type-version rule; strict expiry; `x-uniqueBy`; carrier names | `packages/matrix-events/package.json:1-33`; `packages/matrix-events/src/index.ts:1-28`; `packages/matrix-events/src/expiry.ts:1-33`; `packages/matrix-events/src/unique.ts:1-41`; `packages/matrix-events/src/board-room.ts:30-71`; `scripts/matrix-schemas.test.ts:36-118` |
+| `packages/outbox.md` | transactional enqueue; at-least-once drain; once-per `(source,id)` inbox; SQLite/Postgres APIs and schemas; event requirements; backoff/defaults/limits/lease; duplicate enqueue | `packages/outbox/src/types.ts:1-59`; `packages/outbox/src/sqlite.ts:1-9,33-160`; `packages/outbox/src/postgres.ts:1-10,29-148`; `packages/outbox/src/index.ts:1-18`; `packages/outbox/test/scenarios.ts:1-248` |
+
+## Corrections and evidence-bound changes
+
+No factual change was made silently.
+
+| Old material | New material | Why and evidence |
+| --- | --- | --- |
+| `relay.md` showed a malformed bearer placeholder: `Authorization: Bearer <producer token>` had acquired stray placeholder text in the rendered source. | The page now shows the exact header shape `Authorization: Bearer <token>` in a literal HTTP block. | The parser accepts exactly `Bearer ` followed by a non-empty token: `apps/relay/src/ingest.ts:49-54`. The claims ratchet now requires the documented shape and rejects the legacy malformed wording. |
+| `packages/event-schemas.md` said SuperPipeline “refuses to relay an event the catalogue has no schema for,” a behavior owned by another repository and not demonstrated by this base. | The page now makes the local, checkable claim: the catalogue provides each relayed event's `dataschema`, and every catalogue entry is backed by a schema Treaty holds. | `schemas/catalog.json:5-178`; `scripts/schemas.test.ts:103-163`; `docs-site/scripts/check-claims.mjs:80-100`. The narrower wording does not infer another product's runtime behavior from absence of local code. |
+
+## Deployment claims that remain UNVERIFIED
+
+The repository proves the intended flow but not the current state of private infrastructure:
+
+- **UNVERIFIED:** `status.md` says the relay is in production and has been there since v0.0.7. `CHANGELOG.md:50-58` records the release history, but this repository cannot prove what is live now.
+- **UNVERIFIED:** `relay.md` says the relay runs in production and staging. `.github/workflows/staging.yml:1-32` and `.github/workflows/release.yml:381-486` define deployment and rollback, but do not prove current live deployments.
+
+A request for pinned private-estate evidence was posted on card `card_a86dc17f98014a3a`. These statements are not treated as false merely because their live infrastructure is outside this repository.
+
+## Mechanical claims ratchet
+
+`docs-site/scripts/check-claims.mjs` already checks all generated pages and schemas, all catalogue types and schema ids, internal links, relay settings/defaults/statuses/retries/signature details, envelope grammar, package exports and current release version. This rollout adds a bearer-header ratchet:
+
+- reads the authorization grammar from `apps/relay/src/ingest.ts`;
+- requires the literal `Authorization: Bearer <token>` shape in `relay.md`;
+- rejects the malformed legacy placeholder.
+
+The existing ratchet also verifies all 13 hand-written pages indirectly wherever they name a type, subject, route-adjacent relay fact, export or version.
+
+## Exact-material inventory
+
+- `index.mdx`: frontmatter, action links and product/package identifiers.
+- `what-it-is.md`: lists, paths, product names and repository/package links.
+- `status.md`: version/date, package/type names, open items and missing-contract list.
+- `versioning.md`: type strings, `.v<N>` examples, numbered compatibility sequence and version values.
+- `envelope.md`: attributes, bindings table, grammars, examples, stream names and attribute table.
+- `fixtures.md`: corpus table, refusal classes, paths, commands/imports and language names.
+- `relay.md`: diagram, route/header, ordered checks, status table, subscriber table, retry table, warning, signature format, TypeScript, settings and deployment statement.
+- `packages/index.md`: chooser table, install command, version and package names.
+- Package pages: imports/code, export/file tables, types, defaults, limits and compatibility rules.
+
+No humour was added to any exact region.
+
+## Real checks
+
+- Preliminary install: `npm ci` in `docs-site` — pass; 308 packages added, 309 audited, 0 vulnerabilities.
+- Preliminary claims run: `npm run check:claims` — pass; generated 12 event pages and 29 Matrix pages from 41 schemas; checked 56 pages, 27 CloudEvents types, 29 Matrix types, 7 relay settings, 10 relay answers and 5 packages; current version v0.0.13.
+- Final docs-only CI command (`npm ci && npm run build`): pending final tree.
