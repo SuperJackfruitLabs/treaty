@@ -4,8 +4,8 @@ description: "@superjackfruitlabs/treaty-outbox: a transactional outbox and a de
 ---
 
 [`@superjackfruitlabs/treaty-outbox`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-outbox)
-makes events exactly once in effect on top of a transport that is at least once. **Use it** when a
-service writes a change and must send the event for it, or receives events and must not act on one
+helps you make an event exactly once in effect on top of an at-least-once transport. Use it when a
+service must send an event for a stored change, or when a receiver must not apply the same event
 twice.
 
 - **Outbox:** `enqueue()` writes the event inside the transaction that makes the change, so the two
@@ -33,6 +33,9 @@ const outcome = sqlite.handleOnce(ctx.storage, incoming, () => {
 });
 ```
 
+The change and its outgoing event now commit together, while a repeated incoming event returns
+`"duplicate"` instead of applying the handler again.
+
 ## What it exports
 
 | Export | What |
@@ -44,5 +47,6 @@ const outcome = sqlite.handleOnce(ctx.storage, incoming, () => {
 | `Backoff`, `DEFAULT_BACKOFF` | When to retry a failed send. The default waits 1 minute after the first failure, doubling to at most 1 hour, and parks an event as dead after 12 attempts. |
 | `DrainOptions` | `nowMs`, `limit` (default 100 events), `leaseMs` (default 60 s: how long a claimed event is hidden from another drain) and `backoff`. |
 
-Enqueuing the same `(source, id)` twice does nothing, so a retried request does not send its event
-twice.
+While an event is still pending, enqueuing the same `(source, id)` again does nothing. After a
+successful drain deletes that row, the at-least-once boundary still applies, so receivers use
+`handleOnce()` to make any later repeat harmless.

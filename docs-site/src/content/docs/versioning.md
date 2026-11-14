@@ -3,20 +3,22 @@ title: Versioning and compatibility
 description: "How a contract changes without breaking anyone: readers ignore what they do not know, the producer moves first, both shapes are accepted, and the old one is removed last."
 ---
 
-Products release on their own schedules, so a contract must change without any two of them having
-to ship together. Three rules make that work.
+Your products release on their own schedules; we should not make two of them ship in lockstep just
+to change a shared contract. Three rules let each side move safely in its own release.
 
 ## 1. Readers ignore what they do not know
 
-No schema forbids extra properties. A producer may add an **optional** field without a new
-version, and every reader must ignore a property it does not know.
+No schema forbids extra properties. You may add an **optional** field without a new version, and
+every reader must ignore a property it does not know. That gives the producer room to move first
+without making an older reader fall over.
 
 Removing or renaming a field, or changing what one means, is a breaking change and gets a new
 version.
 
 ## 2. A new shape is published beside the old one
 
-A breaking change never edits a schema in place:
+When the change is breaking, we never edit a schema in place. We publish the new shape beside the
+old one:
 
 - **CloudEvents:** the version is the type's `.v<N>` and the schema's file name.
   `com.superjackfruit.superpipeline.gate.pending.v1` and a future `.v2` would both be in the
@@ -32,7 +34,7 @@ event.
 
 ## 3. Producer first, accept both, remove last
 
-Every breaking change lands in three separate steps, each in its own release:
+We land every breaking change in three separate steps, each in its own release:
 
 1. **The producer moves first.** Treaty publishes the new schema and the producer starts sending
    the new shape beside the old one.
@@ -40,12 +42,15 @@ Every breaking change lands in three separate steps, each in its own release:
    on its own schedule.
 3. **The old shape is removed last**, in a later, separate change, once no reader depends on it.
 
+After those three releases, every reader has had a safe migration window and the catalogue no
+longer needs to carry the retired shape.
+
 ## Package versions
 
 All five packages publish together, at the version of the repository's `vX.Y.Z` tag. The tag is
 the only source of the version: `package.json` files on main stay at `0.0.0`. Versions started at
 0.0.1.
 
-A product pins an **exact** version and moves when it is ready. A new treaty release changes
-nothing for a product until it bumps its pin, and the tests it runs against that pin say what it
-has to change. See [Fixtures and pinned versions](/fixtures/).
+Pin an **exact** version in your product and move when you are ready. A new Treaty release changes
+nothing for that product until you bump its pin; the tests against the new pin then tell you what
+must change. See [Fixtures and pinned versions](/fixtures/).

@@ -4,14 +4,17 @@ description: "@superjackfruitlabs/treaty-ecosystem-identity: the identity fixtur
 ---
 
 [`@superjackfruitlabs/treaty-ecosystem-identity`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-ecosystem-identity)
-is the identity contract as plain JSON. Each product owns its own types; this corpus proves they
-agree. **Use it** in the tests of anything that mints or checks a suite id, verifies an access
-token, renders a card prompt or joins runs.
+is the identity contract as plain JSON. Each product still owns its own types; the shared corpus is
+how we prove they agree. Use it in your tests whenever code mints or checks a suite id, verifies an
+access token, renders a card prompt or joins runs.
 
 ```ts
 import grammar from "@superjackfruitlabs/treaty-ecosystem-identity/id_grammar.json" with { type: "json" };
 import { CORPUS_FILES } from "@superjackfruitlabs/treaty-ecosystem-identity";
 ```
+
+You can now drive your validator from the grammar and use `CORPUS_FILES` to discover the rest of
+the published contract without maintaining a second file list.
 
 `CORPUS_FILES` lists every file, each published at its own subpath:
 
@@ -24,5 +27,5 @@ import { CORPUS_FILES } from "@superjackfruitlabs/treaty-ecosystem-identity";
 | `matrix_gate_events.json` | The chat events a gate, question, follow-up, waiting card or permission crosses Matrix on, with accept and reject cases. The [Matrix corpus](/fixtures/) is built from it. |
 
 The corpus moved here from AgentPod on 2026-11-10, with its history. It depends on no type from any
-product, so any product can read it. Every entity carries a `reject` list as well as valid
+product, so you can read it from any product. Every entity carries a `reject` list as well as valid
 examples; see [Fixtures](/fixtures/#negative-cases-are-the-point).
