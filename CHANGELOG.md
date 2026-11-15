@@ -5,6 +5,9 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- Propose operation-bound SuperBench cancellation schemas, source-digest goldens
+  and runtime obligations; existing v1/v2 bytes and accepted authority stay unchanged.
+
 - Propose coordinator-authorized per-run checkpoint settlement HTTP schemas and
   fixtures; no accepted authority, provisioned grant or live pilot is claimed.
 
