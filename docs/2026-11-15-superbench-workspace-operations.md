@@ -164,8 +164,23 @@ complete checkpoint, pending generation, recovery link and archive state when
 present. Completed checkpoints have a seal; pending generations do not. Both
 carry complete ordered name/commit vectors and manifest digests, without raw
 manifest repository identities, pin refs or paths. Readiness is exactly ready
-phase with no lease, pending generation or archive. A staged directory, historical
+phase with no lease, pending generation, archive or `transfer_state`. A staged directory, historical
 preparation proof, root path or success flag alone grants no writer authority.
+
+The optional `transfer_state` is `relinquishing` or `transferred` for an outgoing
+original-ref handoff. It is availability evidence, separate from initialization
+`phase`: the source stays `ready` until archive, while acquisition is permanently
+blocked. Relinquishing is ready-only; transferred sources may remain in ready,
+archived, reaping or reaped inventory. Both require a complete checkpoint and
+no lease or pending generation, always report `ready_for_acquisition: false`, and
+never accompany a grant. Only this bounded state is public; retirement scope,
+protected history, storage/quarantine paths and private ownership remain local.
+
+This is a proposed producer-first response extension. Non-transfer responses omit
+the field and keep their existing bytes. Updated validators accept omission and
+the new field; older strict v2 clients reject the extra field safely and must be
+updated before consuming transfer inventory. The addition creates no request,
+network crossing, issuer or consumer-acceptance claim. The v1 boundary is unchanged.
 
 `root_path` occurs once for a registration independently bound to create/recover,
 or a new explicit grant. It is absolute/canonical and at most 4096 UTF-8 bytes.

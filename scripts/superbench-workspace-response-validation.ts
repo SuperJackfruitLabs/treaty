@@ -104,8 +104,19 @@ function workspaceErrors(w: ObjectValue): string[] {
     w.phase === "ready" &&
     w.lease === undefined &&
     w.pending === undefined &&
-    w.archive === undefined;
+    w.archive === undefined &&
+    w.transfer_state === undefined;
   if (w.ready_for_acquisition !== ready) errors.push("readiness");
+  if (
+    w.transfer_state !== undefined &&
+    (!["relinquishing", "transferred"].includes(text(w.transfer_state)) ||
+      !["ready", "archived", "reaping", "reaped"].includes(text(w.phase)) ||
+      w.lease !== undefined ||
+      w.pending !== undefined ||
+      w.checkpoint === undefined ||
+      (w.transfer_state === "relinquishing" && w.phase !== "ready"))
+  )
+    errors.push("transfer_availability");
   if (
     ["ready", "archived", "reaping", "reaped"].includes(text(w.phase)) &&
     w.checkpoint === undefined
@@ -267,7 +278,8 @@ export function responseErrors(
       expected.authorized_grant !== false &&
       expected.lease_token === undefined &&
       w.lease !== undefined &&
-      w.archive === undefined;
+      w.archive === undefined &&
+      w.transfer_state === undefined;
     if (["create", "recover"].includes(op))
       authorized &&=
         b.ok === false &&

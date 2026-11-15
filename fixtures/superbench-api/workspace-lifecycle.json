@@ -242,6 +242,16 @@
           }
         }
       ]
+    },
+    {
+      "name": "original-ref-transfer-availability",
+      "response_case": "status-transferred-source",
+      "assertions": [
+        "A relinquishing or transferred source remains in complete status inventory with transfer_state and ready_for_acquisition=false.",
+        "The source initialization phase remains ready; availability is separate and never reconstructed by clearing a stopped lease.",
+        "No transfer response or historical replay grants a source writer; immutable seals and protected history remain separate evidence.",
+        "The optional response field adds no socket operation, remote authority or suite-consumer acceptance."
+      ]
     }
   ],
   "bindings": {

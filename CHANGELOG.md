@@ -5,6 +5,9 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- Propose optional SuperBench v2 transfer availability so retired sources remain
+  visible without advertising writer acquisition or grants.
+
 - Propose bounded SuperBench v2 responses, explicit operation-scoped lease grants,
   complete mixed status and shared lifecycle obligations alongside unchanged requests.
 
