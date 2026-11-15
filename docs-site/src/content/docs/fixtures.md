@@ -64,3 +64,13 @@ import examples from "@superjackfruitlabs/treaty-matrix-events/examples.json" wi
 ```
 
 Go and Swift read the same JSON files without TypeScript.
+
+## Proposed checkpoint settlement
+
+The proposed SuperPipeline HTTP settlement schemas live under
+`schemas/superpipeline-api/`; they are separate from the accepted event catalogue.
+Their report/submission/receipt fixtures and independent canonical vectors are in
+`fixtures/superpipeline-run-checkpoint/`. CI checks structural cases and canonical
+digests. The 23 producer-state scenarios are design requirements, not executed
+product conformance. See the [proposal](https://forge.superjackfruit.com/SuperJackfruitLabs/treaty/src/branch/main/docs/2026-11-15-run-checkpoint-settlement.md).
+No reporter grant, consumer acceptance or live pilot is claimed.

@@ -1,0 +1,261 @@
+{
+  "version": "superpipeline.run-checkpoint-producer-cases.v1",
+  "status": "proposal; not executed product conformance",
+  "cases": [
+    {
+      "name": "same-sha-verification",
+      "expected": "accept",
+      "rule": "unchanged only when policy allows; current run source operation still required",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "producerBaseline",
+      "body": "producerBaseline.body",
+      "when": {
+        "disposition": "unchanged",
+        "startCommit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "policy.allowUnchanged": true
+      }
+    },
+    {
+      "name": "changed-stage-same-vector",
+      "expected": "reject",
+      "rule": "changed differs from recorded start vector",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "producerBaseline",
+      "body": "producerBaseline.body",
+      "when": {
+        "startCommit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    {
+      "name": "old-card-reference",
+      "expected": "reject",
+      "rule": "prior-run display reference is not a receipt",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "producerBaseline",
+      "body": "producerBaseline.body",
+      "when": {
+        "report": null,
+        "existingPriorRunCommitReference": true
+      }
+    },
+    {
+      "name": "same-url-upsert",
+      "expected": "reject",
+      "rule": "mutable card/url upsert cannot rebind immutable proof",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "producerBaseline",
+      "body": "producerBaseline.body",
+      "when": {
+        "reference.runId": "run_prior",
+        "currentSameUrlReattached": true
+      }
+    },
+    {
+      "name": "exact-completed-replay",
+      "expected": "historical",
+      "rule": "same principal, request digest and run binding returns stored cap-free receipt",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "producerBaseline",
+      "body": "producerBaseline.body",
+      "when": {
+        "storedCanonicalReport": "canonical.report",
+        "run.status": "ended"
+      }
+    },
+    {
+      "name": "same-id-changed-body",
+      "expected": "conflict",
+      "rule": "settlementId reused with other canonical bytes",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "producerBaseline",
+      "body": "producerBaseline.body",
+      "when": {
+        "storedCanonicalReport": "canonical.report",
+        "body.workerResultSha256": "4444444444444444444444444444444444444444444444444444444444444444"
+      }
+    },
+    {
+      "name": "superseded-epoch",
+      "expected": "reject",
+      "rule": "reauthorize after async verification before atomic commit",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "producerBaseline",
+      "body": "producerBaseline.body",
+      "when": {
+        "run.leaseEpochAfterAsync": 2
+      }
+    },
+    {
+      "name": "changed-stage-policy",
+      "expected": "reject",
+      "rule": "policy digest differs from claim snapshot",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "producerBaseline",
+      "body": "producerBaseline.body",
+      "when": {
+        "currentPolicyDigest": "5555555555555555555555555555555555555555555555555555555555555555"
+      }
+    },
+    {
+      "name": "card-completion-empty-override",
+      "expected": "reject",
+      "rule": "card completion cannot weaken checkpointPolicy",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "producerBaseline",
+      "body": "producerBaseline.body",
+      "when": {
+        "report": null,
+        "card.spec.completion": {}
+      }
+    },
+    {
+      "name": "worker-complete-only",
+      "expected": "reject",
+      "rule": "worker complete alone does not prove checkpoint/release",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "producerBaseline",
+      "body": "producerBaseline.body",
+      "when": {
+        "validatedSourceResponse": null
+      }
+    },
+    {
+      "name": "fenced-but-dirty",
+      "expected": "reject",
+      "rule": "held owner after failed checkpoint cannot produce report",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "producerBaseline",
+      "body": "producerBaseline.body",
+      "when": {
+        "source.operationResult": "checkpoint-failed-held"
+      }
+    },
+    {
+      "name": "later-owner",
+      "expected": "historical",
+      "rule": "old released receipt cannot grant or stop a later owner",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "producerBaseline",
+      "body": "producerBaseline.body",
+      "when": {
+        "storedCanonicalReport": "canonical.report",
+        "run.status": "ended",
+        "currentBenchOwner": "different-owner"
+      }
+    },
+    {
+      "name": "lost-board-reply",
+      "expected": "historical",
+      "rule": "query or exact replay, never child rerun",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "producerBaseline",
+      "body": "producerBaseline.body",
+      "when": {
+        "storedCanonicalReport": "canonical.report",
+        "replyLost": true
+      }
+    },
+    {
+      "name": "timeout-host-unavailable",
+      "expected": "pending",
+      "rule": "preserve ledger; do not acquire on another host",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "producerBaseline",
+      "body": "producerBaseline.body",
+      "when": {
+        "source.transport": "unknown"
+      }
+    },
+    {
+      "name": "partial-vector",
+      "expected": "reject",
+      "rule": "exact configured members required",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "producerBaseline",
+      "body": "producerBaseline.body",
+      "when": {
+        "body.checkpoint.members": []
+      }
+    },
+    {
+      "name": "wrong-card-branch",
+      "expected": "reject",
+      "rule": "derive branches from bound full cardId",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "producerBaseline",
+      "body": "producerBaseline.body",
+      "when": {
+        "body.checkpoint.members[0].branch": "card/card_aaaaaaaa"
+      }
+    },
+    {
+      "name": "wrong-repository",
+      "expected": "reject",
+      "rule": "exact policy repo and trusted origin mapping required",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "producerBaseline",
+      "body": "producerBaseline.body",
+      "when": {
+        "body.checkpoint.members[0].repository": "other/repository"
+      }
+    },
+    {
+      "name": "generic-owner-with-valid-hashes",
+      "expected": "reject",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "cases.json#producerBaseline",
+      "when": {
+        "caller.kind": "agent",
+        "caller.scopes": ["run"]
+      }
+    },
+    {
+      "name": "unscoped-service",
+      "expected": "reject",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "cases.json#producerBaseline",
+      "when": {
+        "caller.kind": "service",
+        "caller.scopes": []
+      }
+    },
+    {
+      "name": "wrong-coordinator",
+      "expected": "reject",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "cases.json#producerBaseline",
+      "when": {
+        "caller.principalId": "prn_unapproved1"
+      }
+    },
+    {
+      "name": "wrong-node",
+      "expected": "reject",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "cases.json#producerBaseline",
+      "when": {
+        "body.checkpoint.binding.nodeId": "node_other01"
+      }
+    },
+    {
+      "name": "reclaimed-new-run",
+      "expected": "reject",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "cases.json#producerBaseline",
+      "when": {
+        "body.checkpoint.binding.runId": "run_newclaim1",
+        "priorProducedProofOnly": true
+      }
+    },
+    {
+      "name": "changed-handoff-replay",
+      "expected": "conflict",
+      "scope": "producer-state assertions; not wire-only validation",
+      "baseline": "cases.json#producerBaseline",
+      "when": {
+        "storedCanonicalRequest": "canonical.settlement-request",
+        "body.handoff.fails": "different"
+      }
+    }
+  ]
+}
