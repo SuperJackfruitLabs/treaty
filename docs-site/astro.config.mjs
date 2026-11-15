@@ -1,7 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import sjlDocs from '@superjackfruit/docs-theme';
+import sjlDocs from '@superjackfruitlabs/vibekit-docs';
 
 const REPO = 'https://github.com/SuperJackfruitLabs/treaty';
 const SITE = 'https://treaty.superjackfruit.com';
@@ -15,7 +15,7 @@ export default defineConfig({
         "The suite's contracts as code: the CloudEvents envelope, the event and Matrix schemas, the shared fixtures and the event relay.",
       // The suite's docs theme. Treaty is the suite's shared contracts, not a product, so it wears
       // the lab's look (vibekit's graphite, the lab's mark) and is no house on the product street;
-      // see @superjackfruit/docs-theme's README. It brings the street, the footers, the 404, the
+      // see @superjackfruitlabs/vibekit-docs's README. It brings the street, the footers, the 404, the
       // edit link, Copy and Open as Markdown, and /llms.txt, /llms-full.txt and /llms-small.txt for
       // agents reading these docs. The full file carries every page, the generated event pages
       // included.
