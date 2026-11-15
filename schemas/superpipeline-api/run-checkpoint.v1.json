@@ -1,0 +1,255 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "settlementId",
+    "binding",
+    "policyDigest",
+    "disposition",
+    "start",
+    "checkpoint",
+    "execution",
+    "workerResultSha256",
+    "sourceReceiptSha256",
+    "sourceRequestSha256"
+  ],
+  "properties": {
+    "version": {
+      "const": "superpipeline.run-checkpoint.v1"
+    },
+    "settlementId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}(?![\\s\\S])"
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "boardId",
+        "cardId",
+        "stageKey",
+        "runId",
+        "leaseEpoch",
+        "agentId",
+        "stationId",
+        "nodeId",
+        "attemptId"
+      ],
+      "properties": {
+        "boardId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^brd_[A-Za-z0-9]{6,}(?![\\s\\S])"
+        },
+        "cardId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^card_[A-Za-z0-9]{6,}(?![\\s\\S])"
+        },
+        "stageKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}(?![\\s\\S])"
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^run_[A-Za-z0-9]{6,}(?![\\s\\S])"
+        },
+        "leaseEpoch": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "agentId": {
+          "type": "string",
+          "pattern": "^agt_[A-Za-z0-9]{6,}(?![\\s\\S])",
+          "maxLength": 80
+        },
+        "stationId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "nodeId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "attemptId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}(?![\\s\\S])"
+        }
+      }
+    },
+    "policyDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
+    },
+    "disposition": {
+      "enum": ["changed", "unchanged"]
+    },
+    "start": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "commit"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,63}(?![\\s\\S])"
+          },
+          "commit": {
+            "type": "string",
+            "pattern": "^([a-f0-9]{40}|[a-f0-9]{64})(?![\\s\\S])"
+          }
+        }
+      }
+    },
+    "checkpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocol",
+        "key",
+        "benchId",
+        "requestId",
+        "generationId",
+        "seal",
+        "manifestSha256",
+        "members",
+        "checkpointRepository"
+      ],
+      "properties": {
+        "protocol": {
+          "const": "superbench.v2"
+        },
+        "key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}(?![\\s\\S])"
+        },
+        "benchId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{32}(?![\\s\\S])"
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}(?![\\s\\S])"
+        },
+        "generationId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{32}(?![\\s\\S])"
+        },
+        "seal": {
+          "type": "string",
+          "pattern": "^([a-f0-9]{40}|[a-f0-9]{64})(?![\\s\\S])"
+        },
+        "manifestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
+        },
+        "members": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "provider",
+              "repository",
+              "branch",
+              "objectFormat",
+              "commit"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64,
+                "pattern": "^[a-z0-9][a-z0-9_-]{0,63}(?![\\s\\S])"
+              },
+              "provider": {
+                "enum": ["forge", "github"]
+              },
+              "repository": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+(?![\\s\\S])"
+              },
+              "branch": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 255,
+                "pattern": "^card/card_[A-Za-z0-9]{6,}(?![\\s\\S])"
+              },
+              "objectFormat": {
+                "enum": ["sha1", "sha256"]
+              },
+              "commit": {
+                "type": "string",
+                "pattern": "^([a-f0-9]{40}|[a-f0-9]{64})(?![\\s\\S])"
+              }
+            }
+          }
+        },
+        "checkpointRepository": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-z0-9][a-z0-9_-]{0,63}(?![\\s\\S])"
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "exitCode"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{32}(?![\\s\\S])"
+        },
+        "exitCode": {
+          "const": 0
+        }
+      }
+    },
+    "workerResultSha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
+    },
+    "sourceReceiptSha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
+    },
+    "sourceRequestSha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline-api/run-checkpoint.v1.json",
+  "title": "PROPOSED per-run adapter checkpoint report",
+  "description": "Unaccepted proposal. Structural validity grants no authority and proves neither fencing nor remote confirmation. Producer state checks and existing authenticated principal authority remain required."
+}

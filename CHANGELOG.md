@@ -5,6 +5,9 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- Propose coordinator-authorized per-run checkpoint settlement HTTP schemas and
+  fixtures; no accepted authority, provisioned grant or live pilot is claimed.
+
 - Propose optional SuperBench v2 transfer availability so retired sources remain
   visible without advertising writer acquisition or grants.
 
