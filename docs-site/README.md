@@ -59,7 +59,7 @@ checked against does (`.forgejo/workflows/ci.yml`).
 
 **The suite's docs theme, as a lab site.** Treaty is the suite's shared contracts, not a sold
 product (the operator's decision of 2026-11-14), so it wears the lab's look through
-`@superjackfruit/docs-theme`'s `site` option rather than a product colour: vibekit's graphite
+`@superjackfruitlabs/vibekit-docs`'s `site` option rather than a product colour: vibekit's graphite
 accent, the lab's mark beside the name, and no house of its own on the suite's street. The theme
 brings the header, the footers, the 404, Copy and Open as Markdown, the edit link and llms.txt. It
 and the tarballs it needs (frontdoor, vibekit) are vendored in `vendor/`, as the other docs sites
