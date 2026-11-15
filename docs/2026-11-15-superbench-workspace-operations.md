@@ -1,7 +1,7 @@
 # SuperBench workspace operation requests v2
 
-Status: proposed request contract for aggregate benches. This is not an
-implementation, response-schema, deployment or consumer-conformance claim.
+Status: proposed request and response contract for aggregate benches. This is not
+an implementation, accepted response contract, deployment or consumer-conformance claim.
 The accepted host-local ownership boundary remains unchanged. V1 operations and
 their canonical bytes remain supported beside this proposal.
 
@@ -137,3 +137,138 @@ handoffs, exact sealed recovery, quota exhaustion, member-target validation,
 archive/reap, mixed-version refusals and receipt/retry behavior. The shared
 request tests establish shape and data constraints only. They do not prove these
 runtime obligations or a live suite pilot.
+
+## Proposed responses
+
+This proposal now includes `schemas/superbench/response.v2.json`, shared
+`fixtures/superbench-api/workspace-responses.json`, and the separate runtime
+obligations in `fixtures/superbench-api/workspace-lifecycle.json`. They establish
+plain-data checks, not response acceptance, deployment, a running producer or
+consumer conformance. V1 and the v2 request bytes remain unchanged.
+
+Responses require `version: "superbench.v2"`, `ok`, and a typed result on success
+or `{code,message}` error on failure. Parsed requests retain their operation;
+growth requests echo their exact request ID on successes and failures. Nongrowth
+responses have no request ID. Before a valid request is decoded, errors contain
+neither operation, request ID nor result. Missing/unknown request version or
+operation, malformed IDs and invalid fields are early failures; submitted identity
+is never partly trusted. The v2 endpoint still emits the v2 response version.
+Missing response version, identity mismatch, unknown fields, nulls, duplicate
+keys, trailing documents, invalid UTF-8/surrogates and contradictory HTTP/result
+states fail closed. Clients never fall back to v1 after unsupported v2.
+
+Mutation results contain a compact `workspace`, optional explicit `grant` with
+only `lease_token`, and one optional `root_path`. Workspace includes its key/BID,
+phase, member count, coordinator name, quota caps, redacted lease/execution,
+complete checkpoint, pending generation, recovery link and archive state when
+present. Completed checkpoints have a seal; pending generations do not. Both
+carry complete ordered name/commit vectors and manifest digests, without raw
+manifest repository identities, pin refs or paths. Readiness is exactly ready
+phase with no lease, pending generation or archive. A staged directory, historical
+preparation proof, root path or success flag alone grants no writer authority.
+
+`root_path` occurs once for a registration independently bound to create/recover,
+or a new explicit grant. It is absolute/canonical and at most 4096 UTF-8 bytes.
+The producer checks derived response representability before allocating a growth
+receipt or performing growth effects. Longer existing paths are preserved and
+refuse new growth; root-free reconciliation remains available.
+
+Grants are operation-specific, independently authorized evidence, never a raw
+copy of whatever lease a record happens to contain:
+
+| Operation                  | Grant and completion rule                                                                                                                                                                                                                       |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| create/recover             | Success completes warm initialization and releases. Partial failure may return only its exact authenticated request-bound initialization grant; replay never reveals a later holder.                                                            |
+| lease                      | New acquisition prepares all members. Success or partial preparation failure may return only the owner acquired by this operation. Busy reveals no other token.                                                                                 |
+| run                        | Omitted token acquires one owner; supplied token requires exact holder and continuation validation and is never re-exported. Omitted/true checkpoint completes the whole checkpoint and releases; false retains stopped ownership.              |
+| setup                      | Same acquire/reuse rule. Success, including selected-member setup, requires whole-vector checkpoint/release. Another member's missing proof or dirty work blocks completion and retains the owner.                                              |
+| checkpoint/release/stop    | Never return a grant merely because a held or submitted token was valid. Stop fences and retains the lease with continuation revoked.                                                                                                           |
+| stop_admin                 | Only a successful independently verified operator fence may return an explicit recovery grant. It stays stopped with continuation revoked, authorizing reconciliation rather than a new continuation. Failed or unknown fences return no grant. |
+| archive/status/host_status | Never return a grant.                                                                                                                                                                                                                           |
+
+Run/setup results may expose execution ID/phase, a known exit code and truncation
+flag, never a log path. Internal unknown exit sentinels are omitted. Setup gives
+bounded selected-member preparation outcomes; stopped phase alone does not prove
+success. All mutation results omit repository URLs, repeated checkout paths,
+private continuations, history growth, log/control paths, arguments and environment.
+V2 mutations target aggregate registrations only; scalar keys refuse before
+receipts/effects. The original v1 scalar behavior remains separate.
+
+## Complete status and budgets
+
+Status returns a key-sorted complete `benches` array with explicit `kind: scalar`
+or `kind: workspace` variants, including retained archived/reaping/reaped records.
+Aggregate inventory adds all ordered member names, branches, object formats and
+source commits. Scalar active state makes no warm-initialization claim. A
+specific-key query returns exactly that kind or not_found. Global status cannot
+omit either kind, truncate or silently paginate. If its complete output exceeds
+1 MiB, unavailable has no partial inventory and directs a specific-key query.
+Status contains no grant/token, paths, repository URLs or private metadata.
+
+Host status reuses the existing redacted `{managed,data_free_bytes,state_free_bytes}`
+report, not raw host configuration, helper paths, devices or a quota ledger.
+Every wire count and observation is a safe integer in 0..2^53-1; quotas remain
+at most 1 PiB and inode caps at most 2^40. Unrepresentable host observations return
+unavailable, never clamp or round. These observations authorize no allocation.
+
+The 1 MiB response transport limit and 64 KiB growth receipt reservation remain
+hard bounds. Growth results, including retained failures and receipt-save errors,
+fit the smaller bound. With at most 32 members, compact vectors plus a worst-case
+JSON-escaped 4096-byte root fit; tests measure encoded bytes, not character counts.
+The unchanged receipt caps are 10,000 entries and 64 MiB of encoded/reserved
+responses. Exhaustion refuses new growth, not checkpoint/release/stop/archive or
+reviewed local reap. There is no automatic receipt deletion.
+
+Receipt identity binds the kernel UID, operation/version, request ID and canonical
+body digest. Core creation identity derives from the same authenticated context;
+matching a key or holder label is insufficient. Completed receipts replay exact
+historical bytes only to the same UID/body. Running receipts yield in_progress;
+interrupted or ambiguous receipts yield operation_in_doubt without redispatch.
+Missing completion evidence is reconciliation, not proof that effects never ran.
+A cached token does not restore an ended lease; current status/capability checks
+govern later actions. Disconnects and timeouts never prove a writer stopped.
+
+Error codes retain HTTP pairs: invalid_request 400/405/413/415, forbidden 403,
+not_found 404, conflict/in_progress 409, unavailable 503, operation_failed 422.
+Interrupted receipts use operation_in_doubt 409 without an invented outcome;
+receipt-save failure after effects uses 503 and may retain its authorized compact
+result. Errors never echo raw requests, capabilities, paths or command output.
+
+Archive uses the normal persisted grace and no grant. Its phases distinguish
+retained permission intent, frozen completion, reviewed deletion and completed
+reap. A concrete administrative plan, raw nonrecoverable-byte review and exact
+digest approval remain outside the socket protocol. Local reap retains complete
+checkpoint/provenance and remote refs, removes only approved remaining entries
+and exact member registrations, and retries quota retirement. No socket archive
+response grants deletion approval.
+
+The response corpus labels each case `validation: wire` or `validation: producer`.
+Wire checks use the expected operation, request ID and observable request options.
+Independent producer assertions such as `authorized_grant`, `verified_fence` and
+complete `inventory_keys` live only in fixture context, never request/response JSON.
+A wire client cannot independently prove a host fence or discover an omitted
+registration from one response; producer-layer cases require separate authoritative
+state/fencing evidence. Absence of that sideband knowledge does not reject a
+structurally eligible grant. It also never grants runtime authority by itself.
+
+A stop_admin recovery grant does not close every initialization repair path.
+An initialization stopped with its continuation revoked cannot restart preparation
+or finish initialization merely by presenting that token. Explicit reviewed local
+administrative repair/cleanup remains future work; this proposal does not claim
+that path is implemented or that Phase 1 is complete. A future socket repair action
+would need its own request contract. An oversized-root stop_admin may still fence
+successfully while omitting the optional grant/root; root bounds never disable stop.
+
+## Verification of the proposed data
+
+The frozen source archive with SHA-256
+`19428fe11735c4575d07eaa5e6abad80bbf0075cd497939cb2da69225d6a94d5`
+passed the application and documentation checks on Linux with Bun 1.2.8,
+Node 24 and a required NATS 2.15.2 fixture. Frozen dependency installs completed;
+`bun run check` passed formatting, typecheck, lint, 1,095 tests with zero failures
+and all five package builds. `npm ci && npm run build` in `docs-site` passed
+claim checks and built 57 pages. The archive's complete 230-file source set
+matched the reviewed checkout byte for byte before this evidence note was added.
+These checks validate the proposed data and repository, not a running SuperBench
+v2 producer, suite consumer or deployed pilot. Exact-head Forge CI remains the
+publication gate.

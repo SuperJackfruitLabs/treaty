@@ -5,6 +5,9 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- Propose bounded SuperBench v2 responses, explicit operation-scoped lease grants,
+  complete mixed status and shared lifecycle obligations alongside unchanged requests.
+
 - Propose versioned SuperBench workspace requests for aggregate creation,
   initialization, member-targeted execution and whole-bench reconciliation.
 
