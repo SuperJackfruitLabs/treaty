@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superbench/receipt-lookup-response.v2.json",
+  "title": "SuperBench read-only receipt lookup response v2 (proposed)",
+  "description": "PROPOSED private historical evidence, not a renewed grant. Successful HTTP200 echoes the exact target. Only completed may contain original HTTP status and exact UTF8 original response string bounded to 64 KiB bytes. Envelope bounded to 512 KiB bytes. Other states have no body or grant. Schema-valid bytes do not prove current ownership, fencing, release or state lineage.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "operation", "ok"],
+  "properties": {
+    "version": {
+      "const": "superbench.v2"
+    },
+    "operation": {
+      "const": "receipt_lookup"
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_request_id", "target_digest", "state"],
+      "properties": {
+        "target_request_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}(?![\\s\\S])"
+        },
+        "target_digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
+        },
+        "state": {
+          "enum": [
+            "absent",
+            "in_progress",
+            "operation_in_doubt",
+            "cancel_requested",
+            "completed"
+          ]
+        },
+        "http_status": {
+          "type": "integer",
+          "minimum": 200,
+          "maximum": 599
+        },
+        "response_body": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "completed"
+              }
+            }
+          },
+          "then": {
+            "required": ["http_status", "response_body"]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": ["http_status"]
+                },
+                {
+                  "required": ["response_body"]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "enum": ["invalid_request", "forbidden", "conflict", "unavailable"]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "required": ["result"],
+      "properties": {
+        "ok": {
+          "const": true
+        }
+      },
+      "not": {
+        "required": ["error"]
+      }
+    },
+    {
+      "required": ["error"],
+      "properties": {
+        "ok": {
+          "const": false
+        }
+      },
+      "not": {
+        "required": ["result"]
+      }
+    }
+  ]
+}

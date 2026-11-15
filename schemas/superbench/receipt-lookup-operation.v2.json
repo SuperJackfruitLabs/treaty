@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superbench/receipt-lookup-operation.v2.json",
+  "title": "SuperBench read-only receipt lookup v2 (proposed)",
+  "description": "PROPOSED separate read-only POST /v2/receipts/lookup over the host-local Unix socket. Kernel peer UID plus exact original request ID and typed digest selects existing receipt evidence. Never claims a receipt, executes an operation, grows state or grants readiness. Strict decoding and raw request limit 64 KiB apply.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "operation", "target_request_id", "target_digest"],
+  "properties": {
+    "version": {
+      "const": "superbench.v2"
+    },
+    "operation": {
+      "const": "receipt_lookup"
+    },
+    "target_request_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}(?![\\s\\S])"
+    },
+    "target_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
+    }
+  }
+}

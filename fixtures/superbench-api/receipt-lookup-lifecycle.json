@@ -1,0 +1,63 @@
+{
+  "version": "superbench.receipt-lookup-lifecycle-fixtures.v1",
+  "status": "proposed verification obligations; entries do not prove these drills passed",
+  "scenarios": [
+    {
+      "name": "fresh-or-replaced-database",
+      "response_case": "receipt-absent",
+      "assertions": [
+        "No receipt/tombstone/intent/workspace/history/file growth.",
+        "No Claim, core, helper, Git, allocation, acquisition or setup call, even with an old successful cancel ACK."
+      ]
+    },
+    {
+      "name": "same-peer-exact-history",
+      "response_case": "receipt-completed",
+      "assertions": [
+        "Kernel peer UID and exact original typed digest select the receipt.",
+        "Return original status and UTF8 bytes exactly; do not reserialize or renew its grant."
+      ]
+    },
+    {
+      "name": "cross-peer-and-digest",
+      "response_case": "error-conflict-409",
+      "assertions": [
+        "Another UID cannot read the prior owner receipt.",
+        "Changed digest for the same UID and ID conflicts without effects."
+      ]
+    },
+    {
+      "name": "normal-slots-full",
+      "response_case": "receipt-completed",
+      "assertions": [
+        "Bounded read admission works independently of all64 normal slots and growth receipt capacity.",
+        "Read saturation cannot consume reserved cancellation admission or grow unbounded workers.",
+        "Exactly two active read slots; excess returns503 immediately, total64normal+2read+8classification ceiling74. Close/promotion accounting preserves cancellation reservations until underlying Close completes."
+      ]
+    },
+    {
+      "name": "restart-and-unknown",
+      "response_case": "receipt-operation_in_doubt",
+      "assertions": [
+        "Restart never dispatches through receipt reads.",
+        "Unknown/interrupted/cancelled/absent evidence remains parked; no source-body resend or owner inference."
+      ]
+    },
+    {
+      "name": "historical-token-only",
+      "response_case": "receipt-completed",
+      "assertions": [
+        "Client reparses against exact privately saved original source request.",
+        "Historical grant may support only separately authorized exact original token cleanup, never new execution, acquisition, readiness or ownership."
+      ]
+    },
+    {
+      "name": "operator-demoted-to-readers",
+      "response_case": "error-forbidden-403",
+      "assertions": [
+        "Current configured Operators[kernelpeerUID] is required before any receipt lookup.",
+        "Readers-only, demoted and unauthorized peers receive forbidden without receipt existence disclosure, even if they held the original operation."
+      ]
+    }
+  ]
+}

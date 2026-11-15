@@ -122,3 +122,75 @@ full-budget, cross-UID/digest, completion-race and later-owner drills. Shared da
 and local schema tests alone do not satisfy those gates. No TCP proxy, cross-host
 fence, external writer registration, AgentPod dispatch or board mutation is added
 here.
+
+## Proposed read-only receipt recovery amendment
+
+**Proposed; not accepted or enabled.** This additive amendment uses the existing
+SuperBench lifecycle owner and authenticated host-local crossing. It does not
+change the accepted v1 protocol, existing v2 operation/cancellation schema bytes,
+reporter grants, or the cancellation decision's fencing requirements.
+
+A client that lost a source reply must not resend its source operation merely
+because it has a cancellation ACK. An ACK can authorize historical lookup only
+within the same durable receipt-state lineage; a reused socket path does not
+prove that the database was retained or not rolled back. A dedicated read avoids
+executing the source body even when that lineage cannot be established.
+
+`POST /v2/receipts/lookup` accepts the separate
+`schemas/superbench/receipt-lookup-operation.v2.json` shape: exactly `version:
+"superbench.v2"`, `operation: "receipt_lookup"`, `target_request_id` and
+`target_digest`. The ID and digest use the existing cancellation target grammar
+and typed source-request digest. Kernel peer credentials supply the UID. The
+request requires current configured operator authority for that peer UID. A readers-only or demoted peer receives forbidden before receipt lookup, without revealing existence; another operator UID still cannot read the original owner’s receipt. Historical capability disclosure requires operation authority even though this endpoint has no effects. The request has no claimed UID, source body, key, holder, lease token or fresh request
+ID. It is not a growth operation and never calls receipt claim, execution,
+acquisition, setup, allocation, Git, capture creation, helpers or publication.
+
+Successful HTTP 200 replies use the separate
+`receipt-lookup-response.v2.json` schema and echo the exact target. `completed`
+contains `http_status` and `response_body`: the original stored HTTP status and
+**exact UTF8 response bytes**, represented as a JSON string without reparsing or
+reserializing its contents. `absent`, `in_progress`, `operation_in_doubt` and
+`cancel_requested` contain no body, status or grant. A cancellation barrier may
+be reported conservatively as `cancel_requested`; this read never upgrades it to
+independent fencing proof. Wrong digest for an existing same-UID target conflicts.
+Another UID cannot read the original owner's receipt. No result claims present
+ownership, ready state, checkpoint/release success, or receipt-state lineage.
+
+The raw request limit remains 64 KiB. An original `response_body` is at most
+64 KiB of UTF8 bytes; the whole lookup response is at most 512 KiB, below the
+existing 1 MiB transport ceiling even when JSON string escaping expands stored
+bytes. Error messages are at most 256 UTF8 bytes. All objects are closed; null,
+duplicate fields, trailing documents, invalid UTF8, non-scalar Unicode, floats,
+unsafe integers and excessive nesting are refused. Completed replies preserve
+original failure receipts as well as success receipts. An oversized or invalid-UTF8 stored body returns unavailable without truncation or source replay. Consumers independently
+validate those private bytes against their exact saved original request.
+
+Receipt reads have **two active read slots per service**, independent of all 64
+normal operation slots and growth receipt capacity. Excess reads refuse with
+`unavailable` rather than queue unbounded work. Reads do not consume cancellation
+admission; authenticated cancellation remains available when both read slots are
+occupied. With the existing eight classification/cancellation slots and 64 normal slots, the explicit accepted-connection ceiling becomes 74 rather than 72; no unbounded queue is introduced. Request classification and body sizes remain bounded. The lookup joins
+the existing serialized receipt decision only for its read, without mutating or
+reserving an identity. A fresh/replaced database returning `absent` must produce
+zero claim, tombstone, intent, core, workspace or history growth, including when
+the caller retains a valid ACK from the old database.
+
+AgentPod keeps the original request/reply, exact ACK exchange and any lookup
+exchange as separate private evidence. Lookup never overwrites an original
+error or `operation_in_doubt` response. Missing, malformed, unknown, interrupted
+or absent evidence remains parked. A recovered historical grant supports only
+separately authorized exact-original-token cleanup; it cannot renew a
+continuation, authorize payload launch, acquire/release a lease, establish
+readiness or clear the durable cancellation veto. No original-body automatic
+replay, protocol fallback, administrative/key-only stop or another-host retry is
+introduced. Private receipt bodies and capabilities never enter ordinary Hub or
+board results or logs.
+
+The plain-data corpus is `fixtures/superbench-api/receipt-lookup.json`.
+`receipt-lookup-lifecycle.json` separately records required producer checks for
+kernel UID/digest binding, exact bytes/status, restart, replaced database,
+saturated operation/read admission and historical-token limits. Passing schema
+fixtures does not establish those producer checks, consumer acceptance, grant
+provisioning, deployment or a live pilot. Both service and consumer integration
+remain explicitly disabled until their owner-reviewed implementation and
+conformance gates are satisfied.

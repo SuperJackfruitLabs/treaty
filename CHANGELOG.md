@@ -5,6 +5,8 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- Propose bounded host-local read-only receipt lookup for interrupted SuperBench source replies; preserve all existing operation/cancellation contracts and keep deployment disabled.
+
 - Propose operation-bound SuperBench cancellation schemas, source-digest goldens
   and runtime obligations; existing v1/v2 bytes and accepted authority stay unchanged.
 
