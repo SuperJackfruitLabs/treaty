@@ -1725,6 +1725,201 @@
         }
       },
       "validation": "wire"
+    },
+    {
+      "name": "status-relinquishing-source",
+      "status": 200,
+      "expected": {
+        "operation": "status",
+        "key": "",
+        "inventory_keys": [
+          "aaa",
+          "card"
+        ]
+      },
+      "body": {
+        "version": "superbench.v2",
+        "operation": "status",
+        "ok": true,
+        "result": {
+          "benches": [
+            {
+              "kind": "scalar",
+              "key": "aaa",
+              "branch": "bench/aaa",
+              "state": "active",
+              "quota_bytes": 0,
+              "quota_inodes": 0
+            },
+            {
+              "kind": "workspace",
+              "key": "card",
+              "bench_id": "11111111111111111111111111111111",
+              "phase": "ready",
+              "member_count": 2,
+              "checkpoint_repository": "a",
+              "ready_for_acquisition": false,
+              "quota_bytes": 33554432,
+              "quota_inodes": 1000,
+              "checkpoint": {
+                "generation_id": "22222222222222222222222222222222",
+                "seal": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "members": [
+                  {
+                    "name": "a",
+                    "commit": "cccccccccccccccccccccccccccccccccccccccc"
+                  },
+                  {
+                    "name": "b",
+                    "commit": "dddddddddddddddddddddddddddddddddddddddd"
+                  }
+                ]
+              },
+              "members": [
+                {
+                  "name": "a",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "cccccccccccccccccccccccccccccccccccccccc"
+                },
+                {
+                  "name": "b",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "dddddddddddddddddddddddddddddddddddddddd"
+                }
+              ],
+              "transfer_state": "relinquishing"
+            }
+          ]
+        }
+      },
+      "validation": "wire"
+    },
+    {
+      "name": "status-transferred-source",
+      "status": 200,
+      "expected": {
+        "operation": "status",
+        "key": "",
+        "inventory_keys": [
+          "aaa",
+          "card"
+        ]
+      },
+      "body": {
+        "version": "superbench.v2",
+        "operation": "status",
+        "ok": true,
+        "result": {
+          "benches": [
+            {
+              "kind": "scalar",
+              "key": "aaa",
+              "branch": "bench/aaa",
+              "state": "active",
+              "quota_bytes": 0,
+              "quota_inodes": 0
+            },
+            {
+              "kind": "workspace",
+              "key": "card",
+              "bench_id": "11111111111111111111111111111111",
+              "phase": "ready",
+              "member_count": 2,
+              "checkpoint_repository": "a",
+              "ready_for_acquisition": false,
+              "quota_bytes": 33554432,
+              "quota_inodes": 1000,
+              "checkpoint": {
+                "generation_id": "22222222222222222222222222222222",
+                "seal": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "members": [
+                  {
+                    "name": "a",
+                    "commit": "cccccccccccccccccccccccccccccccccccccccc"
+                  },
+                  {
+                    "name": "b",
+                    "commit": "dddddddddddddddddddddddddddddddddddddddd"
+                  }
+                ]
+              },
+              "members": [
+                {
+                  "name": "a",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "cccccccccccccccccccccccccccccccccccccccc"
+                },
+                {
+                  "name": "b",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "dddddddddddddddddddddddddddddddddddddddd"
+                }
+              ],
+              "transfer_state": "transferred"
+            }
+          ]
+        }
+      },
+      "validation": "wire"
+    },
+    {
+      "name": "archive-transferred-source",
+      "status": 200,
+      "expected": {
+        "operation": "archive",
+        "key": "card"
+      },
+      "body": {
+        "version": "superbench.v2",
+        "operation": "archive",
+        "ok": true,
+        "result": {
+          "workspace": {
+            "key": "card",
+            "bench_id": "11111111111111111111111111111111",
+            "phase": "archived",
+            "member_count": 2,
+            "checkpoint_repository": "a",
+            "ready_for_acquisition": false,
+            "quota_bytes": 33554432,
+            "quota_inodes": 1000,
+            "checkpoint": {
+              "generation_id": "22222222222222222222222222222222",
+              "seal": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "members": [
+                {
+                  "name": "a",
+                  "commit": "cccccccccccccccccccccccccccccccccccccccc"
+                },
+                {
+                  "name": "b",
+                  "commit": "dddddddddddddddddddddddddddddddddddddddd"
+                }
+              ]
+            },
+            "archive": {
+              "archived_at": "2026-11-15T00:00:00Z",
+              "reap_after": "2026-11-22T00:00:00Z",
+              "freeze_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+              "frozen_at": "2026-11-15T00:00:01Z",
+              "automatic": false
+            },
+            "transfer_state": "transferred"
+          }
+        }
+      },
+      "validation": "wire"
     }
   ],
   "invalid": [
@@ -4159,7 +4354,7 @@
               ]
             }
           },
-          "root_path": "/\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00"
+          "root_path": "/😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
         }
       },
       "validation": "wire",
@@ -4180,7 +4375,7 @@
         "request_id": "lease-1",
         "error": {
           "code": "conflict",
-          "message": "\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00"
+          "message": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
         }
       },
       "validation": "wire",
@@ -4388,6 +4583,717 @@
             "lease_token": "66666666666666666666666666666666"
           },
           "root_path": "/bounded/benches/card"
+        }
+      },
+      "validation": "wire",
+      "reason": "schema"
+    },
+    {
+      "name": "transfer-forged-readiness",
+      "status": 200,
+      "expected": {
+        "operation": "status",
+        "key": "",
+        "inventory_keys": [
+          "aaa",
+          "card"
+        ]
+      },
+      "body": {
+        "version": "superbench.v2",
+        "operation": "status",
+        "ok": true,
+        "result": {
+          "benches": [
+            {
+              "kind": "scalar",
+              "key": "aaa",
+              "branch": "bench/aaa",
+              "state": "active",
+              "quota_bytes": 0,
+              "quota_inodes": 0
+            },
+            {
+              "kind": "workspace",
+              "key": "card",
+              "bench_id": "11111111111111111111111111111111",
+              "phase": "ready",
+              "member_count": 2,
+              "checkpoint_repository": "a",
+              "ready_for_acquisition": true,
+              "quota_bytes": 33554432,
+              "quota_inodes": 1000,
+              "checkpoint": {
+                "generation_id": "22222222222222222222222222222222",
+                "seal": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "members": [
+                  {
+                    "name": "a",
+                    "commit": "cccccccccccccccccccccccccccccccccccccccc"
+                  },
+                  {
+                    "name": "b",
+                    "commit": "dddddddddddddddddddddddddddddddddddddddd"
+                  }
+                ]
+              },
+              "members": [
+                {
+                  "name": "a",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "cccccccccccccccccccccccccccccccccccccccc"
+                },
+                {
+                  "name": "b",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "dddddddddddddddddddddddddddddddddddddddd"
+                }
+              ],
+              "transfer_state": "transferred"
+            }
+          ]
+        }
+      },
+      "validation": "wire",
+      "reason": "schema"
+    },
+    {
+      "name": "transfer-unknown-state",
+      "status": 200,
+      "expected": {
+        "operation": "status",
+        "key": "",
+        "inventory_keys": [
+          "aaa",
+          "card"
+        ]
+      },
+      "body": {
+        "version": "superbench.v2",
+        "operation": "status",
+        "ok": true,
+        "result": {
+          "benches": [
+            {
+              "kind": "scalar",
+              "key": "aaa",
+              "branch": "bench/aaa",
+              "state": "active",
+              "quota_bytes": 0,
+              "quota_inodes": 0
+            },
+            {
+              "kind": "workspace",
+              "key": "card",
+              "bench_id": "11111111111111111111111111111111",
+              "phase": "ready",
+              "member_count": 2,
+              "checkpoint_repository": "a",
+              "ready_for_acquisition": false,
+              "quota_bytes": 33554432,
+              "quota_inodes": 1000,
+              "checkpoint": {
+                "generation_id": "22222222222222222222222222222222",
+                "seal": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "members": [
+                  {
+                    "name": "a",
+                    "commit": "cccccccccccccccccccccccccccccccccccccccc"
+                  },
+                  {
+                    "name": "b",
+                    "commit": "dddddddddddddddddddddddddddddddddddddddd"
+                  }
+                ]
+              },
+              "members": [
+                {
+                  "name": "a",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "cccccccccccccccccccccccccccccccccccccccc"
+                },
+                {
+                  "name": "b",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "dddddddddddddddddddddddddddddddddddddddd"
+                }
+              ],
+              "transfer_state": "available"
+            }
+          ]
+        }
+      },
+      "validation": "wire",
+      "reason": "schema"
+    },
+    {
+      "name": "transfer-empty-state",
+      "status": 200,
+      "expected": {
+        "operation": "status",
+        "key": "",
+        "inventory_keys": [
+          "aaa",
+          "card"
+        ]
+      },
+      "body": {
+        "version": "superbench.v2",
+        "operation": "status",
+        "ok": true,
+        "result": {
+          "benches": [
+            {
+              "kind": "scalar",
+              "key": "aaa",
+              "branch": "bench/aaa",
+              "state": "active",
+              "quota_bytes": 0,
+              "quota_inodes": 0
+            },
+            {
+              "kind": "workspace",
+              "key": "card",
+              "bench_id": "11111111111111111111111111111111",
+              "phase": "ready",
+              "member_count": 2,
+              "checkpoint_repository": "a",
+              "ready_for_acquisition": false,
+              "quota_bytes": 33554432,
+              "quota_inodes": 1000,
+              "checkpoint": {
+                "generation_id": "22222222222222222222222222222222",
+                "seal": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "members": [
+                  {
+                    "name": "a",
+                    "commit": "cccccccccccccccccccccccccccccccccccccccc"
+                  },
+                  {
+                    "name": "b",
+                    "commit": "dddddddddddddddddddddddddddddddddddddddd"
+                  }
+                ]
+              },
+              "members": [
+                {
+                  "name": "a",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "cccccccccccccccccccccccccccccccccccccccc"
+                },
+                {
+                  "name": "b",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "dddddddddddddddddddddddddddddddddddddddd"
+                }
+              ],
+              "transfer_state": ""
+            }
+          ]
+        }
+      },
+      "validation": "wire",
+      "reason": "schema"
+    },
+    {
+      "name": "transfer-null-state",
+      "status": 200,
+      "expected": {
+        "operation": "status",
+        "key": "",
+        "inventory_keys": [
+          "aaa",
+          "card"
+        ]
+      },
+      "body": {
+        "version": "superbench.v2",
+        "operation": "status",
+        "ok": true,
+        "result": {
+          "benches": [
+            {
+              "kind": "scalar",
+              "key": "aaa",
+              "branch": "bench/aaa",
+              "state": "active",
+              "quota_bytes": 0,
+              "quota_inodes": 0
+            },
+            {
+              "kind": "workspace",
+              "key": "card",
+              "bench_id": "11111111111111111111111111111111",
+              "phase": "ready",
+              "member_count": 2,
+              "checkpoint_repository": "a",
+              "ready_for_acquisition": false,
+              "quota_bytes": 33554432,
+              "quota_inodes": 1000,
+              "checkpoint": {
+                "generation_id": "22222222222222222222222222222222",
+                "seal": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "members": [
+                  {
+                    "name": "a",
+                    "commit": "cccccccccccccccccccccccccccccccccccccccc"
+                  },
+                  {
+                    "name": "b",
+                    "commit": "dddddddddddddddddddddddddddddddddddddddd"
+                  }
+                ]
+              },
+              "members": [
+                {
+                  "name": "a",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "cccccccccccccccccccccccccccccccccccccccc"
+                },
+                {
+                  "name": "b",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "dddddddddddddddddddddddddddddddddddddddd"
+                }
+              ],
+              "transfer_state": null
+            }
+          ]
+        }
+      },
+      "validation": "wire",
+      "reason": "schema"
+    },
+    {
+      "name": "transfer-without-checkpoint",
+      "status": 200,
+      "expected": {
+        "operation": "status",
+        "key": "",
+        "inventory_keys": [
+          "aaa",
+          "card"
+        ]
+      },
+      "body": {
+        "version": "superbench.v2",
+        "operation": "status",
+        "ok": true,
+        "result": {
+          "benches": [
+            {
+              "kind": "scalar",
+              "key": "aaa",
+              "branch": "bench/aaa",
+              "state": "active",
+              "quota_bytes": 0,
+              "quota_inodes": 0
+            },
+            {
+              "kind": "workspace",
+              "key": "card",
+              "bench_id": "11111111111111111111111111111111",
+              "phase": "ready",
+              "member_count": 2,
+              "checkpoint_repository": "a",
+              "ready_for_acquisition": false,
+              "quota_bytes": 33554432,
+              "quota_inodes": 1000,
+              "members": [
+                {
+                  "name": "a",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "cccccccccccccccccccccccccccccccccccccccc"
+                },
+                {
+                  "name": "b",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "dddddddddddddddddddddddddddddddddddddddd"
+                }
+              ],
+              "transfer_state": "transferred"
+            }
+          ]
+        }
+      },
+      "validation": "wire",
+      "reason": "schema"
+    },
+    {
+      "name": "transfer-with-owner",
+      "status": 200,
+      "expected": {
+        "operation": "status",
+        "key": "",
+        "inventory_keys": [
+          "aaa",
+          "card"
+        ]
+      },
+      "body": {
+        "version": "superbench.v2",
+        "operation": "status",
+        "ok": true,
+        "result": {
+          "benches": [
+            {
+              "kind": "scalar",
+              "key": "aaa",
+              "branch": "bench/aaa",
+              "state": "active",
+              "quota_bytes": 0,
+              "quota_inodes": 0
+            },
+            {
+              "kind": "workspace",
+              "key": "card",
+              "bench_id": "11111111111111111111111111111111",
+              "phase": "ready",
+              "member_count": 2,
+              "checkpoint_repository": "a",
+              "ready_for_acquisition": false,
+              "quota_bytes": 33554432,
+              "quota_inodes": 1000,
+              "checkpoint": {
+                "generation_id": "22222222222222222222222222222222",
+                "seal": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "members": [
+                  {
+                    "name": "a",
+                    "commit": "cccccccccccccccccccccccccccccccccccccccc"
+                  },
+                  {
+                    "name": "b",
+                    "commit": "dddddddddddddddddddddddddddddddddddddddd"
+                  }
+                ]
+              },
+              "members": [
+                {
+                  "name": "a",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "cccccccccccccccccccccccccccccccccccccccc"
+                },
+                {
+                  "name": "b",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "dddddddddddddddddddddddddddddddddddddddd"
+                }
+              ],
+              "transfer_state": "transferred",
+              "lease": {
+                "holder": "worker",
+                "mode": "cooperative",
+                "stop_requested": false
+              }
+            }
+          ]
+        }
+      },
+      "validation": "wire",
+      "reason": "schema"
+    },
+    {
+      "name": "transfer-with-pending",
+      "status": 200,
+      "expected": {
+        "operation": "status",
+        "key": "",
+        "inventory_keys": [
+          "aaa",
+          "card"
+        ]
+      },
+      "body": {
+        "version": "superbench.v2",
+        "operation": "status",
+        "ok": true,
+        "result": {
+          "benches": [
+            {
+              "kind": "scalar",
+              "key": "aaa",
+              "branch": "bench/aaa",
+              "state": "active",
+              "quota_bytes": 0,
+              "quota_inodes": 0
+            },
+            {
+              "kind": "workspace",
+              "key": "card",
+              "bench_id": "11111111111111111111111111111111",
+              "phase": "ready",
+              "member_count": 2,
+              "checkpoint_repository": "a",
+              "ready_for_acquisition": false,
+              "quota_bytes": 33554432,
+              "quota_inodes": 1000,
+              "checkpoint": {
+                "generation_id": "22222222222222222222222222222222",
+                "seal": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "members": [
+                  {
+                    "name": "a",
+                    "commit": "cccccccccccccccccccccccccccccccccccccccc"
+                  },
+                  {
+                    "name": "b",
+                    "commit": "dddddddddddddddddddddddddddddddddddddddd"
+                  }
+                ]
+              },
+              "members": [
+                {
+                  "name": "a",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "cccccccccccccccccccccccccccccccccccccccc"
+                },
+                {
+                  "name": "b",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "dddddddddddddddddddddddddddddddddddddddd"
+                }
+              ],
+              "transfer_state": "transferred",
+              "pending": {
+                "generation_id": "33333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "previous_seal": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "members": [
+                  {
+                    "name": "a",
+                    "commit": "cccccccccccccccccccccccccccccccccccccccc"
+                  },
+                  {
+                    "name": "b",
+                    "commit": "dddddddddddddddddddddddddddddddddddddddd"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "validation": "wire",
+      "reason": "schema"
+    },
+    {
+      "name": "transfer-initializing-state",
+      "status": 200,
+      "expected": {
+        "operation": "status",
+        "key": "",
+        "inventory_keys": [
+          "aaa",
+          "card"
+        ]
+      },
+      "body": {
+        "version": "superbench.v2",
+        "operation": "status",
+        "ok": true,
+        "result": {
+          "benches": [
+            {
+              "kind": "scalar",
+              "key": "aaa",
+              "branch": "bench/aaa",
+              "state": "active",
+              "quota_bytes": 0,
+              "quota_inodes": 0
+            },
+            {
+              "kind": "workspace",
+              "key": "card",
+              "bench_id": "11111111111111111111111111111111",
+              "phase": "initializing",
+              "member_count": 2,
+              "checkpoint_repository": "a",
+              "ready_for_acquisition": false,
+              "quota_bytes": 33554432,
+              "quota_inodes": 1000,
+              "checkpoint": {
+                "generation_id": "22222222222222222222222222222222",
+                "seal": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "members": [
+                  {
+                    "name": "a",
+                    "commit": "cccccccccccccccccccccccccccccccccccccccc"
+                  },
+                  {
+                    "name": "b",
+                    "commit": "dddddddddddddddddddddddddddddddddddddddd"
+                  }
+                ]
+              },
+              "members": [
+                {
+                  "name": "a",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "cccccccccccccccccccccccccccccccccccccccc"
+                },
+                {
+                  "name": "b",
+                  "branch": "bench/card",
+                  "base": "main",
+                  "object_format": "sha1",
+                  "source_commit": "dddddddddddddddddddddddddddddddddddddddd"
+                }
+              ],
+              "transfer_state": "transferred",
+              "lease": {
+                "holder": "initialization",
+                "mode": "cooperative",
+                "stop_requested": true
+              }
+            }
+          ]
+        }
+      },
+      "validation": "wire",
+      "reason": "schema"
+    },
+    {
+      "name": "transfer-with-grant",
+      "status": 200,
+      "expected": {
+        "operation": "lease",
+        "key": "card",
+        "request_id": "lease-1",
+        "authorized_grant": true
+      },
+      "body": {
+        "version": "superbench.v2",
+        "operation": "lease",
+        "ok": true,
+        "request_id": "lease-1",
+        "result": {
+          "workspace": {
+            "key": "card",
+            "bench_id": "11111111111111111111111111111111",
+            "phase": "ready",
+            "member_count": 2,
+            "checkpoint_repository": "a",
+            "ready_for_acquisition": false,
+            "quota_bytes": 33554432,
+            "quota_inodes": 1000,
+            "checkpoint": {
+              "generation_id": "22222222222222222222222222222222",
+              "seal": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "members": [
+                {
+                  "name": "a",
+                  "commit": "cccccccccccccccccccccccccccccccccccccccc"
+                },
+                {
+                  "name": "b",
+                  "commit": "dddddddddddddddddddddddddddddddddddddddd"
+                }
+              ]
+            },
+            "lease": {
+              "holder": "run:one",
+              "mode": "supervised",
+              "stop_requested": false,
+              "execution": {
+                "id": "33333333333333333333333333333333",
+                "phase": "stopped"
+              }
+            },
+            "transfer_state": "transferred"
+          },
+          "grant": {
+            "lease_token": "66666666666666666666666666666666"
+          },
+          "root_path": "/bounded/benches/card"
+        }
+      },
+      "validation": "wire",
+      "reason": "schema"
+    },
+    {
+      "name": "relinquishing-cannot-already-archive",
+      "status": 200,
+      "expected": {
+        "operation": "archive",
+        "key": "card"
+      },
+      "body": {
+        "version": "superbench.v2",
+        "operation": "archive",
+        "ok": true,
+        "result": {
+          "workspace": {
+            "key": "card",
+            "bench_id": "11111111111111111111111111111111",
+            "phase": "archived",
+            "member_count": 2,
+            "checkpoint_repository": "a",
+            "ready_for_acquisition": false,
+            "quota_bytes": 33554432,
+            "quota_inodes": 1000,
+            "checkpoint": {
+              "generation_id": "22222222222222222222222222222222",
+              "seal": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "members": [
+                {
+                  "name": "a",
+                  "commit": "cccccccccccccccccccccccccccccccccccccccc"
+                },
+                {
+                  "name": "b",
+                  "commit": "dddddddddddddddddddddddddddddddddddddddd"
+                }
+              ]
+            },
+            "archive": {
+              "archived_at": "2026-11-15T00:00:00Z",
+              "reap_after": "2026-11-22T00:00:00Z",
+              "freeze_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+              "frozen_at": "2026-11-15T00:00:01Z",
+              "automatic": false
+            },
+            "transfer_state": "relinquishing"
+          }
         }
       },
       "validation": "wire",

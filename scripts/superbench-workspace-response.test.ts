@@ -213,3 +213,31 @@ test("wire grant acceptance does not invent independent producer authority or fe
     expect(responseErrors(fixture.status, fixture.body, expected)).toEqual([]);
   }
 });
+
+test("transfer availability semantics independently reject source readiness and grants", () => {
+  const source = vectors.valid.find(
+    (c) => c.name === "status-transferred-source",
+  );
+  const grant = vectors.valid.find((c) => c.name === "lease-held-grant");
+  if (!source || !grant) throw new Error("missing transfer fixture");
+  const body = structuredClone(source.body);
+  const workspace = record(record(body).result).benches;
+  if (!Array.isArray(workspace)) throw new Error("missing inventory");
+  const w = record(workspace[1]);
+  expect(responseErrors(source.status, body, source.expected)).toEqual([]);
+  w.ready_for_acquisition = true;
+  expect(responseErrors(source.status, body, source.expected)).toContain(
+    "readiness",
+  );
+  w.ready_for_acquisition = false;
+  w.lease = { holder: "worker", mode: "cooperative", stop_requested: false };
+  expect(responseErrors(source.status, body, source.expected)).toContain(
+    "transfer_availability",
+  );
+  const granted = structuredClone(grant.body);
+  record(record(record(granted).result).workspace).transfer_state =
+    "transferred";
+  expect(responseErrors(grant.status, granted, grant.expected)).toContain(
+    "grant_authority",
+  );
+});

@@ -547,8 +547,56 @@
         },
         "archive": {
           "$ref": "#/$defs/archive"
+        },
+        "transfer_state": {
+          "enum": ["relinquishing", "transferred"]
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["transfer_state"]
+          },
+          "then": {
+            "required": ["checkpoint"],
+            "properties": {
+              "phase": {
+                "enum": ["ready", "archived", "reaping", "reaped"]
+              },
+              "ready_for_acquisition": {
+                "const": false
+              }
+            },
+            "not": {
+              "anyOf": [
+                {
+                  "required": ["lease"]
+                },
+                {
+                  "required": ["pending"]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["transfer_state"],
+            "properties": {
+              "transfer_state": {
+                "const": "relinquishing"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "phase": {
+                "const": "ready"
+              }
+            }
+          }
+        }
+      ]
     },
     "mutation": {
       "type": "object",
@@ -738,8 +786,56 @@
               }
             }
           }
+        },
+        "transfer_state": {
+          "enum": ["relinquishing", "transferred"]
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["transfer_state"]
+          },
+          "then": {
+            "required": ["checkpoint"],
+            "properties": {
+              "phase": {
+                "enum": ["ready", "archived", "reaping", "reaped"]
+              },
+              "ready_for_acquisition": {
+                "const": false
+              }
+            },
+            "not": {
+              "anyOf": [
+                {
+                  "required": ["lease"]
+                },
+                {
+                  "required": ["pending"]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["transfer_state"],
+            "properties": {
+              "transfer_state": {
+                "const": "relinquishing"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "phase": {
+                "const": "ready"
+              }
+            }
+          }
+        }
+      ]
     },
     "scalar_archive": {
       "type": "object",
