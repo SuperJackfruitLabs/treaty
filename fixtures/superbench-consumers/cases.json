@@ -1,0 +1,336 @@
+{
+  "status": "PROPOSED structural cases; does not prove authorization, durable producer events or runtime source fencing.",
+  "valid": [
+    {
+      "name": "exact card association",
+      "schema": "card-binding",
+      "body": {
+        "version": "superbench.card-binding.v1",
+        "tenant": "tenant_1",
+        "board": "board_1",
+        "card": "card_42",
+        "run": "run_2",
+        "bench": {
+          "key": "card_42",
+          "bench_id": "77777777777777777777777777777777"
+        },
+        "host_id": "host_1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    {
+      "name": "retained confirmed locality",
+      "schema": "locality",
+      "body": {
+        "version": "superbench.locality.v1",
+        "bench": {
+          "key": "card_42",
+          "bench_id": "77777777777777777777777777777777"
+        },
+        "host_id": "host_1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at_ms": 1000,
+        "expires_at_ms": 301000,
+        "state": "retained",
+        "checkpoint_id": "2222222222222222222222222222222222222222222222222222222222222222"
+      }
+    },
+    {
+      "name": "unavailable is not warm",
+      "schema": "locality",
+      "body": {
+        "version": "superbench.locality.v1",
+        "bench": {
+          "key": "card_42",
+          "bench_id": "77777777777777777777777777777777"
+        },
+        "host_id": "host_1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at_ms": 1000,
+        "expires_at_ms": 301000,
+        "state": "unavailable"
+      }
+    },
+    {
+      "name": "confirmed checkpoint event",
+      "schema": "lifecycle",
+      "body": {
+        "version": "superbench.lifecycle.v1",
+        "stream_id": "stream_1",
+        "event_id": "event_1",
+        "sequence": 1,
+        "kind": "checkpointed",
+        "bench": {
+          "key": "card_42",
+          "bench_id": "77777777777777777777777777777777"
+        },
+        "host_id": "host_1",
+        "recorded_at_ms": 1000,
+        "checkpoint_id": "2222222222222222222222222222222222222222222222222222222222222222"
+      }
+    },
+    {
+      "name": "created event",
+      "schema": "lifecycle",
+      "body": {
+        "version": "superbench.lifecycle.v1",
+        "stream_id": "stream_1",
+        "event_id": "event_1",
+        "sequence": 1,
+        "kind": "created",
+        "bench": {
+          "key": "card_42",
+          "bench_id": "77777777777777777777777777777777"
+        },
+        "host_id": "host_1",
+        "recorded_at_ms": 1000
+      }
+    },
+    {
+      "name": "leased event",
+      "schema": "lifecycle",
+      "body": {
+        "version": "superbench.lifecycle.v1",
+        "stream_id": "stream_1",
+        "event_id": "event_1",
+        "sequence": 1,
+        "kind": "leased",
+        "bench": {
+          "key": "card_42",
+          "bench_id": "77777777777777777777777777777777"
+        },
+        "host_id": "host_1",
+        "recorded_at_ms": 1000
+      }
+    },
+    {
+      "name": "recovered event",
+      "schema": "lifecycle",
+      "body": {
+        "version": "superbench.lifecycle.v1",
+        "stream_id": "stream_1",
+        "event_id": "event_1",
+        "sequence": 1,
+        "kind": "recovered",
+        "bench": {
+          "key": "card_42",
+          "bench_id": "77777777777777777777777777777777"
+        },
+        "host_id": "host_1",
+        "recorded_at_ms": 1000
+      }
+    },
+    {
+      "name": "archived event",
+      "schema": "lifecycle",
+      "body": {
+        "version": "superbench.lifecycle.v1",
+        "stream_id": "stream_1",
+        "event_id": "event_1",
+        "sequence": 1,
+        "kind": "archived",
+        "bench": {
+          "key": "card_42",
+          "bench_id": "77777777777777777777777777777777"
+        },
+        "host_id": "host_1",
+        "recorded_at_ms": 1000
+      }
+    },
+    {
+      "name": "card without an active run",
+      "schema": "card-binding",
+      "body": {
+        "version": "superbench.card-binding.v1",
+        "tenant": "tenant_1",
+        "board": "board_1",
+        "card": "card_42",
+        "bench": {
+          "key": "card_42",
+          "bench_id": "77777777777777777777777777777777"
+        },
+        "host_id": "host_1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "lease capability is not display data",
+      "schema": "card-binding",
+      "body": {
+        "version": "superbench.card-binding.v1",
+        "tenant": "tenant_1",
+        "board": "board_1",
+        "card": "card_42",
+        "run": "run_2",
+        "bench": {
+          "key": "card_42",
+          "bench_id": "77777777777777777777777777777777"
+        },
+        "host_id": "host_1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "token": "secret"
+      }
+    },
+    {
+      "name": "paths are not locality",
+      "schema": "locality",
+      "body": {
+        "version": "superbench.locality.v1",
+        "bench": {
+          "key": "card_42",
+          "bench_id": "77777777777777777777777777777777"
+        },
+        "host_id": "host_1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at_ms": 1000,
+        "expires_at_ms": 301000,
+        "state": "retained",
+        "checkpoint_id": "2222222222222222222222222222222222222222222222222222222222222222",
+        "root": "/private"
+      }
+    },
+    {
+      "name": "retained without evidence",
+      "schema": "locality",
+      "body": {
+        "version": "superbench.locality.v1",
+        "bench": {
+          "key": "card_42",
+          "bench_id": "77777777777777777777777777777777"
+        },
+        "host_id": "host_1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at_ms": 1000,
+        "expires_at_ms": 301000,
+        "state": "retained"
+      }
+    },
+    {
+      "name": "unavailable with evidence",
+      "schema": "locality",
+      "body": {
+        "version": "superbench.locality.v1",
+        "bench": {
+          "key": "card_42",
+          "bench_id": "77777777777777777777777777777777"
+        },
+        "host_id": "host_1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at_ms": 1000,
+        "expires_at_ms": 301000,
+        "state": "unavailable",
+        "checkpoint_id": "2222222222222222222222222222222222222222222222222222222222222222"
+      }
+    },
+    {
+      "name": "checkpoint without evidence",
+      "schema": "lifecycle",
+      "body": {
+        "version": "superbench.lifecycle.v1",
+        "stream_id": "stream_1",
+        "event_id": "event_1",
+        "sequence": 1,
+        "kind": "checkpointed",
+        "bench": {
+          "key": "card_42",
+          "bench_id": "77777777777777777777777777777777"
+        },
+        "host_id": "host_1",
+        "recorded_at_ms": 1000
+      }
+    },
+    {
+      "name": "intent is not lifecycle success",
+      "schema": "lifecycle",
+      "body": {
+        "version": "superbench.lifecycle.v1",
+        "stream_id": "stream_1",
+        "event_id": "event_1",
+        "sequence": 1,
+        "kind": "recovery_started",
+        "bench": {
+          "key": "card_42",
+          "bench_id": "77777777777777777777777777777777"
+        },
+        "host_id": "host_1",
+        "recorded_at_ms": 1000,
+        "checkpoint_id": "2222222222222222222222222222222222222222222222222222222222222222"
+      }
+    },
+    {
+      "name": "zero sequence",
+      "schema": "lifecycle",
+      "body": {
+        "version": "superbench.lifecycle.v1",
+        "stream_id": "stream_1",
+        "event_id": "event_1",
+        "sequence": 0,
+        "kind": "checkpointed",
+        "bench": {
+          "key": "card_42",
+          "bench_id": "77777777777777777777777777777777"
+        },
+        "host_id": "host_1",
+        "recorded_at_ms": 1000,
+        "checkpoint_id": "2222222222222222222222222222222222222222222222222222222222222222"
+      }
+    },
+    {
+      "name": "invented work mapping",
+      "schema": "lifecycle",
+      "body": {
+        "version": "superbench.lifecycle.v1",
+        "stream_id": "stream_1",
+        "event_id": "event_1",
+        "sequence": 1,
+        "kind": "checkpointed",
+        "bench": {
+          "key": "card_42",
+          "bench_id": "77777777777777777777777777777777"
+        },
+        "host_id": "host_1",
+        "recorded_at_ms": 1000,
+        "checkpoint_id": "2222222222222222222222222222222222222222222222222222222222222222",
+        "run": "run_2"
+      }
+    },
+    {
+      "name": "token in event",
+      "schema": "lifecycle",
+      "body": {
+        "version": "superbench.lifecycle.v1",
+        "stream_id": "stream_1",
+        "event_id": "event_1",
+        "sequence": 1,
+        "kind": "checkpointed",
+        "bench": {
+          "key": "card_42",
+          "bench_id": "77777777777777777777777777777777"
+        },
+        "host_id": "host_1",
+        "recorded_at_ms": 1000,
+        "checkpoint_id": "2222222222222222222222222222222222222222222222222222222222222222",
+        "holder_token": "secret"
+      }
+    },
+    {
+      "name": "empty immutable bench",
+      "schema": "card-binding",
+      "body": {
+        "version": "superbench.card-binding.v1",
+        "tenant": "tenant_1",
+        "board": "board_1",
+        "card": "card_42",
+        "run": "run_2",
+        "bench": {
+          "key": "card_42",
+          "bench_id": ""
+        },
+        "host_id": "host_1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    }
+  ]
+}

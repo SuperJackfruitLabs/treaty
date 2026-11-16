@@ -1,0 +1,19 @@
+{
+  "status": "PROPOSED; all scenarios unexecuted runtime obligations.",
+  "scenarios": [
+    "persist lifecycle event atomically with successful core transition",
+    "failed transition publishes no success event",
+    "restart preserves event IDs and monotonic stream sequence",
+    "key reuse gets a distinct immutable registration",
+    "authorization is checked before bench existence and after asynchronous read",
+    "host mapping uses current authorized registry identity, never display labels",
+    "missing history and collected events report explicit gaps",
+    "checkpoint event refers to actual confirmed scalar or complete aggregate evidence",
+    "locality snapshot expiry and changed source refuse warm match",
+    "cross-tenant candidate mapping cannot join host IDs",
+    "events expose no paths, credentials, continuation or raw holder capabilities",
+    "consumer outage cannot block standalone lifecycle",
+    "bounded event retention exposes cursor gaps instead of fabricated history",
+    "card refresh refuses stale snapshot and replaced bench identity"
+  ]
+}
