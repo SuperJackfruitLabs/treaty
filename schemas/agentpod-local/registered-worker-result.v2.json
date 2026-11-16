@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/agentpod-local/registered-worker-result.v2.json",
+  "title": "PROPOSED private registered worker registered-worker-result.v2.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "binding", "outcome", "handoff"],
+  "properties": {
+    "version": {
+      "const": "agentpod.superbench-worker.v2"
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["board_id", "card_id", "run_id", "epoch"],
+      "properties": {
+        "board_id": {
+          "type": "string",
+          "maxLength": 200,
+          "pattern": "^brd_[A-Za-z0-9]{6,}$",
+          "not": {
+            "pattern": "[\r\n\u2028\u2029]"
+          }
+        },
+        "card_id": {
+          "type": "string",
+          "maxLength": 200,
+          "pattern": "^card_[A-Za-z0-9]{6,}$",
+          "not": {
+            "pattern": "[\r\n\u2028\u2029]"
+          }
+        },
+        "run_id": {
+          "type": "string",
+          "maxLength": 200,
+          "pattern": "^run_[A-Za-z0-9]{6,}$",
+          "not": {
+            "pattern": "[\r\n\u2028\u2029]"
+          }
+        },
+        "epoch": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      }
+    },
+    "outcome": {
+      "enum": ["complete", "blocked", "failed"]
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  }
+}

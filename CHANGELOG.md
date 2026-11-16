@@ -5,6 +5,8 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- Propose a private AgentPod registered-worker capsule/result schema and exact framing/canonical cases, separate from public reader data and lifecycle authority.
+
 - Propose SuperBench card associations, advisory locality and lifecycle evidence data beside the existing reader proposal; card associations remain stable across fresh reader snapshots, and no event catalog or authority is enabled.
 
 - Keep the SuperBench v1 and checkpoint-generation boundary documentation public-facing without private owner links or implementation-status notes.
