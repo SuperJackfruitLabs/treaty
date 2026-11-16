@@ -5,6 +5,8 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- Propose SuperBench card associations, advisory locality and lifecycle evidence data beside the existing reader proposal; card associations remain stable across fresh reader snapshots, and no event catalog or authority is enabled.
+
 - Keep the SuperBench v1 and checkpoint-generation boundary documentation public-facing without private owner links or implementation-status notes.
 
 - matrix-events: a gate's room message lists the artifacts its run linked, one `- [title](url)`

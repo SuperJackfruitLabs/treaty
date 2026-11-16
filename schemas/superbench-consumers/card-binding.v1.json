@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superbench-consumers/card-binding.v1.json",
+  "title": "PROPOSED SuperBench card-binding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "tenant", "board", "card", "bench", "host_id"],
+  "properties": {
+    "version": {
+      "const": "superbench.card-binding.v1"
+    },
+    "tenant": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_:-]*$"
+    },
+    "board": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_:-]*$"
+    },
+    "card": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_:-]*$"
+    },
+    "run": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_:-]*$"
+    },
+    "bench": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "bench_id"],
+      "properties": {
+        "key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$"
+        },
+        "bench_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[a-f0-9]{32}$"
+        }
+      }
+    },
+    "host_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$"
+    }
+  }
+}
