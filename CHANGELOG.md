@@ -10,6 +10,8 @@ deploys the event relay to production.
   before. Malformed references are ignored rather than thrown on, only http(s) links are written,
   and titles and URLs are escaped so a reference cannot add a link of its own.
 
+- Align public checkpoint documentation with the accepted coordinator boundary, keep proposed reader/extension enablement separate, and use canonical reader schema URLs.
+
 - Propose bounded SuperBench reader observations and shared refusal cases for mixed inventory, retained checkpoint history, files, diffs and logs; no viewer authority or listener is enabled.
 
 - Propose bounded host-local read-only receipt lookup for interrupted SuperBench source replies; preserve all existing operation/cancellation contracts and keep deployment disabled.
@@ -18,7 +20,7 @@ deploys the event relay to production.
   and runtime obligations; existing v1/v2 bytes and accepted authority stay unchanged.
 
 - Propose coordinator-authorized per-run checkpoint settlement HTTP schemas and
-  fixtures; no accepted authority, provisioned grant or live pilot is claimed.
+  fixtures for the accepted coordinator design; reporter provisioning and enablement remain separate gates.
 
 - Propose optional SuperBench v2 transfer availability so retired sources remain
   visible without advertising writer acquisition or grants.

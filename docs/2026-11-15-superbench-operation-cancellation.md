@@ -1,7 +1,7 @@
 # SuperBench operation-bound cancellation v2
 
-**Proposed. Not accepted or enabled.** This extension follows charter's proposed
-[cancellation decision](https://github.com/SuperJackfruitLabs/charter/blob/main/decisions/2026-11-15-cancellation-binds-a-source-operation.md).
+**Proposed. Not accepted or enabled.** This extension follows the proposed
+host-local cancellation ownership boundary.
 The accepted local v1 boundary and existing v1/v2 canonical bytes remain unchanged.
 Shared fixtures describe verification obligations, not producer execution,
 consumer conformance, a provisioned grant or a live pilot.
@@ -59,11 +59,8 @@ Timeout, socket close, acknowledgement and elapsed time never establish fencing.
 ## Exact source digest
 
 `fixtures/superbench-api/source-digests.json` records original accepted source
-bodies, plain canonical JSON strings and SHA256 goldens generated with producer
-`63b1e66187cd72c0151b341912bf29f6a6cd2268`, using its actual
-`internal/protocolv2.Parse`, `json.Marshal(Request)` and `Request.Digest`.
-The generator ran in an isolated temporary Go module with a read-only local source
-reference. These are public fixture values; the held token is synthetic.
+bodies, canonical JSON strings and SHA256 goldens for the producer-owned typed
+source encoding. Fixture capabilities are synthetic and carry no authority.
 
 This algorithm is **not RFC8785** and does not hash the original wire bytes.
 Parse and validate the complete original request first, normalize its exact

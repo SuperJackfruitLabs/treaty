@@ -266,24 +266,16 @@ registration from one response; producer-layer cases require separate authoritat
 state/fencing evidence. Absence of that sideband knowledge does not reject a
 structurally eligible grant. It also never grants runtime authority by itself.
 
-A stop_admin recovery grant does not close every initialization repair path.
-An initialization stopped with its continuation revoked cannot restart preparation
-or finish initialization merely by presenting that token. Explicit reviewed local
-administrative repair/cleanup remains future work; this proposal does not claim
-that path is implemented or that Phase 1 is complete. A future socket repair action
-would need its own request contract. An oversized-root stop_admin may still fence
-successfully while omitting the optional grant/root; root bounds never disable stop.
+A stop_admin recovery grant authorizes reconciliation only. An initialization
+stopped with its continuation revoked cannot restart preparation or finish
+initialization merely by presenting that token. Any local administrative repair
+requires its own explicit reviewed authority; no socket repair operation is
+defined here. An oversized-root stop_admin may still fence successfully while
+omitting the optional grant/root; root bounds never disable stop.
 
-## Verification of the proposed data
+## Conformance scope
 
-The frozen source archive with SHA-256
-`19428fe11735c4575d07eaa5e6abad80bbf0075cd497939cb2da69225d6a94d5`
-passed the application and documentation checks on Linux with Bun 1.2.8,
-Node 24 and a required NATS 2.15.2 fixture. Frozen dependency installs completed;
-`bun run check` passed formatting, typecheck, lint, 1,095 tests with zero failures
-and all five package builds. `npm ci && npm run build` in `docs-site` passed
-claim checks and built 57 pages. The archive's complete 230-file source set
-matched the reviewed checkout byte for byte before this evidence note was added.
-These checks validate the proposed data and repository, not a running SuperBench
-v2 producer, suite consumer or deployed pilot. Exact-head Forge CI remains the
-publication gate.
+The shared request, response and lifecycle corpora define data checks and runtime
+obligations separately. Passing structural and lexical cases does not establish
+producer fencing, consumer integration, reporter provisioning or deployment.
+Those require product-owned lifecycle tests and explicit enablement gates.

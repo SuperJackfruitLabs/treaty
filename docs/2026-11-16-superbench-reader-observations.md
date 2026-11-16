@@ -3,8 +3,7 @@
 **Status: PROPOSED. Not accepted, enabled or deployed.** This is a separate
 plain-data reader contract, not an amendment of accepted v1 operation bytes,
 grouped v2 operation bytes, cancellation, receipt recovery or the event catalogue.
-The owner decision is Charter's proposed
-[Charter PR #41](https://github.com/SuperJackfruitLabs/charter/pull/41). No new issuer, audience,
+The scoped reader ownership boundary remains proposed. No new issuer, audience,
 reader credential, terminal/write grant or network proxy is implemented here.
 
 Canonical addresses:
@@ -29,14 +28,12 @@ including after asynchronous work. Denied and out-of-scope resources return the
 same forbidden result before existence disclosure. Do not read/migrate an engine
 database directly from a consumer.
 
-This is **not** a browser-to-legacy-socket proxy design. Network/browser deployment
-remains blocked on accepted Organization resource audience/entitlement/client
-registration plus SuperBench membership/scope/host-routing/session decisions.
-Accounts' inspected `09ebd747` issuer contract resource table has no SuperBench
-entry. Do not invent an audience, borrow another product's token, expose UDS over
-TCP, or mistake loopback for user authentication. The fixture-backed UI has no
-live adapter or listener. Accepted Charter lifecycle ownership and local v1 are
-unchanged; grouped v2 remains proposed beside this proposal.
+Browser/network access requires an owner-approved Organization resource audience,
+entitlement and client registration, plus SuperBench membership, scope, host
+routing and session policy. This reader proposal does not define or provision
+those authorities. Never borrow another product's token, expose a legacy Unix
+socket through TCP or treat loopback as user authentication. Reader deployment
+must preserve accepted lifecycle ownership and keep write authority separate.
 
 ## Envelope and limits
 
@@ -169,12 +166,13 @@ inventory, latest-only/pruned history, reused IDs, descriptor/symlink races,
 private content, actual byte bounds, log ambiguity/collection, expiry and
 attachment separation. These are explicitly **unexecuted** here. A later producer
 must implement and prove them with real files and actual authenticated transports.
-The current SuperBench status DTO exposes paths and only latest evidence; this
-proposal is a new allowlisted projection, not a promise that forwarding that DTO
-is safe. No existing engine checkpoint history table is fabricated by the schema.
+The observation is an allowlisted projection, never a forwarding of private
+engine or operation records. A schema cannot create confirmed history that the
+producer has not retained.
 
 The disabled SuperBench viewmodel will consume a pinned copy of this exact corpus
 and reject incompatible fixtures. Its render/layout proof remains separate from
 wire conformance and authenticated live integration. Files/diff/log implementations,
 terminal read/write contract, network auth, remaining suite consumers and actual
-pilot verification remain full Phase 2 work. Inventory is not Phase 2 completion.
+integration verification remain separate implementation obligations. Inventory
+alone does not implement the full reader or attachment boundary.
