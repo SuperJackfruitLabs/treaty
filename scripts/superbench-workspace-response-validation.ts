@@ -212,6 +212,7 @@ export function responseErrors(
     operation_in_doubt: [409, 503],
     unavailable: [503],
     operation_failed: [422],
+    capacity_exhausted: [422],
   };
   if (b.ok === true ? status !== 200 : !(statuses[code] ?? []).includes(status))
     errors.push("http_status");
