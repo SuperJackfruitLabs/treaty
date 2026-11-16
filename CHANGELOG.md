@@ -10,6 +10,8 @@ deploys the event relay to production.
   before. Malformed references are ignored rather than thrown on, only http(s) links are written,
   and titles and URLs are escaped so a reference cannot add a link of its own.
 
+- Propose bounded SuperBench reader observations and shared refusal cases for mixed inventory, retained checkpoint history, files, diffs and logs; no viewer authority or listener is enabled.
+
 - Propose bounded host-local read-only receipt lookup for interrupted SuperBench source replies; preserve all existing operation/cancellation contracts and keep deployment disabled.
 
 - Propose operation-bound SuperBench cancellation schemas, source-digest goldens

@@ -1,0 +1,94 @@
+{
+  "version": "superbench.observation-producer-scenarios.v1",
+  "status": "PROPOSED obligations, unexecuted; these cases do not prove implementation or acceptance.",
+  "scenarios": [
+    {
+      "name": "cross_uid_and_scope",
+      "assertion": "Authorize current reader identity before looking up snapshot/key; unauthorized and out-of-scope resources are indistinguishable."
+    },
+    {
+      "name": "revoked_scope_between_pages",
+      "assertion": "Current read authority must still hold on each page; an old snapshot/cursor grants no authority."
+    },
+    {
+      "name": "mixed_inventory_complete",
+      "assertion": "Enumerate scalar and aggregate registration rows under one observation; page without silent filtering or omissions."
+    },
+    {
+      "name": "inventory_over_budget",
+      "assertion": "Return unavailable rather than truncate a page or silently exclude aggregate/archived/blocked registrations."
+    },
+    {
+      "name": "latest_only_history",
+      "assertion": "A producer retaining only latest confirmed checkpoint reports latest_only and no fabricated events/times."
+    },
+    {
+      "name": "pruned_history",
+      "assertion": "Retained history is explicit bounded coverage; collected/missing records cannot be reconstructed from Git reflog as confirmed service events."
+    },
+    {
+      "name": "reused_key",
+      "assertion": "Bind bench ID as well as key; replacement registration cannot satisfy old snapshot requests."
+    },
+    {
+      "name": "path_traversal",
+      "assertion": "Reject absolute, parent, empty component, backslash and .git control paths before filesystem reads."
+    },
+    {
+      "name": "symlink_and_parent_race",
+      "assertion": "Use registered physical member roots and non-following descriptor-relative traversal; replaced parent/symlink refuses without following."
+    },
+    {
+      "name": "backing_file_race",
+      "assertion": "Verify opened regular-file identity, size and bytes before/after bounded reads; detected mutation returns stale_snapshot without partial content."
+    },
+    {
+      "name": "snapshot_not_fence",
+      "assertion": "Digest binds observed core and content manifest but never asserts all concurrent writers stopped or grants takeover."
+    },
+    {
+      "name": "no_git_metadata_writes",
+      "assertion": "Do not invoke metadata-refreshing Git status or update index/worktree/cache/config while observing; read operations never migrate state."
+    },
+    {
+      "name": "ignored_private_output",
+      "assertion": "Content scope covers explicitly authorized working files, including ignored/untracked when approved; default deny sensitive paths; no claim content is secret-free."
+    },
+    {
+      "name": "binary_and_active_html",
+      "assertion": "Return bounded bytes with integrity digest and encoding; consumers render untrusted text without executing HTML, links, scripts or log escape sequences."
+    },
+    {
+      "name": "diff_fixed_base",
+      "assertion": "Diff base identifies an authorized confirmed checkpoint/member vector; no arbitrary refs, revisions, pathspec expansion, commands or external tools."
+    },
+    {
+      "name": "unsealed_log",
+      "assertion": "Report unsealed point-in-time bytes and unknown completeness/outcome; never upgrade to sealed or success from file presence or EOF."
+    },
+    {
+      "name": "interrupted_absent_log",
+      "assertion": "Preserve absent capture as absent; do not synthesize empty file, known exit, complete capture or collection authority."
+    },
+    {
+      "name": "collected_log",
+      "assertion": "Report collected metadata without reopening reused paths or recreating capture bytes."
+    },
+    {
+      "name": "snapshot_expiry_and_retention",
+      "assertion": "Keep snapshot state bounded for at most five minutes; expiry/read retention does not delete engine checkpoints, logs, journals or receipts."
+    },
+    {
+      "name": "network_gate",
+      "assertion": "No public listener or legacy Unix TCP proxy before accepted product audience/org/scope and key/host routing policy plus actual issuer provisioning."
+    },
+    {
+      "name": "attach_and_takeover",
+      "assertion": "Read authority cannot attach stdin, execute commands, stop writers, acquire leases or adopt external writers; those require separate accepted contracts."
+    },
+    {
+      "name": "consumer_conformance",
+      "assertion": "Run same shared corpus and actual authenticated bounded filesystem tests before enabling a consuming viewer; fixture rendering is not that evidence."
+    }
+  ]
+}
