@@ -4,15 +4,7 @@
   "title": "PROPOSED SuperBench card-binding",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "version",
-    "tenant",
-    "board",
-    "card",
-    "bench",
-    "host_id",
-    "snapshot"
-  ],
+  "required": ["version", "tenant", "board", "card", "bench", "host_id"],
   "properties": {
     "version": {
       "const": "superbench.card-binding.v1"
@@ -65,10 +57,6 @@
       "minLength": 1,
       "maxLength": 80,
       "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$"
-    },
-    "snapshot": {
-      "type": "string",
-      "pattern": "^[0-9a-f]{64}$"
     }
   }
 }

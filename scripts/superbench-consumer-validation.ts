@@ -14,7 +14,6 @@ export type CardBinding = {
   run?: string;
   bench: BenchRef;
   host_id: string;
-  snapshot: string;
 };
 export type Locality = {
   bench: BenchRef;
@@ -44,8 +43,6 @@ export function cardJoin(
     binding.run === current.run &&
     sameBench(binding.bench, current.bench) &&
     binding.host_id === current.host_id &&
-    binding.snapshot === current.snapshot &&
-    observation.snapshot === binding.snapshot &&
     sameBench(binding.bench, observation) &&
     observation.host.id === binding.host_id
   );

@@ -40,24 +40,31 @@ const binding: CardBinding = {
   run: "run_2",
   bench: { key: "card_42", bench_id: "77777777777777777777777777777777" },
   host_id: "host_1",
-  snapshot: "a".repeat(64),
 };
 const observation = {
   ...binding.bench,
   host: { id: binding.host_id },
-  snapshot: binding.snapshot,
+  snapshot: "a".repeat(64),
 };
 test("card association joins exact producer observation", () => {
   expect(cardJoin(binding, binding, observation)).toBe(true);
 });
-for (const field of [
-  "tenant",
-  "board",
-  "card",
-  "run",
-  "host_id",
-  "snapshot",
-] as const)
+test("card association survives reader snapshot refresh without rebinding", () => {
+  const stored = JSON.stringify(binding);
+  expect(stored).not.toContain('"snapshot"');
+  for (const snapshot of ["a".repeat(64), "b".repeat(64)]) {
+    const refreshed = { ...observation, snapshot };
+    expect(cardJoin(binding, binding, refreshed)).toBe(true);
+    expect(cardJoin(binding, binding, { ...refreshed, key: "another" })).toBe(
+      false,
+    );
+    expect(
+      cardJoin(binding, binding, { ...refreshed, bench_id: "8".repeat(32) }),
+    ).toBe(false);
+  }
+  expect(JSON.stringify(binding)).toBe(stored);
+});
+for (const field of ["tenant", "board", "card", "run", "host_id"] as const)
   test(`card refuses changed authoritative ${field}`, () => {
     expect(
       cardJoin(binding, { ...binding, [field]: "different" }, observation),
@@ -70,14 +77,11 @@ test("key reuse and wrong producer host cannot redirect card", () => {
   expect(
     cardJoin(binding, binding, { ...observation, host: { id: "other" } }),
   ).toBe(false);
-  expect(
-    cardJoin(binding, binding, { ...observation, snapshot: "b".repeat(64) }),
-  ).toBe(false);
 });
 const locality: Locality = {
   bench: binding.bench,
   host_id: binding.host_id,
-  snapshot: binding.snapshot,
+  snapshot: "a".repeat(64),
   observed_at_ms: 1000,
   expires_at_ms: 301000,
   state: "retained",
@@ -86,13 +90,16 @@ const locality: Locality = {
 const expected = {
   bench: binding.bench,
   host_id: binding.host_id,
-  snapshot: binding.snapshot,
+  snapshot: "a".repeat(64),
   checkpoint_id: "2".repeat(64),
   phase: "ready",
   availability: "unleased",
 };
 test("locality requires exact retained confirmed evidence and bounded freshness", () => {
   expect(localityMatches(locality, expected, 1000)).toBe(true);
+  expect(
+    localityMatches(locality, { ...expected, snapshot: "b".repeat(64) }, 1000),
+  ).toBe(false);
   for (const now of [999, 301000, NaN])
     expect(localityMatches(locality, expected, now)).toBe(false);
   expect(
@@ -170,7 +177,6 @@ test("card fixture joins the actual existing mixed reader inventory", () => {
     ...binding,
     bench: { key: item.key, bench_id: item.bench_id },
     host_id: item.host.id,
-    snapshot: fixture.snapshot,
   };
   expect(
     cardJoin(association, association, { ...item, snapshot: fixture.snapshot }),

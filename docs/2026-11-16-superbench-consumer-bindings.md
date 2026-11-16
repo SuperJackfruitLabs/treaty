@@ -21,9 +21,13 @@ the existing reader grammar; these records do not define alternative identities.
 
 `card-binding.v1.json` is a SuperPipeline-owned association, not a SuperBench
 request. A server-authorized current tenant/board/card and optional current run select an immutable
-bench key plus bench ID, logical host and reader snapshot. Join all fields against
+bench key plus bench ID and logical host. Join these fields against
 that authoritative association and the actual authorized reader inventory item.
-Run presence must match exactly, including a card with no active run. A reused key, changed run/host or snapshot must refuse the join. Rendering uses
+Run presence must match exactly, including a card with no active run. A reused key
+or changed run/host must refuse the join. Reader snapshots are transient observation
+metadata, never stored association identity: an authorized fresh snapshot for the
+same key and bench ID refreshes the panel without rebinding the card. Stale, denied
+or missing observations remain unavailable. Rendering uses
 the existing reader's logical host, available/unavailable storage measurements,
 last confirmed checkpoint and holder fields. Unknown never becomes zero or an
 invented label. All labels are untrusted text. A panel does not grant attachment,

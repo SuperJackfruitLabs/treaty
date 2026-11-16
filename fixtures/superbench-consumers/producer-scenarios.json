@@ -14,6 +14,6 @@
     "events expose no paths, credentials, continuation or raw holder capabilities",
     "consumer outage cannot block standalone lifecycle",
     "bounded event retention exposes cursor gaps instead of fabricated history",
-    "card refresh refuses stale snapshot and replaced bench identity"
+    "card association survives authorized fresh reader snapshot refresh without rebinding; stale observations stay unavailable and replaced bench identity refuses the join"
   ]
 }

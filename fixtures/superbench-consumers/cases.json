@@ -14,8 +14,7 @@
           "key": "card_42",
           "bench_id": "77777777777777777777777777777777"
         },
-        "host_id": "host_1",
-        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        "host_id": "host_1"
       }
     },
     {
@@ -149,8 +148,7 @@
           "key": "card_42",
           "bench_id": "77777777777777777777777777777777"
         },
-        "host_id": "host_1",
-        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        "host_id": "host_1"
       }
     }
   ],
@@ -169,7 +167,6 @@
           "bench_id": "77777777777777777777777777777777"
         },
         "host_id": "host_1",
-        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "token": "secret"
       }
     },
@@ -327,6 +324,22 @@
         "bench": {
           "key": "card_42",
           "bench_id": ""
+        },
+        "host_id": "host_1"
+      }
+    },
+    {
+      "name": "reader snapshot is not stored card identity",
+      "schema": "card-binding",
+      "body": {
+        "version": "superbench.card-binding.v1",
+        "tenant": "tenant_1",
+        "board": "board_1",
+        "card": "card_42",
+        "run": "run_2",
+        "bench": {
+          "key": "card_42",
+          "bench_id": "77777777777777777777777777777777"
         },
         "host_id": "host_1",
         "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
