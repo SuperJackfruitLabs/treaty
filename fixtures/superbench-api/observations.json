@@ -1,0 +1,3404 @@
+{
+  "version": "superbench.observation-fixtures.v1",
+  "status": "PROPOSED structural/semantic/lexical conformance only; does not prove authorization, filesystem safety or a running viewer.",
+  "valid": [
+    {
+      "name": "mixed_inventory_request",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory"
+      }
+    },
+    {
+      "name": "mixed_inventory",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "items": [
+            {
+              "key": "card_task",
+              "bench_id": "11111111111111111111111111111111",
+              "kind": "workspace",
+              "phase": "ready",
+              "availability": "unleased",
+              "member_names": [
+                "a",
+                "b"
+              ],
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "pending_checkpoint": false,
+              "history": "latest_only",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              }
+            },
+            {
+              "key": "solo",
+              "bench_id": "77777777777777777777777777777777",
+              "kind": "scalar",
+              "phase": "ready",
+              "availability": "held",
+              "member_names": [],
+              "checkpoint": {
+                "kind": "scalar",
+                "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "commit": "8888888888888888888888888888888888888888"
+              },
+              "pending_checkpoint": false,
+              "history": "retained",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              },
+              "holder": {
+                "name": "work_run",
+                "source": "run",
+                "display": "Current work run",
+                "run": "run_demo"
+              }
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory"
+      },
+      "status": 200
+    },
+    {
+      "name": "checkpoints_request",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "checkpoints"
+      }
+    },
+    {
+      "name": "checkpoints_response",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "checkpoints",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "coverage": "latest_only",
+          "items": [
+            {
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "time_source": "unavailable"
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "checkpoints"
+      },
+      "status": 200
+    },
+    {
+      "name": "tree_request",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "tree",
+        "member": "a",
+        "path": ""
+      }
+    },
+    {
+      "name": "tree_response",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "tree",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "member": "a",
+          "path": "",
+          "entries": [
+            {
+              "name": "src",
+              "kind": "directory",
+              "readable": true
+            },
+            {
+              "name": "external",
+              "kind": "symlink",
+              "readable": false
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "tree",
+        "member": "a",
+        "path": ""
+      },
+      "status": 200
+    },
+    {
+      "name": "file_request",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "src/hello.txt",
+        "offset": 0,
+        "length": 65536
+      }
+    },
+    {
+      "name": "file_response",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "file",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "member": "a",
+          "path": "src/hello.txt",
+          "offset": 0,
+          "data_base64": "aGVsbG8K",
+          "content_sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
+          "total_bytes": 6,
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "src/hello.txt",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 200
+    },
+    {
+      "name": "diff_request",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "diff",
+        "member": "b",
+        "base_checkpoint": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    },
+    {
+      "name": "diff_response",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "diff",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "member": "b",
+          "base_checkpoint": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "data_base64": "aGVsbG8K",
+          "content_sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "diff",
+        "member": "b",
+        "base_checkpoint": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "status": 200
+    },
+    {
+      "name": "log_request",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "log",
+        "run_id": "99999999999999999999999999999999",
+        "offset": 0,
+        "length": 65536
+      }
+    },
+    {
+      "name": "log_response",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "log",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "run_id": "99999999999999999999999999999999",
+          "capture": "unsealed",
+          "outcome": "unknown",
+          "offset": 0,
+          "data_base64": "aGVsbG8K",
+          "content_sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
+          "observed_bytes": 6,
+          "capture_complete": false,
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "log",
+        "run_id": "99999999999999999999999999999999",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 200
+    },
+    {
+      "name": "retained_history",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "checkpoints",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "coverage": "retained",
+          "items": [
+            {
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "time_source": "recorded",
+              "confirmed_at": "2026-11-16T00:59:00Z"
+            },
+            {
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+                "generation": "00000000000000000000000000000000",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "time_source": "unavailable"
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "checkpoints"
+      },
+      "status": 200
+    },
+    {
+      "name": "transferred_source_blocked",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "items": [
+            {
+              "key": "card_task",
+              "bench_id": "11111111111111111111111111111111",
+              "kind": "workspace",
+              "phase": "ready",
+              "availability": "blocked",
+              "member_names": [
+                "a",
+                "b"
+              ],
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "pending_checkpoint": false,
+              "history": "latest_only",
+              "transfer_state": "transferred",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              }
+            },
+            {
+              "key": "solo",
+              "bench_id": "77777777777777777777777777777777",
+              "kind": "scalar",
+              "phase": "ready",
+              "availability": "held",
+              "member_names": [],
+              "checkpoint": {
+                "kind": "scalar",
+                "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "commit": "8888888888888888888888888888888888888888"
+              },
+              "pending_checkpoint": false,
+              "history": "retained",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              },
+              "holder": {
+                "name": "work_run",
+                "source": "run",
+                "display": "Current work run",
+                "run": "run_demo"
+              }
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory"
+      },
+      "status": 200
+    },
+    {
+      "name": "interrupted_absent_log",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "log",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "run_id": "99999999999999999999999999999999",
+          "capture": "absent",
+          "outcome": "unknown",
+          "offset": 0,
+          "observed_bytes": 6,
+          "capture_complete": false,
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "log",
+        "run_id": "99999999999999999999999999999999",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 200
+    },
+    {
+      "name": "error_invalid_request",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "file",
+        "ok": false,
+        "error": {
+          "code": "invalid_request",
+          "message": "Observation unavailable"
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "src/hello.txt",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 400
+    },
+    {
+      "name": "error_forbidden",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "file",
+        "ok": false,
+        "error": {
+          "code": "forbidden",
+          "message": "Observation unavailable"
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "src/hello.txt",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 403
+    },
+    {
+      "name": "error_not_found",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "file",
+        "ok": false,
+        "error": {
+          "code": "not_found",
+          "message": "Observation unavailable"
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "src/hello.txt",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 404
+    },
+    {
+      "name": "error_unavailable",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "file",
+        "ok": false,
+        "error": {
+          "code": "unavailable",
+          "message": "Observation unavailable"
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "src/hello.txt",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 503
+    },
+    {
+      "name": "error_stale_snapshot",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "file",
+        "ok": false,
+        "error": {
+          "code": "stale_snapshot",
+          "message": "Observation unavailable"
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "src/hello.txt",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 409
+    },
+    {
+      "name": "error_snapshot_expired",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "file",
+        "ok": false,
+        "error": {
+          "code": "snapshot_expired",
+          "message": "Observation unavailable"
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "src/hello.txt",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 410
+    },
+    {
+      "name": "error_content_unavailable",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "file",
+        "ok": false,
+        "error": {
+          "code": "content_unavailable",
+          "message": "Observation unavailable"
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "src/hello.txt",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 409
+    }
+  ],
+  "invalid": [
+    {
+      "name": "unsafe_path_0",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "/etc/passwd",
+        "offset": 0,
+        "length": 65536
+      },
+      "reason": "path"
+    },
+    {
+      "name": "unsafe_path_1",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "../secret",
+        "offset": 0,
+        "length": 65536
+      },
+      "reason": "path"
+    },
+    {
+      "name": "unsafe_path_2",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "src/../../secret",
+        "offset": 0,
+        "length": 65536
+      },
+      "reason": "path"
+    },
+    {
+      "name": "unsafe_path_3",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "a//b",
+        "offset": 0,
+        "length": 65536
+      },
+      "reason": "path"
+    },
+    {
+      "name": "unsafe_path_4",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "a/./b",
+        "offset": 0,
+        "length": 65536
+      },
+      "reason": "path"
+    },
+    {
+      "name": "unsafe_path_5",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "C:/secret",
+        "offset": 0,
+        "length": 65536
+      },
+      "reason": "path"
+    },
+    {
+      "name": "unsafe_path_6",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "a\\b",
+        "offset": 0,
+        "length": 65536
+      },
+      "reason": "path"
+    },
+    {
+      "name": "unsafe_path_7",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": ".git/config",
+        "offset": 0,
+        "length": 65536
+      },
+      "reason": "path"
+    },
+    {
+      "name": "unsafe_path_8",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "src/.GIT/index",
+        "offset": 0,
+        "length": 65536
+      },
+      "reason": "path"
+    },
+    {
+      "name": "unsafe_path_9",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "a\u0000b",
+        "offset": 0,
+        "length": 65536
+      },
+      "reason": "path"
+    },
+    {
+      "name": "inventory_cursor_without_snapshot",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "cursor": "next"
+      },
+      "reason": "inventory_cursor"
+    },
+    {
+      "name": "private_lease_token",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "items": [
+            {
+              "key": "card_task",
+              "bench_id": "11111111111111111111111111111111",
+              "kind": "workspace",
+              "phase": "ready",
+              "availability": "unleased",
+              "member_names": [
+                "a",
+                "b"
+              ],
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "pending_checkpoint": false,
+              "history": "latest_only",
+              "lease_token": "private",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              }
+            },
+            {
+              "key": "solo",
+              "bench_id": "77777777777777777777777777777777",
+              "kind": "scalar",
+              "phase": "ready",
+              "availability": "held",
+              "member_names": [],
+              "checkpoint": {
+                "kind": "scalar",
+                "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "commit": "8888888888888888888888888888888888888888"
+              },
+              "pending_checkpoint": false,
+              "history": "retained",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              },
+              "holder": {
+                "name": "work_run",
+                "source": "run",
+                "display": "Current work run",
+                "run": "run_demo"
+              }
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory"
+      },
+      "status": 200,
+      "reason": "schema"
+    },
+    {
+      "name": "private_root",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "items": [
+            {
+              "key": "card_task",
+              "bench_id": "11111111111111111111111111111111",
+              "kind": "workspace",
+              "phase": "ready",
+              "availability": "unleased",
+              "member_names": [
+                "a",
+                "b"
+              ],
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "pending_checkpoint": false,
+              "history": "latest_only",
+              "root_path": "/private/data",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              }
+            },
+            {
+              "key": "solo",
+              "bench_id": "77777777777777777777777777777777",
+              "kind": "scalar",
+              "phase": "ready",
+              "availability": "held",
+              "member_names": [],
+              "checkpoint": {
+                "kind": "scalar",
+                "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "commit": "8888888888888888888888888888888888888888"
+              },
+              "pending_checkpoint": false,
+              "history": "retained",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              },
+              "holder": {
+                "name": "work_run",
+                "source": "run",
+                "display": "Current work run",
+                "run": "run_demo"
+              }
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory"
+      },
+      "status": 200,
+      "reason": "schema"
+    },
+    {
+      "name": "repo_url",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "items": [
+            {
+              "key": "card_task",
+              "bench_id": "11111111111111111111111111111111",
+              "kind": "workspace",
+              "phase": "ready",
+              "availability": "unleased",
+              "member_names": [
+                "a",
+                "b"
+              ],
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "pending_checkpoint": false,
+              "history": "latest_only",
+              "repository": "https://private.invalid/repo",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              }
+            },
+            {
+              "key": "solo",
+              "bench_id": "77777777777777777777777777777777",
+              "kind": "scalar",
+              "phase": "ready",
+              "availability": "held",
+              "member_names": [],
+              "checkpoint": {
+                "kind": "scalar",
+                "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "commit": "8888888888888888888888888888888888888888"
+              },
+              "pending_checkpoint": false,
+              "history": "retained",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              },
+              "holder": {
+                "name": "work_run",
+                "source": "run",
+                "display": "Current work run",
+                "run": "run_demo"
+              }
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory"
+      },
+      "status": 200,
+      "reason": "schema"
+    },
+    {
+      "name": "transfer_false_ready",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "items": [
+            {
+              "key": "card_task",
+              "bench_id": "11111111111111111111111111111111",
+              "kind": "workspace",
+              "phase": "ready",
+              "availability": "unleased",
+              "member_names": [
+                "a",
+                "b"
+              ],
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "pending_checkpoint": false,
+              "history": "latest_only",
+              "transfer_state": "transferred",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              }
+            },
+            {
+              "key": "solo",
+              "bench_id": "77777777777777777777777777777777",
+              "kind": "scalar",
+              "phase": "ready",
+              "availability": "held",
+              "member_names": [],
+              "checkpoint": {
+                "kind": "scalar",
+                "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "commit": "8888888888888888888888888888888888888888"
+              },
+              "pending_checkpoint": false,
+              "history": "retained",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              },
+              "holder": {
+                "name": "work_run",
+                "source": "run",
+                "display": "Current work run",
+                "run": "run_demo"
+              }
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory"
+      },
+      "status": 200,
+      "reason": "availability"
+    },
+    {
+      "name": "pending_false_ready",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "items": [
+            {
+              "key": "card_task",
+              "bench_id": "11111111111111111111111111111111",
+              "kind": "workspace",
+              "phase": "ready",
+              "availability": "unleased",
+              "member_names": [
+                "a",
+                "b"
+              ],
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "pending_checkpoint": true,
+              "history": "latest_only",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              }
+            },
+            {
+              "key": "solo",
+              "bench_id": "77777777777777777777777777777777",
+              "kind": "scalar",
+              "phase": "ready",
+              "availability": "held",
+              "member_names": [],
+              "checkpoint": {
+                "kind": "scalar",
+                "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "commit": "8888888888888888888888888888888888888888"
+              },
+              "pending_checkpoint": false,
+              "history": "retained",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              },
+              "holder": {
+                "name": "work_run",
+                "source": "run",
+                "display": "Current work run",
+                "run": "run_demo"
+              }
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory"
+      },
+      "status": 200,
+      "reason": "availability"
+    },
+    {
+      "name": "false_complete_page",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "items": [
+            {
+              "key": "card_task",
+              "bench_id": "11111111111111111111111111111111",
+              "kind": "workspace",
+              "phase": "ready",
+              "availability": "unleased",
+              "member_names": [
+                "a",
+                "b"
+              ],
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "pending_checkpoint": false,
+              "history": "latest_only",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              }
+            },
+            {
+              "key": "solo",
+              "bench_id": "77777777777777777777777777777777",
+              "kind": "scalar",
+              "phase": "ready",
+              "availability": "held",
+              "member_names": [],
+              "checkpoint": {
+                "kind": "scalar",
+                "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "commit": "8888888888888888888888888888888888888888"
+              },
+              "pending_checkpoint": false,
+              "history": "retained",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              },
+              "holder": {
+                "name": "work_run",
+                "source": "run",
+                "display": "Current work run",
+                "run": "run_demo"
+              }
+            }
+          ],
+          "complete": true,
+          "next_cursor": "next"
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory"
+      },
+      "status": 200,
+      "reason": "page_complete"
+    },
+    {
+      "name": "unordered_inventory",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "items": [
+            {
+              "key": "solo",
+              "bench_id": "77777777777777777777777777777777",
+              "kind": "scalar",
+              "phase": "ready",
+              "availability": "held",
+              "member_names": [],
+              "checkpoint": {
+                "kind": "scalar",
+                "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "commit": "8888888888888888888888888888888888888888"
+              },
+              "pending_checkpoint": false,
+              "history": "retained",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              },
+              "holder": {
+                "name": "work_run",
+                "source": "run",
+                "display": "Current work run",
+                "run": "run_demo"
+              }
+            },
+            {
+              "key": "card_task",
+              "bench_id": "11111111111111111111111111111111",
+              "kind": "workspace",
+              "phase": "ready",
+              "availability": "unleased",
+              "member_names": [
+                "a",
+                "b"
+              ],
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "pending_checkpoint": false,
+              "history": "latest_only",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              }
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory"
+      },
+      "status": 200,
+      "reason": "inventory_order"
+    },
+    {
+      "name": "incomplete_vector",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "items": [
+            {
+              "key": "card_task",
+              "bench_id": "11111111111111111111111111111111",
+              "kind": "workspace",
+              "phase": "ready",
+              "availability": "unleased",
+              "member_names": [
+                "a",
+                "b"
+              ],
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  }
+                ]
+              },
+              "pending_checkpoint": false,
+              "history": "latest_only",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              }
+            },
+            {
+              "key": "solo",
+              "bench_id": "77777777777777777777777777777777",
+              "kind": "scalar",
+              "phase": "ready",
+              "availability": "held",
+              "member_names": [],
+              "checkpoint": {
+                "kind": "scalar",
+                "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "commit": "8888888888888888888888888888888888888888"
+              },
+              "pending_checkpoint": false,
+              "history": "retained",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              },
+              "holder": {
+                "name": "work_run",
+                "source": "run",
+                "display": "Current work run",
+                "run": "run_demo"
+              }
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory"
+      },
+      "status": 200,
+      "reason": "member_names"
+    },
+    {
+      "name": "wrong_object_format",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "items": [
+            {
+              "key": "card_task",
+              "bench_id": "11111111111111111111111111111111",
+              "kind": "workspace",
+              "phase": "ready",
+              "availability": "unleased",
+              "member_names": [
+                "a",
+                "b"
+              ],
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "pending_checkpoint": false,
+              "history": "latest_only",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              }
+            },
+            {
+              "key": "solo",
+              "bench_id": "77777777777777777777777777777777",
+              "kind": "scalar",
+              "phase": "ready",
+              "availability": "held",
+              "member_names": [],
+              "checkpoint": {
+                "kind": "scalar",
+                "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "commit": "8888888888888888888888888888888888888888"
+              },
+              "pending_checkpoint": false,
+              "history": "retained",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              },
+              "holder": {
+                "name": "work_run",
+                "source": "run",
+                "display": "Current work run",
+                "run": "run_demo"
+              }
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory"
+      },
+      "status": 200,
+      "reason": "object_format"
+    },
+    {
+      "name": "invented_historical_time",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "checkpoints",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "coverage": "latest_only",
+          "items": [
+            {
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "time_source": "unavailable",
+              "confirmed_at": "2026-11-16T00:59:00Z"
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "checkpoints"
+      },
+      "status": 200,
+      "reason": "history_time"
+    },
+    {
+      "name": "latest_claimed_as_history",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "checkpoints",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "coverage": "latest_only",
+          "items": [
+            {
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "time_source": "unavailable"
+            },
+            {
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "time_source": "unavailable"
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "checkpoints"
+      },
+      "status": 200,
+      "reason": "history_coverage"
+    },
+    {
+      "name": "symlink_readable",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "tree",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "member": "a",
+          "path": "",
+          "entries": [
+            {
+              "name": "src",
+              "kind": "directory",
+              "readable": true
+            },
+            {
+              "name": "external",
+              "kind": "symlink",
+              "readable": true
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "tree",
+        "member": "a",
+        "path": ""
+      },
+      "status": 200,
+      "reason": "symlink"
+    },
+    {
+      "name": "wrong_file_identity",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "file",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "member": "a",
+          "path": "other",
+          "offset": 0,
+          "data_base64": "aGVsbG8K",
+          "content_sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
+          "total_bytes": 6,
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "src/hello.txt",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 200,
+      "reason": "identity"
+    },
+    {
+      "name": "wrong_snapshot",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "file",
+        "ok": true,
+        "snapshot": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "member": "a",
+          "path": "src/hello.txt",
+          "offset": 0,
+          "data_base64": "aGVsbG8K",
+          "content_sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
+          "total_bytes": 6,
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "src/hello.txt",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 200,
+      "reason": "snapshot"
+    },
+    {
+      "name": "expired_window",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "file",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:01Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "member": "a",
+          "path": "src/hello.txt",
+          "offset": 0,
+          "data_base64": "aGVsbG8K",
+          "content_sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
+          "total_bytes": 6,
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "src/hello.txt",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 200,
+      "reason": "snapshot_time"
+    },
+    {
+      "name": "wrong_content_digest",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "file",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "member": "a",
+          "path": "src/hello.txt",
+          "offset": 0,
+          "data_base64": "aGVsbG8K",
+          "content_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "total_bytes": 6,
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "src/hello.txt",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 200,
+      "reason": "content_digest"
+    },
+    {
+      "name": "unsealed_claims_complete",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "log",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "run_id": "99999999999999999999999999999999",
+          "capture": "unsealed",
+          "outcome": "unknown",
+          "offset": 0,
+          "data_base64": "aGVsbG8K",
+          "content_sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
+          "observed_bytes": 6,
+          "capture_complete": true,
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "log",
+        "run_id": "99999999999999999999999999999999",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 200,
+      "reason": "log_completeness"
+    },
+    {
+      "name": "unknown_claims_success",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "log",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "run_id": "99999999999999999999999999999999",
+          "capture": "unsealed",
+          "outcome": "known",
+          "offset": 0,
+          "data_base64": "aGVsbG8K",
+          "content_sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
+          "observed_bytes": 6,
+          "capture_complete": false,
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "log",
+        "run_id": "99999999999999999999999999999999",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 200,
+      "reason": "log_outcome"
+    },
+    {
+      "name": "absent_log_invents_empty_capture",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "log",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "run_id": "99999999999999999999999999999999",
+          "capture": "absent",
+          "outcome": "unknown",
+          "offset": 0,
+          "observed_bytes": 6,
+          "capture_complete": false,
+          "complete": true,
+          "data_base64": "",
+          "content_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "log",
+        "run_id": "99999999999999999999999999999999",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 200,
+      "reason": "log_unavailable"
+    },
+    {
+      "name": "unknown_operation",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "attach"
+      },
+      "reason": "schema"
+    },
+    {
+      "name": "claimed_authority",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "uid": 0
+      },
+      "reason": "schema"
+    },
+    {
+      "name": "null_cursor",
+      "kind": "request",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "cursor": null
+      },
+      "reason": "schema"
+    },
+    {
+      "name": "unavailable_size_invents_zero",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "items": [
+            {
+              "key": "card_task",
+              "bench_id": "11111111111111111111111111111111",
+              "kind": "workspace",
+              "phase": "ready",
+              "availability": "unleased",
+              "member_names": [
+                "a",
+                "b"
+              ],
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "pending_checkpoint": false,
+              "history": "latest_only",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable",
+                  "bytes": 0
+                }
+              }
+            },
+            {
+              "key": "solo",
+              "bench_id": "77777777777777777777777777777777",
+              "kind": "scalar",
+              "phase": "ready",
+              "availability": "held",
+              "member_names": [],
+              "checkpoint": {
+                "kind": "scalar",
+                "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "commit": "8888888888888888888888888888888888888888"
+              },
+              "pending_checkpoint": false,
+              "history": "retained",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              },
+              "holder": {
+                "name": "work_run",
+                "source": "run",
+                "display": "Current work run",
+                "run": "run_demo"
+              }
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory"
+      },
+      "status": 200,
+      "reason": "schema"
+    },
+    {
+      "name": "unleased_with_holder",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "items": [
+            {
+              "key": "card_task",
+              "bench_id": "11111111111111111111111111111111",
+              "kind": "workspace",
+              "phase": "ready",
+              "availability": "unleased",
+              "member_names": [
+                "a",
+                "b"
+              ],
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "pending_checkpoint": false,
+              "history": "latest_only",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              },
+              "holder": {
+                "name": "old",
+                "source": "local",
+                "display": "Old owner"
+              }
+            },
+            {
+              "key": "solo",
+              "bench_id": "77777777777777777777777777777777",
+              "kind": "scalar",
+              "phase": "ready",
+              "availability": "held",
+              "member_names": [],
+              "checkpoint": {
+                "kind": "scalar",
+                "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "commit": "8888888888888888888888888888888888888888"
+              },
+              "pending_checkpoint": false,
+              "history": "retained",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              },
+              "holder": {
+                "name": "work_run",
+                "source": "run",
+                "display": "Current work run",
+                "run": "run_demo"
+              }
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory"
+      },
+      "status": 200,
+      "reason": "holder_state"
+    },
+    {
+      "name": "held_without_holder",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "items": [
+            {
+              "key": "card_task",
+              "bench_id": "11111111111111111111111111111111",
+              "kind": "workspace",
+              "phase": "ready",
+              "availability": "unleased",
+              "member_names": [
+                "a",
+                "b"
+              ],
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "pending_checkpoint": false,
+              "history": "latest_only",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              }
+            },
+            {
+              "key": "solo",
+              "bench_id": "77777777777777777777777777777777",
+              "kind": "scalar",
+              "phase": "ready",
+              "availability": "held",
+              "member_names": [],
+              "checkpoint": {
+                "kind": "scalar",
+                "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "commit": "8888888888888888888888888888888888888888"
+              },
+              "pending_checkpoint": false,
+              "history": "retained",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              }
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory"
+      },
+      "status": 200,
+      "reason": "holder_state"
+    },
+    {
+      "name": "private_holder_capability",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "items": [
+            {
+              "key": "card_task",
+              "bench_id": "11111111111111111111111111111111",
+              "kind": "workspace",
+              "phase": "ready",
+              "availability": "unleased",
+              "member_names": [
+                "a",
+                "b"
+              ],
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "pending_checkpoint": false,
+              "history": "latest_only",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              }
+            },
+            {
+              "key": "solo",
+              "bench_id": "77777777777777777777777777777777",
+              "kind": "scalar",
+              "phase": "ready",
+              "availability": "held",
+              "member_names": [],
+              "checkpoint": {
+                "kind": "scalar",
+                "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "commit": "8888888888888888888888888888888888888888"
+              },
+              "pending_checkpoint": false,
+              "history": "retained",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              },
+              "holder": {
+                "name": "work_run",
+                "source": "run",
+                "display": "Current work run",
+                "run": "run_demo",
+                "token": "private"
+              }
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory"
+      },
+      "status": 200,
+      "reason": "schema"
+    },
+    {
+      "name": "file_eof_incomplete",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "file",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "member": "a",
+          "path": "src/hello.txt",
+          "offset": 0,
+          "data_base64": "aGVsbG8K",
+          "content_sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
+          "total_bytes": 6,
+          "complete": false
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "src/hello.txt",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 200,
+      "reason": "content_complete"
+    },
+    {
+      "name": "file_early_eof_claim",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "file",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "member": "a",
+          "path": "src/hello.txt",
+          "offset": 0,
+          "data_base64": "aGVsbG8K",
+          "content_sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
+          "total_bytes": 7,
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "member": "a",
+        "path": "src/hello.txt",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 200,
+      "reason": "content_complete"
+    },
+    {
+      "name": "log_range_past_observation",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "log",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "run_id": "99999999999999999999999999999999",
+          "capture": "unsealed",
+          "outcome": "unknown",
+          "offset": 0,
+          "data_base64": "aGVsbG8K",
+          "content_sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
+          "observed_bytes": 5,
+          "capture_complete": false,
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "log",
+        "run_id": "99999999999999999999999999999999",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 200,
+      "reason": "content_range"
+    },
+    {
+      "name": "log_eof_incomplete",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "log",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "run_id": "99999999999999999999999999999999",
+          "capture": "unsealed",
+          "outcome": "unknown",
+          "offset": 0,
+          "data_base64": "aGVsbG8K",
+          "content_sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
+          "observed_bytes": 6,
+          "capture_complete": false,
+          "complete": false
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "log",
+        "run_id": "99999999999999999999999999999999",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 200,
+      "reason": "content_complete"
+    },
+    {
+      "name": "log_early_eof_claim",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "log",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "run_id": "99999999999999999999999999999999",
+          "capture": "unsealed",
+          "outcome": "unknown",
+          "offset": 0,
+          "data_base64": "aGVsbG8K",
+          "content_sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
+          "observed_bytes": 7,
+          "capture_complete": false,
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "log",
+        "run_id": "99999999999999999999999999999999",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 200,
+      "reason": "content_complete"
+    },
+    {
+      "name": "available_log_missing_bytes",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "log",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "run_id": "99999999999999999999999999999999",
+          "capture": "unsealed",
+          "outcome": "unknown",
+          "offset": 0,
+          "observed_bytes": 6,
+          "capture_complete": false,
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "log",
+        "run_id": "99999999999999999999999999999999",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 200,
+      "reason": "log_unavailable"
+    },
+    {
+      "name": "scalar_file_gets_unrequested_member",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "file",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "key": "card_task",
+          "bench_id": "11111111111111111111111111111111",
+          "member": "a",
+          "path": "src/hello.txt",
+          "offset": 0,
+          "data_base64": "aGVsbG8K",
+          "content_sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
+          "total_bytes": 6,
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "key": "card_task",
+        "bench_id": "11111111111111111111111111111111",
+        "operation": "file",
+        "path": "src/hello.txt",
+        "offset": 0,
+        "length": 65536
+      },
+      "status": 200,
+      "reason": "identity"
+    },
+    {
+      "name": "run_holder_missing_run",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "items": [
+            {
+              "key": "card_task",
+              "bench_id": "11111111111111111111111111111111",
+              "kind": "workspace",
+              "phase": "ready",
+              "availability": "unleased",
+              "member_names": [
+                "a",
+                "b"
+              ],
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "pending_checkpoint": false,
+              "history": "latest_only",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              }
+            },
+            {
+              "key": "solo",
+              "bench_id": "77777777777777777777777777777777",
+              "kind": "scalar",
+              "phase": "ready",
+              "availability": "held",
+              "member_names": [],
+              "checkpoint": {
+                "kind": "scalar",
+                "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "commit": "8888888888888888888888888888888888888888"
+              },
+              "pending_checkpoint": false,
+              "history": "retained",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              },
+              "holder": {
+                "name": "work_run",
+                "source": "run",
+                "display": "Current work run"
+              }
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory"
+      },
+      "status": 200,
+      "reason": "holder_identity"
+    },
+    {
+      "name": "agent_holder_missing_agent",
+      "kind": "response",
+      "body": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory",
+        "ok": true,
+        "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "observed_at": "2026-11-16T01:00:00Z",
+        "expires_at": "2026-11-16T01:05:00Z",
+        "result": {
+          "items": [
+            {
+              "key": "card_task",
+              "bench_id": "11111111111111111111111111111111",
+              "kind": "workspace",
+              "phase": "ready",
+              "availability": "unleased",
+              "member_names": [
+                "a",
+                "b"
+              ],
+              "checkpoint": {
+                "kind": "workspace",
+                "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "generation": "22222222222222222222222222222222",
+                "seal": "3333333333333333333333333333333333333333",
+                "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+                "checkpoint_repository": "a",
+                "members": [
+                  {
+                    "name": "a",
+                    "branch": "card/task",
+                    "object_format": "sha1",
+                    "commit": "5555555555555555555555555555555555555555"
+                  },
+                  {
+                    "name": "b",
+                    "branch": "card/task",
+                    "object_format": "sha256",
+                    "commit": "6666666666666666666666666666666666666666666666666666666666666666"
+                  }
+                ]
+              },
+              "pending_checkpoint": false,
+              "history": "latest_only",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              }
+            },
+            {
+              "key": "solo",
+              "bench_id": "77777777777777777777777777777777",
+              "kind": "scalar",
+              "phase": "ready",
+              "availability": "held",
+              "member_names": [],
+              "checkpoint": {
+                "kind": "scalar",
+                "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "commit": "8888888888888888888888888888888888888888"
+              },
+              "pending_checkpoint": false,
+              "history": "retained",
+              "host": {
+                "id": "host_demo",
+                "label": "Development workspace"
+              },
+              "storage": {
+                "used": {
+                  "status": "available",
+                  "bytes": 1024
+                },
+                "quota": {
+                  "status": "available",
+                  "bytes": 33554432
+                },
+                "allocated": {
+                  "status": "unavailable"
+                }
+              },
+              "holder": {
+                "name": "work_run",
+                "source": "agent",
+                "display": "Current work run"
+              }
+            }
+          ],
+          "complete": true
+        }
+      },
+      "request": {
+        "version": "superbench.observation.v1",
+        "operation": "inventory"
+      },
+      "status": 200,
+      "reason": "holder_identity"
+    }
+  ],
+  "lexical": [
+    {
+      "name": "duplicate_key",
+      "kind": "request",
+      "raw": "{\"version\":\"superbench.observation.v1\",\"operation\":\"inventory\",\"operation\":\"file\"}"
+    },
+    {
+      "name": "nested_duplicate",
+      "kind": "response",
+      "raw": "{\"a\":{\"x\":1,\"x\":2}}"
+    },
+    {
+      "name": "lone_surrogate",
+      "kind": "request",
+      "raw": "{\"x\":\"\\ud800\"}"
+    },
+    {
+      "name": "trailing_document",
+      "kind": "request",
+      "raw": "{}{}"
+    },
+    {
+      "name": "unsafe_integer",
+      "kind": "request",
+      "raw": "{\"offset\":9007199254740992}"
+    },
+    {
+      "name": "null_array_entry",
+      "kind": "response",
+      "raw": "{\"x\":[null]}"
+    },
+    {
+      "name": "fraction",
+      "kind": "request",
+      "raw": "{\"offset\":1.5}"
+    }
+  ]
+}
