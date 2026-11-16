@@ -36,17 +36,26 @@
             "board_id": {
               "type": "string",
               "maxLength": 200,
-              "pattern": "^brd_[A-Za-z0-9]{6,}$"
+              "pattern": "^brd_[A-Za-z0-9]{6,}$",
+              "not": {
+                "pattern": "[\r\n\u2028\u2029]"
+              }
             },
             "card_id": {
               "type": "string",
               "maxLength": 200,
-              "pattern": "^card_[A-Za-z0-9]{6,}$"
+              "pattern": "^card_[A-Za-z0-9]{6,}$",
+              "not": {
+                "pattern": "[\r\n\u2028\u2029]"
+              }
             },
             "run_id": {
               "type": "string",
               "maxLength": 200,
-              "pattern": "^run_[A-Za-z0-9]{6,}$"
+              "pattern": "^run_[A-Za-z0-9]{6,}$",
+              "not": {
+                "pattern": "[\r\n\u2028\u2029]"
+              }
             },
             "epoch": {
               "type": "integer",
@@ -57,11 +66,17 @@
         },
         "bench_key": {
           "type": "string",
-          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$"
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$",
+          "not": {
+            "pattern": "[\r\n\u2028\u2029]"
+          }
         },
         "bench_id": {
           "type": "string",
-          "pattern": "^[a-f0-9]{32}$"
+          "pattern": "^[a-f0-9]{32}$",
+          "not": {
+            "pattern": "[\r\n\u2028\u2029]"
+          }
         },
         "workspace_root": {
           "type": "string",
@@ -71,7 +86,10 @@
         },
         "repository_name": {
           "type": "string",
-          "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"
+          "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$",
+          "not": {
+            "pattern": "[\r\n\u2028\u2029]"
+          }
         },
         "members": {
           "type": "array",
@@ -90,22 +108,34 @@
             "properties": {
               "name": {
                 "type": "string",
-                "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"
+                "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$",
+                "not": {
+                  "pattern": "[\r\n\u2028\u2029]"
+                }
               },
               "repository_sha256": {
                 "type": "string",
-                "pattern": "^[a-f0-9]{64}$"
+                "pattern": "^[a-f0-9]{64}$",
+                "not": {
+                  "pattern": "[\r\n\u2028\u2029]"
+                }
               },
               "task_ref": {
                 "type": "string",
-                "pattern": "^refs/heads/card/card_[A-Za-z0-9]{6,}$"
+                "pattern": "^refs/heads/card/card_[A-Za-z0-9]{6,}$",
+                "not": {
+                  "pattern": "[\r\n\u2028\u2029]"
+                }
               },
               "object_format": {
                 "enum": ["sha1", "sha256"]
               },
               "commit": {
                 "type": "string",
-                "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
+                "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$",
+                "not": {
+                  "pattern": "[\r\n\u2028\u2029]"
+                }
               }
             },
             "allOf": [
@@ -121,7 +151,10 @@
                   "properties": {
                     "commit": {
                       "type": "string",
-                      "pattern": "^[a-f0-9]{40}$"
+                      "pattern": "^[a-f0-9]{40}$",
+                      "not": {
+                        "pattern": "[\r\n\u2028\u2029]"
+                      }
                     }
                   }
                 },
@@ -129,7 +162,10 @@
                   "properties": {
                     "commit": {
                       "type": "string",
-                      "pattern": "^[a-f0-9]{64}$"
+                      "pattern": "^[a-f0-9]{64}$",
+                      "not": {
+                        "pattern": "[\r\n\u2028\u2029]"
+                      }
                     }
                   }
                 }
@@ -165,23 +201,38 @@
           "properties": {
             "PATH": {
               "type": "string",
-              "pattern": "^[^\u0000\r\n]*$"
+              "pattern": "^[^\u0000\r\n]*$",
+              "not": {
+                "pattern": "[\u0000\r\n]"
+              }
             },
             "LANG": {
               "type": "string",
-              "pattern": "^[^\u0000\r\n]*$"
+              "pattern": "^[^\u0000\r\n]*$",
+              "not": {
+                "pattern": "[\u0000\r\n]"
+              }
             },
             "LC_ALL": {
               "type": "string",
-              "pattern": "^[^\u0000\r\n]*$"
+              "pattern": "^[^\u0000\r\n]*$",
+              "not": {
+                "pattern": "[\u0000\r\n]"
+              }
             },
             "TZ": {
               "type": "string",
-              "pattern": "^[^\u0000\r\n]*$"
+              "pattern": "^[^\u0000\r\n]*$",
+              "not": {
+                "pattern": "[\u0000\r\n]"
+              }
             },
             "TERM": {
               "type": "string",
-              "pattern": "^[^\u0000\r\n]*$"
+              "pattern": "^[^\u0000\r\n]*$",
+              "not": {
+                "pattern": "[\u0000\r\n]"
+              }
             }
           }
         },
@@ -208,18 +259,27 @@
       "properties": {
         "key": {
           "type": "string",
-          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$"
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$",
+          "not": {
+            "pattern": "[\r\n\u2028\u2029]"
+          }
         },
         "bench_id": {
           "type": "string",
-          "pattern": "^[a-f0-9]{32}$"
+          "pattern": "^[a-f0-9]{32}$",
+          "not": {
+            "pattern": "[\r\n\u2028\u2029]"
+          }
         },
         "version": {
           "const": "superbench.payload-layout.v1"
         },
         "policy_sha256": {
           "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
+          "pattern": "^[a-f0-9]{64}$",
+          "not": {
+            "pattern": "[\r\n\u2028\u2029]"
+          }
         },
         "root": {
           "type": "object",
@@ -228,11 +288,17 @@
           "properties": {
             "device": {
               "type": "string",
-              "pattern": "^[1-9][0-9]{0,19}$"
+              "pattern": "^[1-9][0-9]{0,19}$",
+              "not": {
+                "pattern": "[\r\n\u2028\u2029]"
+              }
             },
             "inode": {
               "type": "string",
-              "pattern": "^[1-9][0-9]{0,19}$"
+              "pattern": "^[1-9][0-9]{0,19}$",
+              "not": {
+                "pattern": "[\r\n\u2028\u2029]"
+              }
             }
           }
         },
@@ -243,11 +309,17 @@
           "properties": {
             "device": {
               "type": "string",
-              "pattern": "^[1-9][0-9]{0,19}$"
+              "pattern": "^[1-9][0-9]{0,19}$",
+              "not": {
+                "pattern": "[\r\n\u2028\u2029]"
+              }
             },
             "inode": {
               "type": "string",
-              "pattern": "^[1-9][0-9]{0,19}$"
+              "pattern": "^[1-9][0-9]{0,19}$",
+              "not": {
+                "pattern": "[\r\n\u2028\u2029]"
+              }
             }
           }
         },
@@ -258,11 +330,17 @@
           "properties": {
             "device": {
               "type": "string",
-              "pattern": "^[1-9][0-9]{0,19}$"
+              "pattern": "^[1-9][0-9]{0,19}$",
+              "not": {
+                "pattern": "[\r\n\u2028\u2029]"
+              }
             },
             "inode": {
               "type": "string",
-              "pattern": "^[1-9][0-9]{0,19}$"
+              "pattern": "^[1-9][0-9]{0,19}$",
+              "not": {
+                "pattern": "[\r\n\u2028\u2029]"
+              }
             }
           }
         },
@@ -277,7 +355,10 @@
             "properties": {
               "name": {
                 "type": "string",
-                "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"
+                "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$",
+                "not": {
+                  "pattern": "[\r\n\u2028\u2029]"
+                }
               },
               "checkout": {
                 "type": "object",
@@ -286,11 +367,17 @@
                 "properties": {
                   "device": {
                     "type": "string",
-                    "pattern": "^[1-9][0-9]{0,19}$"
+                    "pattern": "^[1-9][0-9]{0,19}$",
+                    "not": {
+                      "pattern": "[\r\n\u2028\u2029]"
+                    }
                   },
                   "inode": {
                     "type": "string",
-                    "pattern": "^[1-9][0-9]{0,19}$"
+                    "pattern": "^[1-9][0-9]{0,19}$",
+                    "not": {
+                      "pattern": "[\r\n\u2028\u2029]"
+                    }
                   }
                 }
               },
@@ -301,11 +388,17 @@
                 "properties": {
                   "device": {
                     "type": "string",
-                    "pattern": "^[1-9][0-9]{0,19}$"
+                    "pattern": "^[1-9][0-9]{0,19}$",
+                    "not": {
+                      "pattern": "[\r\n\u2028\u2029]"
+                    }
                   },
                   "inode": {
                     "type": "string",
-                    "pattern": "^[1-9][0-9]{0,19}$"
+                    "pattern": "^[1-9][0-9]{0,19}$",
+                    "not": {
+                      "pattern": "[\r\n\u2028\u2029]"
+                    }
                   }
                 }
               },
@@ -316,11 +409,17 @@
                 "properties": {
                   "device": {
                     "type": "string",
-                    "pattern": "^[1-9][0-9]{0,19}$"
+                    "pattern": "^[1-9][0-9]{0,19}$",
+                    "not": {
+                      "pattern": "[\r\n\u2028\u2029]"
+                    }
                   },
                   "inode": {
                     "type": "string",
-                    "pattern": "^[1-9][0-9]{0,19}$"
+                    "pattern": "^[1-9][0-9]{0,19}$",
+                    "not": {
+                      "pattern": "[\r\n\u2028\u2029]"
+                    }
                   }
                 }
               },
@@ -331,11 +430,17 @@
                 "properties": {
                   "device": {
                     "type": "string",
-                    "pattern": "^[1-9][0-9]{0,19}$"
+                    "pattern": "^[1-9][0-9]{0,19}$",
+                    "not": {
+                      "pattern": "[\r\n\u2028\u2029]"
+                    }
                   },
                   "inode": {
                     "type": "string",
-                    "pattern": "^[1-9][0-9]{0,19}$"
+                    "pattern": "^[1-9][0-9]{0,19}$",
+                    "not": {
+                      "pattern": "[\r\n\u2028\u2029]"
+                    }
                   }
                 }
               }
