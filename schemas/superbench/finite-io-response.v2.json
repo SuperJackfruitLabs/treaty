@@ -1,0 +1,543 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superbench/finite-io-response.v2.json",
+  "title": "SuperBench profiled finite IO response (PROPOSED)",
+  "description": "PROPOSED private producer-first data contract. Does not establish authority, deployment, current ownership, fencing or runtime conformance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "ok"],
+  "properties": {
+    "version": {
+      "const": "superbench.v2"
+    },
+    "operation": {
+      "const": "run"
+    },
+    "request_id": {
+      "$ref": "#/$defs/key"
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "result": {},
+    "error": {
+      "$ref": "#/$defs/error"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "ok": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "not": {
+          "required": ["error"]
+        }
+      }
+    },
+    {
+      "if": {
+        "required": ["operation"],
+        "properties": {
+          "operation": {
+            "enum": ["create", "recover", "lease", "run", "setup"]
+          }
+        }
+      },
+      "then": {
+        "required": ["request_id"]
+      },
+      "else": {
+        "not": {
+          "required": ["request_id"]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "ok": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "result": {
+            "required": ["io"]
+          }
+        }
+      }
+    }
+  ],
+  "oneOf": [
+    {
+      "required": ["operation", "ok", "result"],
+      "properties": {
+        "operation": {
+          "enum": ["run"]
+        },
+        "request_id": {
+          "$ref": "#/$defs/key"
+        },
+        "ok": {
+          "const": true
+        },
+        "result": {
+          "$ref": "#/$defs/run"
+        }
+      }
+    },
+    {
+      "required": ["operation", "ok", "error"],
+      "properties": {
+        "operation": {
+          "enum": ["run"]
+        },
+        "request_id": {
+          "$ref": "#/$defs/key"
+        },
+        "ok": {
+          "const": false
+        },
+        "result": {
+          "$ref": "#/$defs/run"
+        }
+      }
+    },
+    {
+      "properties": {
+        "ok": {
+          "const": false
+        }
+      },
+      "required": ["error"],
+      "not": {
+        "anyOf": [
+          {
+            "required": ["operation"]
+          },
+          {
+            "required": ["request_id"]
+          },
+          {
+            "required": ["result"]
+          }
+        ]
+      }
+    }
+  ],
+  "$defs": {
+    "archive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["archived_at", "reap_after", "freeze_digest", "automatic"],
+      "properties": {
+        "archived_at": {
+          "$ref": "#/$defs/time"
+        },
+        "reap_after": {
+          "$ref": "#/$defs/time"
+        },
+        "freeze_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "frozen_at": {
+          "$ref": "#/$defs/time"
+        },
+        "reaping_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "reaped_at": {
+          "$ref": "#/$defs/time"
+        },
+        "automatic": {
+          "type": "boolean"
+        }
+      }
+    },
+    "bytes": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1125899906842624
+    },
+    "checkpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generation_id", "manifest_sha256", "members", "seal"],
+      "properties": {
+        "generation_id": {
+          "$ref": "#/$defs/id"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/digest"
+        },
+        "previous_seal": {
+          "$ref": "#/$defs/oid"
+        },
+        "members": {
+          "$ref": "#/$defs/vector"
+        },
+        "seal": {
+          "$ref": "#/$defs/oid"
+        }
+      }
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "enum": [
+            "invalid_request",
+            "forbidden",
+            "not_found",
+            "conflict",
+            "in_progress",
+            "operation_in_doubt",
+            "unavailable",
+            "operation_failed",
+            "capacity_exhausted"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "phase"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "phase": {
+          "enum": ["starting", "running", "stopped"]
+        }
+      }
+    },
+    "grant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lease_token"],
+      "properties": {
+        "lease_token": {
+          "$ref": "#/$defs/token"
+        }
+      }
+    },
+    "holder": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,199}(?![\\s\\S])"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}(?![\\s\\S])"
+    },
+    "inodes": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1099511627776
+    },
+    "key": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}(?![\\s\\S])"
+    },
+    "lease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["holder", "mode", "stop_requested"],
+      "properties": {
+        "holder": {
+          "$ref": "#/$defs/holder"
+        },
+        "mode": {
+          "enum": ["cooperative", "supervised"]
+        },
+        "stop_requested": {
+          "type": "boolean"
+        },
+        "execution": {
+          "$ref": "#/$defs/execution"
+        }
+      }
+    },
+    "member_name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,63}(?![\\s\\S])"
+    },
+    "oid": {
+      "type": "string",
+      "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})(?![\\s\\S])"
+    },
+    "pending": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generation_id", "manifest_sha256", "members"],
+      "properties": {
+        "generation_id": {
+          "$ref": "#/$defs/id"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/digest"
+        },
+        "previous_seal": {
+          "$ref": "#/$defs/oid"
+        },
+        "members": {
+          "$ref": "#/$defs/vector"
+        }
+      }
+    },
+    "recovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bench_id", "seal", "manifest_sha256"],
+      "properties": {
+        "bench_id": {
+          "$ref": "#/$defs/id"
+        },
+        "seal": {
+          "$ref": "#/$defs/oid"
+        },
+        "manifest_sha256": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "root_path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "^/[^\\u0000]*(?![\\s\\S])"
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["workspace"],
+      "properties": {
+        "workspace": {
+          "$ref": "#/$defs/workspace"
+        },
+        "grant": {
+          "$ref": "#/$defs/grant"
+        },
+        "root_path": {
+          "$ref": "#/$defs/root_path"
+        },
+        "execution": {
+          "$ref": "#/$defs/execution"
+        },
+        "exit_code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "log_truncated": {
+          "type": "boolean"
+        },
+        "io": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "version",
+            "stdout_base64",
+            "stdout_bytes",
+            "stdout_sha256"
+          ],
+          "properties": {
+            "version": {
+              "const": "superbench.finite-io.v1"
+            },
+            "stdout_base64": {
+              "type": "string",
+              "maxLength": 174764,
+              "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?(?![\\s\\S])"
+            },
+            "stdout_bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 131072
+            },
+            "stdout_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["io"]
+          },
+          "then": {
+            "required": ["execution", "exit_code"],
+            "properties": {
+              "execution": {
+                "properties": {
+                  "phase": {
+                    "const": "stopped"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "time": {
+      "type": "string",
+      "format": "date-time",
+      "maxLength": 35
+    },
+    "token": {
+      "type": "string",
+      "pattern": "^(?:[a-f0-9]{32}|[a-f0-9]{48})(?![\\s\\S])"
+    },
+    "vector": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "commit"],
+        "properties": {
+          "name": {
+            "$ref": "#/$defs/member_name"
+          },
+          "commit": {
+            "$ref": "#/$defs/oid"
+          }
+        }
+      }
+    },
+    "workspace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key",
+        "bench_id",
+        "phase",
+        "member_count",
+        "checkpoint_repository",
+        "ready_for_acquisition",
+        "quota_bytes",
+        "quota_inodes"
+      ],
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/key"
+        },
+        "bench_id": {
+          "$ref": "#/$defs/id"
+        },
+        "phase": {
+          "enum": [
+            "materializing",
+            "initializing",
+            "prepared",
+            "ready",
+            "archived",
+            "reaping",
+            "reaped"
+          ]
+        },
+        "member_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32
+        },
+        "checkpoint_repository": {
+          "$ref": "#/$defs/member_name"
+        },
+        "ready_for_acquisition": {
+          "type": "boolean"
+        },
+        "quota_bytes": {
+          "$ref": "#/$defs/bytes"
+        },
+        "quota_inodes": {
+          "$ref": "#/$defs/inodes"
+        },
+        "lease": {
+          "$ref": "#/$defs/lease"
+        },
+        "checkpoint": {
+          "$ref": "#/$defs/checkpoint"
+        },
+        "pending": {
+          "$ref": "#/$defs/pending"
+        },
+        "recovered_from": {
+          "$ref": "#/$defs/recovery"
+        },
+        "archive": {
+          "$ref": "#/$defs/archive"
+        },
+        "transfer_state": {
+          "enum": ["relinquishing", "transferred"]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["transfer_state"]
+          },
+          "then": {
+            "required": ["checkpoint"],
+            "properties": {
+              "phase": {
+                "enum": ["ready", "archived", "reaping", "reaped"]
+              },
+              "ready_for_acquisition": {
+                "const": false
+              }
+            },
+            "not": {
+              "anyOf": [
+                {
+                  "required": ["lease"]
+                },
+                {
+                  "required": ["pending"]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["transfer_state"],
+            "properties": {
+              "transfer_state": {
+                "const": "relinquishing"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "phase": {
+                "const": "ready"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
