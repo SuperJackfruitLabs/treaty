@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superbench/finite-io-run.v2.json",
+  "title": "SuperBench profiled finite IO run (PROPOSED)",
+  "description": "PROPOSED private producer-first data contract. Does not establish authority, deployment, current ownership, fencing or runtime conformance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "operation",
+    "key",
+    "holder",
+    "arguments",
+    "request_id",
+    "io"
+  ],
+  "properties": {
+    "key": {
+      "$ref": "#/$defs/key"
+    },
+    "holder": {
+      "$ref": "#/$defs/holder"
+    },
+    "arguments": {
+      "$ref": "#/$defs/arguments"
+    },
+    "request_id": {
+      "$ref": "#/$defs/request_id"
+    },
+    "checkpoint": {
+      "$ref": "#/$defs/checkpoint"
+    },
+    "repository_name": {
+      "$ref": "#/$defs/repository_name"
+    },
+    "lease_token": {
+      "$ref": "#/$defs/lease_token"
+    },
+    "version": {
+      "const": "superbench.v2"
+    },
+    "operation": {
+      "const": "run"
+    },
+    "io": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "stdin_base64", "stdout_limit_bytes"],
+      "properties": {
+        "version": {
+          "const": "superbench.finite-io.v1"
+        },
+        "stdin_base64": {
+          "type": "string",
+          "maxLength": 1398104,
+          "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?(?![\\s\\S])"
+        },
+        "stdout_limit_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1048576
+        }
+      }
+    }
+  },
+  "$defs": {
+    "arguments": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "prefixItems": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        }
+      ],
+      "items": {
+        "type": "string",
+        "maxLength": 8192
+      }
+    },
+    "checkpoint": {
+      "type": "boolean"
+    },
+    "holder": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,199}(?![\\s\\S])"
+    },
+    "key": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}(?![\\s\\S])"
+    },
+    "lease_token": {
+      "type": "string",
+      "pattern": "^([a-f0-9]{32}|[a-f0-9]{48})(?![\\s\\S])"
+    },
+    "repository_name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,63}(?![\\s\\S])"
+    },
+    "request_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}(?![\\s\\S])"
+    }
+  }
+}

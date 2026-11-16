@@ -5,6 +5,8 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- Propose explicit bounded finite execution I/O and private complete registration observations beside SuperBench v2; preserve legacy encodings and limits without enabling either crossing.
+
 - Propose a private AgentPod registered-worker capsule/result schema and exact framing/canonical cases, separate from public reader data and lifecycle authority.
 
 - Propose a bounded logical-capacity refusal code for SuperBench workspace responses without changing quota limits, request identity or replay behavior.

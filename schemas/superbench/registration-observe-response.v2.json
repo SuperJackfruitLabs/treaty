@@ -1,0 +1,289 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superbench/registration-observe-response.v2.json",
+  "title": "SuperBench private grouped registration observation response (PROPOSED)",
+  "description": "PROPOSED private producer-first data contract. Does not establish authority, deployment, current ownership, fencing or runtime conformance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "operation", "ok"],
+  "properties": {
+    "version": {
+      "const": "superbench.v2"
+    },
+    "operation": {
+      "const": "registration_observe"
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key",
+        "bench_id",
+        "root_path",
+        "layout_version",
+        "policy_sha256",
+        "root",
+        "root_home",
+        "root_tmp",
+        "members",
+        "checkpoint"
+      ],
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/key"
+        },
+        "bench_id": {
+          "$ref": "#/$defs/id"
+        },
+        "root_path": {
+          "$ref": "#/$defs/root_path"
+        },
+        "layout_version": {
+          "const": "superbench.payload-layout.v1"
+        },
+        "policy_sha256": {
+          "$ref": "#/$defs/digest"
+        },
+        "root": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["device", "inode"],
+          "properties": {
+            "device": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+            },
+            "inode": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+            }
+          }
+        },
+        "root_home": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["device", "inode"],
+          "properties": {
+            "device": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+            },
+            "inode": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+            }
+          }
+        },
+        "root_tmp": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["device", "inode"],
+          "properties": {
+            "device": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+            },
+            "inode": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+            }
+          }
+        },
+        "members": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "checkout", "admin", "home", "tmp"],
+            "properties": {
+              "name": {
+                "$ref": "#/$defs/member_name"
+              },
+              "checkout": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["device", "inode"],
+                "properties": {
+                  "device": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+                  },
+                  "inode": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+                  }
+                }
+              },
+              "admin": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["device", "inode"],
+                "properties": {
+                  "device": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+                  },
+                  "inode": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+                  }
+                }
+              },
+              "home": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["device", "inode"],
+                "properties": {
+                  "device": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+                  },
+                  "inode": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+                  }
+                }
+              },
+              "tmp": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["device", "inode"],
+                "properties": {
+                  "device": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+                  },
+                  "inode": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}(?![\\s\\S])"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "checkpoint": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["generation_id", "manifest_sha256", "members", "seal"],
+          "properties": {
+            "generation_id": {
+              "$ref": "#/$defs/id"
+            },
+            "manifest_sha256": {
+              "$ref": "#/$defs/digest"
+            },
+            "members": {
+              "$ref": "#/$defs/vector"
+            },
+            "seal": {
+              "$ref": "#/$defs/oid"
+            }
+          }
+        }
+      }
+    },
+    "error": {
+      "$ref": "#/$defs/error"
+    }
+  },
+  "oneOf": [
+    {
+      "required": ["result"],
+      "properties": {
+        "ok": {
+          "const": true
+        }
+      },
+      "not": {
+        "required": ["error"]
+      }
+    },
+    {
+      "required": ["error"],
+      "properties": {
+        "ok": {
+          "const": false
+        }
+      },
+      "not": {
+        "required": ["result"]
+      }
+    }
+  ],
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "enum": [
+            "invalid_request",
+            "forbidden",
+            "not_found",
+            "conflict",
+            "in_progress",
+            "operation_in_doubt",
+            "unavailable",
+            "operation_failed"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      }
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}(?![\\s\\S])"
+    },
+    "key": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}(?![\\s\\S])"
+    },
+    "member_name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,63}(?![\\s\\S])"
+    },
+    "oid": {
+      "type": "string",
+      "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})(?![\\s\\S])"
+    },
+    "root_path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "^/[^\\u0000]*(?![\\s\\S])"
+    },
+    "vector": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "commit"],
+        "properties": {
+          "name": {
+            "$ref": "#/$defs/member_name"
+          },
+          "commit": {
+            "$ref": "#/$defs/oid"
+          }
+        }
+      }
+    }
+  }
+}

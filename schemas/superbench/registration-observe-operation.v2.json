@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superbench/registration-observe-operation.v2.json",
+  "title": "SuperBench private grouped registration observation request (PROPOSED)",
+  "description": "PROPOSED private producer-first data contract. Does not establish authority, deployment, current ownership, fencing or runtime conformance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "operation",
+    "key",
+    "bench_id",
+    "holder",
+    "lease_token"
+  ],
+  "properties": {
+    "version": {
+      "const": "superbench.v2"
+    },
+    "operation": {
+      "const": "registration_observe"
+    },
+    "key": {
+      "$ref": "#/$defs/key"
+    },
+    "bench_id": {
+      "$ref": "#/$defs/id"
+    },
+    "holder": {
+      "$ref": "#/$defs/holder"
+    },
+    "lease_token": {
+      "$ref": "#/$defs/token"
+    }
+  },
+  "$defs": {
+    "holder": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,199}(?![\\s\\S])"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}(?![\\s\\S])"
+    },
+    "key": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}(?![\\s\\S])"
+    },
+    "token": {
+      "type": "string",
+      "pattern": "^(?:[a-f0-9]{32}|[a-f0-9]{48})(?![\\s\\S])"
+    }
+  }
+}

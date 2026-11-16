@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superbench/finite-io-receipt-response.v2.json",
+  "title": "SuperBench profiled finite IO historical receipt (PROPOSED)",
+  "description": "PROPOSED explicit finite-io Content-Type profile only. Exact original response <=2MiB UTF8 bytes; outer envelope <=16MiB. No-profile historical limits remain64KiB/512KiB. Historical bytes grant no launch, ownership or redispatch.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "operation", "ok"],
+  "properties": {
+    "version": {
+      "const": "superbench.v2"
+    },
+    "operation": {
+      "const": "receipt_lookup"
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_request_id", "target_digest", "state"],
+      "properties": {
+        "target_request_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}(?![\\s\\S])"
+        },
+        "target_digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}(?![\\s\\S])"
+        },
+        "state": {
+          "enum": [
+            "absent",
+            "in_progress",
+            "operation_in_doubt",
+            "cancel_requested",
+            "completed"
+          ]
+        },
+        "http_status": {
+          "type": "integer",
+          "minimum": 200,
+          "maximum": 599
+        },
+        "response_body": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2097152
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "completed"
+              }
+            }
+          },
+          "then": {
+            "required": ["http_status", "response_body"]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": ["http_status"]
+                },
+                {
+                  "required": ["response_body"]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "enum": ["invalid_request", "forbidden", "conflict", "unavailable"]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "required": ["result"],
+      "properties": {
+        "ok": {
+          "const": true
+        }
+      },
+      "not": {
+        "required": ["error"]
+      }
+    },
+    {
+      "required": ["error"],
+      "properties": {
+        "ok": {
+          "const": false
+        }
+      },
+      "not": {
+        "required": ["result"]
+      }
+    }
+  ]
+}
