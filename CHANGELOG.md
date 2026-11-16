@@ -5,6 +5,8 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- Propose a private AgentPod registered-worker capsule/result schema and exact framing/canonical cases, separate from public reader data and lifecycle authority.
+
 - Keep the SuperBench v1 and checkpoint-generation boundary documentation public-facing without private owner links or implementation-status notes.
 
 - matrix-events: a gate's room message lists the artifacts its run linked, one `- [title](url)`

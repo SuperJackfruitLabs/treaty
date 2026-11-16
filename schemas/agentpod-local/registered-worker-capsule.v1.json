@@ -1,0 +1,348 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/agentpod-local/registered-worker-capsule.v1.json",
+  "title": "PROPOSED private registered worker registered-worker-capsule.v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "task", "layout"],
+  "properties": {
+    "version": {
+      "const": "agentpod.registered-worker.v1"
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "binding",
+        "bench_key",
+        "bench_id",
+        "workspace_root",
+        "members",
+        "arguments",
+        "prompt",
+        "environment",
+        "timeout_seconds"
+      ],
+      "properties": {
+        "version": {
+          "const": "agentpod.superbench-worker.v2"
+        },
+        "binding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["board_id", "card_id", "run_id", "epoch"],
+          "properties": {
+            "board_id": {
+              "type": "string",
+              "maxLength": 200,
+              "pattern": "^brd_[A-Za-z0-9]{6,}$"
+            },
+            "card_id": {
+              "type": "string",
+              "maxLength": 200,
+              "pattern": "^card_[A-Za-z0-9]{6,}$"
+            },
+            "run_id": {
+              "type": "string",
+              "maxLength": 200,
+              "pattern": "^run_[A-Za-z0-9]{6,}$"
+            },
+            "epoch": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "bench_key": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$"
+        },
+        "bench_id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{32}$"
+        },
+        "workspace_root": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^/"
+        },
+        "repository_name": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"
+        },
+        "members": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "repository_sha256",
+              "task_ref",
+              "object_format",
+              "commit"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"
+              },
+              "repository_sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "task_ref": {
+                "type": "string",
+                "pattern": "^refs/heads/card/card_[A-Za-z0-9]{6,}$"
+              },
+              "object_format": {
+                "enum": ["sha1", "sha256"]
+              },
+              "commit": {
+                "type": "string",
+                "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "object_format": {
+                      "const": "sha1"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "commit": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{40}$"
+                    }
+                  }
+                },
+                "else": {
+                  "properties": {
+                    "commit": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "arguments": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 128,
+          "prefixItems": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8192,
+              "pattern": "^/[^\u0000]*$"
+            }
+          ],
+          "items": {
+            "type": "string",
+            "maxLength": 8192,
+            "pattern": "^[^\u0000]*$"
+          }
+        },
+        "prompt": {
+          "type": "string"
+        },
+        "environment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [],
+          "properties": {
+            "PATH": {
+              "type": "string",
+              "pattern": "^[^\u0000\r\n]*$"
+            },
+            "LANG": {
+              "type": "string",
+              "pattern": "^[^\u0000\r\n]*$"
+            },
+            "LC_ALL": {
+              "type": "string",
+              "pattern": "^[^\u0000\r\n]*$"
+            },
+            "TZ": {
+              "type": "string",
+              "pattern": "^[^\u0000\r\n]*$"
+            },
+            "TERM": {
+              "type": "string",
+              "pattern": "^[^\u0000\r\n]*$"
+            }
+          }
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3600
+        }
+      }
+    },
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key",
+        "bench_id",
+        "version",
+        "policy_sha256",
+        "root",
+        "root_home",
+        "root_tmp",
+        "members"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$"
+        },
+        "bench_id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{32}$"
+        },
+        "version": {
+          "const": "superbench.payload-layout.v1"
+        },
+        "policy_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "root": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["device", "inode"],
+          "properties": {
+            "device": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}$"
+            },
+            "inode": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}$"
+            }
+          }
+        },
+        "root_home": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["device", "inode"],
+          "properties": {
+            "device": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}$"
+            },
+            "inode": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}$"
+            }
+          }
+        },
+        "root_tmp": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["device", "inode"],
+          "properties": {
+            "device": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}$"
+            },
+            "inode": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,19}$"
+            }
+          }
+        },
+        "members": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "checkout", "admin", "home", "tmp"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"
+              },
+              "checkout": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["device", "inode"],
+                "properties": {
+                  "device": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "inode": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  }
+                }
+              },
+              "admin": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["device", "inode"],
+                "properties": {
+                  "device": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "inode": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  }
+                }
+              },
+              "home": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["device", "inode"],
+                "properties": {
+                  "device": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "inode": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  }
+                }
+              },
+              "tmp": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["device", "inode"],
+                "properties": {
+                  "device": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  },
+                  "inode": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,19}$"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
