@@ -10,6 +10,7 @@ import {
   deliveryV2Content,
   gateEventContent,
   gateOptionsV2,
+  gateProseBody,
   gateSubjectV2,
   gateV2Content,
   isSubjectExpiry,
@@ -105,6 +106,34 @@ describe("the validator behind the moved code (zod 4's semantics)", () => {
 });
 
 describe("a gate", () => {
+  test("its room prose lists the opening run's linked artifacts without changing older deliveries", () => {
+    const oldBody = gateProseBody(gate());
+    const linked = gate({
+      references: [
+        {
+          title: "Release] evidence",
+          url: "https://app.superlibrary.dev/a/itm_version_1",
+        },
+        {
+          title: "",
+          url: "https://forge.superjackfruit.com/SuperJackfruitLabs/treaty/commit/abc",
+        },
+        {
+          title: null,
+          url: "https://app.superlibrary.dev/a/itm_version_2",
+        },
+      ],
+    });
+
+    const expected = `${oldBody}\n- [Release\\] evidence](https://app.superlibrary.dev/a/itm_version_1)\n- [https://forge.superjackfruit.com/SuperJackfruitLabs/treaty/commit/abc](https://forge.superjackfruit.com/SuperJackfruitLabs/treaty/commit/abc)\n- [https://app.superlibrary.dev/a/itm_version_2](https://app.superlibrary.dev/a/itm_version_2)`;
+    expect(gateProseBody(linked)).toBe(expected);
+    expect(gateV2Content(linked).body).toBe(expected);
+    expect(gateProseBody(gate({ references: [] }))).toBe(
+      `${oldBody}\nThis run linked no artifact`,
+    );
+    expect(gateProseBody(gate())).toBe(oldBody);
+  });
+
   test("its v1 card never offers an approval on a subject-bound gate: a v1 answer carries no binding", () => {
     const card = gateEventContent(gate({ approvalSubject: subject() }));
     expect((card.options as Array<{ id: string }>).map((o) => o.id)).toEqual([
