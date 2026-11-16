@@ -16,7 +16,7 @@ export function decodePrivate(
   if (typeof raw === "string" && !scalarStrings(raw))
     throw new Error("unicode_scalars");
   const bytes = typeof raw === "string" ? new TextEncoder().encode(raw) : raw;
-  if (![65536, 262144, 2097152].includes(maximum) || bytes.length > maximum)
+  if (![65536, 2097152, 16777216].includes(maximum) || bytes.length > maximum)
     throw new Error("private_size");
   if (bytes[0] === 0xef && bytes[1] === 0xbb && bytes[2] === 0xbf)
     throw new Error("leading_bom");

@@ -11,9 +11,9 @@ import {
 
 export const IO_PROFILE = "superbench.finite-io.v1";
 export const IO_CONTENT_TYPE = `application/json; profile=${IO_PROFILE}`;
-export const MAX_IO = 128 << 10;
-export const MAX_PROFILE_BODY = 256 << 10;
-export const MAX_PROFILE_LOOKUP = 2 << 20;
+export const MAX_IO = 1 << 20;
+export const MAX_PROFILE_BODY = 2 << 20;
+export const MAX_PROFILE_LOOKUP = 16 << 20;
 type ObjectValue = Record<string, unknown>;
 function isObject(value: unknown): value is ObjectValue {
   return value !== null && typeof value === "object" && !Array.isArray(value);

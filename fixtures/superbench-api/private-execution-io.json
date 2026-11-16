@@ -14,7 +14,7 @@
     "io": {
       "version": "superbench.finite-io.v1",
       "stdin_base64": "AAEC",
-      "stdout_limit_bytes": 131072
+      "stdout_limit_bytes": 1048576
     }
   },
   "response": {
@@ -232,7 +232,7 @@
         "io": {
           "version": "unknown",
           "stdin_base64": "AAEC",
-          "stdout_limit_bytes": 131072
+          "stdout_limit_bytes": 1048576
         }
       }
     },
@@ -270,7 +270,7 @@
         "io": {
           "version": "superbench.finite-io.v1",
           "stdin_base64": "AAEC",
-          "stdout_limit_bytes": 131073
+          "stdout_limit_bytes": 1048577
         }
       }
     },
@@ -289,7 +289,7 @@
         "io": {
           "version": "superbench.finite-io.v1",
           "stdin_base64": "YR==",
-          "stdout_limit_bytes": 131072
+          "stdout_limit_bytes": 1048576
         }
       }
     },
@@ -322,7 +322,7 @@
         "io": {
           "version": "superbench.finite-io.v1",
           "stdin_base64": "AAEC",
-          "stdout_limit_bytes": 131072
+          "stdout_limit_bytes": 1048576
         },
         "execution_scope": "asserted"
       }
@@ -359,11 +359,11 @@
         "io": {
           "version": "superbench.finite-io.v1",
           "stdin_base64": "AAEC",
-          "stdout_limit_bytes": 131072
+          "stdout_limit_bytes": 1048576
         }
       },
-      "canonical": "{\"version\":\"superbench.v2\",\"operation\":\"run\",\"key\":\"card\",\"holder\":\"run:one\",\"request_id\":\"run-1\",\"lease_token\":\"66666666666666666666666666666666\",\"arguments\":[\"worker\"],\"io\":{\"version\":\"superbench.finite-io.v1\",\"stdin_base64\":\"AAEC\",\"stdout_limit_bytes\":131072}}",
-      "sha256": "35db87f3e0da9552ae8e1c368751b4ad41f6e9913a334a63c7200f4271f28148"
+      "canonical": "{\"version\":\"superbench.v2\",\"operation\":\"run\",\"key\":\"card\",\"holder\":\"run:one\",\"request_id\":\"run-1\",\"lease_token\":\"66666666666666666666666666666666\",\"arguments\":[\"worker\"],\"io\":{\"version\":\"superbench.finite-io.v1\",\"stdin_base64\":\"AAEC\",\"stdout_limit_bytes\":1048576}}",
+      "sha256": "3c2e1fd408208ccb349af1ad0fb5a34ebedcb1ca91000807558df9e9d489565e"
     },
     {
       "name": "json-escaping",
@@ -375,16 +375,16 @@
         "request_id": "run-1",
         "lease_token": "66666666666666666666666666666666",
         "arguments": [
-          "<>&\u2028\u2029"
+          "<>&  "
         ],
         "io": {
           "version": "superbench.finite-io.v1",
           "stdin_base64": "AAEC",
-          "stdout_limit_bytes": 131072
+          "stdout_limit_bytes": 1048576
         }
       },
-      "canonical": "{\"version\":\"superbench.v2\",\"operation\":\"run\",\"key\":\"card\",\"holder\":\"run:one\",\"request_id\":\"run-1\",\"lease_token\":\"66666666666666666666666666666666\",\"arguments\":[\"\\u003c\\u003e\\u0026\\u2028\\u2029\"],\"io\":{\"version\":\"superbench.finite-io.v1\",\"stdin_base64\":\"AAEC\",\"stdout_limit_bytes\":131072}}",
-      "sha256": "55886a1d9bb7bc3e0d238ef9c07dbe7e92e45a865bc06bb3ea57868955e90d09"
+      "canonical": "{\"version\":\"superbench.v2\",\"operation\":\"run\",\"key\":\"card\",\"holder\":\"run:one\",\"request_id\":\"run-1\",\"lease_token\":\"66666666666666666666666666666666\",\"arguments\":[\"\\u003c\\u003e\\u0026\\u2028\\u2029\"],\"io\":{\"version\":\"superbench.finite-io.v1\",\"stdin_base64\":\"AAEC\",\"stdout_limit_bytes\":1048576}}",
+      "sha256": "40d33a1f861ebbdc8978c23fad589e2e1817f2a68dc3a345360d4fe6e510b1b9"
     }
   ],
   "lexical": [

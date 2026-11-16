@@ -27,31 +27,42 @@ that may select this profile; all other operations refuse it. Unknown IO version
 {
   "version": "superbench.finite-io.v1",
   "stdin_base64": "AAEC",
-  "stdout_limit_bytes": 131072
+  "stdout_limit_bytes": 1048576
 }
 ```
 
 The run request retains every existing required/optional field and ownership,
 member-selection and preparation rule. `stdin_base64` is canonical standard
 padded base64, including the empty string for empty input, decoding to at most
-128 KiB. No URL-safe alphabet, whitespace, missing padding or nonzero unused pad
-bits is accepted. `stdout_limit_bytes` is an integer from 1 through 128 KiB. These
+1 MiB. No URL-safe alphabet, whitespace, missing padding or nonzero unused pad
+bits is accepted. `stdout_limit_bytes` is an integer from 1 through 1 MiB. These
 limits do not widen any fixed helper policy. No path or descriptor number selects
 an input/output source. In particular, no caller `scope`, UID, credential,
 `admitted`, `ready` or `fenced` field exists.
 
-The producer copies the validated finite input before launch. Input is delivered
-only to the payload, followed by EOF; setup and other helper commands do not
-inherit it. The body IO version, exact canonical base64 and output limit enter
+The producer copies the validated finite input before launch. For nonempty
+input the fixed helper creates an anonymous memfd, seals it against writes,
+growth, shrinkage and seal changes, and verifies a read-only descriptor at offset
+zero. Only after the actual credential drop and remaining launch checks does it
+bind that descriptor to payload stdin once, then execute the operator's argv.
+Reading the finite bytes reaches EOF; empty input retains the existing EOF
+behavior. Setup and other helper commands do not inherit the input. This is
+once-per-launch descriptor delivery, not a claim that a payload cannot seek or
+reread its own stdin. No lost reply authorizes another launch. The body IO version, exact canonical base64 and output limit enter
 the typed immutable request digest, in the new final `io` field. The IO object's
 field order is `version`, `stdin_base64`, `stdout_limit_bytes`. Requests without IO
 omit the field entirely and preserve their existing canonical encoding/digest.
 
 Profiled request bodies, responses and each retained response are bounded to
-256 KiB of actual UTF-8 encoded JSON. No-profile requests and growth receipts keep
+2 MiB of actual UTF-8 encoded JSON. No-profile requests and growth receipts keep
 their 64 KiB bounds; ordinary status keeps its existing separate transport bound.
 The larger receipt reservation must be charged before effects against the same
-bounded unresolved-response budget. Reject inability to reserve before launch;
+bounded unresolved-response budget. The decoded input ceiling is owned by the
+producer's finite-input helper; the separately requested stdout ceiling is owned
+by its bounded result capture. Both implementation ceilings are 1 MiB. Canonical
+base64 for 1 MiB occupies 1,398,104 bytes; adding the entire 64 KiB legacy metadata
+budget plus the IO wrapper fits the explicit 2 MiB body budget. The producer must
+preflight complete response representability, not only the input length. Reject inability to reserve before launch;
 never borrow capacity, prune history or silently truncate a response. All existing
 field, raw-byte, depth, scalar, duplicate-key and operation-shape guards remain.
 
@@ -94,8 +105,10 @@ a fresh request ID, setup replay, payload resend or automatic redispatch.
 
 The existing read-only receipt lookup may use the same explicit profile. Its
 request and target semantics remain unchanged. Only this profile permits an exact
-original response body up to 256 KiB inside an outer envelope up to 2 MiB. The
-unprofiled lookup keeps its 64 KiB body/512 KiB envelope bounds and reports
+original response body up to 2 MiB inside an outer envelope up to 16 MiB. The
+16 MiB outer budget conservatively covers up to six JSON-escape bytes per
+original response byte plus its envelope; it does not enlarge the original 2 MiB
+response budget. The unprofiled lookup keeps its 64 KiB body/512 KiB envelope bounds and reports
 unavailable for a larger retained response, without truncation. A lookup remains
 read-only and currently operator-authorized; absent or ambiguous history parks.
 Historical output or capabilities cannot restore current ownership. No original

@@ -1,4 +1,5 @@
 import { expect, test } from "bun:test";
+import { readFileSync } from "node:fs";
 import corpus from "../fixtures/superbench-api/private-execution-io.json";
 import {
   exactBase64,
@@ -11,6 +12,7 @@ import {
   IO_CONTENT_TYPE,
   MAX_IO,
   MAX_PROFILE_BODY,
+  MAX_PROFILE_LOOKUP,
   sha256,
 } from "./superbench-private-io-validation";
 import { strictDecode } from "./superbench-workspace-api-validation";
@@ -363,4 +365,83 @@ test("complete 32-member escaped observation fits the total byte budget", () => 
       200,
     ),
   ).toThrow("private_size");
+});
+
+test("all five private proposed schemas stay out of accepted event catalogs", () => {
+  const catalog = readFileSync(
+    new URL("../schemas/catalog.json", import.meta.url),
+    "utf8",
+  );
+  for (const name of [
+    "finite-io-run.v2.json",
+    "finite-io-response.v2.json",
+    "finite-io-receipt-response.v2.json",
+    "registration-observe-operation.v2.json",
+    "registration-observe-response.v2.json",
+  ])
+    expect(catalog).not.toContain(name);
+  expect(corpus.status).toContain("PROPOSED");
+});
+
+test("profile response and lookup enforce exact raw byte ceilings", () => {
+  const r = raw(response());
+  expect(
+    finiteResponse(
+      r + " ".repeat(MAX_PROFILE_BODY - Buffer.byteLength(r)),
+      profile,
+      request(),
+      422,
+      corpus.response.expected,
+    ),
+  ).toEqual(response());
+  expect(() =>
+    finiteResponse(
+      r + " ".repeat(MAX_PROFILE_BODY - Buffer.byteLength(r) + 1),
+      profile,
+      request(),
+      422,
+      corpus.response.expected,
+    ),
+  ).toThrow("private_size");
+  const target = { request_id: "run-1", digest: "a".repeat(64) };
+  const receipt = {
+    version: "superbench.v2",
+    operation: "receipt_lookup",
+    ok: true,
+    result: {
+      target_request_id: target.request_id,
+      target_digest: target.digest,
+      state: "completed",
+      http_status: 422,
+      response_body: r,
+    },
+  };
+  const text = raw(receipt);
+  expect(
+    finiteReceipt(
+      text + " ".repeat(MAX_PROFILE_LOOKUP - Buffer.byteLength(text)),
+      profile,
+      target,
+      r,
+      422,
+    ),
+  ).toEqual(receipt);
+  expect(() =>
+    finiteReceipt(
+      text + " ".repeat(MAX_PROFILE_LOOKUP - Buffer.byteLength(text) + 1),
+      profile,
+      target,
+      r,
+      422,
+    ),
+  ).toThrow("private_size");
+  const exact = r + " ".repeat(MAX_PROFILE_BODY - Buffer.byteLength(r));
+  receipt.result.response_body = exact;
+  expect(finiteReceipt(raw(receipt), profile, target, exact, 422)).toEqual(
+    receipt,
+  );
+  receipt.result.response_body = exact + " ";
+  expect(() =>
+    finiteReceipt(raw(receipt), profile, target, exact + " ", 422),
+  ).toThrow();
 });

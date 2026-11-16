@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superbench/finite-io-receipt-response.v2.json",
   "title": "SuperBench profiled finite IO historical receipt (PROPOSED)",
-  "description": "PROPOSED explicit finite-io Content-Type profile only. Exact original response <=256KiB UTF8 bytes; outer envelope <=2MiB. No-profile historical limits remain64KiB/512KiB. Historical bytes grant no launch, ownership or redispatch.",
+  "description": "PROPOSED explicit finite-io Content-Type profile only. Exact original response <=2MiB UTF8 bytes; outer envelope <=16MiB. No-profile historical limits remain64KiB/512KiB. Historical bytes grant no launch, ownership or redispatch.",
   "type": "object",
   "additionalProperties": false,
   "required": ["version", "operation", "ok"],
@@ -46,7 +46,7 @@
         "response_body": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 262144
+          "maxLength": 2097152
         }
       },
       "allOf": [
