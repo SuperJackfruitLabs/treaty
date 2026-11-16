@@ -5,6 +5,8 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- Keep the SuperBench v1 and checkpoint-generation boundary documentation public-facing without private owner links or implementation-status notes.
+
 - matrix-events: a gate's room message lists the artifacts its run linked, one `- [title](url)`
   line each, or says "This run linked no artifact". Deliveries without `references` render as
   before. Malformed references are ignored rather than thrown on, only http(s) links are written,
