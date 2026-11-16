@@ -134,6 +134,36 @@ describe("a gate", () => {
     expect(gateProseBody(gate())).toBe(oldBody);
   });
 
+  test("its room prose survives malformed references from a board on another version", () => {
+    const oldBody = gateProseBody(gate());
+    // A delivery is checked by isGatePending, which does not look at references: a board on an
+    // older or newer version must not be able to make the hub throw while building a gate message.
+    for (const references of [null, "x", 7, { url: "https://a.example/x" }]) {
+      expect(gateProseBody(gate({ references } as never))).toBe(oldBody);
+    }
+    expect(
+      gateProseBody(gate({ references: [null, { title: "t" }, { url: 3 }, { title: "ok", url: "https://a.example/ok" }] } as never)),
+    ).toBe(`${oldBody}\n- [ok](https://a.example/ok)`);
+  });
+
+  test("its room prose cannot be steered into another link by a reference", () => {
+    const oldBody = gateProseBody(gate());
+    const body = gateProseBody(
+      gate({
+        references: [
+          { title: "evil", url: "https://a.example/b) [x](javascript:alert(1)" },
+          { title: "script", url: "javascript:alert(1)" },
+          { title: "two\nlines [and] \\ brackets", url: "https://a.example/c" },
+        ],
+      }),
+    );
+    expect(body).toBe(
+      `${oldBody}\n- [evil](https://a.example/b%29%20%5Bx%5D%28javascript:alert%281%29)\n- [two lines \\[and\\] \\\\ brackets](https://a.example/c)`,
+    );
+    // Only http(s) links are written; a script link would otherwise be one tap away.
+    expect(body).not.toContain("](javascript:");
+  });
+
   test("its v1 card never offers an approval on a subject-bound gate: a v1 answer carries no binding", () => {
     const card = gateEventContent(gate({ approvalSubject: subject() }));
     expect((card.options as Array<{ id: string }>).map((o) => o.id)).toEqual([
