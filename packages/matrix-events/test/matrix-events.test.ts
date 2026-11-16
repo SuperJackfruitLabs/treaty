@@ -136,13 +136,23 @@ describe("a gate", () => {
 
   test("its room prose survives malformed references from a board on another version", () => {
     const oldBody = gateProseBody(gate());
+    // What reaches the hub is whatever the board sent; the type says nothing about it.
+    const withReferences = (references: unknown) =>
+      Object.assign(gate(), { references });
     // A delivery is checked by isGatePending, which does not look at references: a board on an
     // older or newer version must not be able to make the hub throw while building a gate message.
     for (const references of [null, "x", 7, { url: "https://a.example/x" }]) {
-      expect(gateProseBody(gate({ references } as never))).toBe(oldBody);
+      expect(gateProseBody(withReferences(references))).toBe(oldBody);
     }
     expect(
-      gateProseBody(gate({ references: [null, { title: "t" }, { url: 3 }, { title: "ok", url: "https://a.example/ok" }] } as never)),
+      gateProseBody(
+        withReferences([
+          null,
+          { title: "t" },
+          { url: 3 },
+          { title: "ok", url: "https://a.example/ok" },
+        ]),
+      ),
     ).toBe(`${oldBody}\n- [ok](https://a.example/ok)`);
   });
 
@@ -151,7 +161,10 @@ describe("a gate", () => {
     const body = gateProseBody(
       gate({
         references: [
-          { title: "evil", url: "https://a.example/b) [x](javascript:alert(1)" },
+          {
+            title: "evil",
+            url: "https://a.example/b) [x](javascript:alert(1)",
+          },
           { title: "script", url: "javascript:alert(1)" },
           { title: "two\nlines [and] \\ brackets", url: "https://a.example/c" },
         ],

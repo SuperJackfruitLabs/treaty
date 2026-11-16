@@ -102,14 +102,40 @@ export function gateProseBody(d: GatePendingDelivery, link?: string): string {
   const body = isVariantGate(d)
     ? `Choice needed — "${d.cardTitle}" ${where}. ${VARIANT_CHOICE_NOTE}${tail}`
     : `Approval needed — "${d.cardTitle}" ${where}. Approve, request changes, or reject.${tail}`;
-  if (d.references === undefined) return body;
-  if (d.references.length === 0) return `${body}\nThis run linked no artifact`;
-  return `${body}\n${d.references
-    .map(
-      ({ title, url }) =>
-        `- [${(title || url).replaceAll("]", "\\]")}](${url})`,
-    )
-    .join("\n")}`;
+  // `references` is not checked by isGatePending, so a board on another version can send anything
+  // here: anything but a list is treated as absent, and an entry without a usable link is left out.
+  const refs: unknown = d.references;
+  if (!Array.isArray(refs)) return body;
+  if (refs.length === 0) return `${body}\nThis run linked no artifact`;
+  const lines = refs.flatMap((r: unknown) => {
+    const line = referenceLine(r);
+    return line ? [line] : [];
+  });
+  return lines.length ? `${body}\n${lines.join("\n")}` : body;
+}
+
+/**
+ * One reference as a markdown list item, or null when it has no http(s) link.
+ *
+ * Titles and URLs come from agents and people, so neither may steer the markdown: the title is
+ * one line with `\`, `[` and `]` escaped, and the URL is percent-encoded wherever markdown would
+ * read it (`(`, `)`, `[`, `]`, `<`, `>`, whitespace). Only http(s) is linked: a `javascript:` link
+ * in a gate message would be one tap away for the person deciding.
+ */
+function referenceLine(r: unknown): string | null {
+  if (typeof r !== "object" || r === null) return null;
+  const { title, url } = r as { title?: unknown; url?: unknown };
+  if (typeof url !== "string" || !/^https?:\/\//i.test(url)) return null;
+  const href = url.replace(
+    /[()[\]<>\s]/g,
+    (c) => "%" + c.charCodeAt(0).toString(16).toUpperCase().padStart(2, "0"),
+  );
+  const raw = typeof title === "string" && title.trim() ? title : url;
+  const text = raw
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/[\\[\]]/g, (c) => `\\${c}`);
+  return `- [${text}](${href})`;
 }
 
 /**

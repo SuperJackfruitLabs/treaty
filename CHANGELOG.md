@@ -5,6 +5,11 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- matrix-events: a gate's room message lists the artifacts its run linked, one `- [title](url)`
+  line each, or says "This run linked no artifact". Deliveries without `references` render as
+  before. Malformed references are ignored rather than thrown on, only http(s) links are written,
+  and titles and URLs are escaped so a reference cannot add a link of its own.
+
 - Propose bounded host-local read-only receipt lookup for interrupted SuperBench source replies; preserve all existing operation/cancellation contracts and keep deployment disabled.
 
 - Propose operation-bound SuperBench cancellation schemas, source-digest goldens
