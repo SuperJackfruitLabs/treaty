@@ -1,9 +1,9 @@
 # SuperBench checkpoint generations
 
 Status: proposed producer-first extension for multi-repository benches. The
-accepted [lifecycle boundary](https://github.com/SuperJackfruitLabs/charter/blob/main/decisions/2026-11-14-superbench-owns-bench-lifecycle.md)
-keeps checkpoint and recovery authority in SuperBench. This format adds no
-issuer, audience, remote HTTP endpoint or authority to a work-run identity.
+accepted lifecycle boundary keeps checkpoint and recovery authority in
+SuperBench. This format adds no issuer, audience, remote HTTP endpoint or
+authority to a work-run identity.
 The accepted `superbench.v1` operation schema and its fixture bytes are unchanged.
 Multi-repository service operations and suite consumers require their own
 versioned rollout; a manifest parser alone does not implement those operations.

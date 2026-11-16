@@ -8,9 +8,9 @@ adds multi-repository evidence beside v1; it does not replace these operations.
 The canonical request is `schemas/superbench/operation.v1.json`; shared positive,
 negative and lexical-decoder vectors are `fixtures/superbench-api/operations.json`.
 They are plain data, not CloudEvents and not additions to the event catalogue.
-They are not yet published in an npm package. Go consumers pin copies with source
-revision/hashes and run the same vectors; Node's schema test covers structural
-vectors, while duplicate-key/trailing-document rejection belongs to the decoder.
+Go consumers pin copies with source revision/hashes and run the same vectors;
+Node's schema test covers structural vectors, while duplicate-key and
+trailing-document rejection belongs to the decoder.
 
 ## Transport and authority
 
@@ -102,8 +102,8 @@ cannot prove that a process launched outside SuperBench stopped. `run`, `setup` 
 cooperative lease can follow fenced preparation; its external writer is still
 cooperative.
 Suite adapters must not treat a cooperative lease as proof of fenced execution.
-The current implementation does not yet expose terminal attachment or a managed
-external-writer registration protocol.
+V1 grants neither terminal attachment nor managed external-writer registration;
+those require separate contracts.
 
 The response budget is 1 MiB. Status over that budget fails with unavailable;
 clients can query a specific key. Growth receipts reserve 64 KiB per pending
