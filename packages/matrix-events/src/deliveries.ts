@@ -26,6 +26,11 @@ export interface GatePendingDelivery {
    */
   handoffSummary?: string | null;
   /**
+   * References linked by the run that opened the gate. Absent on older deliveries; an empty
+   * list means that run linked no artifact.
+   */
+  references?: Array<{ title: string | null; url: string }>;
+  /**
    * What the board is CALLED, which this hub has no other way to learn — the board's
    * metadata route resolves a user session, the same wall that makes `humansFor` an
    * injected dependency.

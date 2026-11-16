@@ -99,9 +99,17 @@ export function isGatePending(v: unknown): v is GatePendingDelivery {
 export function gateProseBody(d: GatePendingDelivery, link?: string): string {
   const where = `at stage \`${d.stageKey}\``;
   const tail = link ? ` [Open the card](${link})` : "";
-  if (isVariantGate(d))
-    return `Choice needed — "${d.cardTitle}" ${where}. ${VARIANT_CHOICE_NOTE}${tail}`;
-  return `Approval needed — "${d.cardTitle}" ${where}. Approve, request changes, or reject.${tail}`;
+  const body = isVariantGate(d)
+    ? `Choice needed — "${d.cardTitle}" ${where}. ${VARIANT_CHOICE_NOTE}${tail}`
+    : `Approval needed — "${d.cardTitle}" ${where}. Approve, request changes, or reject.${tail}`;
+  if (d.references === undefined) return body;
+  if (d.references.length === 0) return `${body}\nThis run linked no artifact`;
+  return `${body}\n${d.references
+    .map(
+      ({ title, url }) =>
+        `- [${(title || url).replaceAll("]", "\\]")}](${url})`,
+    )
+    .join("\n")}`;
 }
 
 /**
