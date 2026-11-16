@@ -279,3 +279,35 @@ The shared request, response and lifecycle corpora define data checks and runtim
 obligations separately. Passing structural and lexical cases does not establish
 producer fencing, consumer integration, reporter provisioning or deployment.
 Those require product-owned lifecycle tests and explicit enablement gates.
+
+## Proposed logical-capacity refusal diagnostic
+
+This additive diagnostic remains PROPOSED. A verified logical quota reservation
+refusal uses HTTP 422 and `error.code: "capacity_exhausted"`. The existing closed
+error object retains only `code` and `message`; successful response shapes and
+request bytes do not change. Other failures remain their existing codes.
+
+The producer's bounded message is:
+
+```text
+logical reservation capacity exhausted; needed_bytes=N available_bytes=N needed_inodes=N available_inodes=N
+```
+
+Each `N` is a canonical nonnegative decimal uint64. Needed is the complete logical
+reservation demand after the attempted allocation, including shared reservations,
+retained bench caps and host reserve. Available is the filesystem's total logical
+byte/inode budget, not physical free space. At least one needed quantity exceeds
+its corresponding available quantity. Retired allocations count as zero. This
+message exposes no policy paths, account IDs, raw helper output or capabilities.
+The daemon logs the same code and bounded quantities.
+
+This is a refusal, never permission to enlarge caps or reexecute a create. The
+original creation intent and receipt remain retained; absent or ambiguous helper
+output stays an ordinary failure. Operator reconciliation is separate.
+
+The quota producer and strict response schema move first. A closed older v2 client
+rejects this unfamiliar code, preserving its refusal behavior until explicitly
+updated to recognize `capacity_exhausted` at HTTP 422. Consumers must not accept
+arbitrary new codes or dispatch a new request after a failed decode. Shared
+response vectors establish wire conformance only; they do not prove a real quota
+refusal, XFS allocation cutoff or daemon receipt replay.
