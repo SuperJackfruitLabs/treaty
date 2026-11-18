@@ -23,6 +23,10 @@ requires exactly one additional `io` object, and an `io` object requires this
 profile. The read-only receipt lookup described below is the sole other operation
 that may select this profile; all other operations refuse it. Unknown IO versions refuse.
 
+A finite run needs a held lease on a `ready` workspace, so a finite IO response
+never names the `reclaiming` or `reclaimed` phases; `finite-io-response.v2.json`
+keeps its phase enum unchanged.
+
 ```json
 {
   "version": "superbench.finite-io.v1",

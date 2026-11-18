@@ -42,6 +42,7 @@ response never authorizes another holder.
 | `setup`                         | `key`, `holder`, `request_id`                                                    | `offline`, `repository_name`, `lease_token`    |
 | `checkpoint`, `release`, `stop` | `key`, `lease_token`                                                             | none                                           |
 | `stop_admin`, `archive`         | `key`                                                                            | none                                           |
+| `reclaim`                       | `key`                                                                            | none                                           |
 
 Every request also requires version and operation. Reconciliation deliberately
 does not require a new request receipt: receipt-budget exhaustion must not
@@ -311,3 +312,50 @@ updated to recognize `capacity_exhausted` at HTTP 422. Consumers must not accept
 arbitrary new codes or dispatch a new request after a failed decode. Shared
 response vectors establish wire conformance only; they do not prove a real quota
 refusal, XFS allocation cutoff or daemon receipt replay.
+
+## Reclaiming a released Fresh workspace
+
+This addition is producer-first: it records what SuperBench already does. The
+request is `{"version":"superbench.v2","operation":"reclaim","key":K}`. It takes
+the key only; `lease_token`, `request_id`, `holder` and every other field are
+refused. It is an operator mutation, not a growth operation: it has no request ID
+and no operation receipt.
+
+The producer decides from its own records, before recording anything, that the
+workspace is Fresh, `ready`, released (no lease), idle (no pending generation or
+stage and no admitted operation), allocated, and that its complete checkpoint is
+clean in the tree and confirmed in the mirror and on the remote. It records
+`reclaiming`, deletes the tree and retires the quota project, then records
+`reclaimed`. Success is HTTP 200 with a mutation whose workspace phase is
+`reclaimed`, and no grant or root path.
+
+`reclaiming` and `reclaimed` are workspace phases wherever a workspace appears,
+including `status` inventory. Both keep the last complete checkpoint and carry no
+lease, pending generation, archive record or `transfer_state`, and
+`ready_for_acquisition` is false. `reclaiming` never returns to `ready`.
+The phase enum is widened in place at v2: a consumer that validates phases strictly
+must accept `reclaiming` and `reclaimed` before the producer enables reclaim. The
+producer emits them only after a reclaim.
+
+| Answer                 | Meaning                                                                                                                                              |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 200, phase `reclaimed` | Done. Repeating the request on a reclaimed workspace returns the same answer and changes nothing.                                                    |
+| 409 `conflict`         | Refused from the workspace's own state (not released, not idle, not `ready`, legacy or scalar). Nothing recorded or deleted; do not retry unchanged. |
+| 403 `forbidden`        | The peer lacks operator authority. No result.                                                                                                        |
+| 404 `not_found`        | No bench with this key.                                                                                                                              |
+| 422 `operation_failed` | Retryable. A result, when present, shows the retained `reclaiming` phase; resend the same request.                                                   |
+| 503 `unavailable`      | Retryable, including cancellation and deadlines. Never proof that the tree was or was not deleted.                                                   |
+
+An interrupted reply has no receipt to look up. The consumer reads `status` for
+the key: `ready` or `reclaiming` means resend the same reclaim, `reclaimed` means
+done. A timeout or disconnect proves nothing about deletion.
+
+PROPOSED: re-creation after reclaim. The operator has ruled that a `create` on a
+reclaimed key will make a fresh bench; the producer has not shipped it and its
+exact behavior is not final. The consumer may rely only on this: a status read of
+a reclaimed bench returns `reclaimed`, and the consumer may then issue `create`
+for the same key. No new field is defined.
+
+Cases: `fixtures/superbench-api/reclaim.json` (wire) and
+`fixtures/superbench-api/reclaim-lifecycle.json` (runtime obligations). They are
+plain data and do not prove deletion, quota retirement or deployment.
