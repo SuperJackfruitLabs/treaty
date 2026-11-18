@@ -5,6 +5,8 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- Add the SuperBench v2 `reclaim` operation (key only) and the `reclaiming` and `reclaimed` workspace phases to the request and response schemas, with wire vectors, retry and interrupted-reply obligations; re-creation on a reclaimed key is marked PROPOSED.
+
 - Propose explicit bounded finite execution I/O and private complete registration observations beside SuperBench v2; preserve legacy encodings and limits without enabling either crossing.
 
 - Propose a private AgentPod registered-worker capsule/result schema and exact framing/canonical cases, separate from public reader data and lifecycle authority.

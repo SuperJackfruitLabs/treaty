@@ -117,11 +117,23 @@ function workspaceErrors(w: ObjectValue): string[] {
       (w.transfer_state === "relinquishing" && w.phase !== "ready"))
   )
     errors.push("transfer_availability");
+  const reclaim = ["reclaiming", "reclaimed"].includes(text(w.phase));
   if (
-    ["ready", "archived", "reaping", "reaped"].includes(text(w.phase)) &&
+    (["ready", "archived", "reaping", "reaped"].includes(text(w.phase)) ||
+      reclaim) &&
     w.checkpoint === undefined
   )
     errors.push("checkpoint_state");
+  // A reclaiming or reclaimed workspace is released and idle: no owner, no
+  // pending generation, no archive record and no transfer state.
+  if (
+    reclaim &&
+    (w.lease !== undefined ||
+      w.pending !== undefined ||
+      w.archive !== undefined ||
+      w.transfer_state !== undefined)
+  )
+    errors.push("reclaim_state");
   if (
     ["materializing", "initializing", "prepared"].includes(text(w.phase)) &&
     (w.lease === undefined || object(w.lease).holder !== "initialization")
@@ -335,6 +347,7 @@ export function responseErrors(
       (w.archive === undefined || object(w.archive).frozen_at === undefined)
     )
       errors.push("completion");
+    if (op === "reclaim" && w.phase !== "reclaimed") errors.push("completion");
     if (
       ["stop", "stop_admin"].includes(op) &&
       w.lease !== undefined &&
