@@ -333,11 +333,15 @@ clean in the tree and confirmed in the mirror and on the remote. It records
 including `status` inventory. Both keep the last complete checkpoint and carry no
 lease, pending generation, archive record or `transfer_state`, and
 `ready_for_acquisition` is false. `reclaiming` never returns to `ready`.
+The phase enum is widened in place at v2: a consumer that validates phases strictly
+must accept `reclaiming` and `reclaimed` before the producer enables reclaim. The
+producer emits them only after a reclaim.
 
 | Answer                 | Meaning                                                                                                                                              |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 200, phase `reclaimed` | Done. Repeating the request on a reclaimed workspace returns the same answer and changes nothing.                                                    |
 | 409 `conflict`         | Refused from the workspace's own state (not released, not idle, not `ready`, legacy or scalar). Nothing recorded or deleted; do not retry unchanged. |
+| 403 `forbidden`        | The peer lacks operator authority. No result.                                                                                                        |
 | 404 `not_found`        | No bench with this key.                                                                                                                              |
 | 422 `operation_failed` | Retryable. A result, when present, shows the retained `reclaiming` phase; resend the same request.                                                   |
 | 503 `unavailable`      | Retryable, including cancellation and deadlines. Never proof that the tree was or was not deleted.                                                   |

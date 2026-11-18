@@ -12,6 +12,7 @@ import {
   responseErrors,
   type ExpectedResponse,
 } from "./superbench-workspace-response-validation";
+import { observationErrors } from "./superbench-observation-validation";
 
 const read = (path: string) =>
   JSON.parse(readFileSync(join(import.meta.dir, "..", path), "utf8"));
@@ -72,6 +73,11 @@ const lifecycle: {
   }>;
 } = read("fixtures/superbench-api/reclaim-lifecycle.json");
 
+const observations = new Validator(
+  read("schemas/superbench/observation-response.v1.json"),
+  "2020-12",
+  false,
+);
 const isRequest = (body: unknown): body is WorkspaceRequest =>
   requests.validate(body).valid;
 
@@ -104,6 +110,9 @@ test("only the ruled-but-unbuilt re-creation obligation is marked PROPOSED", () 
   const marked = lifecycle.scenarios.filter((s) => s.status !== undefined);
   expect(marked.map((s) => s.name)).toEqual(["create-after-reclaim"]);
   expect(marked[0]?.status).toStartWith("PROPOSED");
+  for (const scenario of lifecycle.scenarios)
+    if (scenario.status === undefined)
+      expect(JSON.stringify(scenario)).not.toMatch(/proposed/iu);
 });
 
 for (const c of vectors.valid)
@@ -169,6 +178,30 @@ test("reclaim phases are released-only in the semantic checks without the schema
         };
       }),
     ).toContain("reclaim_state");
+    for (const [field, value] of Object.entries({
+      pending: {
+        generation_id: "3".repeat(32),
+        manifest_sha256: "e".repeat(64),
+        previous_seal: "a".repeat(40),
+        members: [
+          { name: "a", commit: "f".repeat(40) },
+          { name: "b", commit: "d".repeat(40) },
+        ],
+      },
+      archive: {
+        archived_at: "2026-11-17T00:00:00Z",
+        reap_after: "2026-11-24T00:00:00Z",
+        freeze_digest: "9".repeat(64),
+        automatic: false,
+      },
+      transfer_state: "transferred",
+    }))
+      expect(
+        mutate((w) => {
+          w.phase = phase;
+          w[field] = value;
+        }),
+      ).toContain("reclaim_state");
     expect(
       mutate((w) => {
         w.phase = phase;
@@ -195,4 +228,39 @@ test("reclaim success requires the reclaimed phase, and only for reclaim", () =>
   expect(
     responseErrors(200, body, { operation: "release", key: "card" }),
   ).toEqual([]);
+});
+
+test("the reader never reports a reclaim phase as unleased or held", () => {
+  const corpus: {
+    valid: Array<{
+      name: string;
+      kind: "request" | "response";
+      body: unknown;
+      request?: Record<string, unknown>;
+      status: number;
+    }>;
+  } = read("fixtures/superbench-api/observations.json");
+  const source = corpus.valid.find(
+    (c) => c.name === "transferred_source_blocked",
+  );
+  if (!source) throw new Error("missing observation case");
+  const observe = (phase: string, availability: string) => {
+    const body = structuredClone(source.body);
+    const items = record(record(body).result).items;
+    if (!Array.isArray(items)) throw new Error("missing items");
+    const item = record(items[0]);
+    delete item.transfer_state;
+    item.phase = phase;
+    item.availability = availability;
+    return [
+      ...observationErrors(source.kind, body, source.request, source.status),
+      ...(observations.validate(body).valid ? [] : ["schema"]),
+    ];
+  };
+  expect(observe("ready", "blocked")).toEqual([]);
+  for (const phase of ["reclaiming", "reclaimed"]) {
+    expect(observe(phase, "blocked")).toEqual([]);
+    expect(observe(phase, "unleased")).toContain("availability");
+    expect(observe(phase, "held")).toContain("availability");
+  }
 });

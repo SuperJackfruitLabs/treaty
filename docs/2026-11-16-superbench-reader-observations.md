@@ -93,7 +93,8 @@ A run/agent source requires its corresponding logical identifier; use local or
 unknown when that association is not available. The display is not proof that the principal exists or a process is alive, nor
 does it grant authority. No repository URLs, physical/local/log paths, holder token,
 private continuation, argv, environment, allocation internals or raw manifest.
-A ready phase with relinquishing/transferred state is blocked, as are incomplete
+A `reclaiming` or `reclaimed` workspace is released and never acquirable, so its
+availability is blocked. A ready phase with relinquishing/transferred state is blocked, as are incomplete
 initialization/pending/archived records. `unleased` is an observation rather than
 permission to write, and a held lease says nothing about process liveness.
 

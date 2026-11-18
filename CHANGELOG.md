@@ -5,7 +5,7 @@ deploys the event relay to production.
 
 ## Unreleased
 
-- Add the SuperBench v2 `reclaim` operation (key only) and the `reclaiming` and `reclaimed` workspace phases to the request and response schemas, with wire vectors, retry and interrupted-reply obligations; re-creation on a reclaimed key is marked PROPOSED.
+- Add the SuperBench v2 `reclaim` operation (key only) and the `reclaiming` and `reclaimed` workspace phases to the request and response schemas, with wire vectors, retry and interrupted-reply obligations; re-creation on a reclaimed key is marked PROPOSED. The v2 response phase enum is widened in place, so a consumer that validates phases strictly must accept `reclaiming` and `reclaimed` before the producer enables reclaim; the producer emits them only after a reclaim.
 
 - Propose explicit bounded finite execution I/O and private complete registration observations beside SuperBench v2; preserve legacy encodings and limits without enabling either crossing.
 

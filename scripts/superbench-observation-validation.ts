@@ -199,8 +199,16 @@ export function observationErrors(
             "archived",
             "reaping",
             "reaped",
+            "reclaiming",
+            "reclaimed",
           ].includes(String(b.phase))) &&
         b.availability === "unleased"
+      )
+        errors.push("availability");
+      // A reclaiming or reclaimed bench is released: it is never held either.
+      if (
+        ["reclaiming", "reclaimed"].includes(String(b.phase)) &&
+        b.availability === "held"
       )
         errors.push("availability");
       if (b.pending_checkpoint === true && b.availability === "unleased")

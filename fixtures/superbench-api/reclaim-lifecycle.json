@@ -12,10 +12,23 @@
         }
       ],
       "assertions": [
-        "Operator authority only; a reader peer is refused and no lease token, holder or request ID is accepted.",
+        "Operator authority only: a reader peer is refused with 403 forbidden and no result, and no lease token, holder or request ID is accepted.",
         "Decided from the producer's own records before anything is recorded: a Fresh workspace, phase ready, no lease, no pending generation or stage, no admitted or bound operation, allocated, its complete checkpoint clean in the tree and confirmed in the mirror and on the remote.",
         "The record moves to reclaiming before any deletion, then to reclaimed once the tree is deleted and the quota project retired.",
         "Success names phase reclaimed with its last checkpoint, no lease, no pending generation, no grant and no root path."
+      ]
+    },
+    {
+      "name": "refused-reader-peer",
+      "response_case": "refused-403-reader-peer",
+      "steps": [
+        {
+          "request_case": "request-key-only",
+          "response_case": "refused-403-reader-peer"
+        }
+      ],
+      "assertions": [
+        "A peer without operator authority is refused before any state is read; nothing is recorded or deleted and no workspace is disclosed."
       ]
     },
     {

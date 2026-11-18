@@ -293,6 +293,25 @@
       "validation": "wire"
     },
     {
+      "name": "refused-403-reader-peer",
+      "kind": "response",
+      "status": 403,
+      "expected": {
+        "operation": "reclaim",
+        "key": "card"
+      },
+      "body": {
+        "version": "superbench.v2",
+        "operation": "reclaim",
+        "ok": false,
+        "error": {
+          "code": "forbidden",
+          "message": "operator authority required"
+        }
+      },
+      "validation": "wire"
+    },
+    {
       "name": "retryable-422-retains-reclaiming",
       "kind": "response",
       "status": 422,

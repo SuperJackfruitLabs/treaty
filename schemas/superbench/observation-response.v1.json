@@ -65,7 +65,9 @@
                       "ready",
                       "archived",
                       "reaping",
-                      "reaped"
+                      "reaped",
+                      "reclaiming",
+                      "reclaimed"
                     ]
                   },
                   "availability": {
