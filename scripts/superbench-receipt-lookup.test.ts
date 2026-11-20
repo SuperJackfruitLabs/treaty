@@ -136,3 +136,18 @@ test("lookup request, full envelope and original UTF8 bytes have independent har
     }),
   ).toContain("receipt_bytes");
 });
+test("a completed stored unavailable failure is a final outcome, with its own obligation", () => {
+  const scenario = lifecycle.scenarios.find(
+    (s) => s.name === "completed-stored-failure-is-final",
+  );
+  expect(scenario?.response_case).toBe("receipt-completed-original-failure");
+  const stored = corpus.valid.find((c) => c.name === scenario?.response_case);
+  expect(stored?.body.result?.state).toBe("completed");
+  expect(stored?.body.result?.http_status).toBe(503);
+  const saved = JSON.parse(stored?.body.result?.response_body ?? "{}");
+  expect(saved.ok).toBe(false);
+  expect(saved.error.code).toBe("unavailable");
+  expect(scenario?.assertions.join(" ")).toContain(
+    "never polls it as in-flight",
+  );
+});
