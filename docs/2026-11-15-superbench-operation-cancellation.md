@@ -162,6 +162,37 @@ unsafe integers and excessive nesting are refused. Completed replies preserve
 original failure receipts as well as success receipts. An oversized or invalid-UTF8 stored body returns unavailable without truncation or source replay. Consumers independently
 validate those private bytes against their exact saved original request.
 
+### A completed stored failure is final
+
+A `completed` lookup is the original request's final outcome, whatever HTTP
+status and error code its stored body carries. A live reply's code says what to
+do next with that reply; a stored body's code says only how the operation ended.
+In particular a stored `unavailable` (for example a run whose payload was killed
+when the service stopped, reported as `command failed; stopped lease retained`)
+is not "try again later": replaying the same request ID returns the same bytes
+forever, and a fresh request ID or a resend is still never permitted. The
+consumer must therefore:
+
+- end the operation as failed. A stored failure is never a pass, never in
+  progress and never a reason to keep polling the same receipt.
+- still treat a stored `operation_in_doubt` as unresolved, because the producer
+  itself recorded that the effects need reconciliation. It parks for an owner.
+- reconcile the ownership the stored result shows. A result whose workspace
+  lease is still held by the consumer's holder, with its execution `stopped` and
+  `stop_requested` set, is a fenced, stopped lease with its continuation revoked.
+  That lease is retained, not released. The holder must release it with its own
+  exact original token (token-scoped, repeatable cleanup). It must not send
+  `stop` again when the result already shows the execution stopped and the stop
+  recorded. It sends `stop` first only when the retained execution is not shown
+  stopped. Release still requires the complete clean checkpoint vector. A
+  refused release keeps the lease held and must be surfaced for operator
+  reconciliation. The consumer never checkpoints the interrupted work to make
+  the release succeed, and never reports it as a result.
+
+A live `unavailable` reply to a growth request is different: it carries no
+outcome. The consumer recovers it only through this lookup, and a lookup that
+answers `absent`, `in_progress` or `operation_in_doubt` stays parked as above.
+
 Receipt reads have **two active read slots per service**, independent of all 64
 normal operation slots and growth receipt capacity. Excess reads refuse with
 `unavailable` rather than queue unbounded work. Reads do not consume cancellation

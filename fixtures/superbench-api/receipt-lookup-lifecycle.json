@@ -36,6 +36,15 @@
       ]
     },
     {
+      "name": "completed-stored-failure-is-final",
+      "response_case": "receipt-completed-original-failure",
+      "assertions": [
+        "A completed receipt whose stored body is a 503 unavailable failure is the original request's final outcome; the consumer never polls it as in-flight.",
+        "The consumer ends the operation failed, never as a pass, and sends no resend and no fresh request ID.",
+        "A stored result showing the consumer's own lease stopped with stop_requested is released with the original token; a refused release keeps the lease and is surfaced, never checkpointed to force it."
+      ]
+    },
+    {
       "name": "restart-and-unknown",
       "response_case": "receipt-operation_in_doubt",
       "assertions": [
