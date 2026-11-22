@@ -25,6 +25,13 @@
       "name": "@superjackfruitlabs/treaty-cloudevents",
       "version": "0.0.0",
     },
+    "packages/contracts": {
+      "name": "@superjackfruitlabs/treaty-contracts",
+      "version": "0.0.0",
+      "dependencies": {
+        "@cfworker/json-schema": "4.1.1",
+      },
+    },
     "packages/ecosystem-identity": {
       "name": "@superjackfruitlabs/treaty-ecosystem-identity",
       "version": "0.0.0",
@@ -108,6 +115,8 @@
     "@oxlint/binding-win32-x64-msvc": ["@oxlint/binding-win32-x64-msvc@1.88.0", "", { "os": "win32", "cpu": "x64" }, "sha512-3Sz6rVWe8Dy+ufsXurFN1GX2dX43F/lQMSLelK9gFjiba7nHvLlqlhR5cHlWVnCpSqUY1hN9pyCX9XToe6ve6g=="],
 
     "@superjackfruitlabs/treaty-cloudevents": ["@superjackfruitlabs/treaty-cloudevents@workspace:packages/cloudevents"],
+
+    "@superjackfruitlabs/treaty-contracts": ["@superjackfruitlabs/treaty-contracts@workspace:packages/contracts"],
 
     "@superjackfruitlabs/treaty-ecosystem-identity": ["@superjackfruitlabs/treaty-ecosystem-identity@workspace:packages/ecosystem-identity"],
 

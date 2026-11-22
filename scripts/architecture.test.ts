@@ -30,6 +30,7 @@ const LARGEST_CYCLE = 0;
 export const LAYERS: string[][] = [
   [
     "packages/cloudevents",
+    "packages/contracts",
     "packages/ecosystem-identity",
     "packages/event-schemas",
     "packages/matrix-events",

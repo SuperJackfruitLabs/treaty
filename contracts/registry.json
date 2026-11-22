@@ -1,0 +1,670 @@
+{
+  "registry": "treaty crossings",
+  "version": 1,
+  "description": "Every place one suite product talks to another, found by reading every product's main on 2026-11-22. A crossing is listed whether or not treaty holds its contract. See contracts/README.md.",
+  "crossings": [
+    {
+      "id": "treaty.relay",
+      "title": "The event relay: CloudEvents in, signed HTTP push out",
+      "owner": "treaty",
+      "consumers": [
+        "superpipeline",
+        "superexchange",
+        "superdispatch",
+        "agentpod"
+      ],
+      "kind": "event",
+      "status": "contracted",
+      "contract": ["fixtures/cloudevents/binary-mode.json"],
+      "evidence": [
+        "superpipeline:apps/api/src/push/relay.ts",
+        "superexchange:apps/exchange/src/routes/relay.ts",
+        "superdispatch:apps/dispatch/src/routes/relay.ts",
+        "agentpod:apps/hub/src/routes/superpipeline-events.ts"
+      ]
+    },
+    {
+      "id": "superpipeline.events",
+      "title": "SuperPipeline's decision, record and placement events",
+      "owner": "superpipeline",
+      "consumers": ["superexchange", "superdispatch", "agentpod"],
+      "kind": "event",
+      "status": "contracted",
+      "contract": [
+        "schemas/catalog.json",
+        "schemas/superpipeline/attention.pending.v1.json",
+        "schemas/superpipeline/card.ready.v1.json",
+        "schemas/superpipeline/check.failed.v1.json",
+        "schemas/superpipeline/check.overridden.v1.json",
+        "schemas/superpipeline/decision.pulled_back.v1.json",
+        "schemas/superpipeline/decision.released.v1.json",
+        "schemas/superpipeline/decision.timeout.v1.json",
+        "schemas/superpipeline/delivery.pending.v1.json",
+        "schemas/superpipeline/elicitation.pending.v1.json",
+        "schemas/superpipeline/gate.approval_recorded.v1.json",
+        "schemas/superpipeline/gate.pending.v1.json",
+        "schemas/superpipeline/record.v1.json",
+        "fixtures/superpipeline-events/examples.json"
+      ],
+      "cases": {
+        "schemas/superpipeline/attention.pending.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/attention.pending.v1",
+        "schemas/superpipeline/card.ready.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/card.ready.v1",
+        "schemas/superpipeline/check.failed.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/check.failed.v1",
+        "schemas/superpipeline/check.overridden.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/check.overridden.v1",
+        "schemas/superpipeline/decision.pulled_back.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/decision.pulled_back.v1",
+        "schemas/superpipeline/decision.released.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/decision.released.v1",
+        "schemas/superpipeline/decision.timeout.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/decision.timeout.v1",
+        "schemas/superpipeline/delivery.pending.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/delivery.pending.v1",
+        "schemas/superpipeline/elicitation.pending.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/elicitation.pending.v1",
+        "schemas/superpipeline/gate.approval_recorded.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/gate.approval_recorded.v1",
+        "schemas/superpipeline/gate.pending.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/gate.pending.v1",
+        "schemas/superpipeline/record.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/record.v1"
+      },
+      "evidence": [
+        "superpipeline:apps/api/src/push/relay.ts",
+        "superexchange:apps/exchange/src/board-chat/notices.ts",
+        "superdispatch:apps/dispatch/src/routes/relay.ts"
+      ]
+    },
+    {
+      "id": "superexchange.board-room",
+      "title": "Board-room Matrix events: gates, questions, follow-ups, notices and their answers",
+      "owner": "superexchange",
+      "consumers": ["supermessage", "agentpod"],
+      "kind": "matrix",
+      "status": "contracted",
+      "contract": [
+        "schemas/matrix/dev.agentpod.check.failed.v2.json",
+        "schemas/matrix/dev.agentpod.check.overridden.v2.json",
+        "schemas/matrix/dev.agentpod.checks.waiting.v2.json",
+        "schemas/matrix/dev.agentpod.decision.pulled_back.v2.json",
+        "schemas/matrix/dev.agentpod.decision.released.v2.json",
+        "schemas/matrix/dev.agentpod.gate.progress.v2.json",
+        "schemas/matrix/dev.superpipeline.attention.answer.v2.json",
+        "schemas/matrix/dev.superpipeline.attention.outcome.v1.json",
+        "schemas/matrix/dev.superpipeline.attention.v2.json",
+        "schemas/matrix/dev.superpipeline.check.override.v2.json",
+        "schemas/matrix/dev.superpipeline.decision.escalated.v1.json",
+        "schemas/matrix/dev.superpipeline.decision.reminded.v1.json",
+        "schemas/matrix/dev.superpipeline.delivery.answer.v2.json",
+        "schemas/matrix/dev.superpipeline.delivery.v2.json",
+        "schemas/matrix/dev.superpipeline.elicitation.json",
+        "schemas/matrix/dev.superpipeline.gate.decision.v1.json",
+        "schemas/matrix/dev.superpipeline.gate.decision.v2.json",
+        "schemas/matrix/dev.superpipeline.gate.json",
+        "schemas/matrix/dev.superpipeline.gate.outcome.v1.json",
+        "schemas/matrix/dev.superpipeline.gate.pull_back.v2.json",
+        "schemas/matrix/dev.superpipeline.gate.v1.json",
+        "schemas/matrix/dev.superpipeline.gate.v2.json",
+        "schemas/matrix/dev.superpipeline.question.answer.v2.json",
+        "schemas/matrix/dev.superpipeline.question.v2.json",
+        "fixtures/matrix-events/examples.json",
+        "fixtures/ecosystem-identity/matrix_gate_events.json"
+      ],
+      "cases": {
+        "schemas/matrix/dev.agentpod.check.failed.v2.json": "fixtures/matrix-events/examples.json#/schemas/dev.agentpod.check.failed.v2",
+        "schemas/matrix/dev.agentpod.check.overridden.v2.json": "fixtures/matrix-events/examples.json#/schemas/dev.agentpod.check.overridden.v2",
+        "schemas/matrix/dev.agentpod.checks.waiting.v2.json": "fixtures/matrix-events/examples.json#/schemas/dev.agentpod.checks.waiting.v2",
+        "schemas/matrix/dev.agentpod.decision.pulled_back.v2.json": "fixtures/matrix-events/examples.json#/schemas/dev.agentpod.decision.pulled_back.v2",
+        "schemas/matrix/dev.agentpod.decision.released.v2.json": "fixtures/matrix-events/examples.json#/schemas/dev.agentpod.decision.released.v2",
+        "schemas/matrix/dev.agentpod.gate.progress.v2.json": "fixtures/matrix-events/examples.json#/schemas/dev.agentpod.gate.progress.v2",
+        "schemas/matrix/dev.superpipeline.attention.answer.v2.json": "fixtures/matrix-events/examples.json#/schemas/dev.superpipeline.attention.answer.v2",
+        "schemas/matrix/dev.superpipeline.attention.outcome.v1.json": "fixtures/matrix-events/examples.json#/schemas/dev.superpipeline.attention.outcome.v1",
+        "schemas/matrix/dev.superpipeline.attention.v2.json": "fixtures/matrix-events/examples.json#/schemas/dev.superpipeline.attention.v2",
+        "schemas/matrix/dev.superpipeline.check.override.v2.json": "fixtures/matrix-events/examples.json#/schemas/dev.superpipeline.check.override.v2",
+        "schemas/matrix/dev.superpipeline.decision.escalated.v1.json": "fixtures/matrix-events/examples.json#/schemas/dev.superpipeline.decision.escalated.v1",
+        "schemas/matrix/dev.superpipeline.decision.reminded.v1.json": "fixtures/matrix-events/examples.json#/schemas/dev.superpipeline.decision.reminded.v1",
+        "schemas/matrix/dev.superpipeline.delivery.answer.v2.json": "fixtures/matrix-events/examples.json#/schemas/dev.superpipeline.delivery.answer.v2",
+        "schemas/matrix/dev.superpipeline.delivery.v2.json": "fixtures/matrix-events/examples.json#/schemas/dev.superpipeline.delivery.v2",
+        "schemas/matrix/dev.superpipeline.elicitation.json": "fixtures/matrix-events/examples.json#/schemas/dev.superpipeline.elicitation",
+        "schemas/matrix/dev.superpipeline.gate.decision.v1.json": "fixtures/matrix-events/examples.json#/schemas/dev.superpipeline.gate.decision.v1",
+        "schemas/matrix/dev.superpipeline.gate.decision.v2.json": "fixtures/matrix-events/examples.json#/schemas/dev.superpipeline.gate.decision.v2",
+        "schemas/matrix/dev.superpipeline.gate.json": "fixtures/matrix-events/examples.json#/schemas/dev.superpipeline.gate",
+        "schemas/matrix/dev.superpipeline.gate.outcome.v1.json": "fixtures/matrix-events/examples.json#/schemas/dev.superpipeline.gate.outcome.v1",
+        "schemas/matrix/dev.superpipeline.gate.pull_back.v2.json": "fixtures/matrix-events/examples.json#/schemas/dev.superpipeline.gate.pull_back.v2",
+        "schemas/matrix/dev.superpipeline.gate.v1.json": "fixtures/matrix-events/examples.json#/schemas/dev.superpipeline.gate.v1",
+        "schemas/matrix/dev.superpipeline.gate.v2.json": "fixtures/matrix-events/examples.json#/schemas/dev.superpipeline.gate.v2",
+        "schemas/matrix/dev.superpipeline.question.answer.v2.json": "fixtures/matrix-events/examples.json#/schemas/dev.superpipeline.question.answer.v2",
+        "schemas/matrix/dev.superpipeline.question.v2.json": "fixtures/matrix-events/examples.json#/schemas/dev.superpipeline.question.v2"
+      },
+      "evidence": [
+        "superexchange:apps/exchange/src/board-chat/gate-card.ts",
+        "supermessage:crates/supermessage-core/src/treaty_corpus.rs",
+        "agentpod:apps/hub/src/services/board-chat/gates.ts"
+      ]
+    },
+    {
+      "id": "agentpod.harness-permission",
+      "title": "A harness's permission request in chat, and its answer",
+      "owner": "agentpod",
+      "consumers": ["supermessage"],
+      "kind": "matrix",
+      "status": "contracted",
+      "contract": [
+        "schemas/matrix/dev.agentpod.permission.answer.v2.json",
+        "schemas/matrix/dev.agentpod.permission.json",
+        "schemas/matrix/dev.agentpod.permission.outcome.v1.json",
+        "schemas/matrix/dev.agentpod.permission.v1.json",
+        "schemas/matrix/dev.agentpod.permission.v2.json",
+        "fixtures/matrix-events/examples.json"
+      ],
+      "cases": {
+        "schemas/matrix/dev.agentpod.permission.answer.v2.json": "fixtures/matrix-events/examples.json#/schemas/dev.agentpod.permission.answer.v2",
+        "schemas/matrix/dev.agentpod.permission.json": "fixtures/matrix-events/examples.json#/schemas/dev.agentpod.permission",
+        "schemas/matrix/dev.agentpod.permission.outcome.v1.json": "fixtures/matrix-events/examples.json#/schemas/dev.agentpod.permission.outcome.v1",
+        "schemas/matrix/dev.agentpod.permission.v1.json": "fixtures/matrix-events/examples.json#/schemas/dev.agentpod.permission.v1",
+        "schemas/matrix/dev.agentpod.permission.v2.json": "fixtures/matrix-events/examples.json#/schemas/dev.agentpod.permission.v2"
+      },
+      "evidence": [
+        "agentpod:apps/hub/src/services/matrix-as/harness-permission.ts",
+        "supermessage:crates/supermessage-core/src/custom_events.rs"
+      ]
+    },
+    {
+      "id": "accounts.token-claims",
+      "title": "The claims in an Accounts access token",
+      "owner": "accounts",
+      "consumers": [
+        "agentpod",
+        "superpipeline",
+        "superexchange",
+        "superdispatch",
+        "superwitness",
+        "superlibrary",
+        "supertoolkit"
+      ],
+      "kind": "token",
+      "status": "partial",
+      "contract": ["fixtures/ecosystem-identity/token_claims.json"],
+      "gaps": "Only agentpod, accounts and superpipeline test against the claims; superwitness, superlibrary and superexchange verify with their own fixtures or decode by hand. Four verifiers, no shared one.",
+      "phase": 1,
+      "evidence": [
+        "accounts:src/issuer/claims.ts",
+        "agentpod:apps/hub/src/auth/org-plane/verify.ts",
+        "superpipeline:apps/api/src/auth/org-plane.ts",
+        "superwitness:internal/auth/verify.go",
+        "superlibrary:apps/api/src/auth/jws.ts"
+      ]
+    },
+    {
+      "id": "accounts.identity-corpus",
+      "title": "Id grammar, run join key and card prompt",
+      "owner": "accounts",
+      "consumers": ["agentpod", "superpipeline", "supermessage"],
+      "kind": "file",
+      "status": "contracted",
+      "contract": [
+        "fixtures/ecosystem-identity/id_grammar.json",
+        "fixtures/ecosystem-identity/run_join_key.json",
+        "fixtures/ecosystem-identity/card_prompt.json"
+      ],
+      "evidence": [
+        "agentpod:packages/contract/src/ecosystem-identity.test.ts",
+        "superpipeline:apps/api/test/org-plane-claim-contract.test.ts"
+      ]
+    },
+    {
+      "id": "superbench.local-api",
+      "title": "SuperBench's local API over a Unix socket",
+      "owner": "superbench",
+      "consumers": ["agentpod"],
+      "kind": "ipc",
+      "status": "partial",
+      "contract": [
+        "schemas/superbench/cancel-operation.v2.json",
+        "schemas/superbench/cancel-response.v2.json",
+        "schemas/superbench/finite-io-receipt-response.v2.json",
+        "schemas/superbench/finite-io-response.v2.json",
+        "schemas/superbench/finite-io-run.v2.json",
+        "schemas/superbench/observation-request.v1.json",
+        "schemas/superbench/observation-response.v1.json",
+        "schemas/superbench/operation.v1.json",
+        "schemas/superbench/operation.v2.json",
+        "schemas/superbench/receipt-lookup-operation.v2.json",
+        "schemas/superbench/receipt-lookup-response.v2.json",
+        "schemas/superbench/registration-observe-operation.v2.json",
+        "schemas/superbench/registration-observe-response.v2.json",
+        "schemas/superbench/response.v2.json",
+        "fixtures/superbench-api/operations.json"
+      ],
+      "gaps": "registrations/observe is called by agentpod with no reference to its schema; receipt lookup is checked by fixture only; pins sit at five treaty revisions and are compared by hash, not against a release.",
+      "phase": 3,
+      "evidence": [
+        "superbench:internal/service/server_v2.go",
+        "agentpod:node-agent/internal/benchworkspace/client.go"
+      ]
+    },
+    {
+      "id": "superbench.checkpoint",
+      "title": "A checkpoint manifest",
+      "owner": "superbench",
+      "consumers": ["agentpod"],
+      "kind": "file",
+      "status": "contracted",
+      "contract": [
+        "schemas/superbench/checkpoint.v1.json",
+        "fixtures/superbench-api/checkpoints.json"
+      ],
+      "evidence": ["superbench:internal/checkpointset/testdata/source.json"]
+    },
+    {
+      "id": "superbench.consumer-bindings",
+      "title": "How a consumer binds a bench to a card: binding, lifecycle, locality",
+      "owner": "superbench",
+      "consumers": ["agentpod"],
+      "kind": "ipc",
+      "status": "proposed",
+      "contract": [
+        "schemas/superbench-consumers/card-binding.v1.json",
+        "schemas/superbench-consumers/lifecycle.v1.json",
+        "schemas/superbench-consumers/locality.v1.json",
+        "fixtures/superbench-consumers/cases.json"
+      ],
+      "phase": 3,
+      "evidence": ["superbench:AGENTS.md"]
+    },
+    {
+      "id": "superpipeline.run-checkpoint",
+      "title": "Run checkpoints and their settlement",
+      "owner": "superpipeline",
+      "consumers": ["agentpod", "superbench"],
+      "kind": "http",
+      "status": "contracted",
+      "contract": [
+        "schemas/superpipeline-api/checkpoint-settlement.v1.json",
+        "schemas/superpipeline-api/run-checkpoint-policy.v1.json",
+        "schemas/superpipeline-api/run-checkpoint-receipt.v1.json",
+        "schemas/superpipeline-api/run-checkpoint.v1.json",
+        "fixtures/superpipeline-run-checkpoint/canonical.json",
+        "fixtures/superpipeline-run-checkpoint/cases.json"
+      ],
+      "evidence": [
+        "superpipeline:apps/api/src/board/checkpoint-source.ts",
+        "agentpod:apps/hub/src/services/bridge/checkpoint-settlement-data.ts"
+      ]
+    },
+    {
+      "id": "agentpod.registered-worker",
+      "title": "A registered worker's capsule and result",
+      "owner": "agentpod",
+      "consumers": ["superbench"],
+      "kind": "ipc",
+      "status": "contracted",
+      "contract": [
+        "schemas/agentpod-local/registered-worker-capsule.v1.json",
+        "schemas/agentpod-local/registered-worker-result.v2.json",
+        "fixtures/agentpod-local/registered-worker.json"
+      ],
+      "evidence": [
+        "agentpod:node-agent/internal/superbench/registered_corpus_test.go"
+      ]
+    },
+    {
+      "id": "superpipeline.agent-work",
+      "title": "The agent work loop: claims, runs, heartbeat, activities, submit, complete, fail",
+      "owner": "superpipeline",
+      "consumers": ["agentpod", "salaam"],
+      "kind": "http",
+      "status": "uncontracted",
+      "contract": [],
+      "gaps": "AgentPod hand-mirrors SuperPipeline's unpublished agent SDK; error codes such as NOT_RUN_OWNER and STALE_LEASE are defined only locally.",
+      "phase": 1,
+      "evidence": [
+        "superpipeline:apps/api/src/routes/boards/entry.ts",
+        "superpipeline:packages/agent-sdk/src/index.ts",
+        "agentpod:apps/hub/src/services/bridge/superpipeline.ts"
+      ]
+    },
+    {
+      "id": "superpipeline.decisions",
+      "title": "Human decisions written back, and the pending reads that feed them",
+      "owner": "superpipeline",
+      "consumers": ["superexchange", "agentpod"],
+      "kind": "http",
+      "status": "partial",
+      "contract": [
+        "schemas/superpipeline/gate.pending.v1.json",
+        "schemas/superpipeline/delivery.pending.v1.json",
+        "schemas/superpipeline/attention.pending.v1.json",
+        "schemas/superpipeline/elicitation.pending.v1.json"
+      ],
+      "gaps": "Pending list items reuse the pushed bodies, but the list wrappers, the gate read and every write (resolve, answer, delivery, resume, archive, pull-back, override) are hand-built on both sides.",
+      "phase": 1,
+      "evidence": [
+        "superpipeline:apps/api/src/service-routes.ts",
+        "superexchange:apps/exchange/src/board-chat/superpipeline.ts",
+        "agentpod:apps/hub/src/services/board-chat/gate-resolve.ts"
+      ]
+    },
+    {
+      "id": "superpipeline.approvals",
+      "title": "Hosted approval requests and gated publishing",
+      "owner": "superpipeline",
+      "consumers": ["supertoolkit"],
+      "kind": "http",
+      "status": "uncontracted",
+      "contract": [],
+      "gaps": "The stk-capability/v1 subject is contracted only inside the Matrix question.v2 card; the HTTP API that creates it is not.",
+      "phase": 1,
+      "evidence": [
+        "superpipeline:apps/api/src/board/approval-requests.ts",
+        "supertoolkit:internal/approval/hosted_http.go",
+        "supertoolkit:internal/approval/publisher.go"
+      ]
+    },
+    {
+      "id": "accounts.plane-api",
+      "title": "Token exchange, principals, identities and policy decisions",
+      "owner": "accounts",
+      "consumers": [
+        "agentpod",
+        "superpipeline",
+        "superexchange",
+        "superdispatch",
+        "superwitness",
+        "superlibrary",
+        "supertoolkit"
+      ],
+      "kind": "http",
+      "status": "uncontracted",
+      "contract": [],
+      "gaps": "Request and response bodies live in Accounts' route validation and in a separate client in every consumer.",
+      "phase": 1,
+      "evidence": [
+        "accounts:src/issuer/token-routes.ts",
+        "accounts:src/principals/routes.ts",
+        "accounts:src/policy/routes.ts",
+        "agentpod:apps/hub/src/auth/org-plane/client.ts",
+        "superexchange:apps/exchange/src/board-chat/accounts.ts"
+      ]
+    },
+    {
+      "id": "accounts.sign-in",
+      "title": "Sign-in: OAuth 2.1, OIDC discovery and the device flow",
+      "owner": "accounts",
+      "consumers": [
+        "agentpod",
+        "superpipeline",
+        "superwitness",
+        "superlibrary",
+        "supermessage"
+      ],
+      "kind": "http",
+      "status": "standard",
+      "contract": [],
+      "standard": "OAuth 2.1, OpenID Connect Discovery 1.0, RFC 8628 (device authorization), RFC 7517 (JWKS)",
+      "evidence": [
+        "accounts:src/app.ts",
+        "superpipeline:apps/api/src/auth/plane-signin.ts"
+      ]
+    },
+    {
+      "id": "agentpod.hub-auth",
+      "title": "The AgentPod hub as a legacy token issuer",
+      "owner": "agentpod",
+      "consumers": ["superpipeline", "superwitness"],
+      "kind": "token",
+      "status": "deprecated",
+      "contract": [],
+      "evidence": [
+        "superpipeline:apps/api/src/auth/hub-jwt.ts",
+        "superwitness:internal/auth/token.go"
+      ]
+    },
+    {
+      "id": "superpipeline.direct-push",
+      "title": "SuperPipeline's signed webhook push and push-config registration",
+      "owner": "superpipeline",
+      "consumers": ["agentpod", "superlibrary"],
+      "kind": "http",
+      "status": "partial",
+      "contract": [
+        "schemas/superpipeline/record.v1.json",
+        "schemas/superpipeline/gate.pending.v1.json"
+      ],
+      "gaps": "Bodies are the relay's schemas, but the delivery (X-Superpipeline-Signature), push-config registration, work.available and cards.stale are not contracted; one event has two delivery paths.",
+      "phase": 2,
+      "evidence": [
+        "superpipeline:apps/api/src/push/deliver.ts",
+        "agentpod:apps/hub/src/routes/superpipeline-push.ts",
+        "superlibrary:apps/api/src/sources/subscribe.ts"
+      ]
+    },
+    {
+      "id": "agentpod.matrix-activity",
+      "title": "A station's live activity in chat: turns, stream, thought and tool deltas, voice, errors",
+      "owner": "agentpod",
+      "consumers": ["supermessage"],
+      "kind": "matrix",
+      "status": "uncontracted",
+      "contract": [],
+      "gaps": "Defined in AgentPod's own contract package and copied by hand into the Hermes plugin and SuperMessage.",
+      "phase": 2,
+      "evidence": [
+        "agentpod:packages/contract/src/matrix-events.ts",
+        "supermessage:crates/supermessage-core/src/live.rs"
+      ]
+    },
+    {
+      "id": "agentpod.live-activity",
+      "title": "Live Activity tokens and push state for the SuperMessage app",
+      "owner": "agentpod",
+      "consumers": ["supermessage"],
+      "kind": "http",
+      "status": "uncontracted",
+      "contract": [],
+      "gaps": "The token API and the fleet ContentState fixture are copied between the two repositories with no check.",
+      "phase": 2,
+      "evidence": [
+        "agentpod:apps/hub/src/routes/live-activity.ts",
+        "supermessage:crates/supermessage-core/src/live_activity.rs"
+      ]
+    },
+    {
+      "id": "agentpod.push-gateway",
+      "title": "The Matrix push gateway",
+      "owner": "agentpod",
+      "consumers": ["supermessage"],
+      "kind": "http",
+      "status": "standard",
+      "contract": [],
+      "standard": "Matrix Push Gateway API (/_matrix/push/v1/notify)",
+      "evidence": ["agentpod:apps/hub/src/services/push/gateway.ts"]
+    },
+    {
+      "id": "superpipeline.board-read",
+      "title": "Service reads of boards, cards, attempts, comments, links and activities",
+      "owner": "superpipeline",
+      "consumers": ["superlibrary", "superdispatch", "superwitness"],
+      "kind": "http",
+      "status": "uncontracted",
+      "contract": [],
+      "gaps": "Each consumer types the reads by hand; SuperLibrary types spec and handoff as unknown.",
+      "phase": 3,
+      "evidence": [
+        "superpipeline:apps/api/src/service-routes.ts",
+        "superlibrary:apps/api/src/sources/superpipeline.ts",
+        "superdispatch:apps/dispatch/src/sources/superpipeline.ts",
+        "superwitness:internal/source/superpipeline/adapter.go"
+      ]
+    },
+    {
+      "id": "superpipeline.placement",
+      "title": "Placement: eligibility, reservation, scheduling and agent load",
+      "owner": "superpipeline",
+      "consumers": ["superdispatch"],
+      "kind": "http",
+      "status": "uncontracted",
+      "contract": [],
+      "gaps": "SuperDispatch calls GET /v1/agents/load, which SuperPipeline does not serve, and falls back silently.",
+      "phase": 3,
+      "evidence": [
+        "superdispatch:apps/dispatch/src/sources/superpipeline.ts",
+        "superpipeline:apps/api/src/service-routes.ts"
+      ]
+    },
+    {
+      "id": "superpipeline.mcp",
+      "title": "SuperPipeline's MCP tools",
+      "owner": "superpipeline",
+      "consumers": ["agentpod"],
+      "kind": "mcp",
+      "status": "uncontracted",
+      "contract": [],
+      "gaps": "MCP is the transport; the tool names and their inputs are named in AgentPod's prompt text with no contract.",
+      "phase": 3,
+      "evidence": [
+        "superpipeline:apps/api/src/mcp/tools.ts",
+        "agentpod:apps/hub/src/services/bridge/dispatch-prompt.ts"
+      ]
+    },
+    {
+      "id": "agentpod.evidence",
+      "title": "Run evidence, attempts, transcripts and execution export",
+      "owner": "agentpod",
+      "consumers": ["superwitness", "superpipeline"],
+      "kind": "http",
+      "status": "uncontracted",
+      "contract": [],
+      "gaps": "Held together by byte-identical files copied into Salaam and SuperWitness; transcripts pass through untyped; SuperPipeline builds the export URL from a string.",
+      "phase": 3,
+      "evidence": [
+        "agentpod:apps/hub/src/routes/evidence.ts",
+        "superwitness:internal/source/agentpod/adapter.go",
+        "superpipeline:apps/api/src/routes/boards/runs.ts"
+      ]
+    },
+    {
+      "id": "agentpod.capability-catalog",
+      "title": "The capability catalog, station registry and board roster",
+      "owner": "agentpod",
+      "consumers": ["superdispatch", "superlibrary"],
+      "kind": "http",
+      "status": "uncontracted",
+      "contract": [],
+      "gaps": "AgentPod's own contract package types it; each consumer reimplements.",
+      "phase": 3,
+      "evidence": [
+        "agentpod:apps/hub/src/routes/capability-catalog.ts",
+        "agentpod:apps/hub/src/routes/bridge-roster.ts",
+        "superdispatch:apps/dispatch/src/sources/agentpod.ts",
+        "superlibrary:apps/api/src/clients/roster.ts"
+      ]
+    },
+    {
+      "id": "agentpod.fleet-api",
+      "title": "Dispatchable agents and hub tokens for SuperPipeline's web app",
+      "owner": "agentpod",
+      "consumers": ["superpipeline"],
+      "kind": "http",
+      "status": "uncontracted",
+      "contract": [],
+      "gaps": "Read in the browser with an unchecked cast.",
+      "phase": 3,
+      "evidence": ["superpipeline:apps/web/src/lib/api/agents.ts"]
+    },
+    {
+      "id": "agentpod.salaam-station",
+      "title": "AgentPod and Salaam: ACP admission, the work protocol, the operator socket and station files",
+      "owner": "agentpod",
+      "consumers": ["salaam"],
+      "kind": "ipc",
+      "status": "uncontracted",
+      "contract": [],
+      "gaps": "Salaam mirrors AgentPod's private contract from copied fixtures; AgentPod's side checks only schema_version strings.",
+      "phase": 3,
+      "evidence": [
+        "salaam:src/core/agentpod-work-protocol.ts",
+        "agentpod:node-agent/internal/salaam/client.go"
+      ]
+    },
+    {
+      "id": "supertoolkit.managed",
+      "title": "SuperToolkit's managed MCP, control, evidence and local-commands protocols",
+      "owner": "supertoolkit",
+      "consumers": ["salaam", "agentpod"],
+      "kind": "ipc",
+      "status": "uncontracted",
+      "contract": [],
+      "gaps": "Byte-identical corpora copied into Salaam with no check; AgentPod parses stk's JSON output and writes its policy file by hand.",
+      "phase": 3,
+      "evidence": [
+        "supertoolkit:internal/managedmcp/README.md",
+        "salaam:src/toolkit/mcp.ts",
+        "agentpod:node-agent/internal/stkclient/stkclient.go"
+      ]
+    },
+    {
+      "id": "superwitness.runs",
+      "title": "Run reports, run reads and verdicts",
+      "owner": "superwitness",
+      "consumers": ["superpipeline", "superdispatch"],
+      "kind": "http",
+      "status": "external",
+      "contract": [],
+      "gaps": "SuperWitness publishes the run report schema itself; SuperPipeline copies it; verdicts and run reads have no schema.",
+      "phase": 3,
+      "evidence": [
+        "superwitness:internal/api/server.go",
+        "superpipeline:apps/api/src/superwitness/client.ts",
+        "superdispatch:apps/dispatch/src/sources/superwitness.ts"
+      ]
+    },
+    {
+      "id": "superwitness.telemetry",
+      "title": "Telemetry conventions: span attributes and trace continuation over ACP",
+      "owner": "superwitness",
+      "consumers": ["agentpod", "salaam"],
+      "kind": "telemetry",
+      "status": "uncontracted",
+      "contract": [],
+      "gaps": "OTLP is the transport; the attribute names and the ACP _meta.traceparent convention are local to each side.",
+      "phase": 3,
+      "evidence": [
+        "agentpod:apps/hub/src/telemetry/agent-spans.ts",
+        "agentpod:node-agent/internal/acptrace/rewrite.go"
+      ]
+    },
+    {
+      "id": "superlibrary.api",
+      "title": "SuperLibrary uploads, links, search, related items and the embed",
+      "owner": "superlibrary",
+      "consumers": ["agentpod", "superpipeline"],
+      "kind": "http",
+      "status": "uncontracted",
+      "contract": [],
+      "gaps": "Each consumer has its own client; the embed is copied into SuperPipeline as vendored JavaScript.",
+      "phase": 3,
+      "evidence": [
+        "superlibrary:apps/api/src/index.ts",
+        "agentpod:apps/hub/src/services/superlibrary/link.ts",
+        "superpipeline:apps/web/src/lib/superlibrary.ts"
+      ]
+    },
+    {
+      "id": "accounts.matrix-link",
+      "title": "Linking a Matrix account with a homeserver OpenID token",
+      "owner": "accounts",
+      "consumers": ["supermessage"],
+      "kind": "http",
+      "status": "uncontracted",
+      "contract": [],
+      "gaps": "Matrix OpenID is the standard; the link page's parameters are local.",
+      "phase": 3,
+      "evidence": [
+        "accounts:src/me/identities-routes.ts",
+        "supermessage:crates/supermessage-core/src/account_link.rs"
+      ]
+    },
+    {
+      "id": "accounts.hub-import",
+      "title": "One-shot import of the hub's legacy identities",
+      "owner": "accounts",
+      "consumers": ["agentpod"],
+      "kind": "file",
+      "status": "deprecated",
+      "contract": [],
+      "evidence": ["accounts:src/import/hub.ts"]
+    }
+  ]
+}
