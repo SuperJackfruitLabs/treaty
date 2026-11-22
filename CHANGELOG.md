@@ -5,6 +5,8 @@ deploys the event relay to production.
 
 ## Unreleased
 
+## v0.0.17 — 2026-11-22
+
 - **Events: one delivery contract on both paths.**
   - `work.available.v1` and `cards.stale.v1` schemas, with their cases and catalogue entries.
   - `schemas/http/superpipeline/push.v1.openapi.json` for push registration.

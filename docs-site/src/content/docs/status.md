@@ -1,9 +1,9 @@
 ---
 title: Status
-description: "Where Treaty stands: v0.0.13, what ships in it, what is not decided yet, and what is still to come."
+description: "Where Treaty stands: v0.0.17, what ships in it, what is not decided yet, and what is still to come."
 ---
 
-**Current version: v0.0.13**, released 2026-11-12. Treaty is early and moves quickly, so start here
+**Current version: v0.0.17**, released 2026-11-22. Treaty is early and moves quickly, so start here
 when you need to know what is solid and what is still open. You can trace every release in the
 [changelog](https://github.com/SuperJackfruitLabs/treaty/blob/main/CHANGELOG.md) and on the [GitHub
 releases page](https://github.com/SuperJackfruitLabs/treaty/releases).
@@ -16,8 +16,8 @@ releases page](https://github.com/SuperJackfruitLabs/treaty/releases).
   [`treaty-ecosystem-identity`](/packages/ecosystem-identity/) and [`treaty-outbox`](/packages/outbox/).
 - **HTTP contracts** as OpenAPI 3.1, with cases: SuperPipeline's agent work loop, decisions,
   approvals and push registration; the Accounts API; AgentPod's Live Activity tokens.
-- **The event schemas** for what SuperPipeline sends; the newest, `card.ready` v1, arrived in
-  v0.0.13. The [event catalogue](/events/) lists every type.
+- **The event schemas** for what SuperPipeline sends; the newest, `work.available` and
+  `cards.stale` v1, arrived in v0.0.17. The [event catalogue](/events/) lists every type.
 - **The board-room Matrix contract**: a schema per event type, its corpus, and the builders and
   parsers moved from AgentPod's hub.
 - **AgentPod's chat activity**: the turn card, the streaming deltas and the error and voice
