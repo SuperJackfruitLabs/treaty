@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/treaty/registry.v1.json",
+  "title": "treaty crossing registry",
+  "description": "Every place one suite product talks to another, who owns it, who reads it, and whether treaty holds its contract.",
+  "type": "object",
+  "required": ["registry", "version", "crossings"],
+  "properties": {
+    "registry": { "const": "treaty crossings" },
+    "version": { "const": 1 },
+    "description": { "type": "string" },
+    "crossings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/crossing" }
+    }
+  },
+  "$defs": {
+    "product": {
+      "enum": [
+        "accounts",
+        "agentpod",
+        "salaam",
+        "superbench",
+        "superdispatch",
+        "superexchange",
+        "superlibrary",
+        "supermessage",
+        "superpipeline",
+        "supertoolkit",
+        "superwitness",
+        "treaty"
+      ]
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^(schemas|fixtures|contracts)/[A-Za-z0-9._/-]+$"
+    },
+    "crossing": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "owner",
+        "consumers",
+        "kind",
+        "status",
+        "contract",
+        "evidence"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z]+(\\.[a-z0-9-]+)+$" },
+        "title": { "type": "string", "minLength": 1 },
+        "owner": { "$ref": "#/$defs/product" },
+        "consumers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/product" }
+        },
+        "kind": {
+          "enum": [
+            "http",
+            "event",
+            "matrix",
+            "ipc",
+            "cli",
+            "file",
+            "token",
+            "mcp",
+            "telemetry"
+          ]
+        },
+        "status": {
+          "description": "contracted: every part is in treaty. partial: some parts are. uncontracted: none are. proposed: written, not yet used. external: the contract lives in the owner's repository, not here. standard: a published standard covers it entirely. deprecated: being retired.",
+          "enum": [
+            "contracted",
+            "partial",
+            "uncontracted",
+            "proposed",
+            "external",
+            "standard",
+            "deprecated"
+          ]
+        },
+        "contract": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/path" }
+        },
+        "cases": {
+          "description": "Where each schema's valid and invalid cases are: a fixture path and a JSON pointer to an object with `valid` and `invalid`.",
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/path" },
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^fixtures/[A-Za-z0-9._/-]+\\.json(#(/[^/]*)*)?$"
+          }
+        },
+        "standard": {
+          "description": "For a standard crossing: the standard that covers it.",
+          "type": "string"
+        },
+        "gaps": { "type": "string", "minLength": 1 },
+        "phase": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "evidence": {
+          "description": "Where the crossing lives in product code, as <repo>:<path>.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "pattern": "^[a-z]+:[^\\s]+$" }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": { "enum": ["contracted", "partial", "proposed"] }
+            }
+          },
+          "then": { "properties": { "contract": { "minItems": 1 } } }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": { "enum": ["partial", "uncontracted", "external"] }
+            }
+          },
+          "then": { "required": ["gaps", "phase"] }
+        },
+        {
+          "if": { "properties": { "status": { "const": "standard" } } },
+          "then": { "required": ["standard"] }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/treaty/error-codes.v1.json",
+  "title": "treaty error codes",
+  "description": "Every error code a suite product's API returns, with the one HTTP status it always carries.",
+  "type": "object",
+  "required": ["registry", "version", "codes"],
+  "properties": {
+    "registry": { "const": "treaty error codes" },
+    "version": { "const": 1 },
+    "description": { "type": "string" },
+    "codes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "owner", "status", "meaning"],
+        "additionalProperties": false,
+        "properties": {
+          "code": { "type": "string" },
+          "owner": { "type": "string" },
+          "status": { "type": "integer" },
+          "meaning": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

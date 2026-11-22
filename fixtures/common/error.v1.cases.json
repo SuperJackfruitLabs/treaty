@@ -1,0 +1,43 @@
+{
+  "valid": {
+    "a refusal with a code and a message": {
+      "error": {
+        "code": "NOT_RUN_OWNER",
+        "message": "this run belongs to another agent"
+      }
+    },
+    "a refusal with detail": {
+      "error": {
+        "code": "CARD_RESERVED",
+        "message": "the card is reserved for another agent",
+        "detail": { "reservedFor": "prn_0123456789abcdef0123" }
+      }
+    },
+    "a board result returned whole, ok: false included": {
+      "error": {
+        "ok": false,
+        "code": "SEPARATION_OF_DUTIES",
+        "message": "the producer cannot resolve their own gate"
+      }
+    }
+  },
+  "invalid": [
+    { "why": "no error object", "body": { "code": "NOT_RUN_OWNER" } },
+    {
+      "why": "no code",
+      "body": { "error": { "message": "something went wrong" } }
+    },
+    { "why": "no message", "body": { "error": { "code": "NOT_RUN_OWNER" } } },
+    {
+      "why": "a code that is not SCREAMING_SNAKE_CASE",
+      "body": { "error": { "code": "notRunOwner", "message": "x" } }
+    },
+    {
+      "why": "detail that is not an object",
+      "body": {
+        "error": { "code": "NOT_RUN_OWNER", "message": "x", "detail": "y" }
+      }
+    },
+    { "why": "an error that is a string", "body": { "error": "NOT_RUN_OWNER" } }
+  ]
+}

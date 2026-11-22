@@ -19,18 +19,36 @@ products share.
 
 ## Packages
 
-| Package                                                                                                                        | What it holds                                                                                                                                                                                          |
-| ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`@superjackfruitlabs/treaty-cloudevents`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-cloudevents)               | The CloudEvents 1.0 envelope: binary mode over HTTP and NATS, and the suite's subject and type names                                                                                                   |
-| [`@superjackfruitlabs/treaty-ecosystem-identity`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-ecosystem-identity) | The identity fixture corpus, as plain JSON                                                                                                                                                             |
-| [`@superjackfruitlabs/treaty-event-schemas`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-event-schemas)           | JSON Schemas for SuperPipeline's `gate.pending`, `elicitation.pending` and record events, and the catalogue of CloudEvents types                                                                       |
-| [`@superjackfruitlabs/treaty-matrix-events`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-matrix-events)           | The board-room Matrix event contract: a JSON Schema per event type, a valid/invalid corpus, and the builders and parsers moved from the AgentPod hub ([plan](docs/2026-11-11-matrix-contract-plan.md)) |
-| [`@superjackfruitlabs/treaty-outbox`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-outbox)                         | A transactional outbox and a deduplicating inbox for CloudEvents, on Durable Object SQLite and on Postgres                                                                                             |
+| Package                                                                                                                        | What it holds                                                                                                                                                                                                                  |
+| ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`@superjackfruitlabs/treaty-cloudevents`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-cloudevents)               | The CloudEvents 1.0 envelope: binary mode over HTTP and NATS, and the suite's subject and type names                                                                                                                           |
+| [`@superjackfruitlabs/treaty-contracts`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-contracts)                   | Every contract as data (`schemas/`, `fixtures/`, `contracts/`) with a sha256 manifest, validators for schemas and OpenAPI documents, and the `treaty` CLI a product runs in CI: `treaty verify`, `treaty sync`, `treaty cases` |
+| [`@superjackfruitlabs/treaty-ecosystem-identity`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-ecosystem-identity) | The identity fixture corpus, as plain JSON                                                                                                                                                                                     |
+| [`@superjackfruitlabs/treaty-event-schemas`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-event-schemas)           | JSON Schemas for SuperPipeline's `gate.pending`, `elicitation.pending` and record events, and the catalogue of CloudEvents types                                                                                               |
+| [`@superjackfruitlabs/treaty-matrix-events`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-matrix-events)           | The board-room Matrix event contract: a JSON Schema per event type, a valid/invalid corpus, and the builders and parsers moved from the AgentPod hub ([plan](docs/2026-11-11-matrix-contract-plan.md))                         |
+| [`@superjackfruitlabs/treaty-outbox`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-outbox)                         | A transactional outbox and a deduplicating inbox for CloudEvents, on Durable Object SQLite and on Postgres                                                                                                                     |
 
 Packages are published to npm from GitHub Actions, with provenance, when a `vX.Y.Z` tag is
 pushed. Each release's notes are on the
 [GitHub releases page](https://github.com/SuperJackfruitLabs/treaty/releases), and
 [`CHANGELOG.md`](CHANGELOG.md) lists them all. The plan is in [`docs/2026-11-02-treaty-plan.md`](docs/2026-11-02-treaty-plan.md).
+
+## Every crossing
+
+[`contracts/registry.json`](contracts/registry.json) lists every place one product talks to
+another, whether or not treaty holds its contract yet, with its owner, consumers and status. The
+[plan](docs/2026-11-22-every-crossing-plan.md) brings each of them under contract, phase by phase.
+
+- **A product declares itself** in a `treaty.json` at its root: what it produces and consumes,
+  the treaty release it pins, and any treaty files it keeps copies of. `npx
+@superjackfruitlabs/treaty-contracts verify` checks that against the release in the product's
+  CI, in any language.
+- **HTTP APIs** are OpenAPI 3.1 documents under [`schemas/http/`](schemas/http/README.md), with
+  cases beside them. Every error body is [`schemas/common/error.v1.json`](schemas/common/error.v1.json)
+  and every code is in [`contracts/error-codes.json`](contracts/error-codes.json).
+- **Within a version, a contract only gains optional things.** `bun run compat` refuses any other
+  change, by structure and by each side's cases.
+- **Coverage** across the workspace: `bun scripts/coverage.ts ../<product>...`.
 
 ## Status
 

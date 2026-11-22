@@ -4,6 +4,7 @@ WORKDIR /app
 COPY package.json bun.lock ./
 COPY apps/relay/package.json apps/relay/
 COPY packages/cloudevents/package.json packages/cloudevents/
+COPY packages/contracts/package.json packages/contracts/
 COPY packages/ecosystem-identity/package.json packages/ecosystem-identity/
 COPY packages/event-schemas/package.json packages/event-schemas/
 COPY packages/matrix-events/package.json packages/matrix-events/

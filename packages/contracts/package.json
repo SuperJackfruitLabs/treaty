@@ -1,0 +1,42 @@
+{
+  "name": "@superjackfruitlabs/treaty-contracts",
+  "version": "0.0.0",
+  "description": "Every contract between Super Jackfruit Labs products as data, with validators and a CLI that checks a repository against them.",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SuperJackfruitLabs/treaty.git",
+    "directory": "packages/contracts"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/node-entry.d.ts",
+      "import": "./dist/node-entry.js"
+    },
+    "./data/*": "./data/*"
+  },
+  "files": [
+    "dist",
+    "data",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && bun scripts/bundle.ts && tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@cfworker/json-schema": "4.1.1"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "bin": {
+    "treaty": "dist/cli.js"
+  }
+}

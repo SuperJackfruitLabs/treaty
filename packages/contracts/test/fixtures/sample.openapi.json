@@ -1,0 +1,91 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "Sample", "version": "1" },
+  "paths": {
+    "/v1/boards/{boardId}/cards/{cardId}": {
+      "get": {
+        "operationId": "getCard",
+        "x-treaty-error-codes": ["NOT_RUN_OWNER"],
+        "responses": {
+          "200": {
+            "description": "The card",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Card" }
+              }
+            }
+          },
+          "403": {
+            "description": "Refused",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "../../common/error.v1.json" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteCard",
+        "responses": { "204": { "description": "Deleted" } }
+      }
+    },
+    "/v1/boards/{boardId}/cards/ready": {
+      "get": {
+        "operationId": "listReadyCards",
+        "responses": {
+          "200": {
+            "description": "Ready cards",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Card" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/cards": {
+      "post": {
+        "operationId": "createCard",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["title"],
+                "properties": { "title": { "type": "string" } }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Card" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Card": {
+        "type": "object",
+        "required": ["id", "title"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" }
+        }
+      }
+    }
+  }
+}

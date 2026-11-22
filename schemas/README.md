@@ -1,3 +1,16 @@
+# Schemas
+
+Every contract treaty holds, as JSON Schema draft 2020-12. Each schema's `$id` is its address on
+the public repository, and every schema belongs to a crossing in
+[`contracts/registry.json`](../contracts/registry.json).
+
+- `common/`: pieces other contracts reference, such as `error.v1.json`, the one error envelope.
+- `http/`: HTTP APIs as OpenAPI 3.1 documents ([conventions](http/README.md)).
+- `treaty/`: the shape of treaty's own files: the registry, the error codes and a product's
+  `treaty.json`.
+
+The sections below describe the event and Matrix schemas.
+
 # Event schemas
 
 JSON Schemas (draft 2020-12) for the bodies suite products send, as plain data. `catalog.json`

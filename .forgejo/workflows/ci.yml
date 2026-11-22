@@ -41,6 +41,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          # The compatibility check compares the contracts with the commit this change builds on.
+          fetch-depth: 0
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
@@ -51,6 +53,21 @@ jobs:
         run: bun run typecheck
       - name: Lint
         run: bun run lint
+      # Within a version a contract may only add optional things. What can break is what main
+      # already holds, so a pull request is compared with its merge base with main, even when it is
+      # stacked on another branch; a push to main is compared with the commit before it.
+      - name: Contract compatibility
+        env:
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ "$EVENT" = pull_request ]; then
+            # fetch-depth: 0 above already holds every branch, origin/main included.
+            BASE=$(git merge-base HEAD origin/main)
+          else
+            BASE=$BEFORE
+          fi
+          bun run compat --base "$BASE"
       - name: Start nats-server for the relay's tests (pinned, checksum checked)
         run: |
           v=2.15.2
@@ -66,6 +83,14 @@ jobs:
           NATS_URL: nats://127.0.0.1:4222
           TREATY_REQUIRE_NATS: "1"
         run: bun run test
+      - name: Build the packages
+        run: bun run build
+      # Product repositories in Go, Rust and Swift run the built CLI under Node, not Bun.
+      - name: The built treaty CLI runs under Node
+        run: |
+          node packages/contracts/dist/cli.js cases schemas/superpipeline/gate.pending.v1.json > /dev/null
+          set +e; node packages/contracts/dist/cli.js verify; code=$?; set -e
+          test "$code" = 1
 
   docs:
     needs: [changes]

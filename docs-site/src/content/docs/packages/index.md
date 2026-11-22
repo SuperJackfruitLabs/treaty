@@ -1,9 +1,9 @@
 ---
 title: Which package
-description: "The five @superjackfruitlabs/treaty-* packages on npm, what each holds, and when to use it."
+description: "The six @superjackfruitlabs/treaty-* packages on npm, what each holds, and when to use it."
 ---
 
-Treaty gives you five MIT packages, all published together at the version of each release (v0.0.13
+Treaty gives you six MIT packages, all published together at the version of each release (v0.0.13
 today). Choose the boundary you need from the table below, then pin its exact version.
 
 | You want to | Use |
@@ -13,6 +13,7 @@ today). Choose the boundary you need from the table below, then pin its exact ve
 | Post or read a board-room Matrix event: a gate, question, follow-up, waiting card, notice or answer | [`treaty-matrix-events`](/packages/matrix-events/) |
 | Check ids, token claims, the card prompt or the run join key against the shared corpus | [`treaty-ecosystem-identity`](/packages/ecosystem-identity/) |
 | Write events in the same transaction as the change, and handle each incoming event once | [`treaty-outbox`](/packages/outbox/) |
+| Check your repository against the contracts it produces and consumes, or validate a body against any schema or HTTP API treaty holds | [`treaty-contracts`](/packages/contracts/) |
 
 ```sh
 npm install @superjackfruitlabs/treaty-cloudevents@0.0.13
