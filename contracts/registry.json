@@ -369,7 +369,7 @@
       ],
       "kind": "http",
       "status": "uncontracted",
-      "contract": [],
+      "contract": ["schemas/http/accounts/plane.v1.openapi.json"],
       "gaps": "Request and response bodies live in Accounts' route validation and in a separate client in every consumer.",
       "phase": 1,
       "evidence": [
