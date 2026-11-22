@@ -2,10 +2,12 @@ import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
 import {
   copyFileSync,
+  existsSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
   rmSync,
+  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -184,5 +186,71 @@ describe("the treaty CLI", () => {
     const r = cli(["frobnicate"], work);
     expect(r.status).toBe(2);
     expect(r.stderr).toContain("usage");
+  });
+});
+
+describe("unsafe and odd vendored paths", () => {
+  test("a path that climbs out of the repository is refused by verify and by sync", () => {
+    const outside = join(work, "outside.json");
+    const manifest = {
+      ...clean,
+      vendored: [{ path: "../outside.json", source: RECORD }],
+    };
+    const dir = repo(manifest);
+    expect(verify({ repoRoot: dir, dataDir }).map((p) => p.code)).toContain(
+      "manifest-invalid",
+    );
+    expect(() => sync({ repoRoot: dir, dataDir })).toThrow();
+    expect(existsSync(outside)).toBe(false);
+  });
+
+  test("an absolute path is refused", () => {
+    expect(
+      codes({ ...clean, vendored: [{ path: "/tmp/x.json", source: RECORD }] }),
+    ).toContain("manifest-invalid");
+  });
+
+  test("a vendored path that is a directory is reported, not a crash", () => {
+    expect(
+      codes(clean, {}, (dir) => {
+        rmSync(join(dir, "contracts/record.v1.json"));
+        mkdirSync(join(dir, "contracts/record.v1.json"));
+      }),
+    ).toEqual(["vendored-not-a-file"]);
+  });
+
+  test("a vendored path that is a symlink is refused, so sync cannot write through it", () => {
+    expect(
+      codes(clean, {}, (dir) => {
+        rmSync(join(dir, "contracts/record.v1.json"));
+        symlinkSync(join(root, RECORD), join(dir, "contracts/record.v1.json"));
+      }),
+    ).toEqual(["vendored-not-a-file"]);
+  });
+});
+
+describe("bad CLI input exits 2 instead of passing", () => {
+  test("--latest that is not a version", () => {
+    const r = cli(["verify", "--latest", "0.0.x"], repo(clean));
+    expect(r.status).toBe(2);
+    expect(r.stderr).toContain("not a release version");
+  });
+
+  test("--latest with a leading v is accepted", () => {
+    expect(cli(["verify", "--latest", "v0.0.15"], repo(clean)).status).toBe(0);
+  });
+
+  test("--max-behind that is not a whole number", () => {
+    expect(
+      cli(["verify", "--latest", "0.0.15", "--max-behind", "abc"], repo(clean))
+        .status,
+    ).toBe(2);
+  });
+
+  test("a flag with no value", () => {
+    expect(cli(["verify", "--latest"], repo(clean)).status).toBe(2);
+    expect(
+      cli(["verify", "--latest", "--max-behind", "1"], repo(clean)).status,
+    ).toBe(2);
   });
 });

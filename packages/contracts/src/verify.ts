@@ -3,8 +3,14 @@
  * crossings it claims, and every treaty file it keeps a copy of.
  */
 import { createHash } from "node:crypto";
-import { copyFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import {
+  copyFileSync,
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  readFileSync,
+} from "node:fs";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import { installedDataDir, loadInstalledBundle, readManifest } from "./node.ts";
 import { findCrossing, readRegistry } from "./registry.ts";
 import { validatorFor } from "./schemas.ts";
@@ -21,6 +27,7 @@ export interface Problem {
     | "pin-behind"
     | "vendored-missing"
     | "vendored-drift"
+    | "vendored-not-a-file"
     | "vendored-unknown-source";
   message: string;
 }
@@ -62,13 +69,41 @@ function isManifest(value: unknown): value is ProductManifest {
   );
 }
 
+/** A release version: `x.y.z`, with an optional leading `v`. Anything else throws. */
+export function parseVersion(text: string): [number, number, number] {
+  const match = /^v?(\d+)\.(\d+)\.(\d+)$/.exec(text.trim());
+  if (!match)
+    throw new Error(
+      `not a release version: ${JSON.stringify(text)} (expected x.y.z)`,
+    );
+  return [Number(match[1]), Number(match[2]), Number(match[3])];
+}
+
 /** How many releases `pin` is behind `latest`; Infinity across a minor or major version. */
 export function releasesBehind(pin: string, latest: string): number {
-  const [pa = 0, pb = 0, pc = 0] = pin.split(".").map(Number);
-  const [la = 0, lb = 0, lc = 0] = latest.split(".").map(Number);
+  const [pa, pb, pc] = parseVersion(pin);
+  const [la, lb, lc] = parseVersion(latest);
   if (pa !== la || pb !== lb)
     return pa > la || (pa === la && pb > lb) ? 0 : Infinity;
   return Math.max(0, lc - pc);
+}
+
+/** The absolute path of `path` under `root`, or undefined when it would leave `root`. */
+function inside(root: string, path: string): string | undefined {
+  const base = resolve(root);
+  const target = resolve(base, path);
+  const rel = relative(base, target);
+  if (rel === "" || rel.startsWith("..") || rel.split(sep).includes(".."))
+    return undefined;
+  return target;
+}
+
+function isLink(path: string): boolean {
+  try {
+    return lstatSync(path).isSymbolicLink();
+  } catch {
+    return false;
+  }
 }
 
 const sha256 = (bytes: Buffer) =>
@@ -165,16 +200,26 @@ export function verify(opts: VerifyOptions): Problem[] {
 
   for (const { path, source } of manifest.vendored ?? []) {
     const expected = release.files[source];
-    const target = join(opts.repoRoot, path);
+    const target = inside(opts.repoRoot, path);
     if (expected === undefined)
       problems.push({
         code: "vendored-unknown-source",
         message: `${path} copies ${source}, which treaty ${release.treaty} does not hold`,
       });
-    else if (!existsSync(target))
+    else if (target === undefined)
+      problems.push({
+        code: "manifest-invalid",
+        message: `${path} is outside the repository`,
+      });
+    else if (!existsSync(target) && !isLink(target))
       problems.push({
         code: "vendored-missing",
         message: `${path} (a copy of ${source}) is missing: run treaty sync`,
+      });
+    else if (!lstatSync(target).isFile())
+      problems.push({
+        code: "vendored-not-a-file",
+        message: `${path} is a directory or a symlink, not a copy of ${source}: replace it with the file`,
       });
     else if (sha256(readFileSync(target)) !== expected)
       problems.push({
@@ -185,19 +230,31 @@ export function verify(opts: VerifyOptions): Problem[] {
   return problems;
 }
 
-/** Rewrites every vendored copy from the release, byte for byte. Returns the paths written. */
+/**
+ * Rewrites every vendored copy from the release, byte for byte. Returns the paths written.
+ * Refuses, writing nothing, when the manifest is invalid, a path leaves the repository, or a
+ * path is a directory or a symlink.
+ */
 export function sync(opts: VerifyOptions): string[] {
   const read = readProduct(opts);
   if ("problem" in read) throw new Error(read.problem.message);
-  if (!isManifest(read.manifest))
-    throw new Error("treaty.json is not a product manifest");
+  const blocking = verify(opts).filter((p) =>
+    [
+      "manifest-invalid",
+      "vendored-unknown-source",
+      "vendored-not-a-file",
+    ].includes(p.code),
+  );
+  if (blocking.length > 0 || !isManifest(read.manifest))
+    throw new Error(
+      `treaty sync wrote nothing: ${blocking.map((p) => p.message).join("; ") || "treaty.json is not a product manifest"}`,
+    );
   const dataDir = opts.dataDir ?? installedDataDir();
-  const release = readManifest(opts.dataDir);
   const written: string[] = [];
   for (const { path, source } of read.manifest.vendored ?? []) {
-    if (release.files[source] === undefined)
-      throw new Error(`${source} is not in treaty ${release.treaty}`);
-    const target = join(opts.repoRoot, path);
+    const target = inside(opts.repoRoot, path);
+    if (target === undefined)
+      throw new Error(`${path} is outside the repository`);
     mkdirSync(dirname(target), { recursive: true });
     copyFileSync(join(dataDir, source), target);
     written.push(path);

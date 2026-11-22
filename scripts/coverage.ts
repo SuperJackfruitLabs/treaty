@@ -109,8 +109,16 @@ export function report(
           id: crossing.id,
         });
     }
-    if (latest && releasesBehind(manifest.treaty, latest) > 2)
-      problems.push({ product, kind: "pin-behind", id: manifest.treaty });
+    if (latest) {
+      let behind: number;
+      try {
+        behind = releasesBehind(manifest.treaty, latest);
+      } catch {
+        behind = Infinity; // a pin that is not a version is as far behind as it gets
+      }
+      if (behind > 2)
+        problems.push({ product, kind: "pin-behind", id: manifest.treaty });
+    }
   }
   return { coverage: coverage(registry), declared, withoutManifest, problems };
 }

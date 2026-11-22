@@ -4,6 +4,7 @@
  */
 import { resolvePointer, type Cases } from "./cases.ts";
 import { operations } from "./http.ts";
+import { documentOperations } from "./openapi-doc.ts";
 import type { Registry } from "./registry.ts";
 import { idOf, validatorFor, type Bundle } from "./schemas.ts";
 
@@ -117,6 +118,10 @@ export function checkOpenApi(
     if (resolveRef(bundle, path, ref) === undefined)
       problems.push(`$ref ${ref} does not resolve`);
   }
+
+  for (const op of documentOperations(doc))
+    if (!op.operationId)
+      problems.push(`${op.key} has no operationId: every operation needs one`);
 
   const ops = operations(doc);
   const ids = ops.map((o) => o.id);

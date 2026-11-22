@@ -4,22 +4,18 @@
  * Only `application/json` bodies are contracted. A response with no content accepts only an
  * empty body.
  */
+import {
+  bodySchemaPointer,
+  documentOperations,
+  isObject,
+  type Method,
+} from "./openapi-doc.ts";
 import { validatorFor, type Bundle, type Result } from "./schemas.ts";
 
-const METHODS = [
-  "get",
-  "put",
-  "post",
-  "delete",
-  "patch",
-  "head",
-  "options",
-] as const;
-const JSON_MEDIA = "application/json";
-
 export interface Operation {
+  /** `operationId`, or `METHOD path` when the document gives none. */
   id: string;
-  method: (typeof METHODS)[number];
+  method: Method;
   path: string;
   /** JSON pointer, within the document, to the request body's schema. */
   request?: string;
@@ -34,60 +30,38 @@ export interface Api {
   operations: Operation[];
 }
 
-function isObject(value: unknown): value is Record<string, unknown> {
-  return value !== null && typeof value === "object" && !Array.isArray(value);
-}
-
-/** Escapes one token of a JSON pointer (RFC 6901). */
-function token(value: string): string {
-  return value.replaceAll("~", "~0").replaceAll("/", "~1");
-}
-
-function jsonSchemaPointer(
-  holder: unknown,
-  pointer: string,
-): string | undefined {
-  if (!isObject(holder) || !isObject(holder.content)) return undefined;
-  const media = holder.content[JSON_MEDIA];
-  if (!isObject(media) || !isObject(media.schema)) return undefined;
-  return `${pointer}/content/${token(JSON_MEDIA)}/schema`;
-}
-
 function stringArray(value: unknown): string[] {
   return Array.isArray(value)
     ? value.filter((v): v is string => typeof v === "string")
     : [];
 }
 
-/** Every operation in an OpenAPI document. */
+/** Every operation in an OpenAPI document, with `$ref`'d bodies followed to their schemas. */
 export function operations(doc: unknown): Operation[] {
-  if (!isObject(doc) || !isObject(doc.paths)) return [];
-  const found: Operation[] = [];
-  for (const [path, item] of Object.entries(doc.paths)) {
-    if (!isObject(item)) continue;
-    for (const method of METHODS) {
-      const op = item[method];
-      if (!isObject(op) || typeof op.operationId !== "string") continue;
-      const base = `/paths/${token(path)}/${method}`;
-      const request = jsonSchemaPointer(op.requestBody, `${base}/requestBody`);
-      const responses: Record<string, string | null> = {};
-      if (isObject(op.responses)) {
-        for (const [status, response] of Object.entries(op.responses)) {
-          responses[status] =
-            jsonSchemaPointer(response, `${base}/responses/${status}`) ?? null;
-        }
-      }
-      found.push({
-        id: op.operationId,
-        method,
-        path,
-        ...(request ? { request } : {}),
-        responses,
-        errorCodes: stringArray(op["x-treaty-error-codes"]),
-      });
-    }
-  }
-  return found;
+  return documentOperations(doc).map((op) => {
+    const request = bodySchemaPointer(
+      doc,
+      op.node.requestBody,
+      `${op.pointer}/requestBody`,
+    );
+    const responses: Record<string, string | null> = {};
+    if (isObject(op.node.responses))
+      for (const [status, response] of Object.entries(op.node.responses))
+        responses[status] =
+          bodySchemaPointer(
+            doc,
+            response,
+            `${op.pointer}/responses/${status}`,
+          ) ?? null;
+    return {
+      id: op.key,
+      method: op.method,
+      path: op.path,
+      ...(request ? { request } : {}),
+      responses,
+      errorCodes: stringArray(op.node["x-treaty-error-codes"]),
+    };
+  });
 }
 
 /** The API a document in the bundle describes. Throws if the bundle lacks the document. */
@@ -97,13 +71,39 @@ export function openApi(bundle: Bundle, path: string): Api {
   return { path, operations: operations(doc) };
 }
 
+function decode(segment: string): string {
+  try {
+    return decodeURIComponent(segment);
+  } catch {
+    return segment;
+  }
+}
+
 function segments(path: string): string[] {
-  const bare = path.split("?")[0] ?? "";
-  return bare.split("/").filter((s) => s !== "");
+  const bare = path.split(/[?#]/)[0] ?? "";
+  return bare
+    .split("/")
+    .filter((s) => s !== "")
+    .map(decode);
+}
+
+const escapeRegex = (text: string) =>
+  text.replaceAll(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/** How well one template segment matches one request segment: 3 literal, 2 partial, 1 parameter, 0 none. */
+function segmentScore(template: string, actual: string): number {
+  if (!template.includes("{")) return template === actual ? 3 : 0;
+  if (/^\{[^}]+\}$/.test(template)) return 1;
+  const pattern = template
+    .split(/(\{[^}]+\})/)
+    .map((part) => (/^\{[^}]+\}$/.test(part) ? "[^/]+" : escapeRegex(part)))
+    .join("");
+  return new RegExp(`^${pattern}$`).test(actual) ? 2 : 0;
 }
 
 /**
- * The operation a request reaches, or undefined. A literal segment outranks a parameter, so
+ * The operation a request reaches, or undefined. Segments are compared decoded. A literal
+ * segment outranks one with a parameter inside it, which outranks a bare parameter, so
  * `/cards/ready` reaches its own operation rather than `/cards/{cardId}`.
  */
 export function matchRoute(
@@ -118,16 +118,15 @@ export function matchRoute(
     const template = segments(op.path);
     if (template.length !== wanted.length) continue;
     let score = 0;
-    let matches = true;
     for (const [i, part] of template.entries()) {
-      if (/^\{[^}]+\}$/.test(part)) score += 1;
-      else if (part === wanted[i]) score += 2;
-      else {
-        matches = false;
+      const s = segmentScore(part, wanted[i] ?? "");
+      if (s === 0) {
+        score = -1;
         break;
       }
+      score += s;
     }
-    if (matches && (!best || score > best.score)) best = { id: op.id, score };
+    if (score > 0 && (!best || score > best.score)) best = { id: op.id, score };
   }
   return best?.id;
 }

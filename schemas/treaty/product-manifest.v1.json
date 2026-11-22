@@ -7,7 +7,9 @@
   "required": ["product", "treaty", "produces", "consumes"],
   "additionalProperties": false,
   "properties": {
-    "$schema": { "type": "string" },
+    "$schema": {
+      "type": "string"
+    },
     "product": {
       "enum": [
         "accounts",
@@ -32,13 +34,17 @@
       "description": "Registry ids of the crossings this product owns.",
       "type": "array",
       "uniqueItems": true,
-      "items": { "type": "string" }
+      "items": {
+        "type": "string"
+      }
     },
     "consumes": {
       "description": "Registry ids of the crossings this product reads.",
       "type": "array",
       "uniqueItems": true,
-      "items": { "type": "string" }
+      "items": {
+        "type": "string"
+      }
     },
     "vendored": {
       "description": "Copies of treaty files kept in this repository, for languages that cannot read the npm package. Each must stay byte-identical to the pinned release; `treaty sync` rewrites them.",
@@ -48,7 +54,11 @@
         "required": ["path", "source"],
         "additionalProperties": false,
         "properties": {
-          "path": { "type": "string", "minLength": 1 },
+          "path": {
+            "description": "Relative to the repository root, inside it: no leading slash, no `..` segment, no backslash.",
+            "type": "string",
+            "pattern": "^(?!/)(?!(.*/)?\\.\\.(/|$))[A-Za-z0-9._@+-][A-Za-z0-9._@+/-]*$"
+          },
           "source": {
             "type": "string",
             "pattern": "^(schemas|fixtures|contracts)/[A-Za-z0-9._/-]+\\.json$"

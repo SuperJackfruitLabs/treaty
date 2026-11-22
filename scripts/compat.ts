@@ -60,9 +60,11 @@ function git(root: string, args: string[]): string {
 /** Every JSON file under schemas/, fixtures/ and contracts/ at a ref. */
 export function bundleAt(root: string, ref: string): Bundle {
   const files = new Map<string, unknown>();
+  // -z: paths are NUL-separated and never quoted, so a non-ASCII name is read as it is.
   const listed = git(root, [
     "ls-tree",
     "-r",
+    "-z",
     "--name-only",
     ref,
     "--",
@@ -70,9 +72,26 @@ export function bundleAt(root: string, ref: string): Bundle {
     "fixtures",
     "contracts",
   ]);
-  for (const path of listed.split("\n").filter((p) => p.endsWith(".json")))
+  for (const path of listed.split("\0").filter((p) => p.endsWith(".json")))
     files.set(path, JSON.parse(git(root, ["show", `${ref}:${path}`])));
   return createBundle(files);
+}
+
+/** The commit `ref` names, or undefined. `--end-of-options` keeps a ref from being read as a flag. */
+function commitOf(root: string, ref: string): string | undefined {
+  try {
+    return (
+      git(root, [
+        "rev-parse",
+        "--verify",
+        "--quiet",
+        "--end-of-options",
+        `${ref}^{commit}`,
+      ]).trim() || undefined
+    );
+  } catch {
+    return undefined;
+  }
 }
 
 function registryOf(bundle: Bundle): Registry | undefined {
@@ -80,8 +99,6 @@ function registryOf(bundle: Bundle): Registry | undefined {
   return isRegistryShape(value) ? value : undefined;
 }
 
-const isSchema = (doc: unknown) =>
-  isObject(doc) && typeof doc.$schema === "string";
 const isOpenApi = (doc: unknown) =>
   isObject(doc) && typeof doc.openapi === "string";
 
@@ -152,7 +169,7 @@ export function compare(base: Bundle, head: Bundle): Finding[] {
           });
       continue;
     }
-    if (!isSchema(before) && !isOpenApi(before)) continue;
+    // Every other file under schemas/ is a schema, whether or not it says so with $schema.
     if (after === undefined) {
       out.push({ path, pointer: "", rule: "schema-removed" });
       continue;
@@ -273,8 +290,24 @@ function arg(name: string): string | undefined {
 
 if (import.meta.main) {
   const root = arg("--root") ?? join(import.meta.dir, "..");
-  const base =
-    arg("--base") ?? git(root, ["merge-base", "HEAD", "origin/main"]).trim();
+  const asked = arg("--base");
+  let base: string | undefined;
+  if (asked !== undefined) base = commitOf(root, asked);
+  else {
+    try {
+      base = git(root, ["merge-base", "HEAD", "origin/main"]).trim();
+    } catch {
+      base = undefined;
+    }
+  }
+  if (!base) {
+    process.stderr.write(
+      asked !== undefined
+        ? `compat: --base ${JSON.stringify(asked)} is not a commit in this repository\n`
+        : "compat: no merge base with origin/main; fetch it, or pass --base <commit>\n",
+    );
+    process.exit(2);
+  }
   const outcome = judge(
     compare(bundleAt(root, base), loadBundle(root)),
     exceptionsIn(root),

@@ -14,11 +14,14 @@ export interface Breaking {
   rule: string;
 }
 
-type Node = Record<string, unknown>;
-
-function isObject(value: unknown): value is Node {
-  return value !== null && typeof value === "object" && !Array.isArray(value);
-}
+import { resolvePointer } from "./cases.ts";
+import {
+  bodySchemaPointer,
+  documentOperations,
+  isObject,
+  type DocOperation,
+  type Node,
+} from "./openapi-doc.ts";
 
 /** Keywords that say nothing about which instances are valid. */
 const ANNOTATIONS = new Set([
@@ -53,6 +56,7 @@ const STRUCTURAL = new Set([
   "allOf",
   "$ref",
   "not",
+  "unevaluatedProperties",
 ]);
 
 const COMPOSITIONS = ["oneOf", "anyOf", "allOf"] as const;
@@ -81,6 +85,11 @@ function strings(value: unknown): string[] {
   return Array.isArray(value)
     ? value.filter((v): v is string => typeof v === "string")
     : [];
+}
+
+/** Either keyword set to false refuses properties the schema does not name. */
+function closed(n: Node): boolean {
+  return n.additionalProperties === false || n.unevaluatedProperties === false;
 }
 
 function compareNode(
@@ -115,7 +124,8 @@ function compareNode(
 
   const baseProps = isObject(base.properties) ? base.properties : {};
   const headProps = isObject(head.properties) ? head.properties : {};
-  const baseClosed = base.additionalProperties === false;
+  const baseClosed = closed(base);
+  const headClosed = closed(head);
   for (const [name, schema] of Object.entries(baseProps)) {
     const where = `${at}/properties/${escape(name)}`;
     if (!(name in headProps))
@@ -130,8 +140,11 @@ function compareNode(
           rule: "property-added-to-closed",
         });
 
-  if (!baseClosed && head.additionalProperties === false)
+  if (!baseClosed && headClosed)
     out.push({ pointer: at, rule: "additional-properties-closed" });
+  else if (baseClosed && !headClosed)
+    // An old reader still refuses whatever a new writer adds.
+    out.push({ pointer: at, rule: "additional-properties-opened" });
   else if (
     isObject(base.additionalProperties) ||
     isObject(head.additionalProperties)
@@ -211,90 +224,87 @@ export function compareSchemas(base: unknown, head: unknown): Breaking[] {
   return out;
 }
 
-const METHODS = ["get", "put", "post", "delete", "patch", "head", "options"];
-
-interface Op {
-  pointer: string;
-  key: string;
-  node: Node;
-}
-
-function opsById(doc: unknown): Map<string, Op> {
-  const found = new Map<string, Op>();
-  if (!isObject(doc) || !isObject(doc.paths)) return found;
-  for (const [path, item] of Object.entries(doc.paths)) {
-    if (!isObject(item)) continue;
-    for (const method of METHODS) {
-      const op = item[method];
-      if (isObject(op) && typeof op.operationId === "string")
-        found.set(op.operationId, {
-          pointer: `/paths/${escape(path)}/${method}`,
-          key: `${method} ${path}`,
-          node: op,
-        });
-    }
-  }
-  return found;
-}
-
-function jsonSchema(holder: unknown): unknown {
-  if (!isObject(holder) || !isObject(holder.content)) return undefined;
-  const media = holder.content["application/json"];
-  return isObject(media) ? media.schema : undefined;
-}
-
-function parameters(op: Node): Map<string, Node> {
-  const found = new Map<string, Node>();
-  for (const p of Array.isArray(op.parameters) ? op.parameters : [])
-    if (isObject(p) && typeof p.name === "string" && typeof p.in === "string")
-      found.set(`${p.in}:${p.name}`, p);
-  return found;
-}
-
-function compareOperation(base: Op, head: Op, out: Breaking[]): void {
-  const at = head.pointer;
-  if (base.key !== head.key)
-    out.push({ pointer: at, rule: "method-or-path-changed" });
-
-  const before = parameters(base.node);
-  const after = parameters(head.node);
-  for (const [key, p] of before) {
-    const q = after.get(key);
-    if (!q)
+function compareParameters(
+  base: DocOperation,
+  head: DocOperation,
+  at: string,
+  out: Breaking[],
+): void {
+  for (const [key, p] of base.parameters) {
+    const q = head.parameters.get(key);
+    if (!q) {
       out.push({
         pointer: `${at}/parameters/${key}`,
         rule: "parameter-removed",
       });
-    else
-      compareNode(
-        p.schema ?? true,
-        q.schema ?? true,
-        `${at}/parameters/${key}/schema`,
-        out,
-      );
+      continue;
+    }
+    if (p.required !== true && q.required === true)
+      out.push({
+        pointer: `${at}/parameters/${key}`,
+        rule: "parameter-became-required",
+      });
+    compareNode(
+      p.schema ?? true,
+      q.schema ?? true,
+      `${at}/parameters/${key}/schema`,
+      out,
+    );
   }
-  for (const [key, q] of after)
-    if (!before.has(key) && q.required === true)
+  for (const [key, q] of head.parameters)
+    if (!base.parameters.has(key) && q.required === true)
       out.push({
         pointer: `${at}/parameters/${key}`,
         rule: "parameter-required-added",
       });
+}
 
-  const baseBody = jsonSchema(base.node.requestBody);
-  const headBody = jsonSchema(head.node.requestBody);
+function bodySchema(doc: unknown, holder: unknown, pointer: string): unknown {
+  const at = bodySchemaPointer(doc, holder, pointer);
+  return at === undefined ? undefined : resolvePointer(doc, at);
+}
+
+function compareOperation(
+  baseDoc: unknown,
+  headDoc: unknown,
+  base: DocOperation,
+  head: DocOperation,
+  out: Breaking[],
+): void {
+  const at = head.pointer;
+  if (base.method !== head.method || base.path !== head.path)
+    out.push({ pointer: at, rule: "method-or-path-changed" });
+
+  compareParameters(base, head, at, out);
+
+  const baseBody = bodySchema(
+    baseDoc,
+    base.node.requestBody,
+    `${base.pointer}/requestBody`,
+  );
+  const headBody = bodySchema(
+    headDoc,
+    head.node.requestBody,
+    `${head.pointer}/requestBody`,
+  );
+  const baseRequired = base.requestBody?.node.required === true;
+  const headRequired = head.requestBody?.node.required === true;
   if (baseBody !== undefined && headBody === undefined)
     out.push({ pointer: `${at}/requestBody`, rule: "request-removed" });
   else if (baseBody === undefined && headBody !== undefined) {
-    const required =
-      isObject(head.node.requestBody) &&
-      head.node.requestBody.required === true;
-    if (required)
+    if (headRequired)
       out.push({
         pointer: `${at}/requestBody`,
         rule: "request-required-added",
       });
-  } else if (baseBody !== undefined)
+  } else if (baseBody !== undefined) {
+    if (!baseRequired && headRequired)
+      out.push({
+        pointer: `${at}/requestBody`,
+        rule: "request-became-required",
+      });
     compareNode(baseBody, headBody, `${at}/requestBody`, out);
+  }
 
   const baseResponses = isObject(base.node.responses)
     ? base.node.responses
@@ -308,8 +318,16 @@ function compareOperation(base: Op, head: Op, out: Breaking[]): void {
       out.push({ pointer: where, rule: "response-status-removed" });
       continue;
     }
-    const b = jsonSchema(response);
-    const h = jsonSchema(headResponses[status]);
+    const b = bodySchema(
+      baseDoc,
+      response,
+      `${base.pointer}/responses/${status}`,
+    );
+    const h = bodySchema(
+      headDoc,
+      headResponses[status],
+      `${head.pointer}/responses/${status}`,
+    );
     if (b === undefined && h === undefined) continue;
     compareNode(b ?? false, h ?? false, where, out);
   }
@@ -320,15 +338,18 @@ function components(doc: unknown): Node {
   return isObject(doc.components.schemas) ? doc.components.schemas : {};
 }
 
-/** Every change from `base` to `head` that would break a client or a server of the API. */
+/**
+ * Every change from `base` to `head` that would break a client or a server of the API.
+ * Operations are matched by `operationId`, or by method and path when they have none; bodies,
+ * responses and parameters are compared through their `$ref`s.
+ */
 export function compareOpenApi(base: unknown, head: unknown): Breaking[] {
   const out: Breaking[] = [];
-  const before = opsById(base);
-  const after = opsById(head);
-  for (const [id, op] of before) {
-    const next = after.get(id);
+  const after = new Map(documentOperations(head).map((o) => [o.key, o]));
+  for (const op of documentOperations(base)) {
+    const next = after.get(op.key);
     if (!next) out.push({ pointer: op.pointer, rule: "operation-removed" });
-    else compareOperation(op, next, out);
+    else compareOperation(base, head, op, next, out);
   }
   const baseSchemas = components(base);
   const headSchemas = components(head);

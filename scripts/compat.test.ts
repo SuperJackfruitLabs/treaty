@@ -170,3 +170,40 @@ describe("the catalogue", () => {
     expect(compare(base, head)).toEqual([]);
   });
 });
+
+describe("hardening", () => {
+  test("a schema without $schema is still compared", () => {
+    const bare = "schemas/superpipeline/bare.v1.json";
+    write(bare, { type: "object", required: ["id"] });
+    git("add", "-A");
+    git("commit", "-q", "-m", "bare");
+    write(bare, { type: "object", required: [] });
+    const r = run();
+    expect(r.status).toBe(1);
+    expect(r.stdout).toContain("required-removed");
+  });
+
+  test("a schema whose path is not ASCII is still compared", () => {
+    const odd = "schemas/superpipeline/café.v1.json";
+    write(odd, thing({}, odd));
+    git("add", "-A");
+    git("commit", "-q", "-m", "odd");
+    rmSync(join(repo, odd));
+    const r = run();
+    expect(r.status).toBe(1);
+    expect(r.stdout).toContain("schema-removed");
+  });
+
+  test("a base that is not a commit fails with a clear message, not a stack trace", () => {
+    const r = spawnSync(
+      "bun",
+      [SCRIPT, "--base", "--output=/tmp/x", "--root", repo],
+      {
+        encoding: "utf8",
+      },
+    );
+    expect(r.status).toBe(2);
+    expect(r.stderr).toContain("not a commit");
+    expect(r.stderr).not.toContain("    at ");
+  });
+});

@@ -12,7 +12,7 @@ import { casesFor, isCases, resolvePointer } from "./cases.ts";
 import { loadInstalledBundle } from "./node.ts";
 import { casesPathFor } from "./openapi-check.ts";
 import { readRegistry } from "./registry.ts";
-import { sync, verify, type VerifyOptions } from "./verify.ts";
+import { parseVersion, sync, verify, type VerifyOptions } from "./verify.ts";
 
 const USAGE = `usage:
   treaty verify [--manifest treaty.json] [--latest <version>] [--max-behind <n>]
@@ -20,22 +20,46 @@ const USAGE = `usage:
   treaty cases  <schema path> [--operation <id> --part request|<status>]
 `;
 
+/** Bad input: printed with the usage, and the command exits 2. */
+class UsageError extends Error {}
+
 function flag(args: string[], name: string): string | undefined {
   const i = args.indexOf(name);
-  return i === -1 ? undefined : args[i + 1];
+  if (i === -1) return undefined;
+  const value = args[i + 1];
+  if (value === undefined || value.startsWith("--"))
+    throw new UsageError(`${name} needs a value`);
+  return value;
+}
+
+function wholeNumber(text: string): number {
+  if (!/^\d+$/.test(text))
+    throw new UsageError(
+      `--max-behind must be a whole number, not ${JSON.stringify(text)}`,
+    );
+  return Number(text);
 }
 
 function options(args: string[]): VerifyOptions {
   const data = flag(args, "--data");
   const manifest = flag(args, "--manifest");
   const latest = flag(args, "--latest");
+  if (latest) {
+    try {
+      parseVersion(latest);
+    } catch (error) {
+      throw new UsageError(
+        String(error instanceof Error ? error.message : error),
+      );
+    }
+  }
   const maxBehind = flag(args, "--max-behind");
   return {
     repoRoot: process.cwd(),
     ...(data ? { dataDir: data } : {}),
     ...(manifest ? { manifestPath: manifest } : {}),
     ...(latest ? { latest } : {}),
-    ...(maxBehind ? { maxBehind: Number(maxBehind) } : {}),
+    ...(maxBehind ? { maxBehind: wholeNumber(maxBehind) } : {}),
   };
 }
 
@@ -91,4 +115,19 @@ export function main(args: string[]): number {
   }
 }
 
-process.exitCode = main(process.argv.slice(2));
+function run(args: string[]): number {
+  try {
+    return main(args);
+  } catch (error) {
+    if (error instanceof UsageError) {
+      process.stderr.write(`treaty: ${error.message}\n${USAGE}`);
+      return 2;
+    }
+    process.stderr.write(
+      `treaty: ${error instanceof Error ? error.message : String(error)}\n`,
+    );
+    return 1;
+  }
+}
+
+process.exitCode = run(process.argv.slice(2));
