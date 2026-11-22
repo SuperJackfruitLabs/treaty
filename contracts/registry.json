@@ -175,7 +175,10 @@
       ],
       "kind": "token",
       "status": "partial",
-      "contract": ["fixtures/ecosystem-identity/token_claims.json"],
+      "contract": [
+        "fixtures/ecosystem-identity/token_claims.json",
+        "fixtures/ecosystem-identity/token_vectors.json"
+      ],
       "gaps": "Only agentpod, accounts and superpipeline test against the claims; superwitness, superlibrary and superexchange verify with their own fixtures or decode by hand. Four verifiers, no shared one.",
       "phase": 1,
       "evidence": [
