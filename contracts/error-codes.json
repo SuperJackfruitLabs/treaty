@@ -899,6 +899,20 @@
       "envelope": "flat-error.v1",
       "status": 409,
       "meaning": "Another principal holds that external identity."
+    },
+    {
+      "code": "access_denied",
+      "owner": "accounts",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "The device flow's token endpoint: the sign-in was approved with no workspace active, so no device credential is minted. The body carries error_description."
+    },
+    {
+      "code": "server_error",
+      "owner": "accounts",
+      "envelope": "flat-error.v1",
+      "status": 500,
+      "meaning": "The device flow's token endpoint: the approved session was gone when the credential was to be minted."
     }
   ]
 }
