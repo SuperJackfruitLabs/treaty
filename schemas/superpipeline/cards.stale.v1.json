@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/cards.stale.v1.json",
+  "title": "SuperPipeline cards.stale",
+  "description": "The board's daily digest of cards that will go on waiting unless somebody acts: waiting on a person, or sitting in a stage nothing will take them from. Sent only by the direct push, once per digest to every push config subscribed to it, and only when there is something new to say: a card already in a digest in the last 24 hours is left out. Mirrors the body SuperPipeline's sendStaleDigest builds (apps/api/src/board/stale.ts), whose cards are StaleCardView (apps/api/src/board/model.ts). Readers ignore properties they do not know.",
+  "type": "object",
+  "required": ["event", "boardId", "boardName", "cards", "ts"],
+  "properties": {
+    "event": {
+      "const": "cards.stale"
+    },
+    "boardId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Never null: an uninitialised board has no stale cards."
+    },
+    "boardName": {
+      "type": "string",
+      "description": "Empty when the board has no name."
+    },
+    "cards": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Oldest first, by `since`. Never empty: an empty digest is not sent.",
+      "items": {
+        "$ref": "#/$defs/staleCard"
+      }
+    },
+    "ts": {
+      "$ref": "#/$defs/timestamp"
+    }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "staleCard": {
+      "type": "object",
+      "required": [
+        "boardId",
+        "boardName",
+        "cardId",
+        "title",
+        "ownerUserId",
+        "agentId",
+        "stageKey",
+        "stageName",
+        "state",
+        "why",
+        "summary",
+        "since",
+        "ageHours",
+        "next"
+      ],
+      "properties": {
+        "boardId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "boardName": {
+          "type": "string"
+        },
+        "cardId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string"
+        },
+        "ownerUserId": {
+          "type": "string"
+        },
+        "agentId": {
+          "type": ["string", "null"],
+          "description": "The agent holding the card (its last run's agent), or null."
+        },
+        "stageKey": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stageName": {
+          "type": "string",
+          "description": "The stage's name, or its key when the stage is gone."
+        },
+        "state": {
+          "enum": [
+            "submitted",
+            "working",
+            "input-required",
+            "auth-required",
+            "completed",
+            "rejected",
+            "failed",
+            "canceled"
+          ],
+          "description": "The card's task state. A stale card is `input-required` (waiting on a person) or `submitted` (in a stage nothing claims)."
+        },
+        "why": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": ["kind", "reason"],
+              "properties": {
+                "kind": {
+                  "const": "needs-human"
+                },
+                "reason": {
+                  "enum": [
+                    "question",
+                    "repeated-failure",
+                    "blocked",
+                    "review",
+                    "not-authorised",
+                    "sub-tasks"
+                  ]
+                },
+                "detail": {
+                  "type": "string"
+                },
+                "failureCount": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "elicitationId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "gateId": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            {
+              "type": "object",
+              "required": ["kind"],
+              "properties": {
+                "kind": {
+                  "const": "no-owner"
+                }
+              }
+            }
+          ]
+        },
+        "summary": {
+          "type": ["string", "null"],
+          "description": "The readable part of the card's handoff: plain text, never HTML. Null when there is none."
+        },
+        "since": {
+          "$ref": "#/$defs/timestamp",
+          "description": "When the card stopped where it is."
+        },
+        "ageHours": {
+          "type": "number",
+          "description": "Hours since `since`, to one decimal, rounded down."
+        },
+        "next": {
+          "type": "string",
+          "description": "What a person should do next, in words, with the command when there is one."
+        }
+      }
+    }
+  }
+}

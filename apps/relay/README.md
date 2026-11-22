@@ -20,6 +20,15 @@ NATS JetStream (treaty plan step 6):
 - **Streams:** `WORK` holds `evt.>`, `AUDIT` holds `audit.>`, so a slow audit consumer never
   holds up work and purging work never touches audit.
 
+**What a subscriber answers** is the suite's one receiver status contract, the same on the relay
+and on SuperPipeline's direct push (`schemas/README.md`):
+
+- 2xx: handled, or permanently ignored, such as an event the subscriber does not take.
+- 503: transient, such as a board it has not mapped yet; the relay tries again.
+- Any other 4xx: permanently refused, such as an invalid body; the relay drops it.
+
+A subscriber answers 503, not 404, for something it expects to know soon: a 404 is dropped.
+
 Delivery is at least once: a subscriber handles each event once with `handleOnce` from
 `@superjackfruitlabs/treaty-outbox`.
 

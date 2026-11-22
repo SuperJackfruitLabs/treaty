@@ -18,6 +18,7 @@ describe("schemas/http", () => {
       "schemas/http/superpipeline/agent-work.v1.openapi.json",
       "schemas/http/superpipeline/approvals.v1.openapi.json",
       "schemas/http/superpipeline/decisions.v1.openapi.json",
+      "schemas/http/superpipeline/push.v1.openapi.json",
     ]);
   });
 
