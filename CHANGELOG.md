@@ -5,6 +5,26 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- **Events: one delivery contract on both paths.**
+  - `work.available.v1` and `cards.stale.v1` schemas, with their cases and catalogue entries.
+  - `schemas/http/superpipeline/push.v1.openapi.json` for push registration.
+  - `fixtures/cloudevents/push-delivery.json`: signed vectors for SuperPipeline's direct push on the relay's envelope (CloudEvents binary mode, `x-treaty-signature`, one id per event).
+  - The receiver status contract: 2xx handled or ignored, 503 retry, other 4xx refused.
+  - The relay's delivery now times out after 10 s, below its 30 s `ack_wait`.
+- **AgentPod's chat activity in `schemas/matrix/`:** `dev.agentpod.turn.v1`, the three to-device deltas (`stream.delta`, `thought.delta`, `tool.update`) and the three content keys (`turn_error`, `voice_transcript`, `voice_reply`).
+  - Each names its carrier in `x-treaty-carrier`.
+  - Enums are open to readers (`x-treaty-known-values`).
+  - `schema_version` is an integer of at least 1, read best-effort.
+- **Live Activity:**
+  - `schemas/http/agentpod/live-activity.v1.openapi.json`;
+  - `schemas/agentpod/fleet-content-state.v1.json` and `live-activity-payload.v1.json`;
+  - the fleet fixtures, as cases;
+  - a third error envelope, `schemas/common/matrix-error.v1.json`.
+
+  `contracts/error-codes.json` moves to `schemas/treaty/error-codes.v2.json`, whose envelope list adds matrix-error.v1, published beside v1.
+
+- Coverage 53%: 16 of 30 crossings contracted.
+
 - **A card may narrow a stage's repository allowlist (proposed).** `run-checkpoint-policy.v2` is the policy of a stage whose cards choose (`repositorySelection: "card"`, optional `defaultRepositories`), carried in the new `StageDef.cardCheckpointPolicy`. `card-repositories.v1` is the card's choice, also on `CardView` as `repositories` and `primaryRepository`. `run-checkpoint-selection.v1` is what a claim freezes, carried as `selection` on the checkpoint claim and source snapshot, whose `policy` is then the narrowed v1 policy. A claimant opts in with `checkpointProtocols` listing `superpipeline.checkpoint-claim.v2`. All additive: v1 policies, claimants and settlement shapes are unchanged. Vectors in `fixtures/superpipeline-run-checkpoint/selection.json`. Follows the charter amendment of 2026-11-22.
 - **contracts: parameters are validated too.** `validateParameters()` checks path, query and header values against an operation's parameters, converting URL text to the schema's type, and `routeParams()` gives a request's path values. A pointer through an array (an OpenAPI `parameters/N/schema`) now resolves, and `resolvePointer` walks arrays. Accounts' contract hook did this by hand.
 - **`bun run compat` compares with the latest release.** Consumers pin releases, so only what a release holds can break. It no longer compares with whatever commit came before, which flagged a contract changed twice between releases. The nine in-place widenings of SuperBench v2 made since v0.0.14 are recorded in `contracts/compat-exceptions.json` against that release, and stop applying once v0.0.15 is out.

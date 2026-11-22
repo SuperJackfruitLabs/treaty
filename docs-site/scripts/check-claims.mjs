@@ -214,7 +214,8 @@ if (!maxBody || !relay.includes('1 MiB')) fail('relay.md: the body limit');
 if (!/1000 \* 2 \*\* \(deliveryCount - 1\), 5 \* 60_000/.test(deliver)) fail('deliver.ts retryDelayMs changed; update relay.md and check-claims');
 if (!relay.includes('1 s, 2 s, 4 s') || !relay.includes('up to 5 minutes')) fail('relay.md: the retry backoff');
 if (!/status === 408 \|\| status === 429 \|\| status >= 500/.test(deliver) || !relay.includes('408, 429, 5xx')) fail('relay.md: which statuses are retried');
-if (!/ack_wait: nanos\(30_000\)/.test(nats) || !relay.includes('30 seconds')) fail('relay.md: the ack wait');
+if (!/ack_wait: nanos\(ACK_WAIT_MS\)/.test(nats) || !/ACK_WAIT_MS = 30_000;/.test(deliver) || !relay.includes('30 seconds')) fail('relay.md: the ack wait');
+if (!/DELIVERY_TIMEOUT_MS = 10_000;/.test(deliver) || !relay.includes('10 seconds')) fail('relay.md: the delivery timeout');
 for (const [n, subj] of [['WORK', 'evt.>'], ['AUDIT', 'audit.>']]) {
   if (!nats.includes(`_STREAM = "${n}"`) || !nats.includes(`subjects: ["${subj}"]`)) fail(`nats.ts no longer has ${n} on ${subj}`);
   for (const p of ['relay.md', 'envelope.md']) if (!has(page(p), n) || !has(page(p), subj)) fail(`${p} does not name ${n} and ${subj}`);

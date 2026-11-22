@@ -1,0 +1,259 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SuperPipeline push registration",
+    "version": "1",
+    "description": "How a subscriber registers for SuperPipeline's direct push: an agent for its own work (`work.available`) and whatever else it subscribes to, and a service for record events and, as a decision carrier, the decision events. Written from SuperPipeline's apps/api/src/routes/boards/integrations.ts (the agent form), apps/api/src/service-routes.ts (the service form) and registerPushConfig in apps/api/src/board/push.ts. The delivery itself, the CloudEvent the board sends to `url` signed with `token`, is fixtures/cloudevents/push-delivery.json, and the bodies are the schemas schemas/catalog.json names. Every refusal is the error.v1 envelope with the status statusForCode gives its code. Response bodies are open: a reader ignores properties it does not know."
+  },
+  "x-treaty-error-envelope": "error.v1",
+  "paths": {
+    "/v1/boards/{boardId}/push-configs": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/boardId"
+        }
+      ],
+      "post": {
+        "operationId": "registerPushConfig",
+        "summary": "Register or replace a push subscription on the board",
+        "description": "One route, two callers, told apart by the credential.\n\n- **An agent** (agentToken, `claim`) subscribes itself: the subscriber is the agent the token authenticates, never one the body or a header names. `events` defaults to `[\"work.available\"]` and `capabilities` to none. The capabilities `work.available` is matched on are the agent's own catalogue row when it has one, else the body's, expanded through the workspace's implication edges when the config is registered. A person (the web app's session, not a crossing) names the subscriber with `X-Agent-Id`, which may not name a service (`svc:`): INVALID_INPUT.\n- **A service** (serviceToken) subscribes `svc:<principal>`, and must send `ServicePushConfigRequest`: `url`, a non-empty `token` and a non-empty `events`, else INVALID_BODY. It may subscribe to record events with `push:write` and to the decision events with `approval-requests:relay`; a scope it lacks is FORBIDDEN. `work.available` and `cards.stale` are an agent's own and are refused to a service with INVALID_BODY. A service's refusals from the board are all 400, so a board that is not initialised is 400 NOT_INITIALIZED there (404 on the agent form). A board outside the token's tenant is 404 BOARD_NOT_FOUND.\n\nAn event the board cannot push at all is UNKNOWN_EVENT; a `url` that is not a public http(s) endpoint is INVALID_URL. The config is upserted on (subscriber, url): registering the same url again replaces its token, capabilities and events and answers the same `configId`, still 201.",
+        "security": [
+          {
+            "agentToken": ["claim"]
+          },
+          {
+            "serviceToken": ["push:write"]
+          },
+          {
+            "serviceToken": ["approval-requests:relay"]
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/agentIdHeader"
+          }
+        ],
+        "x-treaty-error-codes": [
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "BOARD_NOT_FOUND",
+          "NOT_INITIALIZED",
+          "INVALID_JSON",
+          "INVALID_BODY",
+          "INVALID_INPUT",
+          "INVALID_URL",
+          "UNKNOWN_EVENT",
+          "UNEXPECTED"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PushConfigRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Registered, or the existing config for this subscriber and url replaced",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushConfigRegistered"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "agentToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "An agent's credential: a `spa_` token with the `claim` scope, or an Organization-plane token for an agent principal. A missing or unknown credential is 401 UNAUTHORIZED; a token without `claim` is 403 FORBIDDEN."
+      },
+      "serviceToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "An Organization-plane token for a service principal (`principalKind: service`) of a workspace mapped to a SuperPipeline tenant: `push:write` for record events, `approval-requests:relay` for the decision events. The tenant comes from the token, so a board in another tenant is 404 BOARD_NOT_FOUND. No valid service token is 401 UNAUTHORIZED."
+      }
+    },
+    "parameters": {
+      "boardId": {
+        "name": "boardId",
+        "in": "path",
+        "required": true,
+        "description": "The board. The service form matches only brd_ and 16 lowercase hex digits.",
+        "schema": {
+          "type": "string",
+          "pattern": "^brd_[0-9a-f]{16}$"
+        }
+      },
+      "agentIdHeader": {
+        "name": "X-Agent-Id",
+        "in": "header",
+        "required": false,
+        "description": "The subscriber a person names. Ignored for an agent token, which subscribes its own agent, and for a service token.",
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Malformed JSON (INVALID_JSON), a body of the wrong shape (INVALID_BODY, INVALID_INPUT), a url the board will not push to (INVALID_URL), an event it cannot push (UNKNOWN_EVENT), or, on the service form, a board that is not initialised (NOT_INITIALIZED)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "No valid credential",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "The credential lacks the scope the subscription needs",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "No such board in this tenant (BOARD_NOT_FOUND), or, on the agent form, a board that is not initialised (NOT_INITIALIZED)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Unexpected": {
+        "description": "A failure nobody planned for (UNEXPECTED)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "PushConfigRequest": {
+        "description": "Either form. A service must send the tighter ServicePushConfigRequest; an agent may send either.",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/AgentPushConfigRequest"
+          },
+          {
+            "$ref": "#/components/schemas/ServicePushConfigRequest"
+          }
+        ]
+      },
+      "AgentPushConfigRequest": {
+        "type": "object",
+        "required": ["url", "token"],
+        "properties": {
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Where the board POSTs each delivery. A public http(s) endpoint, else INVALID_URL."
+          },
+          "token": {
+            "type": "string",
+            "description": "The secret each delivery to `url` is signed with."
+          },
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "What `work.available` is matched on when the agent has no catalogue row of its own. Defaults to none."
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "The pushName of each event to receive (schemas/catalog.json): work.available, cards.stale, the decision events and the record events. Defaults to [\"work.available\"]. A name the board cannot push is UNKNOWN_EVENT."
+          }
+        }
+      },
+      "ServicePushConfigRequest": {
+        "type": "object",
+        "required": ["url", "token", "events"],
+        "properties": {
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Where the board POSTs each delivery. A public http(s) endpoint, else INVALID_URL."
+          },
+          "token": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The secret each delivery to `url` is signed with."
+          },
+          "events": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "not": {
+                "enum": ["work.available", "cards.stale"]
+              }
+            },
+            "description": "Record events (with `push:write`) and decision events (with `approval-requests:relay`), by pushName. `work.available` and `cards.stale` are an agent's own."
+          }
+        }
+      },
+      "PushConfigRegistered": {
+        "type": "object",
+        "required": ["configId"],
+        "properties": {
+          "configId": {
+            "type": "string",
+            "pattern": "^push_[0-9a-f]{16}$",
+            "description": "The config's id: the same one again when an existing config was replaced."
+          }
+        }
+      }
+    }
+  }
+}

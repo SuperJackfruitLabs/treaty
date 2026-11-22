@@ -1,0 +1,198 @@
+{
+  "operations": {
+    "registerPushConfig": {
+      "request": {
+        "valid": {
+          "an agent, defaults": {
+            "url": "https://hub.example.com/v1/superpipeline/push",
+            "token": "fake-push-secret-agent-7"
+          },
+          "an agent's work and digest": {
+            "url": "https://hub.example.com/v1/superpipeline/push",
+            "token": "fake-push-secret-agent-7",
+            "capabilities": [
+              "code",
+              "code-review"
+            ],
+            "events": [
+              "work.available",
+              "cards.stale"
+            ]
+          },
+          "a service, record events": {
+            "url": "https://library.example.com/v1/sources/superpipeline/push",
+            "token": "fake-push-secret-library",
+            "events": [
+              "card.created",
+              "card.updated",
+              "card.completed",
+              "link.added"
+            ]
+          },
+          "a decision carrier": {
+            "url": "https://exchange.example.com/v1/superpipeline/push",
+            "token": "fake-push-secret-exchange",
+            "events": [
+              "gate.pending",
+              "elicitation.pending",
+              "delivery.pending",
+              "attention.pending",
+              "decision.reminded",
+              "decision.escalated",
+              "gate.approval_recorded",
+              "decision.released",
+              "decision.pulled_back",
+              "check.failed",
+              "check.overridden"
+            ]
+          }
+        },
+        "invalid": [
+          {
+            "why": "url is required",
+            "body": {
+              "token": "fake-push-secret-agent-7"
+            }
+          },
+          {
+            "why": "token is required",
+            "body": {
+              "url": "https://hub.example.com/v1/superpipeline/push"
+            }
+          },
+          {
+            "why": "url is a string",
+            "body": {
+              "url": 42,
+              "token": "fake-push-secret-agent-7"
+            }
+          },
+          {
+            "why": "events is an array of event names",
+            "body": {
+              "url": "https://hub.example.com/v1/superpipeline/push",
+              "token": "fake-push-secret-agent-7",
+              "events": "work.available"
+            }
+          },
+          {
+            "why": "an event name is a string",
+            "body": {
+              "url": "https://hub.example.com/v1/superpipeline/push",
+              "token": "fake-push-secret-agent-7",
+              "events": [
+                7
+              ]
+            }
+          },
+          {
+            "why": "capabilities is an array of strings",
+            "body": {
+              "url": "https://hub.example.com/v1/superpipeline/push",
+              "token": "fake-push-secret-agent-7",
+              "capabilities": [
+                {
+                  "name": "code"
+                }
+              ]
+            }
+          },
+          {
+            "why": "the body is an object",
+            "body": [
+              "work.available"
+            ]
+          }
+        ]
+      },
+      "responses": {
+        "201": {
+          "valid": {
+            "registered": {
+              "configId": "push_3f9a1c0b7e24d5a6"
+            }
+          },
+          "invalid": [
+            {
+              "why": "configId is required",
+              "body": {}
+            },
+            {
+              "why": "configId is a push config id",
+              "body": {
+                "configId": "cfg_1"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "schemas": {
+    "ServicePushConfigRequest": {
+      "valid": {
+        "record events": {
+          "url": "https://library.example.com/v1/sources/superpipeline/push",
+          "token": "fake-push-secret-library",
+          "events": [
+            "card.created",
+            "card.updated",
+            "card.completed",
+            "link.added"
+          ]
+        }
+      },
+      "invalid": [
+        {
+          "why": "events is required",
+          "body": {
+            "url": "https://library.example.com/v1/sources/superpipeline/push",
+            "token": "fake-push-secret-library"
+          }
+        },
+        {
+          "why": "events is not empty",
+          "body": {
+            "url": "https://library.example.com/v1/sources/superpipeline/push",
+            "token": "fake-push-secret-library",
+            "events": []
+          }
+        },
+        {
+          "why": "token is not empty",
+          "body": {
+            "url": "https://library.example.com/v1/sources/superpipeline/push",
+            "token": "",
+            "events": [
+              "card.created",
+              "card.updated",
+              "card.completed",
+              "link.added"
+            ]
+          }
+        },
+        {
+          "why": "work.available is an agent's own",
+          "body": {
+            "url": "https://library.example.com/v1/sources/superpipeline/push",
+            "token": "fake-push-secret-library",
+            "events": [
+              "card.created",
+              "work.available"
+            ]
+          }
+        },
+        {
+          "why": "cards.stale is an agent's own",
+          "body": {
+            "url": "https://library.example.com/v1/sources/superpipeline/push",
+            "token": "fake-push-secret-library",
+            "events": [
+              "cards.stale"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

@@ -13,13 +13,13 @@ const RAW = "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/";
 interface ErrorCode {
   code: string;
   owner: string;
-  envelope: "error.v1" | "flat-error.v1";
+  envelope: "error.v1" | "flat-error.v1" | "matrix-error.v1";
   status: number;
   alsoStatus?: number[];
   meaning: string;
 }
 const codesSchema = new Validator(
-  readJson("schemas/treaty/error-codes.v1.json"),
+  readJson("schemas/treaty/error-codes.v2.json"),
   "2020-12",
   false,
 );
@@ -75,8 +75,39 @@ describe("schemas/common/flat-error.v1.json", () => {
   }
 });
 
+describe("schemas/common/matrix-error.v1.json", () => {
+  const schema = readJson("schemas/common/matrix-error.v1.json");
+  const validator = new Validator(schema, "2020-12", false);
+  const cases: {
+    valid: Record<string, unknown>;
+    invalid: { why: string; body: unknown }[];
+  } = readJson("fixtures/common/matrix-error.v1.cases.json");
+
+  test("its $id is where it is published", () => {
+    expect(schema.$id).toBe(`${RAW}schemas/common/matrix-error.v1.json`);
+  });
+
+  for (const [label, body] of Object.entries(cases.valid)) {
+    test(`accepts ${label}`, () => {
+      expect(validator.validate(body).errors).toEqual([]);
+    });
+  }
+  for (const { why, body } of cases.invalid) {
+    test(`refuses: ${why}`, () => {
+      expect(validator.validate(body).valid).toBe(false);
+    });
+  }
+});
+
+/** The form a code takes in each envelope. */
+const CODE_FORM: Record<ErrorCode["envelope"], RegExp> = {
+  "error.v1": /^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$/,
+  "flat-error.v1": /^[a-z][a-z0-9]*(_[a-z0-9]+)*$/,
+  "matrix-error.v1": /^M_[A-Z_]+$/,
+};
+
 describe("contracts/error-codes.json", () => {
-  test("validates against schemas/treaty/error-codes.v1.json", () => {
+  test("validates against schemas/treaty/error-codes.v2.json", () => {
     expect(codesSchema.validate(codesFile).errors).toEqual([]);
   });
 
@@ -85,13 +116,17 @@ describe("contracts/error-codes.json", () => {
     expect(names.length).toBe(new Set(names).size);
   });
 
-  test("an error.v1 code is SCREAMING_SNAKE_CASE and a flat-error.v1 code is snake_case", () => {
-    const wrong = codes.filter((c) =>
-      c.envelope === "error.v1"
-        ? !/^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$/.test(c.code)
-        : !/^[a-z][a-z0-9]*(_[a-z0-9]+)*$/.test(c.code),
-    );
+  test("an error.v1 code is SCREAMING_SNAKE_CASE, a flat-error.v1 code snake_case and a matrix-error.v1 code M_ namespaced", () => {
+    const wrong = codes.filter((c) => !CODE_FORM[c.envelope].test(c.code));
     expect(wrong).toEqual([]);
+  });
+
+  test("the code forms tell the envelopes apart", () => {
+    expect(CODE_FORM["matrix-error.v1"].test("M_UNKNOWN_TOKEN")).toBe(true);
+    expect(CODE_FORM["matrix-error.v1"].test("UNKNOWN_TOKEN")).toBe(false);
+    expect(CODE_FORM["matrix-error.v1"].test("invalid_credential")).toBe(false);
+    expect(CODE_FORM["error.v1"].test("invalid_credential")).toBe(false);
+    expect(CODE_FORM["flat-error.v1"].test("M_UNKNOWN_TOKEN")).toBe(false);
   });
 
   test("a product's codes all travel in one envelope", () => {

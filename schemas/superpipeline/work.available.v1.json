@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/work.available.v1.json",
+  "title": "SuperPipeline work.available",
+  "description": "A card became claimable by the agent this push config subscribes. Sent only by the direct push, only to an agent's own config that subscribed to it and could claim the card: its effective capabilities meet the stage, and a card held for one agent is announced to that agent alone. It is a hint to claim now instead of on the next poll; the claim is the truth, and may still find nothing. Mirrors the body SuperPipeline's notifyWorkAvailable builds (apps/api/src/board/claims.ts). Readers ignore properties they do not know.",
+  "type": "object",
+  "required": ["event", "boardId", "cardId", "stageKey", "ts"],
+  "properties": {
+    "event": {
+      "const": "work.available"
+    },
+    "boardId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Never null: a card is claimable only on an initialised board."
+    },
+    "cardId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stageKey": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The stage the card can be claimed at."
+    },
+    "ts": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

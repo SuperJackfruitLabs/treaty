@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/common/matrix-error.v1.json",
+  "title": "A refusal in the Matrix client-server error shape",
+  "description": "Routes a Matrix client calls with its access token, such as AgentPod's Live Activity token routes, answer `{ \"errcode\": \"M_…\", \"error\": \"<words>\" }`, the Matrix client-server API's standard error body. `errcode` is a name from contracts/error-codes.json in this envelope; `error` is for people and carries no meaning a program may read. Other fields may sit beside them, as the Matrix specification allows.",
+  "type": "object",
+  "required": ["errcode", "error"],
+  "properties": {
+    "errcode": {
+      "type": "string",
+      "pattern": "^M_[A-Z_]+$"
+    },
+    "error": {
+      "type": "string"
+    }
+  }
+}

@@ -10,13 +10,18 @@ releases page](https://github.com/SuperJackfruitLabs/treaty/releases).
 
 ## What ships
 
-- **Five packages on npm**, all at 0.0.13: [`treaty-cloudevents`](/packages/cloudevents/),
+- **Six packages on npm**, all published together at each release:
+  [`treaty-cloudevents`](/packages/cloudevents/), [`treaty-contracts`](/packages/contracts/),
   [`treaty-event-schemas`](/packages/event-schemas/), [`treaty-matrix-events`](/packages/matrix-events/),
   [`treaty-ecosystem-identity`](/packages/ecosystem-identity/) and [`treaty-outbox`](/packages/outbox/).
+- **HTTP contracts** as OpenAPI 3.1, with cases: SuperPipeline's agent work loop, decisions,
+  approvals and push registration; the Accounts API; AgentPod's Live Activity tokens.
 - **The event schemas** for what SuperPipeline sends; the newest, `card.ready` v1, arrived in
   v0.0.13. The [event catalogue](/events/) lists every type.
 - **The board-room Matrix contract**: a schema per event type, its corpus, and the builders and
-  parsers moved from AgentPod's hub. The [Matrix catalogue](/matrix/) lists every type.
+  parsers moved from AgentPod's hub.
+- **AgentPod's chat activity**: the turn card, the streaming deltas and the error and voice
+  payloads, each schema naming how it travels. The [Matrix catalogue](/matrix/) lists every type.
 - **[The relay](/relay/)**, in production since v0.0.7, deployed by each version tag.
 
 ## Who uses it
@@ -40,9 +45,7 @@ These contracts are planned, but you cannot depend on them yet:
 - **An audit event schema**, with the shared audit trail. The relay already keeps an `AUDIT`
   stream for `audit.>` subjects.
 - **A policy schema**, with governance policy.
-- **Schemas for `work.available` and `cards.stale`**, which SuperPipeline sends to an agent's own
-  endpoint.
 - **Record events through the relay.** SuperPipeline's record events (`card.*`, `gate.resolved`,
-  links) have a schema but go only by its direct push.
+  links) have a schema, but go only by its direct push until SuperPipeline relays them too.
 
 Run reports are the exception, not a missing Treaty contract: SuperWitness owns and publishes their schema.

@@ -1,0 +1,267 @@
+{
+  "corpus": "cloudevents/push-delivery",
+  "version": 1,
+  "authoredAt": "2026-11-23",
+  "authoredFrom": "The relay's delivery (apps/relay/src/deliver.ts) and @superjackfruitlabs/treaty-cloudevents' signDelivery, applied to SuperPipeline's direct push (docs/2026-11-23-every-crossing-phase-2.md, rulings 1 and 2). Every secret is fake. Each body is a valid example from fixtures/superpipeline-events/examples.json, serialised as JSON.stringify writes it.",
+  "howToRead": {
+    "deliveries": "One delivery from SuperPipeline's direct push to a push config, in CloudEvents HTTP binary mode. `secret` is the config's token; `t` is the second it was signed. Encoding `event` with `http.body` as its data must give exactly `http.headers` without `x-treaty-signature`. Signing `http.body`'s UTF-8 bytes under `event.attributes.id` with `secret` at `t` must give exactly `x-treaty-signature`, which is `t=<t>,v1=<hex HMAC-SHA256 of \"<t>.<id>.<body>\">`. Verifying it must pass at `t` and at `t + toleranceSeconds`. `data` names the example the body is, and the body must validate against the schema `ce-dataschema` names.",
+    "refuse": "Verifying `http.headers['x-treaty-signature']` against `http.body` and `http.headers['ce-id']` with `secret`, at `nowSeconds`, must fail. `why` says what is wrong."
+  },
+  "toleranceSeconds": 300,
+  "deliveries": [
+    {
+      "name": "work.available",
+      "secret": "fake-secret-agent-7-not-a-credential",
+      "t": 1795426200,
+      "data": "superpipeline-events/examples.json#/schemas/work.available.v1/valid/plain",
+      "event": {
+        "attributes": {
+          "specversion": "1.0",
+          "id": "brd_134a0ddb6d434478:41",
+          "source": "/superpipeline/boards/brd_134a0ddb6d434478",
+          "type": "com.superjackfruit.superpipeline.work.available.v1",
+          "datacontenttype": "application/json",
+          "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/work.available.v1.json",
+          "time": "2026-11-23T09:30:00.000Z"
+        }
+      },
+      "http": {
+        "headers": {
+          "ce-specversion": "1.0",
+          "ce-id": "brd_134a0ddb6d434478:41",
+          "ce-source": "/superpipeline/boards/brd_134a0ddb6d434478",
+          "ce-type": "com.superjackfruit.superpipeline.work.available.v1",
+          "content-type": "application/json",
+          "ce-dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/work.available.v1.json",
+          "ce-time": "2026-11-23T09:30:00.000Z",
+          "x-treaty-signature": "t=1795426200,v1=24559a105c5a49cdc7e8c0ef5d4ad92fd0a9918cb6969e51f6b7bc0a116bd78a"
+        },
+        "body": "{\"event\":\"work.available\",\"boardId\":\"brd_134a0ddb6d434478\",\"cardId\":\"crd_0f3c9a2b7d4e4a11\",\"stageKey\":\"research\",\"ts\":\"2026-11-23T09:30:00.000Z\"}"
+      }
+    },
+    {
+      "name": "gate.pending",
+      "secret": "fake-secret-hub-not-a-credential",
+      "t": 1794303000,
+      "data": "superpipeline-events/examples.json#/schemas/gate.pending.v1/valid/plain",
+      "event": {
+        "attributes": {
+          "specversion": "1.0",
+          "id": "brd_134a0ddb6d434478:42",
+          "source": "/superpipeline/boards/brd_134a0ddb6d434478",
+          "type": "com.superjackfruit.superpipeline.gate.pending.v1",
+          "datacontenttype": "application/json",
+          "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/gate.pending.v1.json",
+          "time": "2026-11-10T09:30:00.000Z"
+        }
+      },
+      "http": {
+        "headers": {
+          "ce-specversion": "1.0",
+          "ce-id": "brd_134a0ddb6d434478:42",
+          "ce-source": "/superpipeline/boards/brd_134a0ddb6d434478",
+          "ce-type": "com.superjackfruit.superpipeline.gate.pending.v1",
+          "content-type": "application/json",
+          "ce-dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/gate.pending.v1.json",
+          "ce-time": "2026-11-10T09:30:00.000Z",
+          "x-treaty-signature": "t=1794303000,v1=6240a02286f770e01dff703a962cc09cd23120a75e9b06b16726375c7b1a2200"
+        },
+        "body": "{\"event\":\"gate.pending\",\"boardId\":\"brd_134a0ddb6d434478\",\"boardName\":\"Developer Experience\",\"cardId\":\"crd_0f3c9a2b7d4e4a11\",\"gateId\":\"gte_5a1b2c3d4e5f6071\",\"stageKey\":\"review\",\"returnStageKey\":\"research\",\"cardTitle\":\"Research this\",\"producedBy\":\"agt_9e8d7c6b5a493827\",\"handoffSummary\":\"Two sources.\",\"options\":[{\"id\":\"approve\",\"label\":\"Approve\",\"meaning\":\"approve\",\"needsComment\":false},{\"id\":\"request_changes\",\"label\":\"Request changes\",\"meaning\":\"revise\",\"needsComment\":true},{\"id\":\"reject\",\"label\":\"Reject\",\"meaning\":\"reject\",\"needsComment\":false}],\"ts\":\"2026-11-10T09:30:00.000Z\"}"
+      }
+    },
+    {
+      "name": "record card.created",
+      "secret": "fake-secret-library-not-a-credential",
+      "t": 1794303000,
+      "data": "superpipeline-events/examples.json#/schemas/record.v1/valid/card-moved",
+      "event": {
+        "attributes": {
+          "specversion": "1.0",
+          "id": "brd_134a0ddb6d434478:43",
+          "source": "/superpipeline/boards/brd_134a0ddb6d434478",
+          "type": "com.superjackfruit.superpipeline.card.moved.v1",
+          "datacontenttype": "application/json",
+          "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json",
+          "time": "2026-11-10T09:30:00.000Z"
+        }
+      },
+      "http": {
+        "headers": {
+          "ce-specversion": "1.0",
+          "ce-id": "brd_134a0ddb6d434478:43",
+          "ce-source": "/superpipeline/boards/brd_134a0ddb6d434478",
+          "ce-type": "com.superjackfruit.superpipeline.card.moved.v1",
+          "content-type": "application/json",
+          "ce-dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/record.v1.json",
+          "ce-time": "2026-11-10T09:30:00.000Z",
+          "x-treaty-signature": "t=1794303000,v1=5b637f534e991fd233f969abbe489c67413bcb1b618a786a48472f0168f8e1db"
+        },
+        "body": "{\"event\":\"card.moved\",\"boardId\":\"brd_134a0ddb6d434478\",\"seq\":412,\"ts\":\"2026-11-10T09:30:00.000Z\",\"cardIds\":[\"crd_0f3c9a2b7d4e4a11\"]}"
+      }
+    },
+    {
+      "name": "cards.stale",
+      "secret": "fake-secret-agent-7-not-a-credential",
+      "t": 1795426200,
+      "data": "superpipeline-events/examples.json#/schemas/cards.stale.v1/valid/a digest of three",
+      "event": {
+        "attributes": {
+          "specversion": "1.0",
+          "id": "brd_134a0ddb6d434478:44",
+          "source": "/superpipeline/boards/brd_134a0ddb6d434478",
+          "type": "com.superjackfruit.superpipeline.cards.stale.v1",
+          "datacontenttype": "application/json",
+          "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/cards.stale.v1.json",
+          "time": "2026-11-23T09:30:00.000Z"
+        }
+      },
+      "http": {
+        "headers": {
+          "ce-specversion": "1.0",
+          "ce-id": "brd_134a0ddb6d434478:44",
+          "ce-source": "/superpipeline/boards/brd_134a0ddb6d434478",
+          "ce-type": "com.superjackfruit.superpipeline.cards.stale.v1",
+          "content-type": "application/json",
+          "ce-dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/cards.stale.v1.json",
+          "ce-time": "2026-11-23T09:30:00.000Z",
+          "x-treaty-signature": "t=1795426200,v1=8269704cddc27fd98e693cb58a0f58711636f40e6e38221376fe731bdc926a31"
+        },
+        "body": "{\"event\":\"cards.stale\",\"boardId\":\"brd_134a0ddb6d434478\",\"boardName\":\"Developer Experience\",\"cards\":[{\"boardId\":\"brd_134a0ddb6d434478\",\"boardName\":\"Developer Experience\",\"cardId\":\"crd_1b2c3d4e5f607182\",\"title\":\"Draft the launch note\",\"ownerUserId\":\"usr_5c4b3a2918070605\",\"agentId\":null,\"stageKey\":\"backlog\",\"stageName\":\"Backlog\",\"state\":\"submitted\",\"why\":{\"kind\":\"no-owner\"},\"summary\":null,\"since\":\"2026-11-20T09:00:00.000Z\",\"ageHours\":72,\"next\":\"nothing claims stage \\\"backlog\\\" — move it to a stage someone works (supi move brd_134a0ddb6d434478 crd_1b2c3d4e5f607182 <stage>), or give the stage an owner\"},{\"boardId\":\"brd_134a0ddb6d434478\",\"boardName\":\"Developer Experience\",\"cardId\":\"crd_0f3c9a2b7d4e4a11\",\"title\":\"Research this\",\"ownerUserId\":\"usr_5c4b3a2918070605\",\"agentId\":\"agt_9e8d7c6b5a493827\",\"stageKey\":\"review\",\"stageName\":\"Review\",\"state\":\"input-required\",\"why\":{\"kind\":\"needs-human\",\"reason\":\"review\",\"gateId\":\"gte_5a1b2c3d4e5f6071\"},\"summary\":\"Two sources.\",\"since\":\"2026-11-21T08:00:00.000Z\",\"ageHours\":49.5,\"next\":\"decide the review: supi approve brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071, or supi request-changes brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071 --comment \\\"…\\\"\"},{\"boardId\":\"brd_134a0ddb6d434478\",\"boardName\":\"Developer Experience\",\"cardId\":\"crd_7a6b5c4d3e2f1a09\",\"title\":\"Fix the flaky test\",\"ownerUserId\":\"usr_5c4b3a2918070605\",\"agentId\":\"agt_9e8d7c6b5a493827\",\"stageKey\":\"build\",\"stageName\":\"Build\",\"state\":\"input-required\",\"why\":{\"kind\":\"needs-human\",\"reason\":\"repeated-failure\",\"detail\":\"tests failed: 3 of 120\",\"failureCount\":3},\"summary\":null,\"since\":\"2026-11-21T10:00:00.000Z\",\"ageHours\":47.5,\"next\":\"read why it stopped, fix that, then resume it: supi resume brd_134a0ddb6d434478 crd_7a6b5c4d3e2f1a09 --comment \\\"what changed\\\"\"}],\"ts\":\"2026-11-23T09:30:00.000Z\"}"
+      }
+    }
+  ],
+  "refuse": [
+    {
+      "name": "tampered-body",
+      "why": "the body is not the one signed: a reader must verify the bytes it received, before parsing",
+      "secret": "fake-secret-agent-7-not-a-credential",
+      "nowSeconds": 1795426200,
+      "http": {
+        "headers": {
+          "ce-specversion": "1.0",
+          "ce-id": "brd_134a0ddb6d434478:41",
+          "ce-source": "/superpipeline/boards/brd_134a0ddb6d434478",
+          "ce-type": "com.superjackfruit.superpipeline.work.available.v1",
+          "content-type": "application/json",
+          "ce-dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/work.available.v1.json",
+          "ce-time": "2026-11-23T09:30:00.000Z",
+          "x-treaty-signature": "t=1795426200,v1=24559a105c5a49cdc7e8c0ef5d4ad92fd0a9918cb6969e51f6b7bc0a116bd78a"
+        },
+        "body": "{\"event\":\"work.available\",\"boardId\":\"brd_134a0ddb6d434478\",\"cardId\":\"crd_0f3c9a2b7d4e4a11\",\"stageKey\":\"publish\",\"ts\":\"2026-11-23T09:30:00.000Z\"}"
+      }
+    },
+    {
+      "name": "wrong-secret",
+      "why": "signed with another config's token",
+      "secret": "fake-secret-someone-else-not-a-credential",
+      "nowSeconds": 1794303000,
+      "http": {
+        "headers": {
+          "ce-specversion": "1.0",
+          "ce-id": "brd_134a0ddb6d434478:42",
+          "ce-source": "/superpipeline/boards/brd_134a0ddb6d434478",
+          "ce-type": "com.superjackfruit.superpipeline.gate.pending.v1",
+          "content-type": "application/json",
+          "ce-dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/gate.pending.v1.json",
+          "ce-time": "2026-11-10T09:30:00.000Z",
+          "x-treaty-signature": "t=1794303000,v1=6240a02286f770e01dff703a962cc09cd23120a75e9b06b16726375c7b1a2200"
+        },
+        "body": "{\"event\":\"gate.pending\",\"boardId\":\"brd_134a0ddb6d434478\",\"boardName\":\"Developer Experience\",\"cardId\":\"crd_0f3c9a2b7d4e4a11\",\"gateId\":\"gte_5a1b2c3d4e5f6071\",\"stageKey\":\"review\",\"returnStageKey\":\"research\",\"cardTitle\":\"Research this\",\"producedBy\":\"agt_9e8d7c6b5a493827\",\"handoffSummary\":\"Two sources.\",\"options\":[{\"id\":\"approve\",\"label\":\"Approve\",\"meaning\":\"approve\",\"needsComment\":false},{\"id\":\"request_changes\",\"label\":\"Request changes\",\"meaning\":\"revise\",\"needsComment\":true},{\"id\":\"reject\",\"label\":\"Reject\",\"meaning\":\"reject\",\"needsComment\":false}],\"ts\":\"2026-11-10T09:30:00.000Z\"}"
+      }
+    },
+    {
+      "name": "stale",
+      "why": "received 301 s after it was signed, past the 300 s window",
+      "secret": "fake-secret-agent-7-not-a-credential",
+      "nowSeconds": 1795426501,
+      "http": {
+        "headers": {
+          "ce-specversion": "1.0",
+          "ce-id": "brd_134a0ddb6d434478:41",
+          "ce-source": "/superpipeline/boards/brd_134a0ddb6d434478",
+          "ce-type": "com.superjackfruit.superpipeline.work.available.v1",
+          "content-type": "application/json",
+          "ce-dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/work.available.v1.json",
+          "ce-time": "2026-11-23T09:30:00.000Z",
+          "x-treaty-signature": "t=1795426200,v1=24559a105c5a49cdc7e8c0ef5d4ad92fd0a9918cb6969e51f6b7bc0a116bd78a"
+        },
+        "body": "{\"event\":\"work.available\",\"boardId\":\"brd_134a0ddb6d434478\",\"cardId\":\"crd_0f3c9a2b7d4e4a11\",\"stageKey\":\"research\",\"ts\":\"2026-11-23T09:30:00.000Z\"}"
+      }
+    },
+    {
+      "name": "from-the-future",
+      "why": "signed 301 s after the receiver's clock, past the window the other way",
+      "secret": "fake-secret-agent-7-not-a-credential",
+      "nowSeconds": 1795425899,
+      "http": {
+        "headers": {
+          "ce-specversion": "1.0",
+          "ce-id": "brd_134a0ddb6d434478:41",
+          "ce-source": "/superpipeline/boards/brd_134a0ddb6d434478",
+          "ce-type": "com.superjackfruit.superpipeline.work.available.v1",
+          "content-type": "application/json",
+          "ce-dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/work.available.v1.json",
+          "ce-time": "2026-11-23T09:30:00.000Z",
+          "x-treaty-signature": "t=1795426200,v1=24559a105c5a49cdc7e8c0ef5d4ad92fd0a9918cb6969e51f6b7bc0a116bd78a"
+        },
+        "body": "{\"event\":\"work.available\",\"boardId\":\"brd_134a0ddb6d434478\",\"cardId\":\"crd_0f3c9a2b7d4e4a11\",\"stageKey\":\"research\",\"ts\":\"2026-11-23T09:30:00.000Z\"}"
+      }
+    },
+    {
+      "name": "replayed-under-another-id",
+      "why": "the signature binds the event id: the same body under another ce-id is refused",
+      "secret": "fake-secret-hub-not-a-credential",
+      "nowSeconds": 1794303000,
+      "http": {
+        "headers": {
+          "ce-specversion": "1.0",
+          "ce-id": "brd_134a0ddb6d434478:99",
+          "ce-source": "/superpipeline/boards/brd_134a0ddb6d434478",
+          "ce-type": "com.superjackfruit.superpipeline.gate.pending.v1",
+          "content-type": "application/json",
+          "ce-dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/gate.pending.v1.json",
+          "ce-time": "2026-11-10T09:30:00.000Z",
+          "x-treaty-signature": "t=1794303000,v1=6240a02286f770e01dff703a962cc09cd23120a75e9b06b16726375c7b1a2200"
+        },
+        "body": "{\"event\":\"gate.pending\",\"boardId\":\"brd_134a0ddb6d434478\",\"boardName\":\"Developer Experience\",\"cardId\":\"crd_0f3c9a2b7d4e4a11\",\"gateId\":\"gte_5a1b2c3d4e5f6071\",\"stageKey\":\"review\",\"returnStageKey\":\"research\",\"cardTitle\":\"Research this\",\"producedBy\":\"agt_9e8d7c6b5a493827\",\"handoffSummary\":\"Two sources.\",\"options\":[{\"id\":\"approve\",\"label\":\"Approve\",\"meaning\":\"approve\",\"needsComment\":false},{\"id\":\"request_changes\",\"label\":\"Request changes\",\"meaning\":\"revise\",\"needsComment\":true},{\"id\":\"reject\",\"label\":\"Reject\",\"meaning\":\"reject\",\"needsComment\":false}],\"ts\":\"2026-11-10T09:30:00.000Z\"}"
+      }
+    },
+    {
+      "name": "unsigned",
+      "why": "no x-treaty-signature header",
+      "secret": "fake-secret-agent-7-not-a-credential",
+      "nowSeconds": 1795426200,
+      "http": {
+        "headers": {
+          "ce-specversion": "1.0",
+          "ce-id": "brd_134a0ddb6d434478:41",
+          "ce-source": "/superpipeline/boards/brd_134a0ddb6d434478",
+          "ce-type": "com.superjackfruit.superpipeline.work.available.v1",
+          "content-type": "application/json",
+          "ce-dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/work.available.v1.json",
+          "ce-time": "2026-11-23T09:30:00.000Z"
+        },
+        "body": "{\"event\":\"work.available\",\"boardId\":\"brd_134a0ddb6d434478\",\"cardId\":\"crd_0f3c9a2b7d4e4a11\",\"stageKey\":\"research\",\"ts\":\"2026-11-23T09:30:00.000Z\"}"
+      }
+    },
+    {
+      "name": "old-header-only",
+      "why": "only the old X-Superpipeline-Signature: not a treaty signature",
+      "secret": "fake-secret-agent-7-not-a-credential",
+      "nowSeconds": 1795426200,
+      "http": {
+        "headers": {
+          "ce-specversion": "1.0",
+          "ce-id": "brd_134a0ddb6d434478:41",
+          "ce-source": "/superpipeline/boards/brd_134a0ddb6d434478",
+          "ce-type": "com.superjackfruit.superpipeline.work.available.v1",
+          "content-type": "application/json",
+          "ce-dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/work.available.v1.json",
+          "ce-time": "2026-11-23T09:30:00.000Z",
+          "x-superpipeline-signature": "sha256=0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "body": "{\"event\":\"work.available\",\"boardId\":\"brd_134a0ddb6d434478\",\"cardId\":\"crd_0f3c9a2b7d4e4a11\",\"stageKey\":\"research\",\"ts\":\"2026-11-23T09:30:00.000Z\"}"
+      }
+    }
+  ]
+}

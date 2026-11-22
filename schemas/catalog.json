@@ -164,6 +164,18 @@
       "pushName": "card.ready",
       "type": "com.superjackfruit.superpipeline.card.ready.v1",
       "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/card.ready.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "work.available",
+      "type": "com.superjackfruit.superpipeline.work.available.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/work.available.v1.json"
+    },
+    {
+      "producer": "superpipeline",
+      "pushName": "cards.stale",
+      "type": "com.superjackfruit.superpipeline.cards.stale.v1",
+      "dataschema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superpipeline/cards.stale.v1.json"
     }
   ],
   "elsewhere": [

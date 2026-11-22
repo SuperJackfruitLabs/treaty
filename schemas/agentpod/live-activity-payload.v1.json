@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/agentpod/live-activity-payload.v1.json",
+  "title": "A fleet Live Activity push",
+  "description": "The body the AgentPod hub sends APNs for a reader's fleet Live Activity (`apns-push-type: liveactivity`, topic `<bundle id>.push-type.liveactivity`): a push-to-start, an update or an end. One shape for the three, as AgentPod's zod `LiveActivityPushPayload` (packages/contract/src/fleet-live.ts) is, and as strict; `event` says which it is. A start carries `attributes-type`, `attributes`, `alert` and `stale-date`; an update carries `stale-date`; an end carries `dismissal-date`. Apple refuses a Live Activity payload over 4096 bytes of encoded JSON, a bound JSON Schema cannot state: the hub checks every push, and one over it sheds agent rows into `more`, then shortens the alert and the question, then drops the decision's options and last the decision, until it fits. The tokens it is sent to are registered through schemas/http/agentpod/live-activity.v1.openapi.json.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["aps"],
+  "properties": {
+    "aps": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["timestamp", "event", "content-state"],
+      "properties": {
+        "timestamp": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Unix seconds. The hub keeps it moving forward for each reader."
+        },
+        "event": {
+          "enum": ["start", "update", "end"]
+        },
+        "content-state": {
+          "$ref": "fleet-content-state.v1.json"
+        },
+        "attributes-type": {
+          "const": "FleetActivityAttributes",
+          "description": "The ActivityKit attributes type the app registers; a push-to-start names it."
+        },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["readerId"],
+          "properties": {
+            "readerId": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "description": "The started activity's attributes: whose fleet it is."
+        },
+        "alert": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["title", "body"],
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "body": {
+              "type": "string"
+            }
+          },
+          "description": "Only a push-to-start alerts."
+        },
+        "stale-date": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Unix seconds after which the app says the card is waiting for updates."
+        },
+        "dismissal-date": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Unix seconds at which an ended card leaves the Lock Screen."
+        }
+      }
+    }
+  }
+}

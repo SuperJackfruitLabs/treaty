@@ -11,7 +11,11 @@ import { idOf, validatorFor, type Bundle } from "./schemas.ts";
 export const ERROR_SCHEMA = "schemas/common/error.v1.json";
 
 /** The error envelopes an HTTP contract may declare with `x-treaty-error-envelope`. */
-export const ERROR_ENVELOPES = ["error.v1", "flat-error.v1"] as const;
+export const ERROR_ENVELOPES = [
+  "error.v1",
+  "flat-error.v1",
+  "matrix-error.v1",
+] as const;
 export type ErrorEnvelope = (typeof ERROR_ENVELOPES)[number];
 
 /** The envelope a document declares, error.v1 when it declares none, or undefined when unknown. */
