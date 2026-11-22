@@ -166,6 +166,84 @@ describe("checkOpenApi", () => {
     });
   }
 
+  test("a flat-error.v1 API passes with flat error responses and its owner's flat codes", () => {
+    const accountsDoc = "schemas/http/accounts/sample.v1.openapi.json";
+    const doc = {
+      openapi: "3.1.0",
+      "x-treaty-error-envelope": "flat-error.v1",
+      paths: {
+        "/api/token/service": {
+          post: {
+            operationId: "exchangeServiceToken",
+            "x-treaty-error-codes": ["invalid_credential"],
+            responses: {
+              "401": {
+                description: "refused",
+                content: {
+                  "application/json": {
+                    schema: { $ref: "../../common/flat-error.v1.json" },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+    const bundle = createBundle({
+      "schemas/common/flat-error.v1.json": json(
+        join(root, "schemas/common/flat-error.v1.json"),
+      ),
+      "contracts/error-codes.json": json(
+        join(root, "contracts/error-codes.json"),
+      ),
+      [accountsDoc]: doc,
+      ["fixtures/http/accounts/sample.v1.cases.json"]: { operations: {} },
+    });
+    const [first] = registry.crossings;
+    if (!first) throw new Error("the sample registry is empty");
+    const reg: Registry = {
+      ...registry,
+      crossings: [
+        {
+          ...first,
+          id: "accounts.sample",
+          owner: "accounts",
+          contract: [accountsDoc],
+        },
+      ],
+    };
+    expect(checkOpenApi(bundle, accountsDoc, reg)).toEqual([]);
+  });
+
+  test("refuses an error response in another envelope than the document declares", () => {
+    const problems = checkOpenApi(
+      bundleWith({
+        in: "doc",
+        path: ["x-treaty-error-envelope"],
+        to: "flat-error.v1",
+      }),
+      DOC,
+      registry,
+    );
+    expect(problems.join("\n")).toContain(
+      "an error response must be schemas/common/flat-error.v1.json",
+    );
+  });
+
+  test("refuses an envelope treaty does not define", () => {
+    const problems = checkOpenApi(
+      bundleWith({
+        in: "doc",
+        path: ["x-treaty-error-envelope"],
+        to: "problem+json",
+      }),
+      DOC,
+      registry,
+    );
+    expect(problems.join("\n")).toContain("x-treaty-error-envelope");
+  });
+
   test("refuses a document no http crossing names", () => {
     const problems = checkOpenApi(bundleWith(), DOC, {
       ...registry,

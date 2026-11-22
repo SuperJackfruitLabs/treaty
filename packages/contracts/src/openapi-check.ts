@@ -10,6 +10,17 @@ import { idOf, validatorFor, type Bundle } from "./schemas.ts";
 
 export const ERROR_SCHEMA = "schemas/common/error.v1.json";
 
+/** The error envelopes an HTTP contract may declare with `x-treaty-error-envelope`. */
+export const ERROR_ENVELOPES = ["error.v1", "flat-error.v1"] as const;
+export type ErrorEnvelope = (typeof ERROR_ENVELOPES)[number];
+
+/** The envelope a document declares, error.v1 when it declares none, or undefined when unknown. */
+export function envelopeOf(doc: unknown): ErrorEnvelope | undefined {
+  const declared = isObject(doc) ? doc["x-treaty-error-envelope"] : undefined;
+  if (declared === undefined) return "error.v1";
+  return ERROR_ENVELOPES.find((e) => e === declared);
+}
+
 export interface ApiCases {
   operations: Record<
     string,
@@ -64,12 +75,20 @@ function refs(node: unknown, found: string[] = []): string[] {
   return found;
 }
 
-function errorCodes(bundle: Bundle): { code: string; owner: string }[] {
+function errorCodes(
+  bundle: Bundle,
+): { code: string; owner: string; envelope: string }[] {
   const file = bundle.files.get("contracts/error-codes.json");
   if (!isObject(file) || !Array.isArray(file.codes)) return [];
   return file.codes.flatMap((c: unknown) =>
     isObject(c) && typeof c.code === "string" && typeof c.owner === "string"
-      ? [{ code: c.code, owner: c.owner }]
+      ? [
+          {
+            code: c.code,
+            owner: c.owner,
+            envelope: typeof c.envelope === "string" ? c.envelope : "error.v1",
+          },
+        ]
       : [],
   );
 }
@@ -110,6 +129,12 @@ export function checkOpenApi(
   if (!isObject(doc)) return [`${path} is not in the bundle`];
   const problems: string[] = [];
   const owner = ownerOf(path);
+  const envelope = envelopeOf(doc);
+  if (!envelope)
+    problems.push(
+      `x-treaty-error-envelope is ${JSON.stringify(doc["x-treaty-error-envelope"])}; it must be one of ${ERROR_ENVELOPES.join(", ")}`,
+    );
+  const errorSchema = `schemas/common/${envelope ?? "error.v1"}.json`;
 
   if (typeof doc.openapi !== "string" || !/^3\.1\.\d+$/.test(doc.openapi))
     problems.push(`openapi is ${String(doc.openapi)}, not 3.1.x`);
@@ -162,9 +187,9 @@ export function checkOpenApi(
           isObject(schema) && typeof schema.$ref === "string"
             ? schema.$ref
             : "";
-        if (new URL(ref, idOf(path)).href !== idOf(ERROR_SCHEMA))
+        if (new URL(ref, idOf(path)).href !== idOf(errorSchema))
           problems.push(
-            `${op.id} ${status}: an error response must be ${ERROR_SCHEMA}`,
+            `${op.id} ${status}: an error response must be ${errorSchema}`,
           );
         continue;
       }

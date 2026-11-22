@@ -150,7 +150,7 @@ not a rewrite.
 - Create `schemas/common/flat-error.v1.json` (`{ error: string matching ^[a-z][a-z0-9_]*$ }`,
   extra properties allowed) and `fixtures/common/flat-error.v1.cases.json`.
 - Modify `contracts/error-codes.json`:
-  - add every code SuperPipeline returns: its 105 `BoardErrorCode`s plus the route-level ones
+  - add every code SuperPipeline returns: its 100 `BoardErrorCode`s plus the route-level ones
     (`UNAUTHORIZED`, `FORBIDDEN`, `INVALID_JSON`, `INVALID_INPUT`, `INVALID_BODY`, `INVALID_WAIT_ID`,
     `INVALID_COMMENT`, `EVIDENCE_LINK_UNAVAILABLE`, `UNKNOWN_RUN_ACTION`, `BOARD_NOT_FOUND`,
     `METHOD_NOT_ALLOWED`, `CHECKPOINT_SETTLEMENT_TOO_LARGE`, `CHECKPOINT_SOURCE_TOO_LARGE`);

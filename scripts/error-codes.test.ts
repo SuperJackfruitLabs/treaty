@@ -13,7 +13,9 @@ const RAW = "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/";
 interface ErrorCode {
   code: string;
   owner: string;
+  envelope: "error.v1" | "flat-error.v1";
   status: number;
+  alsoStatus?: number[];
   meaning: string;
 }
 const codesSchema = new Validator(
@@ -53,6 +55,26 @@ describe("schemas/common/error.v1.json", () => {
   }
 });
 
+describe("schemas/common/flat-error.v1.json", () => {
+  const schema = readJson("schemas/common/flat-error.v1.json");
+  const validator = new Validator(schema, "2020-12", false);
+  const cases: {
+    valid: Record<string, unknown>;
+    invalid: { why: string; body: unknown }[];
+  } = readJson("fixtures/common/flat-error.v1.cases.json");
+
+  for (const [label, body] of Object.entries(cases.valid)) {
+    test(`accepts ${label}`, () => {
+      expect(validator.validate(body).errors).toEqual([]);
+    });
+  }
+  for (const { why, body } of cases.invalid) {
+    test(`refuses: ${why}`, () => {
+      expect(validator.validate(body).valid).toBe(false);
+    });
+  }
+});
+
 describe("contracts/error-codes.json", () => {
   test("validates against schemas/treaty/error-codes.v1.json", () => {
     expect(codesSchema.validate(codesFile).errors).toEqual([]);
@@ -63,10 +85,23 @@ describe("contracts/error-codes.json", () => {
     expect(names.length).toBe(new Set(names).size);
   });
 
-  test("codes are SCREAMING_SNAKE_CASE", () => {
-    expect(
-      codes.filter((c) => !/^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$/.test(c.code)),
-    ).toEqual([]);
+  test("an error.v1 code is SCREAMING_SNAKE_CASE and a flat-error.v1 code is snake_case", () => {
+    const wrong = codes.filter((c) =>
+      c.envelope === "error.v1"
+        ? !/^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$/.test(c.code)
+        : !/^[a-z][a-z0-9]*(_[a-z0-9]+)*$/.test(c.code),
+    );
+    expect(wrong).toEqual([]);
+  });
+
+  test("a product's codes all travel in one envelope", () => {
+    const envelopes = new Map<string, Set<string>>();
+    for (const c of codes)
+      envelopes.set(
+        c.owner,
+        (envelopes.get(c.owner) ?? new Set()).add(c.envelope),
+      );
+    expect([...envelopes].filter(([, e]) => e.size > 1)).toEqual([]);
   });
 
   test("every code is owned by a known product", () => {
@@ -74,7 +109,11 @@ describe("contracts/error-codes.json", () => {
     expect(codes.filter((c) => !products.includes(c.owner))).toEqual([]);
   });
 
-  test("status is an HTTP error status, 400 to 599", () => {
-    expect(codes.filter((c) => c.status < 400 || c.status > 599)).toEqual([]);
+  test("every status is an HTTP error status, 400 to 599", () => {
+    expect(
+      codes.filter((c) =>
+        [c.status, ...(c.alsoStatus ?? [])].some((s) => s < 400 || s > 599),
+      ),
+    ).toEqual([]);
   });
 });
