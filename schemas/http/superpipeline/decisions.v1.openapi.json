@@ -1,0 +1,2296 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SuperPipeline decisions",
+    "version": "1",
+    "description": "Human decisions written back to a board, and the pending reads that feed them. Written from SuperPipeline's routes on main (apps/api/src/routes/boards/gates.ts, cards.ts, checks.ts and service-routes.ts), not from its zod package. Every refusal is error.v1; its `detail` carries what the producer adds, such as GATE_NOT_PENDING's `reason`. A pending list item is the pushed event body, by reference, so a pushed body and a read body are one contract."
+  },
+  "x-treaty-error-envelope": "error.v1",
+  "paths": {
+    "/v1/boards/{boardId}/gates/pending": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/boardId"
+        }
+      ],
+      "get": {
+        "operationId": "listPendingGates",
+        "summary": "Every gate still waiting on a person",
+        "description": "The read half of the carrier's sweep for `gate.pending`. Each item is the pushed body, from the same builder.",
+        "security": [
+          {
+            "agentToken": []
+          },
+          {
+            "personToken": ["read"]
+          },
+          {
+            "serviceToken": ["gates:read"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "BOARD_NOT_FOUND",
+          "FORBIDDEN",
+          "UNAUTHORIZED",
+          "UNEXPECTED"
+        ],
+        "responses": {
+          "200": {
+            "description": "The pending gates, oldest first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["gates"],
+                  "properties": {
+                    "gates": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "../../superpipeline/gate.pending.v1.json"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/gates/{gateId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/boardId"
+        },
+        {
+          "$ref": "#/components/parameters/gateId"
+        }
+      ],
+      "get": {
+        "operationId": "readGate",
+        "summary": "One gate, including how it was decided",
+        "description": "A gate decided on the web is settled in the room too by this read.",
+        "security": [
+          {
+            "agentToken": []
+          },
+          {
+            "personToken": ["read"]
+          },
+          {
+            "serviceToken": ["gates:read"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "BOARD_NOT_FOUND",
+          "FORBIDDEN",
+          "GATE_NOT_FOUND",
+          "UNAUTHORIZED",
+          "UNEXPECTED"
+        ],
+        "responses": {
+          "200": {
+            "description": "The gate.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["gate"],
+                  "properties": {
+                    "gate": {
+                      "$ref": "#/components/schemas/GateView"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/gates/{gateId}/resolve": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/boardId"
+        },
+        {
+          "$ref": "#/components/parameters/gateId"
+        }
+      ],
+      "post": {
+        "operationId": "resolveGate",
+        "summary": "Decide a gate",
+        "description": "A person decides a gate, on the web or through a service carrying their answer. A quorum gate short of its quorum records the approval and stays pending; the card is returned either way. Who decided comes from the credential, never the body.",
+        "security": [
+          {
+            "personToken": ["work"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "APPROVAL_DECIDER_NOT_ALLOWED",
+          "APPROVAL_RELEASE_AFTER_EXPIRY",
+          "APPROVAL_SUBJECT_MISMATCH",
+          "DECISION_EXPIRED",
+          "FORBIDDEN",
+          "GATE_DECISION_NOT_ALLOWED",
+          "GATE_NOT_FOUND",
+          "GATE_NOT_PENDING",
+          "INVALID_JSON",
+          "QUORUM_ALREADY_APPROVED",
+          "SEPARATION_OF_DUTIES",
+          "UNAUTHORIZED",
+          "UNEXPECTED"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResolveGateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The card after the decision.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CardResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/gates/{gateId}/pull-back": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/boardId"
+        },
+        {
+          "$ref": "#/components/parameters/gateId"
+        }
+      ],
+      "post": {
+        "operationId": "pullBackGate",
+        "summary": "Pull a held approval back before its release time",
+        "description": "Request changes in effect: the card returns to the gate's return stage with the comment as feedback. A decider of the gate, or a workspace owner or admin by the role in the token.",
+        "security": [
+          {
+            "personToken": ["work"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "APPROVAL_DECIDER_NOT_ALLOWED",
+          "APPROVAL_RELEASED",
+          "FORBIDDEN",
+          "GATE_NOT_FOUND",
+          "GATE_NOT_HELD",
+          "INVALID_COMMENT",
+          "INVALID_JSON",
+          "SEPARATION_OF_DUTIES",
+          "UNAUTHORIZED",
+          "UNEXPECTED"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PullBackGateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The card, sent back.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CardResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/gates/{gateId}/delivery": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/boardId"
+        },
+        {
+          "$ref": "#/components/parameters/gateId"
+        }
+      ],
+      "post": {
+        "operationId": "setGateDelivery",
+        "summary": "Change how an approved post is delivered",
+        "description": "Switch the mode, record the live link of a manual post, or schedule a reminder. Never changes the approved bytes. A decider of the gate only.",
+        "security": [
+          {
+            "personToken": ["work"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "APPROVAL_DECIDER_NOT_ALLOWED",
+          "APPROVAL_DELIVERY_DELIVERED",
+          "APPROVAL_DELIVERY_NOT_AVAILABLE",
+          "APPROVAL_DELIVERY_NOT_MANUAL",
+          "APPROVAL_DELIVERY_STARTED",
+          "APPROVAL_HELD",
+          "APPROVAL_SUBJECT_MISMATCH",
+          "FORBIDDEN",
+          "GATE_NOT_FOUND",
+          "INVALID_APPROVAL_DELIVERY",
+          "INVALID_JSON",
+          "INVALID_LIVE_URL",
+          "UNAUTHORIZED",
+          "UNEXPECTED"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetGateDeliveryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The card and the gate's delivery state.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["card", "delivery"],
+                  "properties": {
+                    "card": {
+                      "$ref": "#/components/schemas/CardWithDelivery"
+                    },
+                    "delivery": {
+                      "$ref": "#/components/schemas/Delivery"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/deliveries/pending": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/boardId"
+        }
+      ],
+      "get": {
+        "operationId": "listPendingDeliveries",
+        "summary": "Every manual delivery still owed its live link",
+        "description": "The read half of the carrier's sweep for `delivery.pending`.",
+        "security": [
+          {
+            "agentToken": []
+          },
+          {
+            "personToken": ["read"]
+          },
+          {
+            "serviceToken": ["gates:read"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "BOARD_NOT_FOUND",
+          "FORBIDDEN",
+          "UNAUTHORIZED",
+          "UNEXPECTED"
+        ],
+        "responses": {
+          "200": {
+            "description": "The deliveries still owed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["deliveries"],
+                  "properties": {
+                    "deliveries": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "../../superpipeline/delivery.pending.v1.json"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/elicitations/pending": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/boardId"
+        }
+      ],
+      "get": {
+        "operationId": "listPendingElicitations",
+        "summary": "Every question still waiting on a person",
+        "description": "The read half of the carrier's sweep for `elicitation.pending`. A person and a service holding `approval-requests:relay` also see broker approval requests; an agent sees card questions only. A question absent from the list can no longer be answered.",
+        "security": [
+          {
+            "agentToken": []
+          },
+          {
+            "personToken": ["read"]
+          },
+          {
+            "serviceToken": ["approval-requests:relay"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "BOARD_NOT_FOUND",
+          "FORBIDDEN",
+          "UNAUTHORIZED",
+          "UNEXPECTED"
+        ],
+        "responses": {
+          "200": {
+            "description": "The pending questions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["elicitations"],
+                  "properties": {
+                    "elicitations": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "../../superpipeline/elicitation.pending.v1.json"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/elicitations/{elicitationId}/answer": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/boardId"
+        },
+        {
+          "$ref": "#/components/parameters/elicitationId"
+        }
+      ],
+      "post": {
+        "operationId": "answerElicitation",
+        "summary": "Answer an agent's question, or a broker approval request",
+        "description": "A person answers. An `elc_` id is a card question: the card goes back to work and the asking agent reads the answer from its run. An `apr_` id is a broker approval request, answered `allow_once` (a workspace owner or admin) or `deny`. The asker never answers its own question.",
+        "security": [
+          {
+            "personToken": ["work"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "APPROVAL_SUBJECT_MISMATCH",
+          "CARD_NOT_FOUND",
+          "CARD_NOT_WAITING",
+          "DECISION_EXPIRED",
+          "ELICITATION_NOT_FOUND",
+          "ELICITATION_NOT_PENDING",
+          "FORBIDDEN",
+          "INVALID_ANSWER",
+          "INVALID_JSON",
+          "SEPARATION_OF_DUTIES",
+          "STALE_LEASE",
+          "UNAUTHORIZED",
+          "UNEXPECTED",
+          "WORKSPACE_ADMIN_REQUIRED"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnswerElicitationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The answered question with its card, or the decided approval request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnswerElicitationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/attention/pending": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/boardId"
+        }
+      ],
+      "get": {
+        "operationId": "listPendingAttention",
+        "summary": "Every card waiting on a person for a reason chat carries",
+        "description": "The read half of the carrier's sweep for `attention.pending`. A card no longer listed, or listed under another `waitId`, has stopped waiting on that wait.",
+        "security": [
+          {
+            "agentToken": []
+          },
+          {
+            "personToken": ["read"]
+          },
+          {
+            "serviceToken": ["gates:read"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "BOARD_NOT_FOUND",
+          "FORBIDDEN",
+          "UNAUTHORIZED",
+          "UNEXPECTED"
+        ],
+        "responses": {
+          "200": {
+            "description": "The waiting cards.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["attention"],
+                  "properties": {
+                    "attention": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "../../superpipeline/attention.pending.v1.json"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/cards/{cardId}/resume": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/boardId"
+        },
+        {
+          "$ref": "#/components/parameters/cardId"
+        }
+      ],
+      "post": {
+        "operationId": "resumeCard",
+        "summary": "Return a waiting card to its stage, or an earlier one",
+        "description": "A person only; an agent's credential is refused. The comment joins the card's thread and is the feedback the next attempt reads.",
+        "security": [
+          {
+            "personToken": ["work"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "CARD_BLOCKED",
+          "CARD_NOT_FOUND",
+          "CARD_NOT_WAITING",
+          "FORBIDDEN",
+          "GATE_PENDING",
+          "INVALID_COMMENT",
+          "INVALID_JSON",
+          "INVALID_RESUME",
+          "INVALID_WAIT_ID",
+          "NOT_INITIALIZED",
+          "QUESTION_PENDING",
+          "UNAUTHORIZED",
+          "UNEXPECTED",
+          "UNKNOWN_STAGE",
+          "WAIT_CHANGED"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResumeCardRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The card, re-queued, and the comment.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["card", "comment"],
+                  "properties": {
+                    "card": {
+                      "$ref": "#/components/schemas/CardView"
+                    },
+                    "comment": {
+                      "$ref": "#/components/schemas/CommentView"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/cards/{cardId}/archive": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/boardId"
+        },
+        {
+          "$ref": "#/components/parameters/cardId"
+        }
+      ],
+      "post": {
+        "operationId": "archiveCard",
+        "summary": "Archive a card as a person",
+        "description": "The `archive` answer to a waiting card, and the board's own archive with a remark. Archiving ends a pending review or question. An already archived card is returned unchanged.",
+        "security": [
+          {
+            "personToken": ["work"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "CARD_CHANGED",
+          "CARD_NOT_FOUND",
+          "FORBIDDEN",
+          "INVALID_COMMENT",
+          "INVALID_JSON",
+          "INVALID_WAIT_ID",
+          "NOT_INITIALIZED",
+          "UNAUTHORIZED",
+          "UNEXPECTED",
+          "WAIT_CHANGED"
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArchiveCardRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The archived card, and the comment when one was given.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["card", "comment"],
+                  "properties": {
+                    "card": {
+                      "$ref": "#/components/schemas/CardView"
+                    },
+                    "comment": {
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/CommentView"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/cards/{cardId}/checks": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/boardId"
+        },
+        {
+          "$ref": "#/components/parameters/cardId"
+        }
+      ],
+      "get": {
+        "operationId": "readCardChecks",
+        "summary": "A card's machine checks",
+        "description": "The checks of the card's latest arrival at a stage with checks, or null when it never reached one.",
+        "security": [
+          {
+            "agentToken": []
+          },
+          {
+            "personToken": ["read"]
+          },
+          {
+            "serviceToken": ["gates:read"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "BOARD_NOT_FOUND",
+          "CARD_NOT_FOUND",
+          "FORBIDDEN",
+          "NOT_INITIALIZED",
+          "UNAUTHORIZED",
+          "UNEXPECTED"
+        ],
+        "responses": {
+          "200": {
+            "description": "The checks.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["checks"],
+                  "properties": {
+                    "checks": {
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/CardChecksView"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/cards/{cardId}/checks/{checkName}/override": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/boardId"
+        },
+        {
+          "$ref": "#/components/parameters/cardId"
+        },
+        {
+          "$ref": "#/components/parameters/checkName"
+        }
+      ],
+      "post": {
+        "operationId": "overrideCardCheck",
+        "summary": "Pass a check by hand",
+        "description": "A workspace owner or admin, by the role in the token, passes a pending check, or a failed one the card still waits on. Never an agent, never the producer of the work.",
+        "security": [
+          {
+            "personToken": ["work"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "CARD_NOT_FOUND",
+          "CHECK_NOT_FOUND",
+          "CHECK_NOT_OPEN",
+          "CHECK_OVERRIDE_NOT_ALLOWED",
+          "FORBIDDEN",
+          "INVALID_COMMENT",
+          "INVALID_JSON",
+          "SEPARATION_OF_DUTIES",
+          "UNAUTHORIZED",
+          "UNEXPECTED"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OverrideCardCheckRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The card and its checks after the override.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["card", "checks"],
+                  "properties": {
+                    "card": {
+                      "$ref": "#/components/schemas/CardView"
+                    },
+                    "checks": {
+                      "$ref": "#/components/schemas/CardChecksView"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "personToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "An Organization-plane access token for a human principal (`principalKind: human`), issued by Accounts. A service carrying a person's answer (a chat carrier) presents a token minted for that person whose `act.sub` names the service speaking for them (RFC 8693 actor); the board then records the decision as made over chat. The roles are the board's capabilities: `read` for reads, `work` for every write here. Workspace owner and admin acts read `orgRole` from the token, never a local membership. The web app's session cookie is the same person and is not a crossing."
+      },
+      "agentToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "An agent's credential: a `spa_` token, or an Organization-plane token for an agent principal. It reads the pending lists, one gate and a card's checks, and never decides. It sees card questions only, never broker approval requests."
+      },
+      "serviceToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "An Organization-plane token for a service principal (`principalKind: service`) whose `scope` holds the grant: `gates:read` for the gate, delivery, attention and check reads, `approval-requests:relay` for the question list. The tenant comes from the token; a board in another tenant is 404 BOARD_NOT_FOUND. A service token never reaches a write here."
+      }
+    },
+    "parameters": {
+      "boardId": {
+        "name": "boardId",
+        "in": "path",
+        "required": true,
+        "description": "The board.",
+        "schema": {
+          "type": "string",
+          "pattern": "^brd_[0-9a-f]{16}$"
+        }
+      },
+      "gateId": {
+        "name": "gateId",
+        "in": "path",
+        "required": true,
+        "description": "The gate.",
+        "schema": {
+          "type": "string",
+          "pattern": "^gate_[0-9a-f]{16}$"
+        }
+      },
+      "cardId": {
+        "name": "cardId",
+        "in": "path",
+        "required": true,
+        "description": "The card.",
+        "schema": {
+          "type": "string",
+          "pattern": "^card_[0-9a-f]{16}$"
+        }
+      },
+      "elicitationId": {
+        "name": "elicitationId",
+        "in": "path",
+        "required": true,
+        "description": "A card question (`elc_`) or a broker approval request (`apr_`).",
+        "schema": {
+          "type": "string",
+          "pattern": "^(elc|apr)_[0-9a-f]{16}$"
+        }
+      },
+      "checkName": {
+        "name": "checkName",
+        "in": "path",
+        "required": true,
+        "description": "The check's name, URL-encoded.",
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "The request was malformed or refused as input.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "No credential this route accepts.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "The caller may not do this.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "The board, or what the path names, does not exist.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "The board's state refuses the act now.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Unexpected": {
+        "description": "A failure nobody planned for.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "GateDecision": {
+        "enum": [
+          "approve",
+          "approve_manual",
+          "approve_automatic",
+          "request_changes",
+          "reject"
+        ],
+        "description": "SuperPipeline's GateDecision (packages/contract primitives.ts). A decision must also be one of the gate's own options; one that is not is 400 GATE_DECISION_NOT_ALLOWED, on every gate."
+      },
+      "TaskState": {
+        "enum": [
+          "submitted",
+          "working",
+          "input-required",
+          "auth-required",
+          "completed",
+          "rejected",
+          "failed",
+          "canceled"
+        ],
+        "description": "The A2A task states; `canceled` with one l, as A2A spells it."
+      },
+      "Timestamp": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "NullableTimestamp": {
+        "type": ["string", "null"],
+        "format": "date-time"
+      },
+      "OptionMeaning": {
+        "enum": ["approve", "reject", "revise", "choose", "defer"]
+      },
+      "GateOption": {
+        "type": "object",
+        "description": "An option as the board stores it (GateOption, board/gate-option.ts). The pushed and pending bodies rename `name`/`title` to `id`/`label`; this is the board's own read shape.",
+        "required": ["name", "title"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "promptFill": {
+            "type": "string"
+          },
+          "interactive": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string"
+          },
+          "requires": {
+            "const": "workspace-admin"
+          },
+          "meaning": {
+            "$ref": "#/components/schemas/OptionMeaning"
+          },
+          "scope": {
+            "enum": ["once", "run", "always"]
+          }
+        }
+      },
+      "PreviewBlock": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["type", "text"],
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "label": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "label", "value"],
+            "properties": {
+              "type": {
+                "const": "field"
+              },
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "label", "url"],
+            "properties": {
+              "type": {
+                "const": "link"
+              },
+              "label": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "ApprovalSubjectView": {
+        "type": "object",
+        "description": "A frozen approval subject with its canonical payload (ApprovalSubjectView).",
+        "required": ["id", "digest", "schema", "revision", "canonical"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "digest": {
+            "type": "string"
+          },
+          "schema": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "canonical": {
+            "description": "Any JSON value: the kind's canonical payload."
+          }
+        }
+      },
+      "ApprovalSubjectEnvelope": {
+        "type": "object",
+        "description": "A subject as a decision envelope carries it (gate.v2 §3): identity, expiry and the bounded preview.",
+        "required": [
+          "id",
+          "digest",
+          "schema",
+          "revision",
+          "expiresAt",
+          "preview",
+          "previewComplete"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "digest": {
+            "type": "string"
+          },
+          "schema": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "expiresAt": {
+            "$ref": "#/components/schemas/NullableTimestamp"
+          },
+          "preview": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PreviewBlock"
+            }
+          },
+          "previewComplete": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ReferenceView": {
+        "type": "object",
+        "required": [
+          "id",
+          "cardId",
+          "url",
+          "title",
+          "subtitle",
+          "provider",
+          "sourceType",
+          "externalId",
+          "metadata",
+          "syncState",
+          "lastSyncedAt",
+          "addedBy",
+          "runId",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "cardId": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "title": {
+            "type": ["string", "null"]
+          },
+          "subtitle": {
+            "type": ["string", "null"]
+          },
+          "provider": {
+            "type": "string"
+          },
+          "sourceType": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": ["string", "null"]
+          },
+          "metadata": {
+            "description": "Any JSON value, or null."
+          },
+          "syncState": {
+            "enum": ["synced", "stale", "error"]
+          },
+          "lastSyncedAt": {
+            "$ref": "#/components/schemas/NullableTimestamp"
+          },
+          "addedBy": {
+            "enum": ["agent", "user"]
+          },
+          "runId": {
+            "type": ["string", "null"]
+          },
+          "createdAt": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "updatedAt": {
+            "$ref": "#/components/schemas/NullableTimestamp"
+          }
+        }
+      },
+      "GateCheckSummary": {
+        "type": "object",
+        "required": ["name", "provider", "status"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "provider": {
+            "enum": ["ci", "verdict"]
+          },
+          "status": {
+            "enum": ["pending", "passed", "failed", "overridden"]
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "Delivery": {
+        "type": "object",
+        "description": "How an approved publishing subject is delivered (GateView.delivery).",
+        "required": [
+          "mode",
+          "liveUrl",
+          "remindAt",
+          "readBackStatus",
+          "recordedBy",
+          "recordedAt"
+        ],
+        "properties": {
+          "mode": {
+            "enum": ["manual", "automatic"]
+          },
+          "liveUrl": {
+            "type": ["string", "null"]
+          },
+          "remindAt": {
+            "$ref": "#/components/schemas/NullableTimestamp"
+          },
+          "readBackStatus": {
+            "enum": ["not_checked", "matched", "mismatch", "service_reported"]
+          },
+          "recordedBy": {
+            "type": ["string", "null"]
+          },
+          "recordedAt": {
+            "$ref": "#/components/schemas/NullableTimestamp"
+          }
+        }
+      },
+      "GateView": {
+        "type": "object",
+        "description": "One gate, including how it was decided (GateView, board/views.ts). `status` includes `cancelled`, which the board writes when a card is moved or archived with a review pending, though the producer's type leaves it out.",
+        "required": [
+          "id",
+          "cardId",
+          "stageKey",
+          "status",
+          "decision",
+          "options",
+          "producedBy",
+          "createdAt",
+          "decidedBy",
+          "comment",
+          "resolvedAt",
+          "references"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "cardId": {
+            "type": "string"
+          },
+          "stageKey": {
+            "type": "string"
+          },
+          "status": {
+            "enum": ["pending", "resolved", "cancelled"]
+          },
+          "decision": {
+            "type": ["string", "null"],
+            "description": "The decision recorded, or null while pending or once cancelled. A gate closed because its subject expired carries the board's expired marker."
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GateOption"
+            }
+          },
+          "producedBy": {
+            "type": "string"
+          },
+          "createdAt": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "decidedBy": {
+            "type": ["string", "null"]
+          },
+          "comment": {
+            "type": ["string", "null"]
+          },
+          "resolvedAt": {
+            "$ref": "#/components/schemas/NullableTimestamp"
+          },
+          "references": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReferenceView"
+            }
+          },
+          "summary": {
+            "type": ["string", "null"],
+            "description": "What is being approved, as plain text; absent when the gate binds a subject."
+          },
+          "approvalSubject": {
+            "$ref": "#/components/schemas/ApprovalSubjectView"
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "label",
+                "status",
+                "chosen",
+                "approvalSubject"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "status": {
+                  "enum": ["active", "invalidated"]
+                },
+                "chosen": {
+                  "type": "boolean"
+                },
+                "approvalSubject": {
+                  "$ref": "#/components/schemas/ApprovalSubjectView"
+                }
+              }
+            }
+          },
+          "quorum": {
+            "type": "object",
+            "required": ["required", "from", "approvals"],
+            "properties": {
+              "required": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "from": {
+                "enum": ["deciders", "admins"]
+              },
+              "approvals": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["principalId", "at"],
+                  "properties": {
+                    "principalId": {
+                      "type": "string"
+                    },
+                    "at": {
+                      "$ref": "#/components/schemas/Timestamp"
+                    },
+                    "variantId": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "release": {
+            "type": "object",
+            "properties": {
+              "holdForMinutes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "notBefore": {
+                "$ref": "#/components/schemas/Timestamp"
+              }
+            }
+          },
+          "heldUntil": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "releasedAt": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "pulledBack": {
+            "type": "object",
+            "required": ["by", "at", "comment"],
+            "properties": {
+              "by": {
+                "type": "string"
+              },
+              "at": {
+                "$ref": "#/components/schemas/Timestamp"
+              },
+              "comment": {
+                "type": "string"
+              }
+            }
+          },
+          "checks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GateCheckSummary"
+            }
+          },
+          "delivery": {
+            "$ref": "#/components/schemas/Delivery"
+          }
+        }
+      },
+      "CardNeedsHuman": {
+        "type": "object",
+        "required": ["reason"],
+        "properties": {
+          "reason": {
+            "enum": [
+              "question",
+              "repeated-failure",
+              "blocked",
+              "review",
+              "not-authorised"
+            ]
+          },
+          "elicitationId": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "failureCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "summary": {
+            "type": "string"
+          }
+        }
+      },
+      "CardView": {
+        "type": "object",
+        "description": "A card as every board route returns it (CardView, board/model.ts).",
+        "required": [
+          "id",
+          "title",
+          "spec",
+          "ownerUserId",
+          "queuedBy",
+          "queuedByAgentId",
+          "queuedGrant",
+          "labels",
+          "projectId",
+          "milestoneId",
+          "dueAt",
+          "archivedAt",
+          "currentStageKey",
+          "state",
+          "delegateAgentId",
+          "lastAgentId",
+          "queuedGrantOwner",
+          "stageSince",
+          "currentRunId",
+          "priority",
+          "contextId",
+          "createdAt",
+          "updatedAt",
+          "stateSince",
+          "costUsd",
+          "overBudget",
+          "attemptCount",
+          "parentCardId",
+          "openChildCount",
+          "costUsdRollup",
+          "blockedBy"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "spec": {
+            "description": "Any JSON value: the card's spec."
+          },
+          "ownerUserId": {
+            "type": "string"
+          },
+          "queuedBy": {
+            "type": ["string", "null"]
+          },
+          "queuedByAgentId": {
+            "type": ["string", "null"]
+          },
+          "queuedGrant": {
+            "type": ["array", "null"],
+            "items": {
+              "type": "string"
+            }
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "projectId": {
+            "type": ["string", "null"]
+          },
+          "milestoneId": {
+            "type": ["string", "null"]
+          },
+          "dueAt": {
+            "type": ["string", "null"],
+            "description": "An ISO date, no time."
+          },
+          "needsHuman": {
+            "$ref": "#/components/schemas/CardNeedsHuman"
+          },
+          "reservation": {
+            "type": "object",
+            "required": [
+              "agentId",
+              "reservedUntil",
+              "decisionId",
+              "reservedBy"
+            ],
+            "properties": {
+              "agentId": {
+                "type": "string"
+              },
+              "reservedUntil": {
+                "type": "string"
+              },
+              "decisionId": {
+                "type": "string"
+              },
+              "reservedBy": {
+                "type": "string"
+              }
+            }
+          },
+          "placementWindowUntil": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "archivedAt": {
+            "$ref": "#/components/schemas/NullableTimestamp"
+          },
+          "currentStageKey": {
+            "type": "string"
+          },
+          "state": {
+            "$ref": "#/components/schemas/TaskState"
+          },
+          "delegateAgentId": {
+            "type": ["string", "null"]
+          },
+          "lastAgentId": {
+            "type": ["string", "null"]
+          },
+          "queuedGrantOwner": {
+            "type": ["string", "null"]
+          },
+          "stageSince": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "currentRunId": {
+            "type": ["string", "null"]
+          },
+          "priority": {
+            "type": "number"
+          },
+          "contextId": {
+            "type": "string"
+          },
+          "createdAt": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "updatedAt": {
+            "$ref": "#/components/schemas/NullableTimestamp"
+          },
+          "stateSince": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "costUsd": {
+            "type": "number",
+            "minimum": 0
+          },
+          "overBudget": {
+            "type": "boolean"
+          },
+          "attemptCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "parentCardId": {
+            "type": ["string", "null"]
+          },
+          "openChildCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "costUsdRollup": {
+            "type": "number",
+            "minimum": 0
+          },
+          "blockedBy": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["cardId", "title"],
+              "properties": {
+                "cardId": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CardWithDelivery": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CardView"
+          },
+          {
+            "type": "object",
+            "required": ["delivery"],
+            "properties": {
+              "delivery": {
+                "$ref": "#/components/schemas/Delivery"
+              }
+            }
+          }
+        ],
+        "description": "The card, with the gate's delivery state beside its own fields (the board returns `CardView & { delivery }`)."
+      },
+      "StrictDecision": {
+        "type": "object",
+        "required": ["version", "request_id", "decision_digest", "expires_at"],
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "request_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "decision_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "expires_at": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Milliseconds since the epoch."
+          }
+        }
+      },
+      "ApprovalDetail": {
+        "type": "object",
+        "required": ["version", "summary", "reason", "files", "digest"],
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "reason": {
+            "type": ["string", "null"],
+            "maxLength": 300
+          },
+          "files": {
+            "type": "array",
+            "maxItems": 16,
+            "items": {
+              "type": "object",
+              "required": ["path", "change", "bytes", "preview"],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512
+                },
+                "change": {
+                  "enum": ["create", "edit", "delete"]
+                },
+                "bytes": {
+                  "type": ["integer", "null"],
+                  "minimum": 0
+                },
+                "preview": {
+                  "type": ["string", "null"],
+                  "maxLength": 1200
+                },
+                "preview_truncated": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      },
+      "ElicitationView": {
+        "type": "object",
+        "description": "An agent's question to a person, with its answer once given (ElicitationView, board/views.ts).",
+        "required": [
+          "id",
+          "cardId",
+          "runId",
+          "stageKey",
+          "agentId",
+          "question",
+          "signal",
+          "options",
+          "status",
+          "answer",
+          "createdAt"
+        ],
+        "properties": {
+          "strictDecision": {
+            "$ref": "#/components/schemas/StrictDecision"
+          },
+          "detail": {
+            "$ref": "#/components/schemas/ApprovalDetail"
+          },
+          "approvalSubject": {
+            "$ref": "#/components/schemas/ApprovalSubjectEnvelope"
+          },
+          "id": {
+            "type": "string"
+          },
+          "cardId": {
+            "type": "string"
+          },
+          "runId": {
+            "type": "string"
+          },
+          "stageKey": {
+            "type": "string"
+          },
+          "agentId": {
+            "type": "string"
+          },
+          "question": {
+            "type": "string"
+          },
+          "signal": {
+            "type": ["string", "null"]
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GateOption"
+            }
+          },
+          "status": {
+            "enum": ["pending", "answered", "cancelled"]
+          },
+          "answer": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "required": ["option", "text", "answeredBy", "answeredAt"],
+                "properties": {
+                  "option": {
+                    "type": ["string", "null"]
+                  },
+                  "text": {
+                    "type": ["string", "null"]
+                  },
+                  "answeredBy": {
+                    "type": "string"
+                  },
+                  "answeredAt": {
+                    "$ref": "#/components/schemas/Timestamp"
+                  }
+                }
+              }
+            ]
+          },
+          "createdAt": {
+            "$ref": "#/components/schemas/Timestamp"
+          }
+        }
+      },
+      "ApprovalRequestView": {
+        "type": "object",
+        "description": "A broker approval request as the board records it (ApprovalRequestView, board/views.ts).",
+        "required": [
+          "approvalRequestId",
+          "requestId",
+          "state",
+          "option",
+          "decidedBy",
+          "decidedAt",
+          "subject",
+          "expiresAt"
+        ],
+        "properties": {
+          "approvalRequestId": {
+            "type": "string"
+          },
+          "requestId": {
+            "type": "string"
+          },
+          "state": {
+            "enum": ["pending", "approved", "denied", "expired"]
+          },
+          "option": {
+            "enum": ["allow_once", "deny", null]
+          },
+          "decidedBy": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "required": ["principalId", "label"],
+                "properties": {
+                  "principalId": {
+                    "type": "string"
+                  },
+                  "label": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          },
+          "decidedAt": {
+            "$ref": "#/components/schemas/NullableTimestamp"
+          },
+          "subject": {
+            "type": "object",
+            "required": ["id", "digest"],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "digest": {
+                "type": "string"
+              }
+            }
+          },
+          "expiresAt": {
+            "$ref": "#/components/schemas/Timestamp"
+          }
+        }
+      },
+      "CommentView": {
+        "type": "object",
+        "description": "A remark on a card (CommentView, board/views.ts).",
+        "required": [
+          "id",
+          "cardId",
+          "author",
+          "body",
+          "createdAt",
+          "deletedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "cardId": {
+            "type": "string"
+          },
+          "author": {
+            "type": "object",
+            "required": ["kind", "id", "name"],
+            "properties": {
+              "kind": {
+                "enum": ["human", "agent"]
+              },
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": ["string", "null"]
+              }
+            }
+          },
+          "body": {
+            "type": "string"
+          },
+          "createdAt": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "deletedAt": {
+            "$ref": "#/components/schemas/NullableTimestamp"
+          }
+        }
+      },
+      "CheckView": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/GateCheckSummary"
+          },
+          {
+            "type": "object",
+            "required": ["updatedAt"],
+            "properties": {
+              "detail": {
+                "type": "string"
+              },
+              "headSha": {
+                "type": "string"
+              },
+              "updatedAt": {
+                "$ref": "#/components/schemas/Timestamp"
+              },
+              "overridden": {
+                "type": "object",
+                "required": ["by", "at", "comment"],
+                "properties": {
+                  "by": {
+                    "type": "string"
+                  },
+                  "at": {
+                    "$ref": "#/components/schemas/Timestamp"
+                  },
+                  "comment": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "CardChecksView": {
+        "type": "object",
+        "description": "The checks of a card's latest arrival at a stage with checks (CardChecksView).",
+        "required": ["cardId", "stageKey", "status", "checks"],
+        "properties": {
+          "cardId": {
+            "type": "string"
+          },
+          "stageKey": {
+            "type": "string"
+          },
+          "status": {
+            "enum": ["open", "passed", "returned", "closed"]
+          },
+          "checks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckView"
+            }
+          }
+        }
+      },
+      "ExpectedWaitId": {
+        "type": "string",
+        "minLength": 1,
+        "description": "The `waitId` of the `attention.pending` the answer was given for. A card no longer in that wait refuses 409 WAIT_CHANGED and nothing is written."
+      },
+      "ResolveGateRequest": {
+        "type": "object",
+        "required": ["decision"],
+        "properties": {
+          "decision": {
+            "$ref": "#/components/schemas/GateDecision"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "approvalSubjectId": {
+            "type": "string",
+            "description": "The subject the person saw; required by a gate that binds one, and the chosen variant's on a variant gate."
+          },
+          "approvalSubjectDigest": {
+            "type": "string"
+          }
+        }
+      },
+      "PullBackGateRequest": {
+        "type": "object",
+        "required": ["comment"],
+        "properties": {
+          "comment": {
+            "type": "string",
+            "pattern": "\\S",
+            "maxLength": 8192,
+            "description": "Not blank, and at most 8192 bytes of UTF-8 once trimmed (the maxLength is the character bound that follows from it)."
+          }
+        }
+      },
+      "SetGateDeliveryRequest": {
+        "type": "object",
+        "description": "Exactly one of `mode`, `liveUrl` or `remindAt`.",
+        "properties": {
+          "mode": {
+            "enum": ["manual", "automatic"]
+          },
+          "liveUrl": {
+            "type": "string",
+            "pattern": "^https://",
+            "description": "An absolute https URL where the post went live."
+          },
+          "remindAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "oneOf": [
+          {
+            "required": ["mode"]
+          },
+          {
+            "required": ["liveUrl"]
+          },
+          {
+            "required": ["remindAt"]
+          }
+        ]
+      },
+      "AnswerElicitationRequest": {
+        "type": "object",
+        "description": "An option, free text, or both. On an `apr_` broker approval request only `option` (`allow_once` or `deny`) and `subject` are read.",
+        "properties": {
+          "option": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "subject": {
+            "type": "object",
+            "description": "The subject the person saw, required to approve a question that binds one. The producer reads anything but two strings as no binding.",
+            "required": ["id", "digest"],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "digest": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "anyOf": [
+          {
+            "required": ["option"]
+          },
+          {
+            "required": ["text"]
+          }
+        ]
+      },
+      "ResumeCardRequest": {
+        "type": "object",
+        "required": ["comment"],
+        "properties": {
+          "comment": {
+            "type": "string",
+            "pattern": "\\S",
+            "maxLength": 8192,
+            "description": "Not blank, and at most 8192 bytes of UTF-8 once trimmed (the maxLength is the character bound that follows from it)."
+          },
+          "toStageKey": {
+            "type": "string",
+            "description": "The card's stage (the default) or an earlier one."
+          },
+          "expectedWaitId": {
+            "$ref": "#/components/schemas/ExpectedWaitId"
+          }
+        }
+      },
+      "ArchiveCardRequest": {
+        "type": "object",
+        "properties": {
+          "comment": {
+            "type": "string",
+            "maxLength": 8192
+          },
+          "expectedWaitId": {
+            "$ref": "#/components/schemas/ExpectedWaitId"
+          }
+        }
+      },
+      "OverrideCardCheckRequest": {
+        "type": "object",
+        "required": ["comment"],
+        "properties": {
+          "comment": {
+            "type": "string",
+            "pattern": "\\S",
+            "maxLength": 8192,
+            "description": "Not blank, and at most 8192 bytes of UTF-8 once trimmed (the maxLength is the character bound that follows from it)."
+          }
+        }
+      },
+      "CardResponse": {
+        "type": "object",
+        "required": ["card"],
+        "properties": {
+          "card": {
+            "$ref": "#/components/schemas/CardView"
+          }
+        }
+      },
+      "AnswerElicitationResponse": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["card", "elicitation"],
+            "properties": {
+              "card": {
+                "$ref": "#/components/schemas/CardView"
+              },
+              "elicitation": {
+                "$ref": "#/components/schemas/ElicitationView"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["approvalRequest"],
+            "properties": {
+              "approvalRequest": {
+                "$ref": "#/components/schemas/ApprovalRequestView"
+              }
+            }
+          }
+        ],
+        "description": "A card question answers with the card and the question; an `apr_` broker approval request answers with the request."
+      }
+    }
+  }
+}
