@@ -39,7 +39,11 @@ interface Jwk {
   use?: string;
 }
 
-const ISSUER = "https://accounts.superjackfruit.com";
+/**
+ * A test issuer, never a production one: a token signed with the test key can then never name a
+ * real issuer, even if the test key set were mistakenly configured somewhere.
+ */
+const ISSUER = "https://issuer.treaty.test";
 const SP = "https://app.superpipeline.dev";
 const HUB = "https://hub.agentpod.dev";
 const KID = "test-ed25519-1";
@@ -242,7 +246,8 @@ function readClaims(): {
   for (const [name, ex] of Object.entries(examples)) {
     if (typeof ex !== "object" || ex === null)
       throw new Error(`token_claims.json: example ${name} is not an object`);
-    out[name] = { ...ex };
+    // The examples name the production issuer; every vector is signed by the test issuer.
+    out[name] = { ...ex, iss: ISSUER };
   }
   if (!Array.isArray(reject))
     throw new Error("token_claims.json: reject is not a list");
@@ -599,7 +604,7 @@ export function buildVectors() {
     purpose:
       "Signed access tokens and what every verifier must answer for each, in every language. A verifier takes `jwks` below and a case's `verifier` options, verifies the case's `token`, and must produce the case's `expect`: the claims exactly, or a refusal with exactly that code. This is the conformance test for verifyAccessToken in @superjackfruitlabs/treaty-ecosystem-identity and for every other verifier.",
     warning:
-      "TEST KEYS ONLY. Every private key below is public, derived from a seed printed beside it. A verifier must never trust these keys, and an issuer must never sign with them.",
+      "TEST KEYS ONLY. The keys in jwks sign nothing real, and their issuer is a .test name. A verifier must never trust these keys. The private keys are not published: scripts/token-vectors.ts derives them from fixed seeds to regenerate this file.",
     rules: {
       algorithm: "EdDSA",
       curve: "Ed25519",
@@ -626,15 +631,11 @@ export function buildVectors() {
     refusalCodes: REFUSAL_CODES,
     testKey: {
       kid: KID,
-      seedHex: testKey.seed,
-      seedFrom: 'sha256("treaty token vectors: test key 1")',
-      privateJwk: { ...testKey.jwk, kid: KID, alg: "EdDSA" },
+      note: "The key that signs every valid case; its public half is in jwks.",
     },
     otherKeys: {
       retired: {
         kid: RETIRED_KID,
-        seedHex: retiredKey.seed,
-        privateJwk: { ...retiredKey.jwk, kid: RETIRED_KID, alg: "EdDSA" },
         note: "Not in jwks: it signs unknown-kid and signed-by-another-key.",
       },
       ignored:

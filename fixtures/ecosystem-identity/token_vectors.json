@@ -3,7 +3,7 @@
   "version": 1,
   "generatedBy": "scripts/token-vectors.ts. Do not edit by hand: change the script and run it.",
   "purpose": "Signed access tokens and what every verifier must answer for each, in every language. A verifier takes `jwks` below and a case's `verifier` options, verifies the case's `token`, and must produce the case's `expect`: the claims exactly, or a refusal with exactly that code. This is the conformance test for verifyAccessToken in @superjackfruitlabs/treaty-ecosystem-identity and for every other verifier.",
-  "warning": "TEST KEYS ONLY. Every private key below is public, derived from a seed printed beside it. A verifier must never trust these keys, and an issuer must never sign with them.",
+  "warning": "TEST KEYS ONLY. The keys in jwks sign nothing real, and their issuer is a .test name. A verifier must never trust these keys. The private keys are not published: scripts/token-vectors.ts derives them from fixed seeds to regenerate this file.",
   "rules": {
     "algorithm": "EdDSA",
     "curve": "Ed25519",
@@ -84,29 +84,11 @@
   ],
   "testKey": {
     "kid": "test-ed25519-1",
-    "seedHex": "af2fea13c394dee44405256fad27a0f49549804cd0cda9577ad002fd72c1a269",
-    "seedFrom": "sha256(\"treaty token vectors: test key 1\")",
-    "privateJwk": {
-      "kty": "OKP",
-      "crv": "Ed25519",
-      "x": "xMP5TWa3xtXCSW5Xpqzc9RlPDVJp2VmbBesL4Iipzdk",
-      "d": "ry_qE8OU3uREBSVvrSeg9JVJgEzQzalXetAC_XLBomk",
-      "kid": "test-ed25519-1",
-      "alg": "EdDSA"
-    }
+    "note": "The key that signs every valid case; its public half is in jwks."
   },
   "otherKeys": {
     "retired": {
       "kid": "test-ed25519-retired",
-      "seedHex": "a0d34aedf524675725e0677802b0aab4f01af36a91d51dcb44a5134ce9584075",
-      "privateJwk": {
-        "kty": "OKP",
-        "crv": "Ed25519",
-        "x": "u38qhgny4cFZFipUiKUU8GDw8qW3yQQYf3_vGGztvbA",
-        "d": "oNNK7fUkZ1cl4Gd4ArCqtPAa82qR1R3LRKUTTOlYQHU",
-        "kid": "test-ed25519-retired",
-        "alg": "EdDSA"
-      },
       "note": "Not in jwks: it signs unknown-kid and signed-by-another-key."
     },
     "ignored": "jwks also lists a P-256 key under the test key's kid, and an X25519 key. Neither is Ed25519; a verifier ignores both."
@@ -143,9 +125,9 @@
     {
       "name": "example-oauth-human",
       "why": "token_claims.json's oauth-human example, signed: it verifies and every claim comes back unchanged, the conditional ones included.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl8wMTIzNDU2Nzg5YWJjZGVmMDEyMyIsImF1ZCI6WyJodHRwczovL2FwcC5zdXBlcnBpcGVsaW5lLmRldiIsImh0dHBzOi8vYWNjb3VudHMuc3VwZXJqYWNrZnJ1aXQuY29tL2FwaS9hdXRoL29hdXRoMi91c2VyaW5mbyJdLCJpYXQiOjE3OTEzMDAwMDAsImV4cCI6MTc5MTMwMDMwMCwianRpIjoiUXMxIiwicHJpbmNpcGFsS2luZCI6Imh1bWFuIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbImFnZW50cG9kIiwic3VwZXJwaXBlbGluZSJdLCJtYXlEaXNwYXRjaCI6W10sIm1heUdyYW50UmVhY2giOmZhbHNlLCJlbWFpbCI6ImFAZXhhbXBsZS50ZXN0IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInNjb3BlIjoib3BlbmlkIG9mZmxpbmVfYWNjZXNzIiwiY2xpZW50X2lkIjoic3VwZXJwaXBlbGluZS13ZWIiLCJhenAiOiJzdXBlcnBpcGVsaW5lLXdlYiIsInNpZCI6InMxIn0.aB71iwP1DABb9Z8weTGyZ-u__zyE3z8xcdSJRWWnsJm-7CEL-zQj4J4iEEscYCedw_grufQ0xBq7Z2iIFeTFCw",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl8wMTIzNDU2Nzg5YWJjZGVmMDEyMyIsImF1ZCI6WyJodHRwczovL2FwcC5zdXBlcnBpcGVsaW5lLmRldiIsImh0dHBzOi8vYWNjb3VudHMuc3VwZXJqYWNrZnJ1aXQuY29tL2FwaS9hdXRoL29hdXRoMi91c2VyaW5mbyJdLCJpYXQiOjE3OTEzMDAwMDAsImV4cCI6MTc5MTMwMDMwMCwianRpIjoiUXMxIiwicHJpbmNpcGFsS2luZCI6Imh1bWFuIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbImFnZW50cG9kIiwic3VwZXJwaXBlbGluZSJdLCJtYXlEaXNwYXRjaCI6W10sIm1heUdyYW50UmVhY2giOmZhbHNlLCJlbWFpbCI6ImFAZXhhbXBsZS50ZXN0IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInNjb3BlIjoib3BlbmlkIG9mZmxpbmVfYWNjZXNzIiwiY2xpZW50X2lkIjoic3VwZXJwaXBlbGluZS13ZWIiLCJhenAiOiJzdXBlcnBpcGVsaW5lLXdlYiIsInNpZCI6InMxIn0.VpM-236TVPw2tfL_oaxk9q9CTsK6OEgR9OHtn6zEFfh7_dH53RwaaxJ2FCie0o5KqAwmdQ5JoTMjKocU1Vb_Bw",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -153,7 +135,7 @@
       "expect": {
         "ok": true,
         "claims": {
-          "iss": "https://accounts.superjackfruit.com",
+          "iss": "https://issuer.treaty.test",
           "sub": "prn_0123456789abcdef0123",
           "aud": [
             "https://app.superpipeline.dev",
@@ -182,9 +164,9 @@
     {
       "name": "example-device-human",
       "why": "token_claims.json's device-human example, signed: it verifies and every claim comes back unchanged, the conditional ones included.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl8wMTIzNDU2Nzg5YWJjZGVmMDEyMyIsImF1ZCI6Imh0dHBzOi8vaHViLmFnZW50cG9kLmRldiIsImlhdCI6MTc5MTMwMDAwMCwiZXhwIjoxNzkxMzAwMzAwLCJqdGkiOiJRczIiLCJwcmluY2lwYWxLaW5kIjoiaHVtYW4iLCJvcmciOiJvcmdfMDAwMDAwMDAwMDAwMDAwMDAwMDAiLCJlbnQiOlsiYWdlbnRwb2QiXSwibWF5RGlzcGF0Y2giOlsicHJuX2FhYWFhYWFhYWFhYWFhYWFhYWFhIl0sIm1heUdyYW50UmVhY2giOnRydWUsImVtYWlsIjoiYUBleGFtcGxlLnRlc3QiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYW1yIjpbImRldmljZSJdfQ.1r8IEykcAHebJvTfCC5NqVtulh3nC6vWtl8G8URQb9apNyVaflsNkeC2Pj4cOG0RffauuNDZAV_pvF-FlA6XCQ",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl8wMTIzNDU2Nzg5YWJjZGVmMDEyMyIsImF1ZCI6Imh0dHBzOi8vaHViLmFnZW50cG9kLmRldiIsImlhdCI6MTc5MTMwMDAwMCwiZXhwIjoxNzkxMzAwMzAwLCJqdGkiOiJRczIiLCJwcmluY2lwYWxLaW5kIjoiaHVtYW4iLCJvcmciOiJvcmdfMDAwMDAwMDAwMDAwMDAwMDAwMDAiLCJlbnQiOlsiYWdlbnRwb2QiXSwibWF5RGlzcGF0Y2giOlsicHJuX2FhYWFhYWFhYWFhYWFhYWFhYWFhIl0sIm1heUdyYW50UmVhY2giOnRydWUsImVtYWlsIjoiYUBleGFtcGxlLnRlc3QiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYW1yIjpbImRldmljZSJdfQ.nwbUWtW9aPUV-x3I3MDj_ld9hPQ8tV6pJNg4yFMSI5DhrWphu-v0IqefF4D1Tt5xKcTG8Tt66ntGm6xnTPqdDw",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://hub.agentpod.dev",
         "product": "agentpod",
         "now": 1791300060
@@ -192,7 +174,7 @@
       "expect": {
         "ok": true,
         "claims": {
-          "iss": "https://accounts.superjackfruit.com",
+          "iss": "https://issuer.treaty.test",
           "sub": "prn_0123456789abcdef0123",
           "aud": "https://hub.agentpod.dev",
           "iat": 1791300000,
@@ -218,9 +200,9 @@
     {
       "name": "example-service",
       "why": "token_claims.json's service example, signed: it verifies and every claim comes back unchanged, the conditional ones included.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.V-RXVTahj-nACeQY2Tm5-R8LmJ6ioWNOIccu6gVatCGZy0NoHy2QQWZC93yYHcrHK5RJa5z1HcIXheU71uG6CQ",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.kGh-bkIFhKWpCJAqMdTNbZ2fU4tBJguvE7J9ltUsWSNAfvPZD-8SotW-xKtNfW-yQpr5RhXGlFAeSauK5sq-CQ",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -228,7 +210,7 @@
       "expect": {
         "ok": true,
         "claims": {
-          "iss": "https://accounts.superjackfruit.com",
+          "iss": "https://issuer.treaty.test",
           "sub": "prn_bbbbbbbbbbbbbbbbbbbb",
           "aud": "https://app.superpipeline.dev",
           "iat": 1791300000,
@@ -251,9 +233,9 @@
     {
       "name": "example-agent",
       "why": "token_claims.json's agent example, signed: it verifies and every claim comes back unchanged, the conditional ones included.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9hYWFhYWFhYWFhYWFhYWFhYWFhYSIsImF1ZCI6WyJodHRwczovL2FwcC5zdXBlcnBpcGVsaW5lLmRldiIsImh0dHBzOi8vaHViLmFnZW50cG9kLmRldiJdLCJpYXQiOjE3OTEzMDAwMDAsImV4cCI6MTc5MTMwMDMwMCwianRpIjoiUXM0IiwicHJpbmNpcGFsS2luZCI6ImFnZW50Iiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbImFnZW50cG9kIiwic3VwZXJwaXBlbGluZSJdLCJtYXlEaXNwYXRjaCI6W10sIm1heUdyYW50UmVhY2giOmZhbHNlLCJhY3QiOnsic3ViIjoicHJuX2JiYmJiYmJiYmJiYmJiYmJiYmJiIn0sImFtciI6WyJleGNoYW5nZSJdfQ.RdXrip8X4jCmG9t8GnonVw-Kc0sl8WGZV_zNLSqIgtiPwvj20iCeugH4WpHq73Il-A3y6dhstE0bLR2bqAI0CQ",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9hYWFhYWFhYWFhYWFhYWFhYWFhYSIsImF1ZCI6WyJodHRwczovL2FwcC5zdXBlcnBpcGVsaW5lLmRldiIsImh0dHBzOi8vaHViLmFnZW50cG9kLmRldiJdLCJpYXQiOjE3OTEzMDAwMDAsImV4cCI6MTc5MTMwMDMwMCwianRpIjoiUXM0IiwicHJpbmNpcGFsS2luZCI6ImFnZW50Iiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbImFnZW50cG9kIiwic3VwZXJwaXBlbGluZSJdLCJtYXlEaXNwYXRjaCI6W10sIm1heUdyYW50UmVhY2giOmZhbHNlLCJhY3QiOnsic3ViIjoicHJuX2JiYmJiYmJiYmJiYmJiYmJiYmJiIn0sImFtciI6WyJleGNoYW5nZSJdfQ.XQql5gaU20ppG92Mln237-_XYA9CPZOaWzjEhIyuqV17miScx7g8Zj9idsRmff-oUVpeo8BqxKQwzTmbPxCEAA",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://hub.agentpod.dev",
         "product": "agentpod",
         "now": 1791300060
@@ -261,7 +243,7 @@
       "expect": {
         "ok": true,
         "claims": {
-          "iss": "https://accounts.superjackfruit.com",
+          "iss": "https://issuer.treaty.test",
           "sub": "prn_aaaaaaaaaaaaaaaaaaaa",
           "aud": [
             "https://app.superpipeline.dev",
@@ -290,9 +272,9 @@
     {
       "name": "example-assertion-human",
       "why": "token_claims.json's assertion-human example, signed: it verifies and every claim comes back unchanged, the conditional ones included.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl8wMTIzNDU2Nzg5YWJjZGVmMDEyMyIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAxMjAsImp0aSI6IlFzNSIsInByaW5jaXBhbEtpbmQiOiJodW1hbiIsIm9yZyI6Im9yZ18wMDAwMDAwMDAwMDAwMDAwMDAwMCIsImVudCI6WyJhZ2VudHBvZCIsInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwiZW1haWwiOiJhQGV4YW1wbGUudGVzdCIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhY3QiOnsic3ViIjoicHJuX2JiYmJiYmJiYmJiYmJiYmJiYmJiIn0sImFtciI6WyJhc3NlcnRpb24iXX0.cbvzIgclb8k2F9BM7nlonCwDoQ0R59CzMQqrHTU7txqOSSOKtarQ1I0xupC6fCOJnj8QvWBUtdZ_dAu0ukpTAg",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl8wMTIzNDU2Nzg5YWJjZGVmMDEyMyIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAxMjAsImp0aSI6IlFzNSIsInByaW5jaXBhbEtpbmQiOiJodW1hbiIsIm9yZyI6Im9yZ18wMDAwMDAwMDAwMDAwMDAwMDAwMCIsImVudCI6WyJhZ2VudHBvZCIsInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwiZW1haWwiOiJhQGV4YW1wbGUudGVzdCIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhY3QiOnsic3ViIjoicHJuX2JiYmJiYmJiYmJiYmJiYmJiYmJiIn0sImFtciI6WyJhc3NlcnRpb24iXX0.EbVto5nBPzx2kQa2KeFQahrG_9tb5yKszIFrs7lsqmphCTmjZWPOwWpm0thPIJS5d8rKqDtfEKot-BVWfqjuDQ",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -300,7 +282,7 @@
       "expect": {
         "ok": true,
         "claims": {
-          "iss": "https://accounts.superjackfruit.com",
+          "iss": "https://issuer.treaty.test",
           "sub": "prn_0123456789abcdef0123",
           "aud": "https://app.superpipeline.dev",
           "iat": 1791300000,
@@ -328,9 +310,9 @@
     {
       "name": "alg-none",
       "why": "Header alg none and an empty signature.",
-      "token": "eyJhbGciOiJub25lIiwia2lkIjoidGVzdC1lZDI1NTE5LTEifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.",
+      "token": "eyJhbGciOiJub25lIiwia2lkIjoidGVzdC1lZDI1NTE5LTEifQ.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -343,9 +325,9 @@
     {
       "name": "expired",
       "why": "now is an hour past exp.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.V-RXVTahj-nACeQY2Tm5-R8LmJ6ioWNOIccu6gVatCGZy0NoHy2QQWZC93yYHcrHK5RJa5z1HcIXheU71uG6CQ",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.kGh-bkIFhKWpCJAqMdTNbZ2fU4tBJguvE7J9ltUsWSNAfvPZD-8SotW-xKtNfW-yQpr5RhXGlFAeSauK5sq-CQ",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791303900
@@ -360,7 +342,7 @@
       "why": "Validly signed, iss is another issuer.",
       "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci5leGFtcGxlLnRlc3QiLCJzdWIiOiJwcm5fYmJiYmJiYmJiYmJiYmJiYmJiYmIiLCJhdWQiOiJodHRwczovL2FwcC5zdXBlcnBpcGVsaW5lLmRldiIsImlhdCI6MTc5MTMwMDAwMCwiZXhwIjoxNzkxMzAwMzAwLCJqdGkiOiJRczMiLCJwcmluY2lwYWxLaW5kIjoic2VydmljZSIsIm9yZyI6Im9yZ18wMDAwMDAwMDAwMDAwMDAwMDAwMCIsImVudCI6WyJzdXBlcnBpcGVsaW5lIl0sIm1heURpc3BhdGNoIjpbXSwibWF5R3JhbnRSZWFjaCI6ZmFsc2UsInNjb3BlIjoiZXZpZGVuY2U6cmVhZCIsImFtciI6WyJzZXJ2aWNlIl19._K4LzKDT8Le3pvyROLmXLIvNG8P1fNh4gY51p0XruPuchyrq3OOrjW48rOWg3PS_DrO9nbNIw5OaJp045e7UCg",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -373,9 +355,9 @@
     {
       "name": "wrong-audience",
       "why": "Validly signed for AgentPod's hub, presented to SuperPipeline.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vaHViLmFnZW50cG9kLmRldiIsImlhdCI6MTc5MTMwMDAwMCwiZXhwIjoxNzkxMzAwMzAwLCJqdGkiOiJRczMiLCJwcmluY2lwYWxLaW5kIjoic2VydmljZSIsIm9yZyI6Im9yZ18wMDAwMDAwMDAwMDAwMDAwMDAwMCIsImVudCI6WyJzdXBlcnBpcGVsaW5lIl0sIm1heURpc3BhdGNoIjpbXSwibWF5R3JhbnRSZWFjaCI6ZmFsc2UsInNjb3BlIjoiZXZpZGVuY2U6cmVhZCIsImFtciI6WyJzZXJ2aWNlIl19.6u3FPiDrhtJALuXZ8Y5MJnv_bmOUoT5Km0dQErD-S5AnY0faNDELrBiKBXVKRj8XscYybH5_njdkhF2-Ri7wBA",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vaHViLmFnZW50cG9kLmRldiIsImlhdCI6MTc5MTMwMDAwMCwiZXhwIjoxNzkxMzAwMzAwLCJqdGkiOiJRczMiLCJwcmluY2lwYWxLaW5kIjoic2VydmljZSIsIm9yZyI6Im9yZ18wMDAwMDAwMDAwMDAwMDAwMDAwMCIsImVudCI6WyJzdXBlcnBpcGVsaW5lIl0sIm1heURpc3BhdGNoIjpbXSwibWF5R3JhbnRSZWFjaCI6ZmFsc2UsInNjb3BlIjoiZXZpZGVuY2U6cmVhZCIsImFtciI6WyJzZXJ2aWNlIl19.kPknyoolDQ82O2nVrJsz_uGw4i-R21SHha1uyqZLxh2po611ctpFYD466KzVyKRk4m-gX_is-tHhbrWzjAjBBg",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -388,9 +370,9 @@
     {
       "name": "unknown-kid",
       "why": "Signed by a retired key whose kid is no longer in the JWKS.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS1yZXRpcmVkIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.wW80MuoHAiCSnuBxLSMZH6VVs6kPlKd2PFvHxQeBZqsx1Q7BSa2hF4sErFKR0CuMxqVOEW40e_Jo6ea95VvdBA",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS1yZXRpcmVkIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.qtCxy-ViByy9wE-ule9klMWzLT2rgqBjF7tTAJHl0hRxpjp8epldls3IFg765BzSq0zwQRvR_njRYLCg9GqsDA",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -403,9 +385,9 @@
     {
       "name": "missing-org",
       "why": "No org claim.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.M6VGsnJoVi4XzP9jo1HFZR4PW-5Hx-yqbRXF-zNrlDTNoc0sVb2saUkkyJiytstfR5KrCb6QSNXPDfLtX02UCw",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.BAVMqv0k6-81hQjkadcHgEHJhstj8dS5bsVrpdB_wZAx-lAz7zysOQF9mi4d-tGaff1cTq3lpolWdtco3_dOCw",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -418,9 +400,9 @@
     {
       "name": "product-not-enabled",
       "why": "ent is [agentpod]; the verifier is SuperPipeline.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbImFnZW50cG9kIl0sIm1heURpc3BhdGNoIjpbXSwibWF5R3JhbnRSZWFjaCI6ZmFsc2UsInNjb3BlIjoiZXZpZGVuY2U6cmVhZCIsImFtciI6WyJzZXJ2aWNlIl19.2M7YdDo52JcCZ7BEWSchxkxVLFM67d3cE1ERYdmRrVpvsOLFJvu3mawQWZdV-y924wP_7IvZsXT0Fzr39XVEDQ",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbImFnZW50cG9kIl0sIm1heURpc3BhdGNoIjpbXSwibWF5R3JhbnRSZWFjaCI6ZmFsc2UsInNjb3BlIjoiZXZpZGVuY2U6cmVhZCIsImFtciI6WyJzZXJ2aWNlIl19.a2WOHpzf4Q6sTEDn3601YHGWVoBZNVNzU3TctY-JgerJ84pfarpb1LP0-UtkH6ui8cD-41-1cffIYu4xN8fqAQ",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -433,9 +415,9 @@
     {
       "name": "mayDispatch-absent",
       "why": "No mayDispatch claim: an issuer that predates the control pair.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5R3JhbnRSZWFjaCI6ZmFsc2UsInNjb3BlIjoiZXZpZGVuY2U6cmVhZCIsImFtciI6WyJzZXJ2aWNlIl19._L4ElOSzjssjzGzJcz2XAz1qW8ASEuM5ciOuC8_eCIVOl6ZzVxEyXdIuYUQ8CBjHslj2TfLm18uWsE1A90FSBg",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5R3JhbnRSZWFjaCI6ZmFsc2UsInNjb3BlIjoiZXZpZGVuY2U6cmVhZCIsImFtciI6WyJzZXJ2aWNlIl19.5xfRpcIbzjzTTHS1VqmK2t7cGCiNeiAqo9zmW0FL4-qjl0GaWut92-jgXFKYucTavegkKhszcv6G6TZOAR2hAQ",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -448,9 +430,9 @@
     {
       "name": "wildcard-mayDispatch-value",
       "why": "mayDispatch holds * and prn_*. A pattern is not a prn, so the whole token is refused.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOlsiKiIsInBybl8qIl0sIm1heUdyYW50UmVhY2giOmZhbHNlLCJzY29wZSI6ImV2aWRlbmNlOnJlYWQiLCJhbXIiOlsic2VydmljZSJdfQ.ePYyutuQUsq7SraIZB4HpqmcufVKRYlRSeP8zecA-Plj3Szv_YZ3mHOcZyhvngsdeRQTOgcDRZGdv83NVYaOBA",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOlsiKiIsInBybl8qIl0sIm1heUdyYW50UmVhY2giOmZhbHNlLCJzY29wZSI6ImV2aWRlbmNlOnJlYWQiLCJhbXIiOlsic2VydmljZSJdfQ.LhwhP1gLuMYAnGgbGW1fYzwtW6ZD7QIDl5BKmrgukgyz21Yu9-EkCOj4Qouz4K38DBKfxA3NWeDpViF1g9DEDw",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -463,9 +445,9 @@
     {
       "name": "alg-not-eddsa",
       "why": "HS256, keyed with the test key's public bytes: the classic algorithm-confusion token.",
-      "token": "eyJhbGciOiJIUzI1NiIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.VXSMeNxw2jHD_W2UqGzg5iSKTAEiF1gY8-i-VNxTpVA",
+      "token": "eyJhbGciOiJIUzI1NiIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.3KWwNPLMKIwD2T6Krl2D1Y1WvGq5uTYsRfDS5g1tyQg",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -478,9 +460,9 @@
     {
       "name": "issuer-with-path",
       "why": "iss is the issuer with a path after it; iss must be exact.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbS9hcGkvYXV0aCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.d7zH35ci7Sms5nBJowrJ34nwyFBZ730t7LqkPxNzOuWX-UCU653zt5B1NFnuh7gEtNbeJrKAZwgjutBAx8UwCw",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdC9hcGkvYXV0aCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.eh3Gprz8lZjnghIX1dwYv4IN780qdGZ8G2QfW2RM_bLCMXQJPVYbvMb0_tEpsHyuiOZsvIGuROUxNRschBBfAg",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -493,9 +475,9 @@
     {
       "name": "missing-ent",
       "why": "No ent claim.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.64wmKPob8KiJySFywsz6DMZDdBQC702xtsueBIZCaCbwxCIU5Iw0yvXnMXkUaIOwmNkCniISd8WBXctJgVPcDA",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.9XM_S9RdXZgnc233f6o9ER0EWsUsTm9oTrkEiRqZ6g4zGtagbSW3NdVbG4nikIttIbxdQX8UCL_scvliWrbGCg",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -508,9 +490,9 @@
     {
       "name": "missing-jti",
       "why": "No jti claim.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.78ExhZnNGw_PQr6yd1OfMtJ6S4ZqcHF6eGdHrkDTOw8P1ftCiyFp3yzYIl-6JxCbM1nBfhjTQfETl8z1okMnAg",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.pq3nWGks0wmPGew3SD_qInYFiHZcfhAQpOsSlbcmRqp16kVT1uksc5x1oETCDhxtEGbGVke52Db1-QQAnAYLDw",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -523,9 +505,9 @@
     {
       "name": "unknown-principalKind",
       "why": "principalKind is robot.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJyb2JvdCIsIm9yZyI6Im9yZ18wMDAwMDAwMDAwMDAwMDAwMDAwMCIsImVudCI6WyJzdXBlcnBpcGVsaW5lIl0sIm1heURpc3BhdGNoIjpbXSwibWF5R3JhbnRSZWFjaCI6ZmFsc2UsInNjb3BlIjoiZXZpZGVuY2U6cmVhZCIsImFtciI6WyJzZXJ2aWNlIl19.2UPL3yFyk-_jvdX6ryejNwaKlqXIxmF-yxnB-vLrwG55IqAih2DIns-vKP6CA8PnJG8fbpe65b1Y_srH_nLMCQ",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJyb2JvdCIsIm9yZyI6Im9yZ18wMDAwMDAwMDAwMDAwMDAwMDAwMCIsImVudCI6WyJzdXBlcnBpcGVsaW5lIl0sIm1heURpc3BhdGNoIjpbXSwibWF5R3JhbnRSZWFjaCI6ZmFsc2UsInNjb3BlIjoiZXZpZGVuY2U6cmVhZCIsImFtciI6WyJzZXJ2aWNlIl19.dU62-Uino91Ni_yplT1gMn1jHUZ9M2AOAy5QsOxGHS8HpM0kLcUPH99Um9UCTKBPsIFNHItGivwai5Fb3ZgyBA",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -538,9 +520,9 @@
     {
       "name": "lifetime-over-300",
       "why": "exp - iat is 3600.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDM2MDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.M-QUkZP-_FMbLLb117EVdm_F_Zn_UJaXFC9KBnM_d0PgllGXeVy5OVEQEoKHLgMCdcHUfdFqIpBVlv8m9poqCg",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDM2MDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.ijFic-eBZCn1CEe7_f1waMRjCw_NFMeVAbaPzgEvtLYsRwHNDWnc1SWFvML2Wwz8DzJ31e51xgu3DNgXWKKvDQ",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -553,9 +535,9 @@
     {
       "name": "exp-leeway-29",
       "why": "now = exp + 29: inside the leeway.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.V-RXVTahj-nACeQY2Tm5-R8LmJ6ioWNOIccu6gVatCGZy0NoHy2QQWZC93yYHcrHK5RJa5z1HcIXheU71uG6CQ",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.kGh-bkIFhKWpCJAqMdTNbZ2fU4tBJguvE7J9ltUsWSNAfvPZD-8SotW-xKtNfW-yQpr5RhXGlFAeSauK5sq-CQ",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300329
@@ -563,7 +545,7 @@
       "expect": {
         "ok": true,
         "claims": {
-          "iss": "https://accounts.superjackfruit.com",
+          "iss": "https://issuer.treaty.test",
           "sub": "prn_bbbbbbbbbbbbbbbbbbbb",
           "aud": "https://app.superpipeline.dev",
           "iat": 1791300000,
@@ -586,9 +568,9 @@
     {
       "name": "exp-leeway-31",
       "why": "now = exp + 31: past the leeway.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.V-RXVTahj-nACeQY2Tm5-R8LmJ6ioWNOIccu6gVatCGZy0NoHy2QQWZC93yYHcrHK5RJa5z1HcIXheU71uG6CQ",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.kGh-bkIFhKWpCJAqMdTNbZ2fU4tBJguvE7J9ltUsWSNAfvPZD-8SotW-xKtNfW-yQpr5RhXGlFAeSauK5sq-CQ",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300331
@@ -601,9 +583,9 @@
     {
       "name": "iat-future-29",
       "why": "iat is 29 s after now.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.V-RXVTahj-nACeQY2Tm5-R8LmJ6ioWNOIccu6gVatCGZy0NoHy2QQWZC93yYHcrHK5RJa5z1HcIXheU71uG6CQ",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.kGh-bkIFhKWpCJAqMdTNbZ2fU4tBJguvE7J9ltUsWSNAfvPZD-8SotW-xKtNfW-yQpr5RhXGlFAeSauK5sq-CQ",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791299971
@@ -611,7 +593,7 @@
       "expect": {
         "ok": true,
         "claims": {
-          "iss": "https://accounts.superjackfruit.com",
+          "iss": "https://issuer.treaty.test",
           "sub": "prn_bbbbbbbbbbbbbbbbbbbb",
           "aud": "https://app.superpipeline.dev",
           "iat": 1791300000,
@@ -634,9 +616,9 @@
     {
       "name": "iat-future-31",
       "why": "iat is 31 s after now.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.V-RXVTahj-nACeQY2Tm5-R8LmJ6ioWNOIccu6gVatCGZy0NoHy2QQWZC93yYHcrHK5RJa5z1HcIXheU71uG6CQ",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.kGh-bkIFhKWpCJAqMdTNbZ2fU4tBJguvE7J9ltUsWSNAfvPZD-8SotW-xKtNfW-yQpr5RhXGlFAeSauK5sq-CQ",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791299969
@@ -649,9 +631,9 @@
     {
       "name": "nbf-future-29",
       "why": "nbf is 29 s after now.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXSwibmJmIjoxNzkxMzAwMDYwfQ.mbNT2oP4zKZCYqw7q7QF5HDlMx0PMOU7_jqUzeiq-OoSZRfvv1UJaZsntOSVIRIcxZybvc4dbn-FGZagDizYAw",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXSwibmJmIjoxNzkxMzAwMDYwfQ.XDOstEbxDs38dTZZBEDgRV1XNWOfkVlCOdWA7mNA4wVOybRACH-cg9gbMpIx-cvW7m_3Oc0WhkVHQnRcM9srDg",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300031
@@ -659,7 +641,7 @@
       "expect": {
         "ok": true,
         "claims": {
-          "iss": "https://accounts.superjackfruit.com",
+          "iss": "https://issuer.treaty.test",
           "sub": "prn_bbbbbbbbbbbbbbbbbbbb",
           "aud": "https://app.superpipeline.dev",
           "iat": 1791300000,
@@ -683,9 +665,9 @@
     {
       "name": "nbf-future-31",
       "why": "nbf is 31 s after now.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXSwibmJmIjoxNzkxMzAwMDYwfQ.mbNT2oP4zKZCYqw7q7QF5HDlMx0PMOU7_jqUzeiq-OoSZRfvv1UJaZsntOSVIRIcxZybvc4dbn-FGZagDizYAw",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXSwibmJmIjoxNzkxMzAwMDYwfQ.XDOstEbxDs38dTZZBEDgRV1XNWOfkVlCOdWA7mNA4wVOybRACH-cg9gbMpIx-cvW7m_3Oc0WhkVHQnRcM9srDg",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300029
@@ -698,9 +680,9 @@
     {
       "name": "lifetime-300",
       "why": "exp - iat is exactly 300.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.V-RXVTahj-nACeQY2Tm5-R8LmJ6ioWNOIccu6gVatCGZy0NoHy2QQWZC93yYHcrHK5RJa5z1HcIXheU71uG6CQ",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.kGh-bkIFhKWpCJAqMdTNbZ2fU4tBJguvE7J9ltUsWSNAfvPZD-8SotW-xKtNfW-yQpr5RhXGlFAeSauK5sq-CQ",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -708,7 +690,7 @@
       "expect": {
         "ok": true,
         "claims": {
-          "iss": "https://accounts.superjackfruit.com",
+          "iss": "https://issuer.treaty.test",
           "sub": "prn_bbbbbbbbbbbbbbbbbbbb",
           "aud": "https://app.superpipeline.dev",
           "iat": 1791300000,
@@ -731,9 +713,9 @@
     {
       "name": "lifetime-301",
       "why": "exp - iat is 301.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDEsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.SEuoeUbyYyhYFcY98M3gSL_mURaLgwB78IED-J31Z0vWEjs_2ubEjudQ50xcZ3-d7gGo4ZF619UmSPWU73WhBg",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDEsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.MmubT8uUw_syZigbeh_8fbc1AJTxNqyatrIP_rf36iiRyucxEQjeoPo6P0Cn4mN95qf2TxZC3S4c089kaCtxBg",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -746,9 +728,9 @@
     {
       "name": "missing-kid",
       "why": "Signed with the test key, but the header names no kid.",
-      "token": "eyJhbGciOiJFZERTQSJ9.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.gDKHjCqPSKFlGairTzc24R5f8-i9blHutClBA0kBMqEhGsVhPnObvpIcfosOmEPzjIoTypJW5Xg-j9nATaXOCA",
+      "token": "eyJhbGciOiJFZERTQSJ9.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.XD9_kSt9Ai3r1pio2UnYILODq-J-VJieZggs3usHe51g1HebqsVAU7i17HVmnWGJRXzZqiwJVTmq3UZa_1WjDg",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -761,9 +743,9 @@
     {
       "name": "non-ed25519-key-ignored",
       "why": "The JWKS lists a P-256 key under the same kid, first. It is not Ed25519, so it is ignored and the Ed25519 key verifies the token.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.V-RXVTahj-nACeQY2Tm5-R8LmJ6ioWNOIccu6gVatCGZy0NoHy2QQWZC93yYHcrHK5RJa5z1HcIXheU71uG6CQ",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.kGh-bkIFhKWpCJAqMdTNbZ2fU4tBJguvE7J9ltUsWSNAfvPZD-8SotW-xKtNfW-yQpr5RhXGlFAeSauK5sq-CQ",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -771,7 +753,7 @@
       "expect": {
         "ok": true,
         "claims": {
-          "iss": "https://accounts.superjackfruit.com",
+          "iss": "https://issuer.treaty.test",
           "sub": "prn_bbbbbbbbbbbbbbbbbbbb",
           "aud": "https://app.superpipeline.dev",
           "iat": 1791300000,
@@ -794,9 +776,9 @@
     {
       "name": "kid-names-only-non-ed25519-key",
       "why": "The kid names the JWKS's X25519 key, which is not an Ed25519 key, so no usable key has that kid.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QteDI1NTE5In0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.vx68qPNC8e1hM5-BYvuYoXrqsO8XlEnJbb-MR0k4obW8IO7ceSEOpHJv4ANKj9K5ASx85OB_fHaDE9fXnuv4Bg",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QteDI1NTE5In0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.saNSILWjJpaMsQV5Tldi6_mApvOX1jHeee_kL7HQCFaElu_VrLqp4BcpZN-2BBF5FqnpjVqKbvgN42Uelo0EAA",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -809,9 +791,9 @@
     {
       "name": "signed-by-another-key",
       "why": "The kid names the test key; the signature is the retired key's.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.pW4hwO-ftD6hWQPGKPT5o-dFV-sA1GjJYFfOx2LdD5b70WiS3RS3-D99vT0k_bemKc_W_m3YBZLYH4WbYa5eCg",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.J0toyM7wcmSLsray5ts2wP7S46nFe30-CMTHT8qwgSEPGmAi5As9rVLX3k5pySVPoXq9P2lTZXqm95TXHrGZBg",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -824,9 +806,9 @@
     {
       "name": "tampered-signature",
       "why": "The first character of the signature changed.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.A-RXVTahj-nACeQY2Tm5-R8LmJ6ioWNOIccu6gVatCGZy0NoHy2QQWZC93yYHcrHK5RJa5z1HcIXheU71uG6CQ",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.AGh-bkIFhKWpCJAqMdTNbZ2fU4tBJguvE7J9ltUsWSNAfvPZD-8SotW-xKtNfW-yQpr5RhXGlFAeSauK5sq-CQ",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -841,7 +823,7 @@
       "why": "One part, not three.",
       "token": "not-a-token",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -854,9 +836,9 @@
     {
       "name": "aud-array-contains-audience",
       "why": "aud is an array that contains the verifier's audience.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6WyJodHRwczovL2h1Yi5hZ2VudHBvZC5kZXYiLCJodHRwczovL2FwcC5zdXBlcnBpcGVsaW5lLmRldiJdLCJpYXQiOjE3OTEzMDAwMDAsImV4cCI6MTc5MTMwMDMwMCwianRpIjoiUXMzIiwicHJpbmNpcGFsS2luZCI6InNlcnZpY2UiLCJvcmciOiJvcmdfMDAwMDAwMDAwMDAwMDAwMDAwMDAiLCJlbnQiOlsic3VwZXJwaXBlbGluZSJdLCJtYXlEaXNwYXRjaCI6W10sIm1heUdyYW50UmVhY2giOmZhbHNlLCJzY29wZSI6ImV2aWRlbmNlOnJlYWQiLCJhbXIiOlsic2VydmljZSJdfQ.H08gIkO5-mFMI5NsxE5Nv1Ukc262wVgHl5OM7yh2Y4TtXPhRX3Zyfw88gwiHnqXgOQYuHZVi2l_0VphK72rIAQ",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6WyJodHRwczovL2h1Yi5hZ2VudHBvZC5kZXYiLCJodHRwczovL2FwcC5zdXBlcnBpcGVsaW5lLmRldiJdLCJpYXQiOjE3OTEzMDAwMDAsImV4cCI6MTc5MTMwMDMwMCwianRpIjoiUXMzIiwicHJpbmNpcGFsS2luZCI6InNlcnZpY2UiLCJvcmciOiJvcmdfMDAwMDAwMDAwMDAwMDAwMDAwMDAiLCJlbnQiOlsic3VwZXJwaXBlbGluZSJdLCJtYXlEaXNwYXRjaCI6W10sIm1heUdyYW50UmVhY2giOmZhbHNlLCJzY29wZSI6ImV2aWRlbmNlOnJlYWQiLCJhbXIiOlsic2VydmljZSJdfQ.Srpg0Z5BeZicQUPlchd80JmFCxSoW9OibpeqZIVPrtvdYo3SOkUOp75k03ijwQp3atkXB832itWisP0O109NCw",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -864,7 +846,7 @@
       "expect": {
         "ok": true,
         "claims": {
-          "iss": "https://accounts.superjackfruit.com",
+          "iss": "https://issuer.treaty.test",
           "sub": "prn_bbbbbbbbbbbbbbbbbbbb",
           "aud": [
             "https://hub.agentpod.dev",
@@ -890,9 +872,9 @@
     {
       "name": "mayDispatch-non-prn-value",
       "why": "mayDispatch holds a prn and a namespaced pattern. Any value that is not a prn refuses the whole token, the valid prn beside it included.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOlsicHJuX2FhYWFhYWFhYWFhYWFhYWFhYWFhIiwiYWdlbnRwb2Q6Ki9oZXJtZXMiXSwibWF5R3JhbnRSZWFjaCI6ZmFsc2UsInNjb3BlIjoiZXZpZGVuY2U6cmVhZCIsImFtciI6WyJzZXJ2aWNlIl19.MF1yj7VBIxtEkmG92lRvDhFcFuvCBgnrZ1yThiMHaWiy6gmLZpsxzejv5oaxKEfN-G8FJcDP7asWm4kVCjKwBA",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOlsicHJuX2FhYWFhYWFhYWFhYWFhYWFhYWFhIiwiYWdlbnRwb2Q6Ki9oZXJtZXMiXSwibWF5R3JhbnRSZWFjaCI6ZmFsc2UsInNjb3BlIjoiZXZpZGVuY2U6cmVhZCIsImFtciI6WyJzZXJ2aWNlIl19.XRegL7BJgnvUwiI_r6Cn8iP46RJaHhdrKG1eOLCdXpjwmFIBqVJ1xIEMXlMCcit5mCCiB8GlbWK80dFNEw2gBw",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -905,9 +887,9 @@
     {
       "name": "mayGrantReach-absent",
       "why": "No mayGrantReach claim: half of the control pair is missing.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJzY29wZSI6ImV2aWRlbmNlOnJlYWQiLCJhbXIiOlsic2VydmljZSJdfQ.ktE0HSaaAKi0dkks-lJGIWP37jhY9Tqfxxhm44nIXhQfEh2Cm8AOsXiohGTVzQh5_O47mgYDeZAf6w4m55JeCw",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJzY29wZSI6ImV2aWRlbmNlOnJlYWQiLCJhbXIiOlsic2VydmljZSJdfQ.kcGkfHejrL5WGaNdg-EOuDX2YWWFiwOvn-W5dYh-R_uWXU-T_nQfK6ca_menHDfeh50GAprd8-dVY8ysK61gCA",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -920,9 +902,9 @@
     {
       "name": "mayGrantReach-not-boolean",
       "why": "mayGrantReach is the string \"false\".",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjoiZmFsc2UiLCJzY29wZSI6ImV2aWRlbmNlOnJlYWQiLCJhbXIiOlsic2VydmljZSJdfQ.qe1WWa7ucmTYoNGCZQ8Qjl8Z7zKDo2CBYicvsJboVWNrNygLRc1GuYOxwhjIUuV6KC4jnlSbJ-wt7-S08C1aCg",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjoiZmFsc2UiLCJzY29wZSI6ImV2aWRlbmNlOnJlYWQiLCJhbXIiOlsic2VydmljZSJdfQ.R8Dn4VdEWPG4g-EbvVaz3ZQJLFJ5hbT8pmUN-mc8yDSIjdYbmMo39_XrAM4acOqUowYwZX9NMtKoDEd3FT8oCA",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -935,9 +917,9 @@
     {
       "name": "sub-loose",
       "why": "sub is prn_ followed by 20 characters that are not all lowercase hex.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl8wMTIzNDU2Nzg5YWJjZGVmZ2hpaiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.Mm2AlOlxBq16sb1UthwxIXRkAJRkQ4X34tyIv9hKI8Vw00VU0PWBcSGMN1ftmLsM07rnkZ3QA4sQ0x_xsh-GAQ",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl8wMTIzNDU2Nzg5YWJjZGVmZ2hpaiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.mI0kNCNrOSnPQZvLaiQBA2RJ88oaLK8FIPTTM-7ICJFfb8fs6creWWnmwnlt3qbnfpsUx3O5ieTy_-F3IEW2Dg",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -950,9 +932,9 @@
     {
       "name": "org-loose",
       "why": "org is org_ followed by 20 characters that are not all lowercase hex.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAxMjM0NTY3ODlhYmNkZWZnaGlqIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.IUnvLy9_7mXnq73ilamJw3rAH1WDGafI1jMFuDDZFL7daludVBKk-52DkOtUMESZ5abCdhNlt_1FmAbb_XOpCA",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAxMjM0NTY3ODlhYmNkZWZnaGlqIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXX0.b2vI_Ngg_r5W3H_HiU7iT2QKRkVjWXCTbq8Xsrx0wPOszJboEKUwP8owzY6YPtU8tIIzbB6r7DCp2-V86B7HCg",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -965,9 +947,9 @@
     {
       "name": "missing-iat",
       "why": "No iat claim, so the lifetime cannot be checked.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiZXhwIjoxNzkxMzAwMzAwLCJqdGkiOiJRczMiLCJwcmluY2lwYWxLaW5kIjoic2VydmljZSIsIm9yZyI6Im9yZ18wMDAwMDAwMDAwMDAwMDAwMDAwMCIsImVudCI6WyJzdXBlcnBpcGVsaW5lIl0sIm1heURpc3BhdGNoIjpbXSwibWF5R3JhbnRSZWFjaCI6ZmFsc2UsInNjb3BlIjoiZXZpZGVuY2U6cmVhZCIsImFtciI6WyJzZXJ2aWNlIl19.SP8mNtWl6sPYYm6msf-6WaXNbqT_jNSVGA6TiGuPIQC4IceMJ50RLuv866p9bOiW20c9ecPEDNu4ZYEjMSLXDQ",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiZXhwIjoxNzkxMzAwMzAwLCJqdGkiOiJRczMiLCJwcmluY2lwYWxLaW5kIjoic2VydmljZSIsIm9yZyI6Im9yZ18wMDAwMDAwMDAwMDAwMDAwMDAwMCIsImVudCI6WyJzdXBlcnBpcGVsaW5lIl0sIm1heURpc3BhdGNoIjpbXSwibWF5R3JhbnRSZWFjaCI6ZmFsc2UsInNjb3BlIjoiZXZpZGVuY2U6cmVhZCIsImFtciI6WyJzZXJ2aWNlIl19.8ctc5x6Kw4OugPDc4Qzcg-duaDdQOAkd_XRX0DBXdcGEWX8F_3_B0Ao6eUrb9Zy9KGEpSZKY3bkV56lTNY5OBQ",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -980,9 +962,9 @@
     {
       "name": "unknown-ent-value-ignored",
       "why": "ent holds a product the verifier does not know beside its own; the unknown value is ignored.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiLCJmdXR1cmVwcm9kdWN0Il0sIm1heURpc3BhdGNoIjpbXSwibWF5R3JhbnRSZWFjaCI6ZmFsc2UsInNjb3BlIjoiZXZpZGVuY2U6cmVhZCIsImFtciI6WyJzZXJ2aWNlIl19.UvtKcL3dsQc580NJJAjLTbc4g4HpXDFrmXTcjmMOBgTiVNOfSb646CCn-xJ8HlgCdb17u5qkrkD7kWFIqPfKCw",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiLCJmdXR1cmVwcm9kdWN0Il0sIm1heURpc3BhdGNoIjpbXSwibWF5R3JhbnRSZWFjaCI6ZmFsc2UsInNjb3BlIjoiZXZpZGVuY2U6cmVhZCIsImFtciI6WyJzZXJ2aWNlIl19.wh6T3QgMg9X96tAN9hB9d0OjIw9g9IPJOf8HJ7kBdSTNbAS_oN7GfUTFPHDZ1AMgIbtQusdjNPGoCcc82h7LDA",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060
@@ -990,7 +972,7 @@
       "expect": {
         "ok": true,
         "claims": {
-          "iss": "https://accounts.superjackfruit.com",
+          "iss": "https://issuer.treaty.test",
           "sub": "prn_bbbbbbbbbbbbbbbbbbbb",
           "aud": "https://app.superpipeline.dev",
           "iat": 1791300000,
@@ -1014,9 +996,9 @@
     {
       "name": "conditional-claim-wrong-type",
       "why": "email_verified, a conditional claim, is the string \"true\". A conditional claim may be absent, never of the wrong type.",
-      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2FjY291bnRzLnN1cGVyamFja2ZydWl0LmNvbSIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXSwiZW1haWwiOiJhQGV4YW1wbGUudGVzdCIsImVtYWlsX3ZlcmlmaWVkIjoidHJ1ZSJ9.dG1rWA8_tdyVQbSbEL4V0gpqLlx8guCb2j7tRZzG8ZOynTfRAfAIdbwIf_NxRznQ03B-plOYtc5Zmp6objU0Dg",
+      "token": "eyJhbGciOiJFZERTQSIsImtpZCI6InRlc3QtZWQyNTUxOS0xIn0.eyJpc3MiOiJodHRwczovL2lzc3Vlci50cmVhdHkudGVzdCIsInN1YiI6InBybl9iYmJiYmJiYmJiYmJiYmJiYmJiYiIsImF1ZCI6Imh0dHBzOi8vYXBwLnN1cGVycGlwZWxpbmUuZGV2IiwiaWF0IjoxNzkxMzAwMDAwLCJleHAiOjE3OTEzMDAzMDAsImp0aSI6IlFzMyIsInByaW5jaXBhbEtpbmQiOiJzZXJ2aWNlIiwib3JnIjoib3JnXzAwMDAwMDAwMDAwMDAwMDAwMDAwIiwiZW50IjpbInN1cGVycGlwZWxpbmUiXSwibWF5RGlzcGF0Y2giOltdLCJtYXlHcmFudFJlYWNoIjpmYWxzZSwic2NvcGUiOiJldmlkZW5jZTpyZWFkIiwiYW1yIjpbInNlcnZpY2UiXSwiZW1haWwiOiJhQGV4YW1wbGUudGVzdCIsImVtYWlsX3ZlcmlmaWVkIjoidHJ1ZSJ9.5lv4OnEOjyzwMTpwFALAJ_t1lQtEzOQSOVY5RUr-qe80gYki1ImBeC2NpMUkZKNS51_py8khd2videpeOSHeDA",
       "verifier": {
-        "issuer": "https://accounts.superjackfruit.com",
+        "issuer": "https://issuer.treaty.test",
         "audience": "https://app.superpipeline.dev",
         "product": "superpipeline",
         "now": 1791300060

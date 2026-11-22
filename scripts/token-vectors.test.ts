@@ -115,3 +115,34 @@ test("the JWKS holds one Ed25519 key and keys a verifier must ignore", () => {
   expect(vectors.jwks.keys.length).toBeGreaterThan(1);
   for (const k of vectors.jwks.keys) expect(k.d).toBeUndefined();
 });
+
+test("the vectors publish no private key and name no production issuer", () => {
+  const text = readFileSync(
+    join(import.meta.dir, "../fixtures/ecosystem-identity/token_vectors.json"),
+    "utf8",
+  );
+  // "d" is the private member of an OKP or EC JWK (RFC 8037, RFC 7518).
+  expect(text).not.toMatch(/"d"\s*:/);
+  expect(text).not.toContain("privateJwk");
+  const parsed: unknown = JSON.parse(text);
+  const cases =
+    parsed !== null &&
+    typeof parsed === "object" &&
+    "cases" in parsed &&
+    Array.isArray(parsed.cases)
+      ? parsed.cases
+      : [];
+  const issuers = new Set<unknown>();
+  for (const c of cases) {
+    issuers.add(
+      Reflect.get(Object(Reflect.get(Object(c), "verifier")), "issuer"),
+    );
+    const caseClaims = Reflect.get(
+      Object(Reflect.get(Object(c), "expect")),
+      "claims",
+    );
+    if (caseClaims !== undefined)
+      issuers.add(Reflect.get(Object(caseClaims), "iss"));
+  }
+  expect([...issuers]).toEqual(["https://issuer.treaty.test"]);
+});
