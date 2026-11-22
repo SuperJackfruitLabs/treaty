@@ -913,6 +913,188 @@
       "envelope": "flat-error.v1",
       "status": 500,
       "meaning": "The device flow's token endpoint: the approved session was gone when the credential was to be minted."
+    },
+    {
+      "code": "INVALID_DUE_AT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card dueAt that is not a date-time."
+    },
+    {
+      "code": "INVALID_ARCHIVED_AT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card archivedAt that is not a date-time."
+    },
+    {
+      "code": "INVALID_LABELS",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Card labels that are not a list of label ids."
+    },
+    {
+      "code": "UNKNOWN_LABEL",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card label the board does not have."
+    },
+    {
+      "code": "INVALID_PROJECT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card project that is not a project id."
+    },
+    {
+      "code": "UNKNOWN_PROJECT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card project the workspace does not have."
+    },
+    {
+      "code": "MILESTONE_NOT_IN_PROJECT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card milestone outside the card's project."
+    },
+    {
+      "code": "INVALID_PRECONDITION",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card precondition of the wrong shape."
+    },
+    {
+      "code": "INVALID_INTRO",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card intro of the wrong shape."
+    },
+    {
+      "code": "INVALID_LINK",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card link of the wrong shape."
+    },
+    {
+      "code": "INVALID_LINK_KIND",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card link kind the board does not know."
+    },
+    {
+      "code": "PARENT_MUST_BE_SAME_BOARD",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A parent link to a card on another board."
+    },
+    {
+      "code": "SELF_EDGE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card linked to itself."
+    },
+    {
+      "code": "BAD_KIND",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A cross-board link kind the store does not know."
+    },
+    {
+      "code": "FOREIGN_BOARD",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "A cross-board link to a board outside the workspace."
+    },
+    {
+      "code": "SAME_BOARD_EDGE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 500,
+      "meaning": "The cross-board store was asked to hold a link within one board, which the board itself holds."
+    },
+    {
+      "code": "FIELD_NOT_COMPOSABLE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "An agent composing a card set a field agents may not set."
+    },
+    {
+      "code": "AGENT_NOT_FOUND",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "No such agent in the workspace."
+    },
+    {
+      "code": "AGENT_HAS_NO_OWNER",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "An agent queueing work has no owning person."
+    },
+    {
+      "code": "AGENT_QUEUE_POLICY_UNKNOWN",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "An agent queueing work under a policy the board does not know."
+    },
+    {
+      "code": "AGENT_CANNOT_SET_OWNER",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "An agent set a card owner, which only people may."
+    },
+    {
+      "code": "BOARD_NOT_PERMITTED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "An agent queueing work on a board its grant does not cover."
+    },
+    {
+      "code": "DISPATCH_GRANT_UNKNOWN",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "An agent queueing work for a dispatch grant the board does not know."
+    },
+    {
+      "code": "NO_DISPATCH_AUTHORITY",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "An agent queueing work for another agent without dispatch authority."
+    },
+    {
+      "code": "QUEUE_CEILING_REACHED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 429,
+      "meaning": "An agent queued more work than its ceiling allows."
+    },
+    {
+      "code": "BOARD_CEILING_REACHED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 429,
+      "meaning": "A board holds as many queued cards as it allows."
     }
   ]
 }

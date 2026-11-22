@@ -19,6 +19,8 @@ export interface Operation {
   path: string;
   /** JSON pointer, within the document, to the request body's schema. */
   request?: string;
+  /** Whether a request must carry a body (`requestBody.required`, false by default as in OpenAPI). */
+  requestRequired: boolean;
   /** Status (or `default`, `4XX`) → pointer to the body's schema, or null for no body. */
   responses: Record<string, string | null>;
   errorCodes: string[];
@@ -58,6 +60,7 @@ export function operations(doc: unknown): Operation[] {
       method: op.method,
       path: op.path,
       ...(request ? { request } : {}),
+      requestRequired: op.requestBody?.node.required === true,
       responses,
       errorCodes: stringArray(op.node["x-treaty-error-codes"]),
     };
@@ -173,6 +176,10 @@ export function validateRequest(
   body: unknown,
 ): Result {
   const op = find(api, operationId);
+  if (op.request && empty(body))
+    return op.requestRequired
+      ? { valid: false, errors: [`${operationId} requires a body`] }
+      : { valid: true, errors: [] };
   return check(bundle, api, op.request, body, `${operationId}'s request`);
 }
 
