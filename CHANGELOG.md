@@ -5,6 +5,11 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- **New package, `@superjackfruitlabs/treaty-contracts`:** every contract as data with a sha256 manifest, validators for JSON Schemas and OpenAPI 3.1 documents (`validatorFor`, `openApi`, `matchRoute`, `validateRequest`, `validateResponse`), and the `treaty` CLI (`verify`, `sync`, `cases`). The main entry runs in Workers; `./node` adds the filesystem pieces. A product declares what it produces and consumes in `treaty.json` (`schemas/treaty/product-manifest.v1.json`).
+- `contracts/registry.json` lists all 34 crossings between products found on 2026-11-22 (8 contracted, 27% coverage); `scripts/coverage.ts` reports it across the workspace.
+- `schemas/common/error.v1.json` and `contracts/error-codes.json`: the one error envelope and a code registry, seeded with four SuperPipeline codes.
+- `bun run compat` refuses a change that breaks a reader or a writer within a version. Widening an enum or a type in place, as the SuperBench v2 phase change below did, now needs a new version or a recorded exception.
+
 - Add the SuperBench v2 `reclaim` operation (key only) and the `reclaiming` and `reclaimed` workspace phases to the request and response schemas, with wire vectors, retry and interrupted-reply obligations; re-creation on a reclaimed key is marked PROPOSED. The v2 response phase enum is widened in place, so a consumer that validates phases strictly must accept `reclaiming` and `reclaimed` before the producer enables reclaim; the producer emits them only after a reclaim.
 
 - Propose explicit bounded finite execution I/O and private complete registration observations beside SuperBench v2; preserve legacy encodings and limits without enabling either crossing.

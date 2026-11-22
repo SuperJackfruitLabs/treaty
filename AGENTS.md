@@ -2,7 +2,8 @@
 
 The suite's contracts as code: the CloudEvents envelope, event schemas, the identity fixture
 corpus, outbox helpers and the Workers↔NATS relay. The charter holds the prose agreements;
-treaty holds what software must check. The plan is `docs/2026-11-02-treaty-plan.md`.
+treaty holds what software must check. The plans are `docs/2026-11-02-treaty-plan.md` (done) and
+`docs/2026-11-22-every-crossing-plan.md` (in progress).
 
 ## Rules
 
@@ -13,6 +14,11 @@ treaty holds what software must check. The plan is `docs/2026-11-02-treaty-plan.
 - **Versions live in `type` and `dataschema`, never in subjects.**
 - **Go and Swift do not import TypeScript.** They validate against `schemas/` and the test
   vectors, so every contract must be expressible as data.
+- **Every crossing between products is in `contracts/registry.json`**, contracted or not. A new
+  crossing is listed before it ships; a contract changes its status in the same change.
+- **Within a version, only optional additions.** Anything else is a `.v<N+1>` file beside the old
+  one. `bun run compat` enforces it; `contracts/compat-exceptions.json` stays empty unless the
+  charter records why a contract must break in place.
 - **Every guard has a test that fails when the guard is reverted.**
 
 ## Layout
@@ -21,6 +27,8 @@ treaty holds what software must check. The plan is `docs/2026-11-02-treaty-plan.
 - `apps/`: deployable services (the relay, from step 6).
 - `schemas/`: JSON Schemas, plain data.
 - `fixtures/`: shared test corpora, plain data.
+- `contracts/`: treaty's own records: the crossing registry, error codes, compatibility exceptions.
+- `schemas/http/`: OpenAPI 3.1 documents, one per API; cases in `fixtures/http/`.
 
 ## Checks
 
@@ -33,6 +41,8 @@ treaty holds what software must check. The plan is `docs/2026-11-02-treaty-plan.
   code file over 1,000 lines, and the layer order: packages at the bottom, the relay above them,
   `scripts/` and `deploy/` on top. A package's `src/` imports nothing outside the package. Never
   raise a recorded number to make a change fit; split the file or break the edge.
+- **Compatibility** (`bun run compat`, `scripts/compat.ts`) compares every schema and OpenAPI
+  document with the base commit. CI passes the PR's base, or the commit before a push to main.
 - **Restructures** pin behaviour first (a characterization test committed against the old code),
   move code verbatim, and leave the packages' exports and the generated corpora byte-identical.
 
