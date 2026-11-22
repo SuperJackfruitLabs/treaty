@@ -276,7 +276,8 @@
         "schemas/superpipeline-api/run-checkpoint-receipt.v1.json",
         "schemas/superpipeline-api/run-checkpoint.v1.json",
         "fixtures/superpipeline-run-checkpoint/canonical.json",
-        "fixtures/superpipeline-run-checkpoint/cases.json"
+        "fixtures/superpipeline-run-checkpoint/cases.json",
+        "schemas/http/superpipeline/agent-work.v1.openapi.json"
       ],
       "evidence": [
         "superpipeline:apps/api/src/board/checkpoint-source.ts",
@@ -308,7 +309,7 @@
       "consumers": ["agentpod", "salaam"],
       "kind": "http",
       "status": "uncontracted",
-      "contract": [],
+      "contract": ["schemas/http/superpipeline/agent-work.v1.openapi.json"],
       "gaps": "AgentPod hand-mirrors SuperPipeline's unpublished agent SDK; error codes such as NOT_RUN_OWNER and STALE_LEASE are defined only locally.",
       "phase": 1,
       "evidence": [

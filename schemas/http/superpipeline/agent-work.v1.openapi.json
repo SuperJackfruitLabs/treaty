@@ -1,0 +1,3740 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SuperPipeline agent work",
+    "version": "1",
+    "description": "The loop an agent drives a card with: claim, read, heartbeat, activities, and the verbs that end a run; plus the proposed checkpoint routes a coordinator service settles a run with. Every refusal is error.v1. Malformed JSON is 400 INVALID_JSON; a run verb this document does not name (`POST \u2026/runs/{runId}/{other}`) is 404 UNKNOWN_RUN_ACTION; an unplanned failure is 500 UNEXPECTED. A run verb's lease is checked before anything else in its body: a missing or old `leaseEpoch` is 409 STALE_LEASE, another agent's run 403 NOT_RUN_OWNER."
+  },
+  "x-treaty-error-envelope": "error.v1",
+  "tags": [
+    {
+      "name": "agent work",
+      "description": "Called with an agent's own credential."
+    },
+    {
+      "name": "checkpoints",
+      "description": "Proposed. Called by the policy's reporter service."
+    }
+  ],
+  "paths": {
+    "/v1/boards/{boardId}/claims": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BoardId"
+        }
+      ],
+      "post": {
+        "operationId": "claimCard",
+        "summary": "Claim the next ready card this agent may take",
+        "tags": ["agent work"],
+        "security": [
+          {
+            "agentToken": ["claim"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "INVALID_JSON",
+          "INVALID_BODY",
+          "INVALID_INPUT",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "UNEXPECTED"
+        ],
+        "description": "Malformed JSON is INVALID_JSON, a body that is not an object INVALID_BODY, and a field of the wrong type INVALID_INPUT. A caller with no agent identity is UNAUTHORIZED.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClaimRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Work to do, or why there is none. An empty board is a 200 with `claimed: false`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/runs/{runId}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BoardId"
+        },
+        {
+          "$ref": "#/components/parameters/RunId"
+        }
+      ],
+      "get": {
+        "operationId": "readRun",
+        "summary": "Read the run this agent holds",
+        "tags": ["agent work"],
+        "security": [
+          {
+            "agentToken": ["run"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "RUN_NOT_FOUND",
+          "NOT_RUN_OWNER",
+          "CARD_NOT_FOUND",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "UNEXPECTED"
+        ],
+        "description": "Readable by the agent that claimed it, with or without a live lease.",
+        "responses": {
+          "200": {
+            "description": "The run's context",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunContext"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/runs/{runId}/attempts": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BoardId"
+        },
+        {
+          "$ref": "#/components/parameters/RunId"
+        }
+      ],
+      "get": {
+        "operationId": "readRunAttempts",
+        "summary": "Read every run of the card this run holds",
+        "tags": ["agent work"],
+        "security": [
+          {
+            "agentToken": ["run"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "RUN_NOT_FOUND",
+          "NOT_RUN_OWNER",
+          "CARD_NOT_FOUND",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "UNEXPECTED"
+        ],
+        "responses": {
+          "200": {
+            "description": "The card's runs, oldest first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["attempts"],
+                  "properties": {
+                    "attempts": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AttemptView"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/runs/{runId}/heartbeat": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BoardId"
+        },
+        {
+          "$ref": "#/components/parameters/RunId"
+        }
+      ],
+      "post": {
+        "operationId": "heartbeatRun",
+        "summary": "Keep the lease alive",
+        "tags": ["agent work"],
+        "security": [
+          {
+            "agentToken": ["run"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "INVALID_JSON",
+          "STALE_LEASE",
+          "NOT_RUN_OWNER",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "UNEXPECTED"
+        ],
+        "description": "A missed heartbeat (15 minutes) is reclaimed.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunLease"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The run's answer, under `run`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["run"],
+                  "properties": {
+                    "run": {
+                      "type": "object",
+                      "required": ["acknowledged"],
+                      "properties": {
+                        "acknowledged": {
+                          "const": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/runs/{runId}/activities": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BoardId"
+        },
+        {
+          "$ref": "#/components/parameters/RunId"
+        }
+      ],
+      "post": {
+        "operationId": "postRunActivity",
+        "summary": "Post an activity: a thought, an action, a question or a strict decision",
+        "tags": ["agent work"],
+        "security": [
+          {
+            "agentToken": ["run"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "INVALID_JSON",
+          "STALE_LEASE",
+          "NOT_RUN_OWNER",
+          "INVALID_ELICITATION",
+          "INVALID_APPROVAL_SUBJECT",
+          "INVALID_USAGE",
+          "BUDGET_EXCEEDED",
+          "INVALID_STRICT_DECISION",
+          "DECISION_CONFLICT",
+          "DECISION_EXPIRED",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "UNEXPECTED"
+        ],
+        "description": "A strict decision replayed with the same request_id by the same agent answers with the stored response. A question parks the card in input-required (auth-required when `signal` is `auth`).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunActivityRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The run's answer, under `activity`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["activity"],
+                  "properties": {
+                    "activity": {
+                      "type": "object",
+                      "required": ["accepted", "cardState"],
+                      "properties": {
+                        "accepted": {
+                          "const": true
+                        },
+                        "cardState": {
+                          "$ref": "#/components/schemas/TaskState"
+                        },
+                        "elicitationId": {
+                          "type": "string",
+                          "pattern": "^elc_[A-Za-z0-9]{6,}$"
+                        },
+                        "strictDecision": {
+                          "$ref": "#/components/schemas/StrictDecision"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "402": {
+            "$ref": "#/components/responses/Error402"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/runs/{runId}/complete": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BoardId"
+        },
+        {
+          "$ref": "#/components/parameters/RunId"
+        }
+      ],
+      "post": {
+        "operationId": "completeRun",
+        "summary": "Finish the turn, saying what kind of finish it is",
+        "tags": ["agent work"],
+        "security": [
+          {
+            "agentToken": ["run"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "INVALID_JSON",
+          "STALE_LEASE",
+          "NOT_RUN_OWNER",
+          "INVALID_OUTCOME",
+          "CHECKPOINT_REQUIRED",
+          "INVALID_APPROVAL_SUBJECT",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "UNEXPECTED"
+        ],
+        "description": "`pass` (or no outcome on a stage that judges nothing) advances the card; `changes-needed` returns it with the findings; `needs-person` ends the run and parks the card on a question. When a completion reference is refused, the returned card also carries `handoff`.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteRunRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The run's answer, under `card`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["card"],
+                  "properties": {
+                    "card": {
+                      "$ref": "#/components/schemas/CardView"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/runs/{runId}/submit": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BoardId"
+        },
+        {
+          "$ref": "#/components/parameters/RunId"
+        }
+      ],
+      "post": {
+        "operationId": "submitRun",
+        "summary": "Submit a gated stage for a person's review",
+        "tags": ["agent work"],
+        "security": [
+          {
+            "agentToken": ["run"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "INVALID_JSON",
+          "STALE_LEASE",
+          "NOT_RUN_OWNER",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "UNEXPECTED"
+        ],
+        "description": "Ends the run and opens the stage's gate.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitRunRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The run's answer, under `card`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["card"],
+                  "properties": {
+                    "card": {
+                      "$ref": "#/components/schemas/CardView"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/runs/{runId}/block": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BoardId"
+        },
+        {
+          "$ref": "#/components/parameters/RunId"
+        }
+      ],
+      "post": {
+        "operationId": "blockRun",
+        "summary": "Escalate to a person",
+        "tags": ["agent work"],
+        "security": [
+          {
+            "agentToken": ["run"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "INVALID_JSON",
+          "STALE_LEASE",
+          "NOT_RUN_OWNER",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "UNEXPECTED"
+        ],
+        "description": "Ends the run and parks the card in input-required with the reason.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BlockRunRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The run's answer, under `card`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["card"],
+                  "properties": {
+                    "card": {
+                      "$ref": "#/components/schemas/CardView"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/runs/{runId}/fail": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BoardId"
+        },
+        {
+          "$ref": "#/components/parameters/RunId"
+        }
+      ],
+      "post": {
+        "operationId": "failRun",
+        "summary": "Report a failure",
+        "tags": ["agent work"],
+        "security": [
+          {
+            "agentToken": ["run"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "INVALID_JSON",
+          "STALE_LEASE",
+          "NOT_RUN_OWNER",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "UNEXPECTED"
+        ],
+        "description": "Retryable until the circuit breaker parks the card.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FailRunRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The run's answer, under `card`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["card"],
+                  "properties": {
+                    "card": {
+                      "$ref": "#/components/schemas/CardView"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/runs/{runId}/release": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BoardId"
+        },
+        {
+          "$ref": "#/components/parameters/RunId"
+        }
+      ],
+      "post": {
+        "operationId": "releaseRun",
+        "summary": "Give the claim back without penalty",
+        "tags": ["agent work"],
+        "security": [
+          {
+            "agentToken": ["run"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "INVALID_JSON",
+          "STALE_LEASE",
+          "NOT_RUN_OWNER",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "UNEXPECTED"
+        ],
+        "description": "The card becomes claimable again.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunLease"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The run's answer, under `card`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["card"],
+                  "properties": {
+                    "card": {
+                      "$ref": "#/components/schemas/CardView"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/runs/{runId}/references": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BoardId"
+        },
+        {
+          "$ref": "#/components/parameters/RunId"
+        }
+      ],
+      "post": {
+        "operationId": "addRunReference",
+        "summary": "Link something the run produced from its own card",
+        "tags": ["agent work"],
+        "security": [
+          {
+            "agentToken": ["run"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "INVALID_JSON",
+          "STALE_LEASE",
+          "NOT_RUN_OWNER",
+          "INVALID_INPUT",
+          "INVALID_URL",
+          "NOT_INITIALIZED",
+          "CARD_NOT_FOUND",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "UNEXPECTED"
+        ],
+        "description": "Idempotent on the card and url. An unknown provider is INVALID_INPUT.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddRunReferenceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The run's answer, under `reference`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["reference"],
+                  "properties": {
+                    "reference": {
+                      "$ref": "#/components/schemas/ReferenceView"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/runs/{runId}/evidence-reference": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BoardId"
+        },
+        {
+          "$ref": "#/components/parameters/RunId"
+        }
+      ],
+      "post": {
+        "operationId": "addRunEvidenceReference",
+        "summary": "Link an execution export from the run that produced it",
+        "tags": ["agent work"],
+        "security": [
+          {
+            "agentToken": ["run"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "INVALID_JSON",
+          "INVALID_INPUT",
+          "EVIDENCE_LINK_UNAVAILABLE",
+          "STALE_LEASE",
+          "NOT_RUN_OWNER",
+          "INVALID_URL",
+          "NOT_INITIALIZED",
+          "CARD_NOT_FOUND",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "UNEXPECTED"
+        ],
+        "description": "Allowed on a working run, and on one that ended completed or submitted, for its original agent and epoch.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvidenceReferenceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The reference, unverified",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["reference_id", "verification"],
+                  "properties": {
+                    "reference_id": {
+                      "type": "string",
+                      "pattern": "^ref_[A-Za-z0-9]{6,}$"
+                    },
+                    "verification": {
+                      "const": "unverified"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/runs/{runId}/approval-subject/verify": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BoardId"
+        },
+        {
+          "$ref": "#/components/parameters/RunId"
+        }
+      ],
+      "post": {
+        "operationId": "verifyRunApprovalSubject",
+        "summary": "Verify, before acting, that the run's approval subject is still the one approved",
+        "tags": ["agent work"],
+        "security": [
+          {
+            "agentToken": ["run"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "INVALID_JSON",
+          "INVALID_APPROVAL_SUBJECT",
+          "STALE_LEASE",
+          "NOT_RUN_OWNER",
+          "NOT_INITIALIZED",
+          "APPROVAL_SUBJECT_NOT_VERIFIED",
+          "APPROVAL_HELD",
+          "APPROVAL_SUBJECT_EXPIRED",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "UNEXPECTED"
+        ],
+        "description": "The publisher's final lease fence: the stored bytes are returned only while the run, card, stage, subject, gate, account and expiry still agree.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApprovalSubjectVerifyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The stored subject bytes and the gate that approved them",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalSubjectVerification"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Error410"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/runs/{runId}/checkpoint-source": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BoardId"
+        },
+        {
+          "$ref": "#/components/parameters/RunId"
+        }
+      ],
+      "get": {
+        "operationId": "readRunCheckpointSource",
+        "summary": "Read a run's admitted checkpoint source",
+        "tags": ["checkpoints"],
+        "security": [
+          {
+            "serviceToken": ["checkpoints:read"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "CHECKPOINT_SOURCE_DISABLED",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "NOT_INITIALIZED",
+          "CHECKPOINT_SOURCE_MISSING",
+          "NOT_CHECKPOINT_REPORTER",
+          "INVALID_CHECKPOINT_SOURCE",
+          "STALE_LEASE",
+          "CHECKPOINT_SOURCE_FAILED"
+        ],
+        "description": "Proposed and off unless the deployment sets PROPOSED_CHECKPOINT_SOURCE; off, every call is 404 CHECKPOINT_SOURCE_DISABLED. Only the policy's reporter service may read it.",
+        "responses": {
+          "200": {
+            "description": "The admitted source, rejoined with the current run",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckpointClaimSnapshot"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "admitRunCheckpointSource",
+        "summary": "Admit a run's checkpoint source, once",
+        "tags": ["checkpoints"],
+        "security": [
+          {
+            "serviceToken": ["checkpoints:submit"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "CHECKPOINT_SOURCE_DISABLED",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "NOT_INITIALIZED",
+          "CHECKPOINT_SOURCE_TOO_LARGE",
+          "CHECKPOINT_SOURCE_MISSING",
+          "NOT_CHECKPOINT_REPORTER",
+          "INVALID_CHECKPOINT_SOURCE",
+          "STALE_LEASE",
+          "CHECKPOINT_SOURCE_FAILED",
+          "CHECKPOINT_SOURCE_CONFLICT",
+          "CHECKPOINT_SOURCE_NOT_SAVED"
+        ],
+        "description": "Bind-once: a different source for the same run is CHECKPOINT_SOURCE_CONFLICT. Malformed JSON is INVALID_CHECKPOINT_SOURCE, by checkpoint JSON's own lexical rules.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckpointSource"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The admission receipt; an exact replay returns the stored one",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckpointSourceReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/runs/{runId}/checkpoint-settlements": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BoardId"
+        },
+        {
+          "$ref": "#/components/parameters/RunId"
+        }
+      ],
+      "post": {
+        "operationId": "submitCheckpointSettlement",
+        "summary": "Settle a run with its checkpoint report",
+        "tags": ["checkpoints"],
+        "security": [
+          {
+            "serviceToken": ["checkpoints:submit"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "CHECKPOINT_SETTLEMENT_DISABLED",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "NOT_INITIALIZED",
+          "NOT_CHECKPOINT_REPORTER",
+          "INVALID_CHECKPOINT_STATE",
+          "INVALID_CHECKPOINT_RECEIPT",
+          "CHECKPOINT_SETTLEMENT_FAILED",
+          "CHECKPOINT_SETTLEMENT_TOO_LARGE",
+          "INVALID_CHECKPOINT",
+          "STALE_LEASE",
+          "CHECKPOINT_CONFLICT",
+          "CHECKPOINT_RECEIPT_NOT_SAVED",
+          "CHECKPOINT_SOURCE_MISSING",
+          "INVALID_CHECKPOINT_SOURCE",
+          "CHECKPOINT_REFERENCE_MAPPING_REQUIRED",
+          "INVALID_CHECKPOINT_REFERENCE",
+          "CHECKPOINT_REFERENCE_NOT_SAVED",
+          "COMPLETION_REQUIRED",
+          "APPROVAL_SUBJECT_REQUIRED",
+          "INVALID_OUTCOME",
+          "INVALID_COMPLETION_STATE"
+        ],
+        "description": "Proposed and off unless the deployment sets PROPOSED_CHECKPOINT_SETTLEMENT; off, every call is 404 CHECKPOINT_SETTLEMENT_DISABLED. At most 64 KiB.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "../../superpipeline-api/checkpoint-settlement.v1.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The settlement receipt; an exact replay returns the stored one",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../superpipeline-api/run-checkpoint-receipt.v1.json"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error413"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/runs/{runId}/checkpoint": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BoardId"
+        },
+        {
+          "$ref": "#/components/parameters/RunId"
+        }
+      ],
+      "get": {
+        "operationId": "readRunCheckpoint",
+        "summary": "Read a run's settlement receipt",
+        "tags": ["checkpoints"],
+        "security": [
+          {
+            "serviceToken": ["checkpoints:read"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "CHECKPOINT_SETTLEMENT_DISABLED",
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "NOT_INITIALIZED",
+          "NOT_CHECKPOINT_REPORTER",
+          "INVALID_CHECKPOINT_STATE",
+          "INVALID_CHECKPOINT_RECEIPT",
+          "CHECKPOINT_SETTLEMENT_FAILED",
+          "CHECKPOINT_RECEIPT_MISSING"
+        ],
+        "description": "A cap-free historical read; never execution authority.",
+        "responses": {
+          "200": {
+            "description": "The settlement receipt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../superpipeline-api/run-checkpoint-receipt.v1.json"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "agentToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "An agent's credential: a `spa_` token from SuperPipeline, or an Accounts-issued access token whose subject is an agent principal. Roles are the `spa_` token's scopes: `claim` takes a card (`POST \u2026/claims`), `run` drives a claimed card (`\u2026/runs/*`). A token holding `claim` alone also passes `run`, so tokens minted before the split keep finishing their work. An Accounts token carries no scopes here; its authority is checked at claim time by the control pair. A missing or unknown credential is 401 UNAUTHORIZED; a scope the token lacks is 403 FORBIDDEN."
+      },
+      "serviceToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "An Accounts-issued service access token, unexpired, with `checkpoints:read` or `checkpoints:submit`. Its principal must also be the stage policy's reporter (NOT_CHECKPOINT_REPORTER otherwise). A missing or expired token is 401 UNAUTHORIZED; a missing scope 403 FORBIDDEN."
+      }
+    },
+    "parameters": {
+      "BoardId": {
+        "name": "boardId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^brd_[A-Za-z0-9]{6,}$"
+        }
+      },
+      "RunId": {
+        "name": "runId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^run_[A-Za-z0-9]{6,}$"
+        }
+      }
+    },
+    "responses": {
+      "Error400": {
+        "description": "The request is malformed or refused as given",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Error401": {
+        "description": "No valid credential",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Error402": {
+        "description": "The board or card budget cap was reached",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Error403": {
+        "description": "The credential may not do this",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Error404": {
+        "description": "Not found, or the feature is switched off",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Error409": {
+        "description": "A conflict with the state the caller believed in",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Error410": {
+        "description": "The approval subject expired",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Error413": {
+        "description": "The body is over 64 KiB",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Error500": {
+        "description": "An unexpected failure",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Error503": {
+        "description": "A dependency is not configured",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "JsonValue": {
+        "description": "Any JSON value, stored and returned as given."
+      },
+      "TaskState": {
+        "type": "string",
+        "enum": [
+          "submitted",
+          "working",
+          "input-required",
+          "auth-required",
+          "completed",
+          "rejected",
+          "failed",
+          "canceled"
+        ]
+      },
+      "LeaseEpoch": {
+        "type": "integer",
+        "description": "The fencing epoch the claim returned. A value that is not the run's current epoch, or is missing, is refused with STALE_LEASE."
+      },
+      "GateOption": {
+        "type": "object",
+        "required": ["name", "title"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "promptFill": {
+            "type": "string"
+          },
+          "interactive": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string"
+          },
+          "requires": {
+            "const": "workspace-admin"
+          },
+          "meaning": {
+            "enum": ["approve", "reject", "revise", "choose", "defer"]
+          },
+          "scope": {
+            "enum": ["once", "run", "always"]
+          }
+        }
+      },
+      "PreviewBlock": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["type", "text"],
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "label": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "label", "value"],
+            "properties": {
+              "type": {
+                "const": "field"
+              },
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "label", "url"],
+            "properties": {
+              "type": {
+                "const": "link"
+              },
+              "label": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "ApprovalSubjectEnvelope": {
+        "type": "object",
+        "description": "The exact thing an approving answer approves: id and digest are compared byte for byte, never computed.",
+        "required": [
+          "id",
+          "digest",
+          "schema",
+          "revision",
+          "expiresAt",
+          "preview",
+          "previewComplete"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "digest": {
+            "type": "string"
+          },
+          "schema": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer"
+          },
+          "expiresAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "preview": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PreviewBlock"
+            }
+          },
+          "previewComplete": {
+            "type": "boolean"
+          }
+        }
+      },
+      "StrictDecision": {
+        "type": "object",
+        "description": "Correlation only: the digest names the consumer's full decision envelope. Parsed strictly.",
+        "additionalProperties": false,
+        "required": ["version", "request_id", "decision_digest", "expires_at"],
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "request_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+          },
+          "decision_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "expires_at": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991,
+            "description": "Milliseconds since the epoch."
+          }
+        }
+      },
+      "ApprovalDetail": {
+        "type": "object",
+        "description": "What a person approving a strict decision is shown. Parsed strictly.",
+        "additionalProperties": false,
+        "required": ["version", "summary", "reason", "files", "digest"],
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "files": {
+            "type": "array",
+            "maxItems": 16,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["path", "change", "bytes", "preview"],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512
+                },
+                "change": {
+                  "enum": ["create", "edit", "delete"]
+                },
+                "bytes": {
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "preview": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 1200
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "preview_truncated": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      },
+      "PosterSubject": {
+        "type": "object",
+        "description": "A poster's harness-permission/v1 subject on a question (charter gate.v2 \u00a73). Parsed strictly.",
+        "additionalProperties": false,
+        "required": [
+          "schema",
+          "id",
+          "digest",
+          "revision",
+          "expires_at",
+          "preview",
+          "preview_complete"
+        ],
+        "properties": {
+          "schema": {
+            "const": "harness-permission/v1"
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "digest": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "expires_at": {
+            "type": "string",
+            "description": "RFC 3339 with seconds and a time zone.",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$"
+          },
+          "preview": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["type", "text"],
+                  "properties": {
+                    "type": {
+                      "const": "text"
+                    },
+                    "label": {
+                      "type": "string",
+                      "maxLength": 16000
+                    },
+                    "text": {
+                      "type": "string",
+                      "maxLength": 16000
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["type", "label", "value"],
+                  "properties": {
+                    "type": {
+                      "const": "field"
+                    },
+                    "label": {
+                      "type": "string",
+                      "maxLength": 16000
+                    },
+                    "value": {
+                      "type": "string",
+                      "maxLength": 16000
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["type", "label", "url"],
+                  "properties": {
+                    "type": {
+                      "const": "link"
+                    },
+                    "label": {
+                      "type": "string",
+                      "maxLength": 16000
+                    },
+                    "url": {
+                      "type": "string",
+                      "maxLength": 16000
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "preview_complete": {
+            "type": "boolean"
+          }
+        }
+      },
+      "QuestionOption": {
+        "description": "An option on an ordinary question: a bare string (its own name and title), `{name,title}`, or `{id,label}`. A `meaning` or `scope` outside the vocabulary is refused with INVALID_ELICITATION.",
+        "properties": {
+          "meaning": {
+            "enum": ["approve", "reject", "revise", "choose", "defer"]
+          },
+          "scope": {
+            "enum": ["once", "run", "always"]
+          }
+        }
+      },
+      "QuestionParameter": {
+        "description": "An ordinary question's `parameter`: its options, as a list or under `options`, and optionally the subject an approving answer approves. A question with a subject must say what every option means.",
+        "anyOf": [
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuestionOption"
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "options": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/QuestionOption"
+                }
+              },
+              "subject": {
+                "$ref": "#/components/schemas/PosterSubject"
+              }
+            },
+            "if": {
+              "required": ["subject"]
+            },
+            "then": {
+              "required": ["options"],
+              "properties": {
+                "options": {
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": ["meaning"]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": ["string", "number", "boolean", "null"]
+          }
+        ]
+      },
+      "StrictOptionApprove": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "title"],
+        "properties": {
+          "name": {
+            "const": "approve"
+          },
+          "title": {
+            "type": "string",
+            "pattern": "^\\S(.*\\S)?$"
+          },
+          "promptFill": {
+            "type": "string"
+          },
+          "interactive": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string",
+            "pattern": "^\\S(.*\\S)?$"
+          },
+          "requires": {
+            "const": "workspace-admin"
+          }
+        },
+        "not": {
+          "required": ["requires"]
+        }
+      },
+      "StrictOptionApproveRun": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "title"],
+        "properties": {
+          "name": {
+            "const": "approve-run"
+          },
+          "title": {
+            "type": "string",
+            "pattern": "^\\S(.*\\S)?$"
+          },
+          "promptFill": {
+            "type": "string"
+          },
+          "interactive": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string",
+            "pattern": "^\\S(.*\\S)?$"
+          },
+          "requires": {
+            "const": "workspace-admin"
+          }
+        },
+        "not": {
+          "required": ["requires"]
+        }
+      },
+      "StrictOptionAlways": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "title", "requires"],
+        "properties": {
+          "name": {
+            "const": "always"
+          },
+          "title": {
+            "type": "string",
+            "pattern": "^\\S(.*\\S)?$"
+          },
+          "promptFill": {
+            "type": "string"
+          },
+          "interactive": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string",
+            "pattern": "^\\S(.*\\S)?$"
+          },
+          "requires": {
+            "const": "workspace-admin"
+          }
+        }
+      },
+      "StrictOptionDeny": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "title"],
+        "properties": {
+          "name": {
+            "const": "deny"
+          },
+          "title": {
+            "type": "string",
+            "pattern": "^\\S(.*\\S)?$"
+          },
+          "promptFill": {
+            "type": "string"
+          },
+          "interactive": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string",
+            "pattern": "^\\S(.*\\S)?$"
+          },
+          "requires": {
+            "const": "workspace-admin"
+          }
+        },
+        "not": {
+          "required": ["requires"]
+        }
+      },
+      "StrictDecisionOffer": {
+        "type": "object",
+        "description": "A strict decision's `parameter`: exactly the canonical approve/deny options, in order, and optionally its approval detail. Options carry no meaning or scope; `always` alone requires a workspace admin.",
+        "additionalProperties": false,
+        "required": ["options"],
+        "properties": {
+          "options": {
+            "oneOf": [
+              {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "$ref": "#/components/schemas/StrictOptionApprove"
+                  },
+                  {
+                    "$ref": "#/components/schemas/StrictOptionDeny"
+                  }
+                ],
+                "items": false,
+                "minItems": 2
+              },
+              {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "$ref": "#/components/schemas/StrictOptionApprove"
+                  },
+                  {
+                    "$ref": "#/components/schemas/StrictOptionApproveRun"
+                  },
+                  {
+                    "$ref": "#/components/schemas/StrictOptionDeny"
+                  }
+                ],
+                "items": false,
+                "minItems": 3
+              },
+              {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "$ref": "#/components/schemas/StrictOptionApprove"
+                  },
+                  {
+                    "$ref": "#/components/schemas/StrictOptionAlways"
+                  },
+                  {
+                    "$ref": "#/components/schemas/StrictOptionDeny"
+                  }
+                ],
+                "items": false,
+                "minItems": 3
+              },
+              {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "$ref": "#/components/schemas/StrictOptionApprove"
+                  },
+                  {
+                    "$ref": "#/components/schemas/StrictOptionApproveRun"
+                  },
+                  {
+                    "$ref": "#/components/schemas/StrictOptionAlways"
+                  },
+                  {
+                    "$ref": "#/components/schemas/StrictOptionDeny"
+                  }
+                ],
+                "items": false,
+                "minItems": 4
+              }
+            ]
+          },
+          "detail": {
+            "$ref": "#/components/schemas/ApprovalDetail"
+          }
+        }
+      },
+      "Usage": {
+        "type": "object",
+        "description": "Token and cost usage for one activity. Negative or non-finite numbers are refused with INVALID_USAGE.",
+        "properties": {
+          "model": {
+            "type": "string"
+          },
+          "inputTokens": {
+            "type": "number",
+            "minimum": 0
+          },
+          "outputTokens": {
+            "type": "number",
+            "minimum": 0
+          },
+          "costUsd": {
+            "type": "number",
+            "minimum": 0
+          }
+        }
+      },
+      "CardReservation": {
+        "type": "object",
+        "required": ["agentId", "reservedUntil", "decisionId", "reservedBy"],
+        "properties": {
+          "agentId": {
+            "type": "string"
+          },
+          "reservedUntil": {
+            "type": "string"
+          },
+          "decisionId": {
+            "type": "string"
+          },
+          "reservedBy": {
+            "type": "string"
+          }
+        }
+      },
+      "CardNeedsHuman": {
+        "type": "object",
+        "required": ["reason"],
+        "properties": {
+          "reason": {
+            "enum": [
+              "question",
+              "repeated-failure",
+              "blocked",
+              "review",
+              "not-authorised"
+            ]
+          },
+          "elicitationId": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "failureCount": {
+            "type": "integer"
+          },
+          "summary": {
+            "type": "string"
+          }
+        }
+      },
+      "CardView": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "spec",
+          "ownerUserId",
+          "queuedBy",
+          "queuedByAgentId",
+          "queuedGrant",
+          "labels",
+          "projectId",
+          "milestoneId",
+          "dueAt",
+          "archivedAt",
+          "currentStageKey",
+          "state",
+          "delegateAgentId",
+          "lastAgentId",
+          "queuedGrantOwner",
+          "stageSince",
+          "currentRunId",
+          "priority",
+          "contextId",
+          "createdAt",
+          "updatedAt",
+          "stateSince",
+          "costUsd",
+          "overBudget",
+          "attemptCount",
+          "parentCardId",
+          "openChildCount",
+          "costUsdRollup",
+          "blockedBy"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^card_[A-Za-z0-9]{6,}$"
+          },
+          "title": {
+            "type": "string"
+          },
+          "spec": {
+            "$ref": "#/components/schemas/JsonValue"
+          },
+          "ownerUserId": {
+            "type": "string"
+          },
+          "queuedBy": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "queuedByAgentId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "queuedGrant": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "projectId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "milestoneId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "dueAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "needsHuman": {
+            "$ref": "#/components/schemas/CardNeedsHuman"
+          },
+          "reservation": {
+            "$ref": "#/components/schemas/CardReservation"
+          },
+          "placementWindowUntil": {
+            "type": "string"
+          },
+          "archivedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "currentStageKey": {
+            "type": "string"
+          },
+          "state": {
+            "$ref": "#/components/schemas/TaskState"
+          },
+          "delegateAgentId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "lastAgentId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "queuedGrantOwner": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "stageSince": {
+            "type": "string"
+          },
+          "currentRunId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "priority": {
+            "type": "number"
+          },
+          "contextId": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "stateSince": {
+            "type": "string"
+          },
+          "costUsd": {
+            "type": "number"
+          },
+          "overBudget": {
+            "type": "boolean"
+          },
+          "attemptCount": {
+            "type": "integer"
+          },
+          "parentCardId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "openChildCount": {
+            "type": "integer"
+          },
+          "costUsdRollup": {
+            "type": "number"
+          },
+          "blockedBy": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["cardId", "title"],
+              "properties": {
+                "cardId": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CheckDef": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["name", "provider"],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "provider": {
+                "const": "ci"
+              },
+              "contexts": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["name", "provider", "kind"],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "provider": {
+                "const": "verdict"
+              },
+              "kind": {
+                "type": "string"
+              },
+              "standard": {
+                "type": "string"
+              },
+              "atLeast": {
+                "type": "number"
+              },
+              "pass": {
+                "const": true
+              },
+              "judgeKinds": {
+                "type": "array",
+                "items": {
+                  "enum": ["grader", "rule", "agent", "human"]
+                }
+              }
+            }
+          }
+        ]
+      },
+      "StageDef": {
+        "type": "object",
+        "required": ["key", "name", "order"],
+        "properties": {
+          "checkpointPolicy": {
+            "$ref": "../../superpipeline-api/run-checkpoint-policy.v1.json"
+          },
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "order": {
+            "type": "number"
+          },
+          "ownerKind": {
+            "enum": ["capability", "agent", "human"]
+          },
+          "owner": {
+            "type": "string"
+          },
+          "requires": {
+            "type": "object",
+            "properties": {
+              "all": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "any": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "placement": {
+            "type": "object",
+            "properties": {
+              "isolation": {
+                "enum": ["host", "container", "sandbox"]
+              },
+              "models": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "tools": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "credentials": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "gate": {
+            "enum": ["none", "approval", "checks"]
+          },
+          "approvalSubjectSchema": {
+            "type": "string"
+          },
+          "approvalDeciderPrincipalIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "wipLimit": {
+            "type": "integer"
+          },
+          "completion": {
+            "type": "object",
+            "properties": {
+              "handoff": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "reference": {
+                "type": "object",
+                "properties": {
+                  "provider": {
+                    "type": "string"
+                  },
+                  "sourceType": {
+                    "type": "string"
+                  }
+                }
+              },
+              "live": {
+                "type": "string"
+              }
+            }
+          },
+          "returnStage": {
+            "type": "string"
+          },
+          "instructions": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "routing": {
+            "enum": ["pipeline", "manager"]
+          },
+          "timeout": {
+            "type": "object",
+            "properties": {
+              "remindAfterMinutes": {
+                "type": "integer"
+              },
+              "escalateAfterMinutes": {
+                "type": "integer"
+              }
+            }
+          },
+          "quorum": {
+            "type": "object",
+            "required": ["required"],
+            "properties": {
+              "required": {
+                "type": "integer"
+              },
+              "from": {
+                "enum": ["deciders", "admins"]
+              }
+            }
+          },
+          "holdFor": {
+            "type": "integer"
+          },
+          "checks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckDef"
+            }
+          }
+        }
+      },
+      "CheckpointClaimDiscovery": {
+        "type": "object",
+        "description": "The pending checkpoint policy captured with the claim. Discovery only: never source admission or settlement authority.",
+        "required": [
+          "version",
+          "tenantId",
+          "boardId",
+          "cardId",
+          "stageKey",
+          "agentId",
+          "runId",
+          "leaseEpoch",
+          "policy",
+          "policyDigest",
+          "admissionState"
+        ],
+        "properties": {
+          "version": {
+            "const": "superpipeline.checkpoint-claim.v1"
+          },
+          "tenantId": {
+            "type": "string"
+          },
+          "boardId": {
+            "type": "string"
+          },
+          "cardId": {
+            "type": "string"
+          },
+          "stageKey": {
+            "type": "string"
+          },
+          "agentId": {
+            "type": "string"
+          },
+          "runId": {
+            "type": "string"
+          },
+          "leaseEpoch": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "policy": {
+            "$ref": "../../superpipeline-api/run-checkpoint-policy.v1.json"
+          },
+          "policyDigest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "admissionState": {
+            "const": "pending"
+          }
+        }
+      },
+      "ClaimReason": {
+        "type": "string",
+        "description": "Why a claim handed out nothing: the first reason the one claim filter met.",
+        "enum": [
+          "board_not_initialized",
+          "board_over_budget",
+          "concurrency_reached",
+          "capability_mismatch",
+          "no_matching_card",
+          "grant_denied",
+          "card_not_ready",
+          "card_held_back",
+          "stage_not_agent_claimable",
+          "card_reserved",
+          "placement_window"
+        ]
+      },
+      "ClaimResult": {
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "Claimed",
+            "required": [
+              "claimed",
+              "runId",
+              "leaseEpoch",
+              "card",
+              "stage",
+              "handoff",
+              "lastFailure"
+            ],
+            "properties": {
+              "claimed": {
+                "const": true
+              },
+              "checkpointClaim": {
+                "$ref": "#/components/schemas/CheckpointClaimDiscovery"
+              },
+              "runId": {
+                "type": "string",
+                "pattern": "^run_[A-Za-z0-9]{6,}$"
+              },
+              "leaseEpoch": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "card": {
+                "$ref": "#/components/schemas/CardView"
+              },
+              "stage": {
+                "$ref": "#/components/schemas/StageDef"
+              },
+              "handoff": {
+                "$ref": "#/components/schemas/JsonValue"
+              },
+              "lastFailure": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "description": "Why the last attempt at this stage died, when there was one.",
+                    "required": ["reason", "agentId", "stageKey", "endedAt"],
+                    "properties": {
+                      "reason": {
+                        "type": "string"
+                      },
+                      "agentId": {
+                        "type": "string"
+                      },
+                      "stageKey": {
+                        "type": "string"
+                      },
+                      "endedAt": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "title": "Unclaimed",
+            "required": ["claimed", "reason"],
+            "properties": {
+              "claimed": {
+                "const": false
+              },
+              "reason": {
+                "$ref": "#/components/schemas/ClaimReason"
+              }
+            }
+          }
+        ]
+      },
+      "ReferenceView": {
+        "type": "object",
+        "required": [
+          "id",
+          "cardId",
+          "url",
+          "title",
+          "subtitle",
+          "provider",
+          "sourceType",
+          "externalId",
+          "metadata",
+          "syncState",
+          "lastSyncedAt",
+          "addedBy",
+          "runId",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^ref_[A-Za-z0-9]{6,}$"
+          },
+          "cardId": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "provider": {
+            "type": "string"
+          },
+          "sourceType": {
+            "type": "string"
+          },
+          "externalId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/JsonValue"
+          },
+          "syncState": {
+            "enum": ["synced", "stale", "error"]
+          },
+          "lastSyncedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "addedBy": {
+            "enum": ["agent", "user"]
+          },
+          "runId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "CommentView": {
+        "type": "object",
+        "required": [
+          "id",
+          "cardId",
+          "author",
+          "body",
+          "createdAt",
+          "deletedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "cardId": {
+            "type": "string"
+          },
+          "author": {
+            "type": "object",
+            "required": ["kind", "id", "name"],
+            "properties": {
+              "kind": {
+                "enum": ["human", "agent"]
+              },
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          "body": {
+            "type": "string",
+            "description": "Markdown source; never interpreted as HTML."
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "deletedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "ElicitationView": {
+        "type": "object",
+        "description": "A question this run asked, with its answer once a person gives one.",
+        "required": [
+          "id",
+          "cardId",
+          "runId",
+          "stageKey",
+          "agentId",
+          "question",
+          "signal",
+          "options",
+          "status",
+          "answer",
+          "createdAt"
+        ],
+        "properties": {
+          "strictDecision": {
+            "$ref": "#/components/schemas/StrictDecision"
+          },
+          "detail": {
+            "$ref": "#/components/schemas/ApprovalDetail"
+          },
+          "approvalSubject": {
+            "$ref": "#/components/schemas/ApprovalSubjectEnvelope"
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^elc_[A-Za-z0-9]{6,}$"
+          },
+          "cardId": {
+            "type": "string"
+          },
+          "runId": {
+            "type": "string"
+          },
+          "stageKey": {
+            "type": "string"
+          },
+          "agentId": {
+            "type": "string"
+          },
+          "question": {
+            "type": "string"
+          },
+          "signal": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GateOption"
+            }
+          },
+          "status": {
+            "enum": ["pending", "answered", "cancelled"]
+          },
+          "answer": {
+            "anyOf": [
+              {
+                "type": "object",
+                "required": [
+                  "option",
+                  "text",
+                  "answeredBy",
+                  "answeredAt",
+                  "answeredByPrincipal"
+                ],
+                "properties": {
+                  "option": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "text": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "answeredBy": {
+                    "type": "string"
+                  },
+                  "answeredAt": {
+                    "type": "string"
+                  },
+                  "answeredByPrincipal": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "description": "The answerer's `prn_\u2026`, or null when the user has no principal."
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        }
+      },
+      "RunContext": {
+        "type": "object",
+        "description": "The whole agent read surface for one run: its card, stage, handoff, references, questions and comments.",
+        "required": [
+          "run",
+          "card",
+          "stage",
+          "handoff",
+          "references",
+          "elicitations",
+          "comments",
+          "commentsOmitted"
+        ],
+        "properties": {
+          "run": {
+            "type": "object",
+            "required": [
+              "runId",
+              "cardId",
+              "stageKey",
+              "leaseEpoch",
+              "status",
+              "outcome",
+              "startedAt",
+              "endedAt",
+              "handoff",
+              "completion"
+            ],
+            "properties": {
+              "runId": {
+                "type": "string",
+                "pattern": "^run_[A-Za-z0-9]{6,}$"
+              },
+              "cardId": {
+                "type": "string"
+              },
+              "stageKey": {
+                "type": "string"
+              },
+              "leaseEpoch": {
+                "type": "integer"
+              },
+              "status": {
+                "type": "string"
+              },
+              "outcome": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "startedAt": {
+                "type": "string"
+              },
+              "endedAt": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "handoff": {
+                "$ref": "#/components/schemas/JsonValue"
+              },
+              "completion": {
+                "$ref": "#/components/schemas/JsonValue"
+              }
+            }
+          },
+          "card": {
+            "$ref": "#/components/schemas/CardView"
+          },
+          "stage": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/StageDef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "handoff": {
+            "$ref": "#/components/schemas/JsonValue"
+          },
+          "references": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReferenceView"
+            }
+          },
+          "elicitations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ElicitationView"
+            }
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommentView"
+            }
+          },
+          "commentsOmitted": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "AttemptView": {
+        "type": "object",
+        "required": [
+          "runId",
+          "cardId",
+          "stageKey",
+          "agentId",
+          "status",
+          "outcome",
+          "startedAt",
+          "endedAt",
+          "costUsd",
+          "model",
+          "profileKey",
+          "completion",
+          "handoff",
+          "failureReason"
+        ],
+        "properties": {
+          "runId": {
+            "type": "string"
+          },
+          "cardId": {
+            "type": "string"
+          },
+          "stageKey": {
+            "type": "string"
+          },
+          "agentId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "startedAt": {
+            "type": "string"
+          },
+          "endedAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "costUsd": {
+            "type": "number"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "profileKey": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "completion": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "handoff": {
+            "$ref": "#/components/schemas/JsonValue"
+          },
+          "failureReason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "ApprovalSubjectVerification": {
+        "type": "object",
+        "required": [
+          "boardId",
+          "projectId",
+          "cardId",
+          "runId",
+          "stageKey",
+          "canonicalBytesBase64",
+          "expiresAt",
+          "subject",
+          "gate"
+        ],
+        "properties": {
+          "boardId": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "cardId": {
+            "type": "string"
+          },
+          "runId": {
+            "type": "string"
+          },
+          "stageKey": {
+            "type": "string"
+          },
+          "canonicalBytesBase64": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "object",
+            "required": [
+              "id",
+              "digest",
+              "schema",
+              "revision",
+              "canonical",
+              "account"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "digest": {
+                "type": "string"
+              },
+              "schema": {
+                "type": "string"
+              },
+              "revision": {
+                "type": "integer"
+              },
+              "canonical": {
+                "$ref": "#/components/schemas/JsonValue"
+              },
+              "account": {
+                "$ref": "#/components/schemas/JsonValue"
+              }
+            }
+          },
+          "gate": {
+            "type": "object",
+            "required": ["id", "decision", "decidedBy", "resolvedAt"],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "decision": {
+                "type": "string"
+              },
+              "decidedBy": {
+                "type": "string"
+              },
+              "resolvedAt": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "CardResponse": {
+        "type": "object",
+        "required": ["card"],
+        "properties": {
+          "card": {
+            "$ref": "#/components/schemas/CardView"
+          }
+        }
+      },
+      "RunLease": {
+        "type": "object",
+        "required": ["leaseEpoch"],
+        "properties": {
+          "leaseEpoch": {
+            "$ref": "#/components/schemas/LeaseEpoch"
+          }
+        }
+      },
+      "ClaimRequest": {
+        "type": "object",
+        "description": "Identity and capabilities come from the token; the body carries preferences. A dev-header caller may send capabilities.",
+        "properties": {
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "maxConcurrency": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "A preference: never above the agent's configured ceiling."
+          },
+          "profileKey": {
+            "type": "string"
+          },
+          "checkpointProtocol": {
+            "const": "superpipeline.checkpoint-claim.v1"
+          },
+          "checkpointOnly": {
+            "type": "boolean"
+          }
+        },
+        "if": {
+          "required": ["checkpointOnly"],
+          "properties": {
+            "checkpointOnly": {
+              "const": true
+            }
+          }
+        },
+        "then": {
+          "required": ["checkpointProtocol"]
+        }
+      },
+      "RunActivityRequest": {
+        "type": "object",
+        "required": ["leaseEpoch"],
+        "properties": {
+          "leaseEpoch": {
+            "$ref": "#/components/schemas/LeaseEpoch"
+          },
+          "type": {
+            "enum": ["thought", "action", "response", "elicitation", "error"],
+            "description": "Defaults to `thought`."
+          },
+          "strictDecision": {
+            "$ref": "#/components/schemas/StrictDecision"
+          },
+          "ephemeral": {
+            "type": "boolean"
+          },
+          "body": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "parameter": {
+            "$ref": "#/components/schemas/JsonValue"
+          },
+          "result": {
+            "$ref": "#/components/schemas/JsonValue"
+          },
+          "signal": {
+            "type": "string",
+            "description": "On a question, `auth` parks the card in auth-required; `select` is a strict decision's."
+          },
+          "usage": {
+            "$ref": "#/components/schemas/Usage"
+          }
+        },
+        "allOf": [
+          {
+            "description": "A strict decision is a persistent `select` question with a non-blank body of at most 8192 bytes, the canonical options, and no usage, action or result.",
+            "if": {
+              "required": ["strictDecision"]
+            },
+            "then": {
+              "required": ["type", "signal", "body", "parameter"],
+              "properties": {
+                "type": {
+                  "const": "elicitation"
+                },
+                "signal": {
+                  "const": "select"
+                },
+                "body": {
+                  "type": "string",
+                  "pattern": "\\S",
+                  "maxLength": 8192
+                },
+                "ephemeral": {
+                  "const": false
+                },
+                "action": {
+                  "const": ""
+                },
+                "parameter": {
+                  "$ref": "#/components/schemas/StrictDecisionOffer"
+                }
+              },
+              "not": {
+                "anyOf": [
+                  {
+                    "required": ["usage"]
+                  },
+                  {
+                    "required": ["result"]
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "if": {
+              "required": ["type"],
+              "properties": {
+                "type": {
+                  "const": "elicitation"
+                }
+              },
+              "not": {
+                "required": ["strictDecision"]
+              }
+            },
+            "then": {
+              "properties": {
+                "parameter": {
+                  "$ref": "#/components/schemas/QuestionParameter"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "CompleteRunRequest": {
+        "type": "object",
+        "required": ["leaseEpoch"],
+        "properties": {
+          "leaseEpoch": {
+            "$ref": "#/components/schemas/LeaseEpoch"
+          },
+          "handoff": {
+            "$ref": "#/components/schemas/JsonValue"
+          },
+          "outcome": {
+            "enum": ["pass", "changes-needed", "needs-person"]
+          },
+          "findings": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "At most 8192 UTF-8 bytes."
+          },
+          "question": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "pattern": "^\\s*https?://\\S+\\s*$"
+          },
+          "options": {
+            "$ref": "#/components/schemas/JsonValue"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "required": ["outcome"],
+              "properties": {
+                "outcome": {
+                  "const": "changes-needed"
+                }
+              }
+            },
+            "then": {
+              "required": ["findings"],
+              "properties": {
+                "findings": {
+                  "pattern": "\\S"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "required": ["outcome"],
+              "properties": {
+                "outcome": {
+                  "const": "needs-person"
+                }
+              }
+            },
+            "then": {
+              "required": ["question"],
+              "properties": {
+                "question": {
+                  "pattern": "\\S"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "SubmitRunRequest": {
+        "type": "object",
+        "required": ["leaseEpoch"],
+        "properties": {
+          "leaseEpoch": {
+            "$ref": "#/components/schemas/LeaseEpoch"
+          },
+          "output": {
+            "$ref": "#/components/schemas/JsonValue"
+          }
+        }
+      },
+      "BlockRunRequest": {
+        "type": "object",
+        "required": ["leaseEpoch"],
+        "properties": {
+          "leaseEpoch": {
+            "$ref": "#/components/schemas/LeaseEpoch"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string",
+            "description": "One line; cut to 120 characters."
+          }
+        }
+      },
+      "FailRunRequest": {
+        "type": "object",
+        "required": ["leaseEpoch"],
+        "properties": {
+          "leaseEpoch": {
+            "$ref": "#/components/schemas/LeaseEpoch"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "AddRunReferenceRequest": {
+        "type": "object",
+        "description": "A link the run produced, on its own card. Provider, source type and external id are recognised from the url when omitted.",
+        "required": ["leaseEpoch", "url"],
+        "properties": {
+          "leaseEpoch": {
+            "$ref": "#/components/schemas/LeaseEpoch"
+          },
+          "url": {
+            "type": "string",
+            "pattern": "^[hH][tT][tT][pP][sS]?:",
+            "description": "http or https only (INVALID_URL)."
+          },
+          "provider": {
+            "enum": ["superlibrary", "github", "gitlab", "forge", "docs", "url"]
+          },
+          "sourceType": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object"
+          }
+        }
+      },
+      "EvidenceReferenceRequest": {
+        "type": "object",
+        "description": "An AgentPod execution export, linked from the run that produced it. Parsed strictly.",
+        "additionalProperties": false,
+        "required": [
+          "leaseEpoch",
+          "cardId",
+          "stageKey",
+          "export_id",
+          "manifest_sha256"
+        ],
+        "properties": {
+          "leaseEpoch": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "cardId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "stageKey": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "export_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+          },
+          "manifest_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      },
+      "ApprovalSubjectVerifyRequest": {
+        "type": "object",
+        "required": [
+          "leaseEpoch",
+          "expectedSchema",
+          "expectedSubjectId",
+          "expectedDigest",
+          "expectedAccount"
+        ],
+        "properties": {
+          "leaseEpoch": {
+            "type": "integer"
+          },
+          "expectedSchema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expectedSubjectId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expectedDigest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "expectedAccount": {
+            "description": "Any JSON value, compared canonically with the subject's account."
+          }
+        }
+      },
+      "CheckpointSource": {
+        "type": "object",
+        "description": "The bind-once source a coordinator admits before it dispatches the pinned worker. Each field is the same as in run-checkpoint.v1. Parsed strictly, at most 64 KiB, with checkpoint JSON's lexical rules.",
+        "additionalProperties": false,
+        "required": [
+          "binding",
+          "start",
+          "benchKey",
+          "benchId",
+          "requestId",
+          "sourceRequestSha256",
+          "workerContextSha256"
+        ],
+        "properties": {
+          "binding": {
+            "$ref": "../../superpipeline-api/run-checkpoint.v1.json#/properties/binding"
+          },
+          "start": {
+            "$ref": "../../superpipeline-api/run-checkpoint.v1.json#/properties/start"
+          },
+          "benchKey": {
+            "$ref": "../../superpipeline-api/run-checkpoint.v1.json#/properties/checkpoint/properties/key"
+          },
+          "benchId": {
+            "$ref": "../../superpipeline-api/run-checkpoint.v1.json#/properties/checkpoint/properties/benchId"
+          },
+          "requestId": {
+            "$ref": "../../superpipeline-api/run-checkpoint.v1.json#/properties/checkpoint/properties/requestId"
+          },
+          "sourceRequestSha256": {
+            "$ref": "../../superpipeline-api/run-checkpoint.v1.json#/properties/sourceRequestSha256"
+          },
+          "workerContextSha256": {
+            "$ref": "../../superpipeline-api/run-checkpoint.v1.json#/properties/sourceRequestSha256"
+          }
+        }
+      },
+      "CheckpointSourceReceipt": {
+        "type": "object",
+        "required": ["runId", "leaseEpoch", "sourceDigest", "admittedAt"],
+        "properties": {
+          "runId": {
+            "type": "string"
+          },
+          "leaseEpoch": {
+            "type": "integer"
+          },
+          "sourceDigest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "admittedAt": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Milliseconds since the epoch."
+          }
+        }
+      },
+      "CheckpointClaimSnapshot": {
+        "type": "object",
+        "description": "The stored source rejoined with the current stage policy and run.",
+        "required": [
+          "tenantId",
+          "policy",
+          "policyDigest",
+          "binding",
+          "start",
+          "benchKey",
+          "benchId",
+          "requestId",
+          "sourceRequestSha256",
+          "workerContextSha256",
+          "status",
+          "lastHeartbeatMs"
+        ],
+        "properties": {
+          "tenantId": {
+            "type": "string"
+          },
+          "policy": {
+            "$ref": "../../superpipeline-api/run-checkpoint-policy.v1.json"
+          },
+          "policyDigest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "binding": {
+            "$ref": "../../superpipeline-api/run-checkpoint.v1.json#/properties/binding"
+          },
+          "start": {
+            "$ref": "../../superpipeline-api/run-checkpoint.v1.json#/properties/start"
+          },
+          "benchKey": {
+            "$ref": "../../superpipeline-api/run-checkpoint.v1.json#/properties/checkpoint/properties/key"
+          },
+          "benchId": {
+            "$ref": "../../superpipeline-api/run-checkpoint.v1.json#/properties/checkpoint/properties/benchId"
+          },
+          "requestId": {
+            "$ref": "../../superpipeline-api/run-checkpoint.v1.json#/properties/checkpoint/properties/requestId"
+          },
+          "sourceRequestSha256": {
+            "$ref": "../../superpipeline-api/run-checkpoint.v1.json#/properties/sourceRequestSha256"
+          },
+          "workerContextSha256": {
+            "$ref": "../../superpipeline-api/run-checkpoint.v1.json#/properties/sourceRequestSha256"
+          },
+          "status": {
+            "type": "string"
+          },
+          "lastHeartbeatMs": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}
