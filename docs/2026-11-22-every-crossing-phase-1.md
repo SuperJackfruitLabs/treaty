@@ -381,6 +381,19 @@ pushed, and is linked to the treaty release it pins.
    asks for an agent token.
 3. `treaty.json`.
 
+## Found during phase 1, for follow-up
+
+These are behaviour changes, not contract work, so each is its own change in its product:
+
+- **SuperExchange never settles a cancelled gate** (`gate-sweep.ts`, the resolved-only check). The
+  room keeps showing it as pending, and the sweep re-reads it every time.
+- **SuperExchange checks the prn grammar with a looser regex** (`accounts.ts`) than the identity
+  corpus. It should check the corpus's grammar.
+- **Pending items with `boardId: null`** are allowed by `decisions.v1` but refused by the carriers
+  in `treaty-matrix-events`, so such an item is never posted. This is by design (an item can't be
+  routed to no board), and the README pins it. A board that is not yet initialised should not
+  produce them.
+
 ## Review focus
 
 1. **A pending list whose item validates as a pushed event but not as a read body.** The `$ref`

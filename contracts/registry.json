@@ -191,7 +191,12 @@
       "id": "accounts.identity-corpus",
       "title": "Id grammar, run join key and card prompt",
       "owner": "accounts",
-      "consumers": ["agentpod", "superpipeline", "supermessage"],
+      "consumers": [
+        "agentpod",
+        "superpipeline",
+        "supermessage",
+        "superexchange"
+      ],
       "kind": "file",
       "status": "contracted",
       "contract": [
@@ -201,7 +206,8 @@
       ],
       "evidence": [
         "agentpod:packages/contract/src/ecosystem-identity.test.ts",
-        "superpipeline:apps/api/test/org-plane-claim-contract.test.ts"
+        "superpipeline:apps/api/test/org-plane-claim-contract.test.ts",
+        "superexchange:apps/exchange/src/board-chat/accounts.ts"
       ]
     },
     {
