@@ -9,7 +9,13 @@ import {
   type Producer,
   type Subscriber,
 } from "../src/config.ts";
-import { deliverOne, retryDelayMs, type Delivered } from "../src/deliver.ts";
+import {
+  ACK_WAIT_MS,
+  DELIVERY_TIMEOUT_MS,
+  deliverOne,
+  retryDelayMs,
+  type Delivered,
+} from "../src/deliver.ts";
 import { ingest, type Publisher } from "../src/ingest.ts";
 import { subjectMatches } from "../src/subjects.ts";
 import { event, request, SUBJECT, TOKEN_SHA256 } from "./helpers.ts";
@@ -229,6 +235,62 @@ describe("deliverOne", () => {
       }),
     ).toBe("retry");
     expect(calls).toEqual(["nak 1000"]);
+  });
+
+  test("retries a subscriber that does not answer within the timeout, and aborts its request", async () => {
+    const { m, calls } = message();
+    let signal: AbortSignal | undefined;
+    const started = Date.now();
+    // Answers only after the timeout, and ignores the abort: the relay must not wait for it.
+    // (A sender that never answers would hang the test, not fail it, if the timeout went.)
+    const outcome = await deliverOne(
+      subscriber,
+      m,
+      async (_url, init) => {
+        signal = init.signal ?? undefined;
+        await Bun.sleep(400);
+        return new Response(null, { status: 200 });
+      },
+      Date.now(),
+      50,
+    );
+    expect(outcome).toBe("retry");
+    expect(calls).toEqual(["nak 1000"]);
+    expect(Date.now() - started).toBeLessThan(300);
+    expect(signal?.aborted).toBe(true);
+  });
+
+  test("times out below the consumer's ack_wait", () => {
+    expect(DELIVERY_TIMEOUT_MS).toBe(10_000);
+    expect(DELIVERY_TIMEOUT_MS).toBeLessThan(ACK_WAIT_MS);
+  });
+
+  test("an answer inside the timeout is not cut off", async () => {
+    const { m, calls } = message();
+    const outcome = await deliverOne(
+      subscriber,
+      m,
+      async () => {
+        await Bun.sleep(10);
+        return new Response(null, { status: 200 });
+      },
+      Date.now(),
+      1_000,
+    );
+    expect(outcome).toBe("delivered");
+    expect(calls).toEqual(["ack"]);
+  });
+
+  test("drops an event the subscriber refuses for good with a 409", async () => {
+    const { m, calls } = message();
+    expect(
+      await deliverOne(
+        subscriber,
+        m,
+        async () => new Response(null, { status: 409 }),
+      ),
+    ).toBe("dropped");
+    expect(calls).toEqual(["term hub answered 409"]);
   });
 
   test("drops an event the subscriber refuses with another 4xx", async () => {

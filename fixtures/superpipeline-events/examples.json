@@ -2081,6 +2081,751 @@
           }
         }
       ]
+    },
+    "work.available.v1": {
+      "valid": {
+        "plain": {
+          "event": "work.available",
+          "boardId": "brd_134a0ddb6d434478",
+          "cardId": "crd_0f3c9a2b7d4e4a11",
+          "stageKey": "research",
+          "ts": "2026-11-23T09:30:00.000Z"
+        },
+        "a later field the reader does not know": {
+          "event": "work.available",
+          "boardId": "brd_134a0ddb6d434478",
+          "cardId": "crd_0f3c9a2b7d4e4a11",
+          "stageKey": "research",
+          "ts": "2026-11-23T09:30:00.000Z",
+          "reservedFor": "agt_9e8d7c6b5a493827"
+        }
+      },
+      "invalid": [
+        {
+          "why": "the event names itself",
+          "body": {
+            "event": "card.ready",
+            "boardId": "brd_134a0ddb6d434478",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "stageKey": "research",
+            "ts": "2026-11-23T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "boardId is never null",
+          "body": {
+            "event": "work.available",
+            "boardId": null,
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "stageKey": "research",
+            "ts": "2026-11-23T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "cardId is required",
+          "body": {
+            "event": "work.available",
+            "boardId": "brd_134a0ddb6d434478",
+            "stageKey": "research",
+            "ts": "2026-11-23T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "stageKey is required",
+          "body": {
+            "event": "work.available",
+            "boardId": "brd_134a0ddb6d434478",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "ts": "2026-11-23T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "stageKey is not empty",
+          "body": {
+            "event": "work.available",
+            "boardId": "brd_134a0ddb6d434478",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "stageKey": "",
+            "ts": "2026-11-23T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "ts is a date-time",
+          "body": {
+            "event": "work.available",
+            "boardId": "brd_134a0ddb6d434478",
+            "cardId": "crd_0f3c9a2b7d4e4a11",
+            "stageKey": "research",
+            "ts": "2026-11-23"
+          }
+        }
+      ]
+    },
+    "cards.stale.v1": {
+      "valid": {
+        "a digest of three": {
+          "event": "cards.stale",
+          "boardId": "brd_134a0ddb6d434478",
+          "boardName": "Developer Experience",
+          "cards": [
+            {
+              "boardId": "brd_134a0ddb6d434478",
+              "boardName": "Developer Experience",
+              "cardId": "crd_1b2c3d4e5f607182",
+              "title": "Draft the launch note",
+              "ownerUserId": "usr_5c4b3a2918070605",
+              "agentId": null,
+              "stageKey": "backlog",
+              "stageName": "Backlog",
+              "state": "submitted",
+              "why": {
+                "kind": "no-owner"
+              },
+              "summary": null,
+              "since": "2026-11-20T09:00:00.000Z",
+              "ageHours": 72,
+              "next": "nothing claims stage \"backlog\" — move it to a stage someone works (supi move brd_134a0ddb6d434478 crd_1b2c3d4e5f607182 <stage>), or give the stage an owner"
+            },
+            {
+              "boardId": "brd_134a0ddb6d434478",
+              "boardName": "Developer Experience",
+              "cardId": "crd_0f3c9a2b7d4e4a11",
+              "title": "Research this",
+              "ownerUserId": "usr_5c4b3a2918070605",
+              "agentId": "agt_9e8d7c6b5a493827",
+              "stageKey": "review",
+              "stageName": "Review",
+              "state": "input-required",
+              "why": {
+                "kind": "needs-human",
+                "reason": "review",
+                "gateId": "gte_5a1b2c3d4e5f6071"
+              },
+              "summary": "Two sources.",
+              "since": "2026-11-21T08:00:00.000Z",
+              "ageHours": 49.5,
+              "next": "decide the review: supi approve brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071, or supi request-changes brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071 --comment \"…\""
+            },
+            {
+              "boardId": "brd_134a0ddb6d434478",
+              "boardName": "Developer Experience",
+              "cardId": "crd_7a6b5c4d3e2f1a09",
+              "title": "Fix the flaky test",
+              "ownerUserId": "usr_5c4b3a2918070605",
+              "agentId": "agt_9e8d7c6b5a493827",
+              "stageKey": "build",
+              "stageName": "Build",
+              "state": "input-required",
+              "why": {
+                "kind": "needs-human",
+                "reason": "repeated-failure",
+                "detail": "tests failed: 3 of 120",
+                "failureCount": 3
+              },
+              "summary": null,
+              "since": "2026-11-21T10:00:00.000Z",
+              "ageHours": 47.5,
+              "next": "read why it stopped, fix that, then resume it: supi resume brd_134a0ddb6d434478 crd_7a6b5c4d3e2f1a09 --comment \"what changed\""
+            }
+          ],
+          "ts": "2026-11-23T09:30:00.000Z"
+        },
+        "one card, a board with no name": {
+          "event": "cards.stale",
+          "boardId": "brd_134a0ddb6d434478",
+          "boardName": "",
+          "cards": [
+            {
+              "boardId": "brd_134a0ddb6d434478",
+              "boardName": "",
+              "cardId": "crd_1b2c3d4e5f607182",
+              "title": "Draft the launch note",
+              "ownerUserId": "usr_5c4b3a2918070605",
+              "agentId": null,
+              "stageKey": "backlog",
+              "stageName": "Backlog",
+              "state": "submitted",
+              "why": {
+                "kind": "no-owner"
+              },
+              "summary": null,
+              "since": "2026-11-20T09:00:00.000Z",
+              "ageHours": 72,
+              "next": "nothing claims stage \"backlog\" — move it to a stage someone works (supi move brd_134a0ddb6d434478 crd_1b2c3d4e5f607182 <stage>), or give the stage an owner"
+            }
+          ],
+          "ts": "2026-11-23T09:30:00.000Z"
+        },
+        "a question, then a sub-task wait": {
+          "event": "cards.stale",
+          "boardId": "brd_134a0ddb6d434478",
+          "boardName": "Developer Experience",
+          "cards": [
+            {
+              "boardId": "brd_134a0ddb6d434478",
+              "boardName": "Developer Experience",
+              "cardId": "crd_0f3c9a2b7d4e4a11",
+              "title": "Research this",
+              "ownerUserId": "usr_5c4b3a2918070605",
+              "agentId": "agt_9e8d7c6b5a493827",
+              "stageKey": "review",
+              "stageName": "Review",
+              "state": "input-required",
+              "why": {
+                "kind": "needs-human",
+                "reason": "question",
+                "elicitationId": "eli_2b3c4d5e6f708192"
+              },
+              "summary": "Two sources.",
+              "since": "2026-11-21T08:00:00.000Z",
+              "ageHours": 49.5,
+              "next": "decide the review: supi approve brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071, or supi request-changes brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071 --comment \"…\""
+            },
+            {
+              "boardId": "brd_134a0ddb6d434478",
+              "boardName": "Developer Experience",
+              "cardId": "crd_2c3d4e5f60718293",
+              "title": "Research this",
+              "ownerUserId": "usr_5c4b3a2918070605",
+              "agentId": "agt_9e8d7c6b5a493827",
+              "stageKey": "review",
+              "stageName": "Review",
+              "state": "input-required",
+              "why": {
+                "kind": "needs-human",
+                "reason": "sub-tasks",
+                "detail": "waiting on its open sub-tasks"
+              },
+              "summary": "Two sources.",
+              "since": "2026-11-21T08:00:00.000Z",
+              "ageHours": 49.5,
+              "next": "decide the review: supi approve brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071, or supi request-changes brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071 --comment \"…\""
+            }
+          ],
+          "ts": "2026-11-23T09:30:00.000Z"
+        }
+      },
+      "invalid": [
+        {
+          "why": "the event names itself",
+          "body": {
+            "event": "cards.stale_digest",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Developer Experience",
+            "cards": [
+              {
+                "boardId": "brd_134a0ddb6d434478",
+                "boardName": "Developer Experience",
+                "cardId": "crd_1b2c3d4e5f607182",
+                "title": "Draft the launch note",
+                "ownerUserId": "usr_5c4b3a2918070605",
+                "agentId": null,
+                "stageKey": "backlog",
+                "stageName": "Backlog",
+                "state": "submitted",
+                "why": {
+                  "kind": "no-owner"
+                },
+                "summary": null,
+                "since": "2026-11-20T09:00:00.000Z",
+                "ageHours": 72,
+                "next": "nothing claims stage \"backlog\" — move it to a stage someone works (supi move brd_134a0ddb6d434478 crd_1b2c3d4e5f607182 <stage>), or give the stage an owner"
+              },
+              {
+                "boardId": "brd_134a0ddb6d434478",
+                "boardName": "Developer Experience",
+                "cardId": "crd_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "ownerUserId": "usr_5c4b3a2918070605",
+                "agentId": "agt_9e8d7c6b5a493827",
+                "stageKey": "review",
+                "stageName": "Review",
+                "state": "input-required",
+                "why": {
+                  "kind": "needs-human",
+                  "reason": "review",
+                  "gateId": "gte_5a1b2c3d4e5f6071"
+                },
+                "summary": "Two sources.",
+                "since": "2026-11-21T08:00:00.000Z",
+                "ageHours": 49.5,
+                "next": "decide the review: supi approve brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071, or supi request-changes brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071 --comment \"…\""
+              },
+              {
+                "boardId": "brd_134a0ddb6d434478",
+                "boardName": "Developer Experience",
+                "cardId": "crd_7a6b5c4d3e2f1a09",
+                "title": "Fix the flaky test",
+                "ownerUserId": "usr_5c4b3a2918070605",
+                "agentId": "agt_9e8d7c6b5a493827",
+                "stageKey": "build",
+                "stageName": "Build",
+                "state": "input-required",
+                "why": {
+                  "kind": "needs-human",
+                  "reason": "repeated-failure",
+                  "detail": "tests failed: 3 of 120",
+                  "failureCount": 3
+                },
+                "summary": null,
+                "since": "2026-11-21T10:00:00.000Z",
+                "ageHours": 47.5,
+                "next": "read why it stopped, fix that, then resume it: supi resume brd_134a0ddb6d434478 crd_7a6b5c4d3e2f1a09 --comment \"what changed\""
+              }
+            ],
+            "ts": "2026-11-23T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "an empty digest is not sent",
+          "body": {
+            "event": "cards.stale",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Developer Experience",
+            "cards": [],
+            "ts": "2026-11-23T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "boardId is never null",
+          "body": {
+            "event": "cards.stale",
+            "boardId": null,
+            "boardName": "Developer Experience",
+            "cards": [
+              {
+                "boardId": "brd_134a0ddb6d434478",
+                "boardName": "Developer Experience",
+                "cardId": "crd_1b2c3d4e5f607182",
+                "title": "Draft the launch note",
+                "ownerUserId": "usr_5c4b3a2918070605",
+                "agentId": null,
+                "stageKey": "backlog",
+                "stageName": "Backlog",
+                "state": "submitted",
+                "why": {
+                  "kind": "no-owner"
+                },
+                "summary": null,
+                "since": "2026-11-20T09:00:00.000Z",
+                "ageHours": 72,
+                "next": "nothing claims stage \"backlog\" — move it to a stage someone works (supi move brd_134a0ddb6d434478 crd_1b2c3d4e5f607182 <stage>), or give the stage an owner"
+              },
+              {
+                "boardId": "brd_134a0ddb6d434478",
+                "boardName": "Developer Experience",
+                "cardId": "crd_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "ownerUserId": "usr_5c4b3a2918070605",
+                "agentId": "agt_9e8d7c6b5a493827",
+                "stageKey": "review",
+                "stageName": "Review",
+                "state": "input-required",
+                "why": {
+                  "kind": "needs-human",
+                  "reason": "review",
+                  "gateId": "gte_5a1b2c3d4e5f6071"
+                },
+                "summary": "Two sources.",
+                "since": "2026-11-21T08:00:00.000Z",
+                "ageHours": 49.5,
+                "next": "decide the review: supi approve brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071, or supi request-changes brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071 --comment \"…\""
+              },
+              {
+                "boardId": "brd_134a0ddb6d434478",
+                "boardName": "Developer Experience",
+                "cardId": "crd_7a6b5c4d3e2f1a09",
+                "title": "Fix the flaky test",
+                "ownerUserId": "usr_5c4b3a2918070605",
+                "agentId": "agt_9e8d7c6b5a493827",
+                "stageKey": "build",
+                "stageName": "Build",
+                "state": "input-required",
+                "why": {
+                  "kind": "needs-human",
+                  "reason": "repeated-failure",
+                  "detail": "tests failed: 3 of 120",
+                  "failureCount": 3
+                },
+                "summary": null,
+                "since": "2026-11-21T10:00:00.000Z",
+                "ageHours": 47.5,
+                "next": "read why it stopped, fix that, then resume it: supi resume brd_134a0ddb6d434478 crd_7a6b5c4d3e2f1a09 --comment \"what changed\""
+              }
+            ],
+            "ts": "2026-11-23T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "boardName is required",
+          "body": {
+            "event": "cards.stale",
+            "boardId": "brd_134a0ddb6d434478",
+            "cards": [
+              {
+                "boardId": "brd_134a0ddb6d434478",
+                "boardName": "Developer Experience",
+                "cardId": "crd_1b2c3d4e5f607182",
+                "title": "Draft the launch note",
+                "ownerUserId": "usr_5c4b3a2918070605",
+                "agentId": null,
+                "stageKey": "backlog",
+                "stageName": "Backlog",
+                "state": "submitted",
+                "why": {
+                  "kind": "no-owner"
+                },
+                "summary": null,
+                "since": "2026-11-20T09:00:00.000Z",
+                "ageHours": 72,
+                "next": "nothing claims stage \"backlog\" — move it to a stage someone works (supi move brd_134a0ddb6d434478 crd_1b2c3d4e5f607182 <stage>), or give the stage an owner"
+              },
+              {
+                "boardId": "brd_134a0ddb6d434478",
+                "boardName": "Developer Experience",
+                "cardId": "crd_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "ownerUserId": "usr_5c4b3a2918070605",
+                "agentId": "agt_9e8d7c6b5a493827",
+                "stageKey": "review",
+                "stageName": "Review",
+                "state": "input-required",
+                "why": {
+                  "kind": "needs-human",
+                  "reason": "review",
+                  "gateId": "gte_5a1b2c3d4e5f6071"
+                },
+                "summary": "Two sources.",
+                "since": "2026-11-21T08:00:00.000Z",
+                "ageHours": 49.5,
+                "next": "decide the review: supi approve brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071, or supi request-changes brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071 --comment \"…\""
+              },
+              {
+                "boardId": "brd_134a0ddb6d434478",
+                "boardName": "Developer Experience",
+                "cardId": "crd_7a6b5c4d3e2f1a09",
+                "title": "Fix the flaky test",
+                "ownerUserId": "usr_5c4b3a2918070605",
+                "agentId": "agt_9e8d7c6b5a493827",
+                "stageKey": "build",
+                "stageName": "Build",
+                "state": "input-required",
+                "why": {
+                  "kind": "needs-human",
+                  "reason": "repeated-failure",
+                  "detail": "tests failed: 3 of 120",
+                  "failureCount": 3
+                },
+                "summary": null,
+                "since": "2026-11-21T10:00:00.000Z",
+                "ageHours": 47.5,
+                "next": "read why it stopped, fix that, then resume it: supi resume brd_134a0ddb6d434478 crd_7a6b5c4d3e2f1a09 --comment \"what changed\""
+              }
+            ],
+            "ts": "2026-11-23T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "a card names its stage",
+          "body": {
+            "event": "cards.stale",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Developer Experience",
+            "cards": [
+              {
+                "boardId": "brd_134a0ddb6d434478",
+                "boardName": "Developer Experience",
+                "cardId": "crd_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "ownerUserId": "usr_5c4b3a2918070605",
+                "agentId": "agt_9e8d7c6b5a493827",
+                "stageName": "Review",
+                "state": "input-required",
+                "why": {
+                  "kind": "needs-human",
+                  "reason": "review",
+                  "gateId": "gte_5a1b2c3d4e5f6071"
+                },
+                "summary": "Two sources.",
+                "since": "2026-11-21T08:00:00.000Z",
+                "ageHours": 49.5,
+                "next": "decide the review: supi approve brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071, or supi request-changes brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071 --comment \"…\""
+              }
+            ],
+            "ts": "2026-11-23T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "agentId is required, null when no agent holds the card",
+          "body": {
+            "event": "cards.stale",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Developer Experience",
+            "cards": [
+              {
+                "boardId": "brd_134a0ddb6d434478",
+                "boardName": "Developer Experience",
+                "cardId": "crd_1b2c3d4e5f607182",
+                "title": "Draft the launch note",
+                "ownerUserId": "usr_5c4b3a2918070605",
+                "stageKey": "backlog",
+                "stageName": "Backlog",
+                "state": "submitted",
+                "why": {
+                  "kind": "no-owner"
+                },
+                "summary": null,
+                "since": "2026-11-20T09:00:00.000Z",
+                "ageHours": 72,
+                "next": "nothing claims stage \"backlog\" — move it to a stage someone works (supi move brd_134a0ddb6d434478 crd_1b2c3d4e5f607182 <stage>), or give the stage an owner"
+              }
+            ],
+            "ts": "2026-11-23T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "state is a task state",
+          "body": {
+            "event": "cards.stale",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Developer Experience",
+            "cards": [
+              {
+                "boardId": "brd_134a0ddb6d434478",
+                "boardName": "Developer Experience",
+                "cardId": "crd_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "ownerUserId": "usr_5c4b3a2918070605",
+                "agentId": "agt_9e8d7c6b5a493827",
+                "stageKey": "review",
+                "stageName": "Review",
+                "state": "stuck",
+                "why": {
+                  "kind": "needs-human",
+                  "reason": "review",
+                  "gateId": "gte_5a1b2c3d4e5f6071"
+                },
+                "summary": "Two sources.",
+                "since": "2026-11-21T08:00:00.000Z",
+                "ageHours": 49.5,
+                "next": "decide the review: supi approve brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071, or supi request-changes brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071 --comment \"…\""
+              }
+            ],
+            "ts": "2026-11-23T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "why is needs-human or no-owner",
+          "body": {
+            "event": "cards.stale",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Developer Experience",
+            "cards": [
+              {
+                "boardId": "brd_134a0ddb6d434478",
+                "boardName": "Developer Experience",
+                "cardId": "crd_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "ownerUserId": "usr_5c4b3a2918070605",
+                "agentId": "agt_9e8d7c6b5a493827",
+                "stageKey": "review",
+                "stageName": "Review",
+                "state": "input-required",
+                "why": {
+                  "kind": "waiting"
+                },
+                "summary": "Two sources.",
+                "since": "2026-11-21T08:00:00.000Z",
+                "ageHours": 49.5,
+                "next": "decide the review: supi approve brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071, or supi request-changes brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071 --comment \"…\""
+              }
+            ],
+            "ts": "2026-11-23T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "needs-human says its reason",
+          "body": {
+            "event": "cards.stale",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Developer Experience",
+            "cards": [
+              {
+                "boardId": "brd_134a0ddb6d434478",
+                "boardName": "Developer Experience",
+                "cardId": "crd_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "ownerUserId": "usr_5c4b3a2918070605",
+                "agentId": "agt_9e8d7c6b5a493827",
+                "stageKey": "review",
+                "stageName": "Review",
+                "state": "input-required",
+                "why": {
+                  "kind": "needs-human"
+                },
+                "summary": "Two sources.",
+                "since": "2026-11-21T08:00:00.000Z",
+                "ageHours": 49.5,
+                "next": "decide the review: supi approve brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071, or supi request-changes brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071 --comment \"…\""
+              }
+            ],
+            "ts": "2026-11-23T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "a needs-human reason is one SuperPipeline gives",
+          "body": {
+            "event": "cards.stale",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Developer Experience",
+            "cards": [
+              {
+                "boardId": "brd_134a0ddb6d434478",
+                "boardName": "Developer Experience",
+                "cardId": "crd_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "ownerUserId": "usr_5c4b3a2918070605",
+                "agentId": "agt_9e8d7c6b5a493827",
+                "stageKey": "review",
+                "stageName": "Review",
+                "state": "input-required",
+                "why": {
+                  "kind": "needs-human",
+                  "reason": "bored"
+                },
+                "summary": "Two sources.",
+                "since": "2026-11-21T08:00:00.000Z",
+                "ageHours": 49.5,
+                "next": "decide the review: supi approve brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071, or supi request-changes brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071 --comment \"…\""
+              }
+            ],
+            "ts": "2026-11-23T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "failureCount is an integer",
+          "body": {
+            "event": "cards.stale",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Developer Experience",
+            "cards": [
+              {
+                "boardId": "brd_134a0ddb6d434478",
+                "boardName": "Developer Experience",
+                "cardId": "crd_7a6b5c4d3e2f1a09",
+                "title": "Fix the flaky test",
+                "ownerUserId": "usr_5c4b3a2918070605",
+                "agentId": "agt_9e8d7c6b5a493827",
+                "stageKey": "build",
+                "stageName": "Build",
+                "state": "input-required",
+                "why": {
+                  "kind": "needs-human",
+                  "reason": "repeated-failure",
+                  "failureCount": "3"
+                },
+                "summary": null,
+                "since": "2026-11-21T10:00:00.000Z",
+                "ageHours": 47.5,
+                "next": "read why it stopped, fix that, then resume it: supi resume brd_134a0ddb6d434478 crd_7a6b5c4d3e2f1a09 --comment \"what changed\""
+              }
+            ],
+            "ts": "2026-11-23T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "summary is text or null, never absent",
+          "body": {
+            "event": "cards.stale",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Developer Experience",
+            "cards": [
+              {
+                "boardId": "brd_134a0ddb6d434478",
+                "boardName": "Developer Experience",
+                "cardId": "crd_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "ownerUserId": "usr_5c4b3a2918070605",
+                "agentId": "agt_9e8d7c6b5a493827",
+                "stageKey": "review",
+                "stageName": "Review",
+                "state": "input-required",
+                "why": {
+                  "kind": "needs-human",
+                  "reason": "review",
+                  "gateId": "gte_5a1b2c3d4e5f6071"
+                },
+                "since": "2026-11-21T08:00:00.000Z",
+                "ageHours": 49.5,
+                "next": "decide the review: supi approve brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071, or supi request-changes brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071 --comment \"…\""
+              }
+            ],
+            "ts": "2026-11-23T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "since is a date-time",
+          "body": {
+            "event": "cards.stale",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Developer Experience",
+            "cards": [
+              {
+                "boardId": "brd_134a0ddb6d434478",
+                "boardName": "Developer Experience",
+                "cardId": "crd_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "ownerUserId": "usr_5c4b3a2918070605",
+                "agentId": "agt_9e8d7c6b5a493827",
+                "stageKey": "review",
+                "stageName": "Review",
+                "state": "input-required",
+                "why": {
+                  "kind": "needs-human",
+                  "reason": "review",
+                  "gateId": "gte_5a1b2c3d4e5f6071"
+                },
+                "summary": "Two sources.",
+                "since": "yesterday",
+                "ageHours": 49.5,
+                "next": "decide the review: supi approve brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071, or supi request-changes brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071 --comment \"…\""
+              }
+            ],
+            "ts": "2026-11-23T09:30:00.000Z"
+          }
+        },
+        {
+          "why": "ageHours is a number",
+          "body": {
+            "event": "cards.stale",
+            "boardId": "brd_134a0ddb6d434478",
+            "boardName": "Developer Experience",
+            "cards": [
+              {
+                "boardId": "brd_134a0ddb6d434478",
+                "boardName": "Developer Experience",
+                "cardId": "crd_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "ownerUserId": "usr_5c4b3a2918070605",
+                "agentId": "agt_9e8d7c6b5a493827",
+                "stageKey": "review",
+                "stageName": "Review",
+                "state": "input-required",
+                "why": {
+                  "kind": "needs-human",
+                  "reason": "review",
+                  "gateId": "gte_5a1b2c3d4e5f6071"
+                },
+                "summary": "Two sources.",
+                "since": "2026-11-21T08:00:00.000Z",
+                "ageHours": "49.5",
+                "next": "decide the review: supi approve brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071, or supi request-changes brd_134a0ddb6d434478 gte_5a1b2c3d4e5f6071 --comment \"…\""
+              }
+            ],
+            "ts": "2026-11-23T09:30:00.000Z"
+          }
+        }
+      ]
     }
   }
 }

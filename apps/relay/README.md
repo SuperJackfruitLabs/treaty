@@ -14,11 +14,22 @@ NATS JetStream (treaty plan step 6):
   `x-treaty-signature: t=<unix>,v1=<HMAC-SHA256>` over `<t>.<id>.<body>`. A Worker checks it
   with `verifyDelivery` from `@superjackfruitlabs/treaty-cloudevents`.
   - 2xx: delivered.
-  - 408, 429, 5xx or a network failure: redelivered after 1 s, 2 s, 4 s … up to 5 minutes,
+  - 408, 429, 5xx, a network failure, or no answer within 10 s (below the consumer's 30 s
+    `ack_wait`, so JetStream never redelivers while a request is open): redelivered after 1 s,
+    2 s, 4 s … up to 5 minutes,
     until the subscriber's `maxDeliver`.
   - Any other 4xx, or a message that is not a valid event: dropped and logged.
 - **Streams:** `WORK` holds `evt.>`, `AUDIT` holds `audit.>`, so a slow audit consumer never
   holds up work and purging work never touches audit.
+
+**What a subscriber answers** is the suite's one receiver status contract, the same on the relay
+and on SuperPipeline's direct push (`schemas/README.md`):
+
+- 2xx: handled, or permanently ignored, such as an event the subscriber does not take.
+- 503: transient, such as a board it has not mapped yet; the relay tries again.
+- Any other 4xx: permanently refused, such as an invalid body; the relay drops it.
+
+A subscriber answers 503, not 404, for something it expects to know soon: a 404 is dropped.
 
 Delivery is at least once: a subscriber handles each event once with `handleOnce` from
 `@superjackfruitlabs/treaty-outbox`.

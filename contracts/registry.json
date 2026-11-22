@@ -34,6 +34,7 @@
         "schemas/catalog.json",
         "schemas/superpipeline/attention.pending.v1.json",
         "schemas/superpipeline/card.ready.v1.json",
+        "schemas/superpipeline/cards.stale.v1.json",
         "schemas/superpipeline/check.failed.v1.json",
         "schemas/superpipeline/check.overridden.v1.json",
         "schemas/superpipeline/decision.pulled_back.v1.json",
@@ -44,11 +45,13 @@
         "schemas/superpipeline/gate.approval_recorded.v1.json",
         "schemas/superpipeline/gate.pending.v1.json",
         "schemas/superpipeline/record.v1.json",
+        "schemas/superpipeline/work.available.v1.json",
         "fixtures/superpipeline-events/examples.json"
       ],
       "cases": {
         "schemas/superpipeline/attention.pending.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/attention.pending.v1",
         "schemas/superpipeline/card.ready.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/card.ready.v1",
+        "schemas/superpipeline/cards.stale.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/cards.stale.v1",
         "schemas/superpipeline/check.failed.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/check.failed.v1",
         "schemas/superpipeline/check.overridden.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/check.overridden.v1",
         "schemas/superpipeline/decision.pulled_back.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/decision.pulled_back.v1",
@@ -58,7 +61,8 @@
         "schemas/superpipeline/elicitation.pending.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/elicitation.pending.v1",
         "schemas/superpipeline/gate.approval_recorded.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/gate.approval_recorded.v1",
         "schemas/superpipeline/gate.pending.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/gate.pending.v1",
-        "schemas/superpipeline/record.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/record.v1"
+        "schemas/superpipeline/record.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/record.v1",
+        "schemas/superpipeline/work.available.v1.json": "fixtures/superpipeline-events/examples.json#/schemas/work.available.v1"
       },
       "evidence": [
         "superpipeline:apps/api/src/push/relay.ts",
@@ -422,15 +426,20 @@
       "owner": "superpipeline",
       "consumers": ["agentpod", "superlibrary"],
       "kind": "http",
-      "status": "partial",
+      "status": "contracted",
       "contract": [
+        "schemas/http/superpipeline/push.v1.openapi.json",
+        "fixtures/cloudevents/push-delivery.json",
+        "schemas/catalog.json",
         "schemas/superpipeline/record.v1.json",
-        "schemas/superpipeline/gate.pending.v1.json"
+        "schemas/superpipeline/gate.pending.v1.json",
+        "schemas/superpipeline/work.available.v1.json",
+        "schemas/superpipeline/cards.stale.v1.json"
       ],
-      "gaps": "Bodies are the relay's schemas, but the delivery (X-Superpipeline-Signature), push-config registration, work.available and cards.stale are not contracted; one event has two delivery paths.",
-      "phase": 2,
       "evidence": [
         "superpipeline:apps/api/src/push/deliver.ts",
+        "superpipeline:apps/api/src/routes/boards/integrations.ts",
+        "superpipeline:apps/api/src/service-routes.ts",
         "agentpod:apps/hub/src/routes/superpipeline-push.ts",
         "superlibrary:apps/api/src/sources/subscribe.ts"
       ]

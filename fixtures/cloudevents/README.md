@@ -23,3 +23,11 @@ only of printable ASCII other than `"` and `%`, that is the same bytes. A Go pro
 space, a `%` or non-ASCII text in an attribute over NATS will not round-trip through this codec,
 which follows the binding spec. Suite producers use this codec, so the case does not arise between
 them.
+
+## Signed deliveries
+
+`push-delivery.json` holds SuperPipeline's direct push on the relay's envelope: each delivery's
+fake secret, CloudEvent, signing second `t` and the `x-treaty-signature` that `signDelivery`
+gives, plus deliveries a receiver must refuse (a tampered body, another secret, a timestamp
+outside the 300 s window, the body under another id, no treaty signature). `howToRead` in the file
+says what each section asks; `scripts/push-delivery.test.ts` re-signs every vector.
