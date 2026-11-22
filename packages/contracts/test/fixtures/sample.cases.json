@@ -1,0 +1,35 @@
+{
+  "operations": {
+    "getCard": {
+      "responses": {
+        "200": {
+          "valid": { "a card": { "id": "c1", "title": "Ship it" } },
+          "invalid": [{ "why": "no title", "body": { "id": "c1" } }]
+        }
+      }
+    },
+    "listReadyCards": {
+      "responses": {
+        "200": {
+          "valid": {
+            "none": [],
+            "one": [{ "id": "c1", "title": "Ship it" }]
+          },
+          "invalid": []
+        }
+      }
+    },
+    "createCard": {
+      "request": {
+        "valid": { "a title": { "title": "Ship it" } },
+        "invalid": [{ "why": "no title", "body": {} }]
+      },
+      "responses": {
+        "201": {
+          "valid": { "the card": { "id": "c1", "title": "Ship it" } },
+          "invalid": []
+        }
+      }
+    }
+  }
+}

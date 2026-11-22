@@ -2,6 +2,7 @@
  * The crossing registry (`contracts/registry.json`): every place one suite product talks to
  * another, whether or not treaty holds its contract.
  */
+import { validatorFor, type Bundle } from "./schemas.ts";
 
 export const PRODUCTS = [
   "accounts",
@@ -96,4 +97,27 @@ export function findCrossing(
   id: string,
 ): Crossing | undefined {
   return registry.crossings.find((c) => c.id === id);
+}
+
+/**
+ * The registry in a bundle, checked against `schemas/treaty/registry.v1.json`. Throws with the
+ * first problem when it does not hold.
+ */
+export function readRegistry(bundle: Bundle): Registry {
+  const value = bundle.files.get("contracts/registry.json");
+  const result = validatorFor(bundle, "schemas/treaty/registry.v1.json")(value);
+  if (!result.valid || !isRegistryShape(value))
+    throw new Error(
+      `contracts/registry.json is invalid: ${result.errors[0] ?? "not a registry"}`,
+    );
+  return value;
+}
+
+function isRegistryShape(value: unknown): value is Registry {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    "crossings" in value &&
+    Array.isArray(value.crossings)
+  );
 }
