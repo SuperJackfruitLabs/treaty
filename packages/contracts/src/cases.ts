@@ -22,7 +22,15 @@ export function resolvePointer(doc: unknown, pointer: string): unknown {
     .map((t) =>
       decodeURIComponent(t).replaceAll("~1", "/").replaceAll("~0", "~"),
     )
-    .reduce<unknown>((node, t) => (isObject(node) ? node[t] : undefined), doc);
+    .reduce<unknown>(
+      (node, t) =>
+        Array.isArray(node)
+          ? node[Number(t)]
+          : isObject(node)
+            ? node[t]
+            : undefined,
+      doc,
+    );
 }
 
 export function isCases(value: unknown): value is Cases {

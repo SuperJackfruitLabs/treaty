@@ -61,6 +61,40 @@ function register(bundle: Bundle, validator: Validator): void {
   }
 }
 
+/**
+ * The validator indexes a document's subschemas by walking its objects, but not its arrays, so a
+ * pointer through an array (an OpenAPI parameter, `parameters/0/schema`) would not resolve.
+ * Registering the node the pointer reaches, under its full address, makes any pointer resolve;
+ * its own relative `$ref`s still resolve against the document.
+ */
+function registerAt(
+  bundle: Bundle,
+  validator: Validator,
+  where: string,
+  base: string,
+  pointer: string,
+): void {
+  const path = where.startsWith(SCHEMA_BASE)
+    ? where.slice(SCHEMA_BASE.length)
+    : where;
+  let node: unknown = bundle.files.get(path);
+  let throughArray = false;
+  for (const raw of pointer.slice(1).split("/")) {
+    const t = raw.replaceAll("~1", "/").replaceAll("~0", "~");
+    if (Array.isArray(node)) {
+      throughArray = true;
+      node = node[Number(t)];
+    } else node = isObject(node) ? node[t] : undefined;
+  }
+  // Only a pointer through an array needs this; the walk already indexes every other subschema.
+  if (!throughArray || !isObject(node)) return;
+  try {
+    validator.addSchema(node, `${base}#${fragment(pointer)}`);
+  } catch {
+    // Already indexed by the walk: nothing to add.
+  }
+}
+
 /** Schemas whose `$id` is not the address of their own path: each is a copy or a move gone wrong. */
 export function misplacedIds(bundle: Bundle): string[] {
   const wrong: string[] = [];
@@ -106,6 +140,8 @@ export function validatorFor(
   };
   const validator = new Validator(target, "2020-12", false);
   register(bundle, validator);
+  if (pointer !== undefined)
+    registerAt(bundle, validator, where, base, pointer);
   const check = (value: unknown): Result => {
     try {
       const result = validator.validate(value);
