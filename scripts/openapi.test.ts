@@ -16,10 +16,9 @@ describe("schemas/http", () => {
 expect(documents).toEqual([
       "schemas/http/accounts/plane.v1.openapi.json",
       "schemas/http/superpipeline/approvals.v1.openapi.json",
+      "schemas/http/superpipeline/decisions.v1.openapi.json",
     ]);
-});
-
-  for (const path of documents) {
+for (const path of documents) {
     test(`${path} keeps every rule`, () => {
       expect(checkOpenApi(bundle, path, registry)).toEqual([]);
     });

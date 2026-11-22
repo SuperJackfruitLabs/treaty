@@ -328,7 +328,8 @@
         "schemas/superpipeline/gate.pending.v1.json",
         "schemas/superpipeline/delivery.pending.v1.json",
         "schemas/superpipeline/attention.pending.v1.json",
-        "schemas/superpipeline/elicitation.pending.v1.json"
+        "schemas/superpipeline/elicitation.pending.v1.json",
+        "schemas/http/superpipeline/decisions.v1.openapi.json"
       ],
       "gaps": "Pending list items reuse the pushed bodies, but the list wrappers, the gate read and every write (resolve, answer, delivery, resume, archive, pull-back, override) are hand-built on both sides.",
       "phase": 1,
