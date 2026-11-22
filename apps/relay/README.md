@@ -14,7 +14,9 @@ NATS JetStream (treaty plan step 6):
   `x-treaty-signature: t=<unix>,v1=<HMAC-SHA256>` over `<t>.<id>.<body>`. A Worker checks it
   with `verifyDelivery` from `@superjackfruitlabs/treaty-cloudevents`.
   - 2xx: delivered.
-  - 408, 429, 5xx or a network failure: redelivered after 1 s, 2 s, 4 s … up to 5 minutes,
+  - 408, 429, 5xx, a network failure, or no answer within 10 s (below the consumer's 30 s
+    `ack_wait`, so JetStream never redelivers while a request is open): redelivered after 1 s,
+    2 s, 4 s … up to 5 minutes,
     until the subscriber's `maxDeliver`.
   - Any other 4xx, or a message that is not a valid event: dropped and logged.
 - **Streams:** `WORK` holds `evt.>`, `AUDIT` holds `audit.>`, so a slow audit consumer never

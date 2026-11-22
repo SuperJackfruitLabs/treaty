@@ -19,7 +19,7 @@ import {
   type NatsConnection,
 } from "@nats-io/transport-node";
 import type { RelayConfig, Subscriber } from "./config.ts";
-import { deliverOne, type Outcome } from "./deliver.ts";
+import { ACK_WAIT_MS, deliverOne, type Outcome } from "./deliver.ts";
 import type { Publisher } from "./ingest.ts";
 
 export const WORK_STREAM = "WORK";
@@ -98,7 +98,7 @@ export async function startDelivery(
       filter_subject: subscriber.filter,
       ack_policy: AckPolicy.Explicit,
       deliver_policy: DeliverPolicy.All,
-      ack_wait: nanos(30_000),
+      ack_wait: nanos(ACK_WAIT_MS),
       max_deliver: subscriber.maxDeliver,
     };
     try {

@@ -3,8 +3,8 @@
  * binary-mode CloudEvent.
  *
  * - 2xx: delivered, acknowledged.
- * - 408, 429, 5xx or a network failure: not delivered yet; redelivered after a backoff, up to
- *   the subscriber's maxDeliver.
+ * - 408, 429, 5xx, a network failure or no answer within DELIVERY_TIMEOUT_MS: not delivered
+ *   yet; redelivered after a backoff, up to the subscriber's maxDeliver.
  * - Any other 4xx, or a message that is not a valid event: retrying cannot help, so it is
  *   terminated and logged.
  */
@@ -29,6 +29,16 @@ export interface Delivered {
 
 export type Outcome = "delivered" | "retry" | "dropped";
 
+/** How long JetStream waits for an ack before it redelivers a message (nats.ts). */
+export const ACK_WAIT_MS = 30_000;
+
+/**
+ * How long one delivery may take. Below ACK_WAIT_MS, so a subscriber
+ * that never answers is naked and redelivered by the relay, never redelivered by JetStream while
+ * the first request is still open.
+ */
+export const DELIVERY_TIMEOUT_MS = 10_000;
+
 export const retryDelayMs = (deliveryCount: number) =>
   Math.min(1000 * 2 ** (deliveryCount - 1), 5 * 60_000);
 
@@ -37,6 +47,7 @@ export async function deliverOne(
   message: Delivered,
   send: (url: string, init: RequestInit) => Promise<Response> = fetch,
   nowMs = Date.now(),
+  timeoutMs = DELIVERY_TIMEOUT_MS,
 ): Promise<Outcome> {
   let event;
   try {
@@ -59,18 +70,33 @@ export async function deliverOne(
       nowMs,
     ),
   };
+  // The abort cuts a real fetch; the race cuts a sender that ignores the signal. A timer rather
+  // than AbortSignal.timeout, as packages/ecosystem-identity's JWKS fetch does.
+  const abort = new AbortController();
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timedOut = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => {
+      abort.abort();
+      reject(new Error(`no answer within ${timeoutMs} ms`));
+    }, timeoutMs);
+  });
   let status: number;
   try {
-    status = (
-      await send(subscriber.url, {
+    const response = await Promise.race([
+      send(subscriber.url, {
         method: "POST",
         headers,
         body: wire.body.slice(),
-      })
-    ).status;
+        signal: abort.signal,
+      }),
+      timedOut,
+    ]);
+    status = response.status;
   } catch {
     message.nak(retryDelayMs(message.deliveryCount));
     return "retry";
+  } finally {
+    clearTimeout(timer);
   }
   if (status >= 200 && status < 300) {
     message.ack();
