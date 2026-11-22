@@ -1,0 +1,4 @@
+{
+  "description": "Breaking changes allowed through scripts/compat.ts, each with its reason. Kept empty: a contract that must break gets a new version beside the old one instead. An entry that matches no change fails as stale.",
+  "exceptions": []
+}

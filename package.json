@@ -12,8 +12,9 @@
     "typecheck": "tsc --noEmit",
     "lint": "bun scripts/lint.mjs",
     "test": "bun test",
-    "check": "bun run fmt:check && bun run typecheck && bun run lint && bun run test && bun run build",
-    "build": "bun run --filter './packages/*' build"
+    "check": "bun run fmt:check && bun run typecheck && bun run lint && bun run compat && bun run test && bun run build",
+    "build": "bun run --filter './packages/*' build",
+    "compat": "bun scripts/compat.ts"
   },
   "devDependencies": {
     "@cfworker/json-schema": "4.1.1",

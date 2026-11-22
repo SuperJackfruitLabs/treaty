@@ -113,7 +113,8 @@ export function readRegistry(bundle: Bundle): Registry {
   return value;
 }
 
-function isRegistryShape(value: unknown): value is Registry {
+/** A cheap shape check, for a registry from an older ref that today's schema may not fit. */
+export function isRegistryShape(value: unknown): value is Registry {
   return (
     value !== null &&
     typeof value === "object" &&

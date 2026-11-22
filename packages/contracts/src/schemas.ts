@@ -49,11 +49,27 @@ export function fragment(pointer: string): string {
 }
 
 function register(bundle: Bundle, validator: Validator): void {
+  const seen = new Set<string>();
   for (const [path, doc] of bundle.files) {
     if (!path.startsWith("schemas/") || !isObject(doc)) continue;
     const id = typeof doc.$id === "string" ? doc.$id : idOf(path);
+    // A copied schema that kept its original's $id would make the validator throw. The first
+    // wins here; misplacedIds() reports the copy.
+    if (seen.has(id)) continue;
+    seen.add(id);
     validator.addSchema(doc, id);
   }
+}
+
+/** Schemas whose `$id` is not the address of their own path: each is a copy or a move gone wrong. */
+export function misplacedIds(bundle: Bundle): string[] {
+  const wrong: string[] = [];
+  for (const [path, doc] of bundle.files) {
+    if (!path.startsWith("schemas/") || !isObject(doc)) continue;
+    if (typeof doc.$id === "string" && doc.$id !== idOf(path))
+      wrong.push(`${path} has $id ${doc.$id}`);
+  }
+  return wrong;
 }
 
 function flatten(

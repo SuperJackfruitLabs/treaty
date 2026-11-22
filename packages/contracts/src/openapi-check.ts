@@ -2,16 +2,13 @@
  * The rules every HTTP contract in treaty keeps. `scripts/openapi.test.ts` runs them over every
  * document under schemas/http/.
  */
+import { resolvePointer, type Cases } from "./cases.ts";
 import { operations } from "./http.ts";
 import type { Registry } from "./registry.ts";
 import { idOf, validatorFor, type Bundle } from "./schemas.ts";
 
 export const ERROR_SCHEMA = "schemas/common/error.v1.json";
 
-export interface Cases {
-  valid: Record<string, unknown>;
-  invalid: { why: string; body: unknown }[];
-}
 export interface ApiCases {
   operations: Record<
     string,
@@ -37,17 +34,6 @@ export function casesPathFor(docPath: string): string {
 /** The owner an HTTP contract's path names: schemas/http/<owner>/…. */
 export function ownerOf(docPath: string): string {
   return docPath.split("/")[2] ?? "";
-}
-
-function resolvePointer(doc: unknown, pointer: string): unknown {
-  if (pointer === "") return doc;
-  return pointer
-    .slice(1)
-    .split("/")
-    .map((t) =>
-      decodeURIComponent(t).replaceAll("~1", "/").replaceAll("~0", "~"),
-    )
-    .reduce<unknown>((node, t) => (isObject(node) ? node[t] : undefined), doc);
 }
 
 /** Repository path and pointer a `$ref` in `fromPath` reaches, or undefined. */
