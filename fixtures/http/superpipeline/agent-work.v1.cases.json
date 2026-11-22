@@ -317,16 +317,13 @@
             "over budget": {
               "claimed": false,
               "reason": "board_over_budget"
+            },
+            "a reason the reader does not know yet": {
+              "claimed": false,
+              "reason": "board_paused"
             }
           },
           "invalid": [
-            {
-              "why": "unknown claim reason",
-              "body": {
-                "claimed": false,
-                "reason": "busy"
-              }
-            },
             {
               "why": "claimed without a run",
               "body": {

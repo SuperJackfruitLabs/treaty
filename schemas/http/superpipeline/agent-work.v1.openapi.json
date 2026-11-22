@@ -2561,8 +2561,9 @@
       },
       "ClaimReason": {
         "type": "string",
-        "description": "Why a claim handed out nothing: the first reason the one claim filter met.",
-        "enum": [
+        "description": "Why a claim handed out nothing: the first reason the claim filter met. Open: the board adds reasons, and a reader treats one it does not know as \"nothing to claim now\". The reasons on 2026-11-22 are in x-treaty-known-values.",
+        "pattern": "^[a-z][a-z0-9_]*$",
+        "x-treaty-known-values": [
           "board_not_initialized",
           "board_over_budget",
           "concurrency_reached",
