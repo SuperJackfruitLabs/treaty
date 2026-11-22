@@ -13,14 +13,20 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./node": {
+      "types": "./dist/node.d.ts",
+      "import": "./dist/node.js"
+    },
+    "./data/*": "./data/*"
   },
   "files": [
     "dist",
+    "data",
     "LICENSE"
   ],
   "scripts": {
-    "build": "rm -rf dist && tsc -p tsconfig.build.json"
+    "build": "rm -rf dist && bun scripts/bundle.ts && tsc -p tsconfig.build.json"
   },
   "dependencies": {
     "@cfworker/json-schema": "4.1.1"
