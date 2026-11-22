@@ -456,13 +456,23 @@
       "owner": "agentpod",
       "consumers": ["supermessage"],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "The token API and the fleet ContentState fixture are copied between the two repositories with no check.",
-      "phase": 2,
+      "status": "contracted",
+      "contract": [
+        "schemas/http/agentpod/live-activity.v1.openapi.json",
+        "schemas/agentpod/fleet-content-state.v1.json",
+        "schemas/agentpod/live-activity-payload.v1.json",
+        "fixtures/agentpod-live-activity/examples.json"
+      ],
+      "cases": {
+        "schemas/agentpod/fleet-content-state.v1.json": "fixtures/agentpod-live-activity/examples.json#/schemas/fleet-content-state.v1",
+        "schemas/agentpod/live-activity-payload.v1.json": "fixtures/agentpod-live-activity/examples.json#/schemas/live-activity-payload.v1"
+      },
       "evidence": [
         "agentpod:apps/hub/src/routes/live-activity.ts",
-        "supermessage:crates/supermessage-core/src/live_activity.rs"
+        "agentpod:packages/contract/src/fleet-live.ts",
+        "agentpod:apps/hub/src/services/push/fleet/planner.ts",
+        "supermessage:crates/supermessage-core/src/live_activity.rs",
+        "supermessage:apple/SupermessageKit/Notifications/FleetActivityAttributes.swift"
       ]
     },
     {

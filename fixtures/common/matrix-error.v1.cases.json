@@ -1,0 +1,44 @@
+{
+  "valid": {
+    "a missing token": {
+      "errcode": "M_MISSING_TOKEN",
+      "error": "missing access token"
+    },
+    "an unknown token": {
+      "errcode": "M_UNKNOWN_TOKEN",
+      "error": "unknown access token"
+    },
+    "a refusal with a field beside it": {
+      "errcode": "M_UNKNOWN_TOKEN",
+      "error": "unknown access token",
+      "soft_logout": false
+    },
+    "empty words": { "errcode": "M_UNKNOWN", "error": "" }
+  },
+  "invalid": [
+    {
+      "why": "no errcode",
+      "body": { "error": "unknown access token" }
+    },
+    {
+      "why": "no error",
+      "body": { "errcode": "M_UNKNOWN_TOKEN" }
+    },
+    {
+      "why": "an errcode without the M_ namespace",
+      "body": { "errcode": "UNKNOWN_TOKEN", "error": "unknown access token" }
+    },
+    {
+      "why": "a lower-case errcode",
+      "body": { "errcode": "m_unknown_token", "error": "unknown access token" }
+    },
+    {
+      "why": "a flat-error.v1 body",
+      "body": { "error": "invalid_credential" }
+    },
+    {
+      "why": "an errcode that is not a string",
+      "body": { "errcode": 401, "error": "unknown access token" }
+    }
+  ]
+}
