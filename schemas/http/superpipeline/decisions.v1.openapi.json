@@ -656,6 +656,7 @@
           "INVALID_WAIT_ID",
           "NOT_INITIALIZED",
           "QUESTION_PENDING",
+          "REPOSITORY_CHOICE_REFUSED",
           "UNAUTHORIZED",
           "UNEXPECTED",
           "UNKNOWN_STAGE",

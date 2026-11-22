@@ -621,6 +621,13 @@
       "meaning": "Quorum already approved."
     },
     {
+      "code": "REPOSITORY_CHOICE_REFUSED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "A card's repositories (card-repositories.v1) do not fit a stage whose cards choose, on create, move, resume or edit; nothing is saved. detail.reason is one of repository-not-allowed, primary-not-chosen, no-primary or repositories-not-canonical (the selection vectors' words), with detail.stageKey the stage refused into; or frozen, without stageKey, when the card's choice is changed after its claim fixed it."
+    },
+    {
       "code": "REQUEST_ID_CONFLICT",
       "owner": "superpipeline",
       "envelope": "error.v1",

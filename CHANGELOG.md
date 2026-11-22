@@ -5,6 +5,8 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- **SuperPipeline's `REPOSITORY_CHOICE_REFUSED` is registered** (409, `error.v1`): a card's repositories (`card-repositories.v1`) refused on a stage whose cards choose. `detail.reason` is one of `repository-not-allowed`, `primary-not-chosen`, `no-primary`, `repositories-not-canonical` (the selection vectors' words) or `frozen`; `detail.stageKey` names the stage, except for `frozen`. `resumeCard` lists it, and `fixtures/common/error.v1.cases.json` has a case.
+
 ## v0.0.17 — 2026-11-22
 
 - **Events: one delivery contract on both paths.**

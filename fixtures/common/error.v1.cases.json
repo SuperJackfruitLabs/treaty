@@ -13,6 +13,13 @@
         "detail": { "reservedFor": "prn_0123456789abcdef0123" }
       }
     },
+    "a repository choice refused, with its reason and stage": {
+      "error": {
+        "code": "REPOSITORY_CHOICE_REFUSED",
+        "message": "stage \"Build\" does not allow docs; it allows app, library",
+        "detail": { "reason": "repository-not-allowed", "stageKey": "build" }
+      }
+    },
     "a board result returned whole, ok: false included": {
       "error": {
         "ok": false,
