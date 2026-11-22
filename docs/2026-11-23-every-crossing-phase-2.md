@@ -147,7 +147,7 @@ These are defaults. Each is a line in a contract, so changing one later is a ver
 
 ## Release order
 
-1. **treaty `v0.0.17`** carries this phase's treaty tasks, (#54's parameter validation shipped in v0.0.16, 2026-11-22).
+1. **treaty `v0.0.17`** carries this phase's treaty tasks. (#54's parameter validation already shipped in v0.0.16 on 2026-11-22.)
 2. **SuperPipeline (producer):**
    - per-event ids;
    - the direct push on the relay's envelope, dual-signed;
