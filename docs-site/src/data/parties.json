@@ -229,6 +229,22 @@
       "consumers": [],
       "note": "Record events are not relayed. SuperPipeline pushes them directly to each endpoint that has a push config subscribed to them, and treaty names no product that reads them."
     },
+    "superpipeline/work.available.v1": {
+      "relayed": false,
+      "producers": [
+        "SuperPipeline"
+      ],
+      "consumers": [],
+      "note": "Not relayed. SuperPipeline sends it to the agent's own endpoint, the one its push config names; the reader is the agent, not a product."
+    },
+    "superpipeline/cards.stale.v1": {
+      "relayed": false,
+      "producers": [
+        "SuperPipeline"
+      ],
+      "consumers": [],
+      "note": "Not relayed. SuperPipeline sends it to the agent's own endpoint, the one its push config names; the reader is the agent, not a product."
+    },
     "matrix/dev.superpipeline.gate.v2": {
       "group": "cards",
       "sentBy": [

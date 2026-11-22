@@ -78,7 +78,7 @@ The relay POSTs every event to the subscriber's URL as an HTTP binary-mode Cloud
 | Answer | What the relay does |
 | --- | --- |
 | 2xx | Delivered. Acknowledged. |
-| 408, 429, 5xx, or a network failure | Redelivered after a backoff: 1 s, 2 s, 4 s and so on, doubling up to 5 minutes, until `maxDeliver` tries. |
+| 408, 429, 5xx, a network failure, or no answer within 10 seconds | Redelivered after a backoff: 1 s, 2 s, 4 s and so on, doubling up to 5 minutes, until `maxDeliver` tries. |
 | Any other response, including 3xx and other 4xx | Dropped and logged: retrying cannot help. |
 | (a stored message that is not a valid event) | Dropped and logged. |
 
