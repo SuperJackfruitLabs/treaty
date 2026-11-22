@@ -42,7 +42,8 @@ treaty holds what software must check. The plans are `docs/2026-11-02-treaty-pla
   `scripts/` and `deploy/` on top. A package's `src/` imports nothing outside the package. Never
   raise a recorded number to make a change fit; split the file or break the edge.
 - **Compatibility** (`bun run compat`, `scripts/compat.ts`) compares every schema and OpenAPI
-  document with the base commit. CI passes the PR's base, or the commit before a push to main.
+  document with what main already holds: CI passes a PR's merge base with main (even for a PR
+  stacked on another branch), or the commit before a push to main.
 - **Restructures** pin behaviour first (a characterization test committed against the old code),
   move code verbatim, and leave the packages' exports and the generated corpora byte-identical.
 

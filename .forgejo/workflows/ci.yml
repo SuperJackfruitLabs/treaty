@@ -53,12 +53,21 @@ jobs:
         run: bun run typecheck
       - name: Lint
         run: bun run lint
-      # Within a version a contract may only add optional things. The base is the pull request's
-      # base, or for a push to main the commit before it.
+      # Within a version a contract may only add optional things. What can break is what main
+      # already holds, so a pull request is compared with its merge base with main, even when it is
+      # stacked on another branch; a push to main is compared with the commit before it.
       - name: Contract compatibility
         env:
-          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
-        run: bun run compat --base "$BASE"
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ "$EVENT" = pull_request ]; then
+            git fetch --no-tags origin main
+            BASE=$(git merge-base HEAD FETCH_HEAD)
+          else
+            BASE=$BEFORE
+          fi
+          bun run compat --base "$BASE"
       - name: Start nats-server for the relay's tests (pinned, checksum checked)
         run: |
           v=2.15.2
