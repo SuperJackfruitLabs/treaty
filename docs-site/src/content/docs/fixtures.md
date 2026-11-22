@@ -74,3 +74,8 @@ Their report/submission/receipt fixtures and independent canonical vectors are i
 digests. The 23 producer-state scenarios are design requirements, not executed
 product conformance. See the [proposal](https://forge.superjackfruit.com/SuperJackfruitLabs/treaty/src/branch/main/docs/2026-11-15-run-checkpoint-settlement.md).
 No reporter grant, consumer acceptance or live pilot is claimed.
+
+A card may narrow a stage's repository allowlist: the stage policy that lets it
+(`run-checkpoint-policy.v2`), the card's choice (`card-repositories.v1`) and the
+selection a claim freezes (`run-checkpoint-selection.v1`) have their cases and
+narrowing vectors in `fixtures/superpipeline-run-checkpoint/selection.json`.

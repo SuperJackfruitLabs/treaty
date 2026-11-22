@@ -74,6 +74,52 @@ environment, logs nor clone URLs. Repository names are canonical owner/repo data
 not credentials. Board references can be derived from the accepted provider map
 and exact commit rather than accepting caller-supplied URLs as proof.
 
+## Cards narrow a stage allowlist
+
+The charter decision was amended on 2026-11-22: a card may narrow a stage's
+repository allowlist, and the claim freezes the choice. These shapes are proposed
+beside the existing ones; nothing above changes for a stage that keeps
+`checkpointPolicy`.
+
+- `schemas/superpipeline-api/run-checkpoint-policy.v2.json` is the policy of a
+  stage whose cards choose. It is v1 plus `repositorySelection: "card"` and an
+  optional `defaultRepositories`, a sorted subset of the allowlist. It sits in
+  **StageDef.cardCheckpointPolicy**, never together with `checkpointPolicy`, and
+  only workspace owners and admins write it. A v1 reader refuses it.
+- `schemas/superpipeline-api/card-repositories.v1.json` is the card's choice:
+  `repositories` (1–32 sorted, unique policy names) and an optional
+  `primaryRepository`. CardView shows both. Names only: never a provider, URL or
+  clone identity. Anyone who may edit the card may set them, within the allowlist.
+- `schemas/superpipeline-api/run-checkpoint-selection.v1.json` is what the claim
+  freezes: the stage policy digest, how the repositories were chosen (`card`,
+  `default` or `single`), the names and the start repository. The claim's
+  CheckpointClaimDiscovery carries it as `selection`, and its `policy` is then the
+  **narrowed** checkpoint-policy.v1, with `policyDigest` over that. Source
+  admission, settlement, references and receipts all compare with the narrowed
+  policy, so their shapes are unchanged.
+
+Narrowing keeps the allowlist's order and every field but `repositories` and
+`checkpointRepository`. The start repository is the card's `primaryRepository`;
+otherwise the stage's `checkpointRepository` when chosen; otherwise the only one
+chosen; otherwise the card is refused. A card that names none gets the stage
+default, or the allowlist when it has one repository; otherwise it waits for a
+person. It never gets the whole allowlist by default. A choice outside the
+allowlist is refused on entry; one the allowlist no longer holds at claim parks the
+card for a person. Once a bench exists the choice is fixed: reclaim and start a new
+bench to change it.
+
+A claimant opts in with `checkpointProtocols` listing
+`superpipeline.checkpoint-claim.v2`, sent beside `checkpointProtocol` (still v1,
+which a server that predates the field reads and the rest ignore). A stage with
+`cardCheckpointPolicy` is offered to no other claimant, so a reader that cannot
+check a narrowed claim never receives one.
+
+`fixtures/superpipeline-run-checkpoint/selection.json` holds the structural cases,
+the policy relations JSON Schema cannot state, thirteen narrowing vectors with
+their digests, and ten producer-state scenarios that are design requirements, not
+executed conformance. `canonical.json` adds the v2 policy, a selection, a narrowed
+policy and a card choice.
+
 ## Authority and source observation
 
 The board receives a **delegated coordinator report**, not an independently
