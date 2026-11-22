@@ -179,7 +179,15 @@ describe("the treaty CLI", () => {
   });
 
   test("cases on a schema with none exits 1", () => {
-    expect(cli(["cases", "schemas/common/error.v1.json"], work).status).toBe(1);
+    expect(cli(["cases", "schemas/treaty/registry.v1.json"], work).status).toBe(
+      1,
+    );
+  });
+
+  test("cases reaches a shared schema's corpus by convention", () => {
+    const r = cli(["cases", "schemas/common/error.v1.json"], work);
+    expect(r.status).toBe(0);
+    expect(JSON.parse(r.stdout).invalid.length).toBeGreaterThan(0);
   });
 
   test("an unknown command prints usage and exits 2", () => {
@@ -252,5 +260,22 @@ describe("bad CLI input exits 2 instead of passing", () => {
     expect(
       cli(["verify", "--latest", "--max-behind", "1"], repo(clean)).status,
     ).toBe(2);
+  });
+});
+
+describe("a symlinked parent directory", () => {
+  test("sync refuses to write through a parent that leads out of the repository", () => {
+    const outside = mkdtempSync(join(tmpdir(), "treaty-outside-"));
+    const dir = repo({
+      ...clean,
+      vendored: [{ path: "vend/x.json", source: RECORD }],
+    });
+    symlinkSync(outside, join(dir, "vend"));
+    expect(verify({ repoRoot: dir, dataDir }).map((p) => p.code)).toContain(
+      "manifest-invalid",
+    );
+    expect(() => sync({ repoRoot: dir, dataDir })).toThrow();
+    expect(existsSync(join(outside, "x.json"))).toBe(false);
+    rmSync(outside, { recursive: true, force: true });
   });
 });

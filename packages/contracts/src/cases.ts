@@ -37,7 +37,7 @@ export function isCases(value: unknown): value is Cases {
   );
 }
 
-/** A schema's cases, or undefined when the registry names none or they cannot be read. */
+/** A schema's cases: where the registry names them, else `fixtures/<path>.cases.json`; or undefined. */
 export function casesFor(
   bundle: Bundle,
   registry: Registry | undefined,
@@ -50,5 +50,11 @@ export function casesFor(
     const node = resolvePointer(bundle.files.get(file), pointer);
     if (isCases(node)) return node;
   }
-  return undefined;
+  // A schema no crossing names (schemas/common/) keeps its cases beside it by convention.
+  const conventional = bundle.files.get(
+    schemaPath
+      .replace(/^schemas\//, "fixtures/")
+      .replace(/\.json$/, ".cases.json"),
+  );
+  return isCases(conventional) ? conventional : undefined;
 }

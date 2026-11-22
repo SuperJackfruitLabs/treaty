@@ -9,6 +9,7 @@ import {
   lstatSync,
   mkdirSync,
   readFileSync,
+  realpathSync,
 } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import { installedDataDir, loadInstalledBundle, readManifest } from "./node.ts";
@@ -88,12 +89,22 @@ export function releasesBehind(pin: string, latest: string): number {
   return Math.max(0, lc - pc);
 }
 
-/** The absolute path of `path` under `root`, or undefined when it would leave `root`. */
+/**
+ * The absolute path of `path` under `root`, or undefined when it would leave `root`, by `..` or
+ * through a symlinked directory on the way.
+ */
 function inside(root: string, path: string): string | undefined {
   const base = resolve(root);
   const target = resolve(base, path);
   const rel = relative(base, target);
   if (rel === "" || rel.startsWith("..") || rel.split(sep).includes(".."))
+    return undefined;
+  // The deepest directory that exists must really be inside the repository.
+  let dir = dirname(target);
+  while (!existsSync(dir) && dir !== base) dir = dirname(dir);
+  const realBase = realpathSync(base);
+  const realDir = realpathSync(dir);
+  if (realDir !== realBase && !realDir.startsWith(`${realBase}${sep}`))
     return undefined;
   return target;
 }

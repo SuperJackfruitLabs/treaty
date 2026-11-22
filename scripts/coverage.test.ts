@@ -52,7 +52,7 @@ describe("coverage across the workspace", () => {
   );
 
   test("reports the registry's coverage", () => {
-    expect(out.coverage.percent).toBe(27);
+    expect(out.coverage.percent).toBe(23);
   });
 
   test("an agreeing product has nothing against it", () => {
@@ -90,6 +90,47 @@ describe("coverage across the workspace", () => {
       product: "superdispatch",
       kind: "pin-behind",
       id: "0.0.12",
+    });
+  });
+
+  test("an id the registry does not know is reported", () => {
+    const ghost = checkout("salaam", {
+      product: "salaam",
+      treaty: "0.0.15",
+      produces: ["salaam.ghost"],
+      consumes: ["superpipeline.ghost"],
+    });
+    const r = report(registry, readCheckouts([ghost]));
+    expect(r.problems).toContainEqual({
+      product: "salaam",
+      kind: "unknown-contract",
+      id: "salaam.ghost",
+    });
+    expect(r.problems).toContainEqual({
+      product: "salaam",
+      kind: "unknown-contract",
+      id: "superpipeline.ghost",
+    });
+  });
+
+  test("a treaty.json that is not JSON is reported, not a crash", () => {
+    const dir = checkout("supertoolkit");
+    writeFileSync(join(dir, "treaty.json"), "{ not json");
+    const r = report(registry, readCheckouts([dir]));
+    expect(r.problems).toContainEqual({
+      product: "supertoolkit",
+      kind: "manifest-invalid",
+      id: "treaty.json",
+    });
+  });
+
+  test("evidence the checkout does not hold is reported", () => {
+    const dir = checkout("accounts");
+    const r = report(registry, readCheckouts([dir]), undefined, true);
+    expect(r.problems).toContainEqual({
+      product: "accounts",
+      kind: "evidence-missing",
+      id: "accounts:src/issuer/claims.ts",
     });
   });
 

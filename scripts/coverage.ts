@@ -24,6 +24,8 @@ import {
 export interface Checkout {
   dir: string;
   manifest?: ProductManifest;
+  /** Set when treaty.json exists but cannot be read as a manifest. */
+  invalid?: string;
 }
 
 export interface Disagreement {
@@ -32,8 +34,11 @@ export interface Disagreement {
     | "unlisted-consumer"
     | "undeclared-consumer"
     | "undeclared-producer"
+    | "unknown-contract"
+    | "manifest-invalid"
+    | "evidence-missing"
     | "pin-behind";
-  /** A crossing id, or the pinned version for pin-behind. */
+  /** A crossing id; the pinned version for pin-behind; the file for manifest-invalid; repo:path for evidence-missing. */
   id: string;
 }
 
@@ -63,8 +68,15 @@ export function readCheckouts(dirs: string[]): Checkout[] {
   return dirs.map((dir) => {
     const path = join(dir, "treaty.json");
     if (!existsSync(path)) return { dir };
-    const parsed: unknown = JSON.parse(readFileSync(path, "utf8"));
-    return isManifest(parsed) ? { dir, manifest: parsed } : { dir };
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(readFileSync(path, "utf8"));
+    } catch (error) {
+      return { dir, invalid: String(error) };
+    }
+    return isManifest(parsed)
+      ? { dir, manifest: parsed }
+      : { dir, invalid: "not a product manifest" };
   });
 }
 
@@ -72,17 +84,44 @@ export function report(
   registry: Registry,
   checkouts: Checkout[],
   latest?: string,
+  /** Check every crossing's evidence path against the checkouts (real product repositories). */
+  checkEvidence = false,
 ): Report {
   const problems: Disagreement[] = [];
   const declared: string[] = [];
   const withoutManifest: string[] = [];
-  for (const { dir, manifest } of checkouts) {
+  for (const { dir, manifest, invalid } of checkouts) {
+    const repo = basename(dir);
+    // Every crossing's evidence in this repository must still be there.
+    for (const crossing of checkEvidence ? registry.crossings : [])
+      for (const evidence of crossing.evidence) {
+        const [owner, ...rest] = evidence.split(":");
+        if (owner === repo && !existsSync(join(dir, rest.join(":"))))
+          problems.push({
+            product: repo,
+            kind: "evidence-missing",
+            id: evidence,
+          });
+      }
+    if (invalid !== undefined) {
+      problems.push({
+        product: repo,
+        kind: "manifest-invalid",
+        id: "treaty.json",
+      });
+      withoutManifest.push(repo);
+      continue;
+    }
     if (!manifest) {
-      withoutManifest.push(basename(dir));
+      withoutManifest.push(repo);
       continue;
     }
     const product = manifest.product;
     declared.push(product);
+    const known = new Set(registry.crossings.map((c) => c.id));
+    for (const id of [...manifest.produces, ...manifest.consumes])
+      if (!known.has(id))
+        problems.push({ product, kind: "unknown-contract", id });
     for (const id of manifest.consumes) {
       const crossing = registry.crossings.find((c) => c.id === id);
       if (crossing && !crossing.consumers.some((c) => c === product))
@@ -135,7 +174,7 @@ if (import.meta.main) {
     (a, i) => !a.startsWith("--") && args[i - 1] !== "--latest",
   );
   const registry = readRegistry(loadBundle(join(import.meta.dir, "..")));
-  const out = report(registry, readCheckouts(dirs), latest);
+  const out = report(registry, readCheckouts(dirs), latest, true);
   if (args.includes("--json")) {
     process.stdout.write(`${JSON.stringify(out, null, 2)}\n`);
   } else {

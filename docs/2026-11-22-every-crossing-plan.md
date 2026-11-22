@@ -384,7 +384,7 @@ registry entry's `evidence`.
 | `superbench.local-api`         | superbench    | agentpod                                                                                        | ipc       | partial      | 3     |
 | `superbench.checkpoint`        | superbench    | agentpod                                                                                        | file      | contracted   |       |
 | `superbench.consumer-bindings` | superbench    | agentpod                                                                                        | ipc       | proposed     | 3     |
-| `superpipeline.run-checkpoint` | superpipeline | agentpod, superbench                                                                            | http      | contracted   |       |
+| `superpipeline.run-checkpoint` | superpipeline | agentpod, superbench                                                                            | http      | partial      | 1     |
 | `agentpod.registered-worker`   | agentpod      | superbench                                                                                      | ipc       | contracted   |       |
 | `superpipeline.agent-work`     | superpipeline | agentpod, salaam                                                                                | http      | uncontracted | 1     |
 | `superpipeline.decisions`      | superpipeline | superexchange, agentpod                                                                         | http      | partial      | 1     |

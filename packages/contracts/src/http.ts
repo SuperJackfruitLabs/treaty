@@ -101,6 +101,23 @@ function segmentScore(template: string, actual: string): number {
   return new RegExp(`^${pattern}$`).test(actual) ? 2 : 0;
 }
 
+function sum(xs: number[]): number {
+  return xs.reduce((x, y) => x + y, 0);
+}
+
+/**
+ * Whether one match outranks another: the higher total wins, and on a tie the match that is more
+ * literal earlier in the path, so the result never depends on the order of the document.
+ */
+function outranks(a: number[], b: number[]): boolean {
+  if (sum(a) !== sum(b)) return sum(a) > sum(b);
+  for (const [i, score] of a.entries()) {
+    const other = b[i] ?? 0;
+    if (score !== other) return score > other;
+  }
+  return false;
+}
+
 /**
  * The operation a request reaches, or undefined. Segments are compared decoded. A literal
  * segment outranks one with a parameter inside it, which outranks a bare parameter, so
@@ -112,21 +129,16 @@ export function matchRoute(
   path: string,
 ): string | undefined {
   const wanted = segments(path);
-  let best: { id: string; score: number } | undefined;
+  let best: { id: string; scores: number[] } | undefined;
   for (const op of api.operations) {
     if (op.method !== method.toLowerCase()) continue;
     const template = segments(op.path);
     if (template.length !== wanted.length) continue;
-    let score = 0;
-    for (const [i, part] of template.entries()) {
-      const s = segmentScore(part, wanted[i] ?? "");
-      if (s === 0) {
-        score = -1;
-        break;
-      }
-      score += s;
-    }
-    if (score > 0 && (!best || score > best.score)) best = { id: op.id, score };
+    const scores = template.map((part, i) =>
+      segmentScore(part, wanted[i] ?? ""),
+    );
+    if (scores.includes(0)) continue;
+    if (!best || outranks(scores, best.scores)) best = { id: op.id, scores };
   }
   return best?.id;
 }

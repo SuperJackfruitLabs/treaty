@@ -231,7 +231,7 @@
       "phase": 3,
       "evidence": [
         "superbench:internal/service/server_v2.go",
-        "agentpod:node-agent/internal/benchworkspace/client.go"
+        "agentpod:apps/node-agent/internal/benchworkspace/client.go"
       ]
     },
     {
@@ -269,7 +269,7 @@
       "owner": "superpipeline",
       "consumers": ["agentpod", "superbench"],
       "kind": "http",
-      "status": "contracted",
+      "status": "partial",
       "contract": [
         "schemas/superpipeline-api/checkpoint-settlement.v1.json",
         "schemas/superpipeline-api/run-checkpoint-policy.v1.json",
@@ -281,7 +281,9 @@
       "evidence": [
         "superpipeline:apps/api/src/board/checkpoint-source.ts",
         "agentpod:apps/hub/src/services/bridge/checkpoint-settlement-data.ts"
-      ]
+      ],
+      "gaps": "The bodies are contracted as JSON Schemas with cases; the routes that carry them are not yet an OpenAPI document.",
+      "phase": 1
     },
     {
       "id": "agentpod.registered-worker",
@@ -296,7 +298,7 @@
         "fixtures/agentpod-local/registered-worker.json"
       ],
       "evidence": [
-        "agentpod:node-agent/internal/superbench/registered_corpus_test.go"
+        "agentpod:apps/node-agent/internal/superbench/registered_corpus_test.go"
       ]
     },
     {
@@ -575,7 +577,7 @@
       "phase": 3,
       "evidence": [
         "salaam:src/core/agentpod-work-protocol.ts",
-        "agentpod:node-agent/internal/salaam/client.go"
+        "agentpod:apps/node-agent/internal/salaam/client.go"
       ]
     },
     {
@@ -591,7 +593,7 @@
       "evidence": [
         "supertoolkit:internal/managedmcp/README.md",
         "salaam:src/toolkit/mcp.ts",
-        "agentpod:node-agent/internal/stkclient/stkclient.go"
+        "agentpod:apps/node-agent/internal/stkclient/stkclient.go"
       ]
     },
     {
@@ -622,7 +624,7 @@
       "phase": 3,
       "evidence": [
         "agentpod:apps/hub/src/telemetry/agent-spans.ts",
-        "agentpod:node-agent/internal/acptrace/rewrite.go"
+        "agentpod:apps/node-agent/internal/acptrace/rewrite.go"
       ]
     },
     {

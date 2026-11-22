@@ -2,6 +2,7 @@
  * Pins the defects a review of the first draft found, so none can come back.
  */
 import { describe, expect, test } from "bun:test";
+import { casesFor } from "../src/cases.ts";
 import { compareOpenApi, compareSchemas } from "../src/compat.ts";
 import { matchRoute, openApi, validateResponse } from "../src/http.ts";
 import { checkOpenApi } from "../src/openapi-check.ts";
@@ -189,5 +190,38 @@ describe("versions", () => {
   test("anything else that is not x.y.z throws, so a check cannot pass by accident", () => {
     for (const bad of ["0.0.x", "0.0.9-rc.1", "", "latest"])
       expect(() => parseVersion(bad)).toThrow();
+  });
+});
+
+const op = (id: string, path: string) => ({
+  id,
+  method: "get" as const,
+  path,
+  responses: {},
+  errorCodes: [],
+});
+
+describe("matchRoute ties", () => {
+  test("two templates with equal scores: the one whose literal comes first wins, whatever the order", () => {
+    const a = op("literalFirst", "/a/{x}/c");
+    const b = op("literalLater", "/{y}/b/c");
+    expect(matchRoute({ path: "x", operations: [a, b] }, "GET", "/a/b/c")).toBe(
+      "literalFirst",
+    );
+    expect(matchRoute({ path: "x", operations: [b, a] }, "GET", "/a/b/c")).toBe(
+      "literalFirst",
+    );
+  });
+});
+
+describe("cases by convention", () => {
+  test("a schema no crossing names finds its cases at fixtures/<path>.cases.json", () => {
+    const bundle = createBundle({
+      "schemas/common/error.v1.json": {},
+      "fixtures/common/error.v1.cases.json": { valid: { a: {} }, invalid: [] },
+    });
+    expect(
+      casesFor(bundle, undefined, "schemas/common/error.v1.json")?.valid,
+    ).toEqual({ a: {} });
   });
 });

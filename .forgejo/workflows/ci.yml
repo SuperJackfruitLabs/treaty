@@ -74,6 +74,14 @@ jobs:
           NATS_URL: nats://127.0.0.1:4222
           TREATY_REQUIRE_NATS: "1"
         run: bun run test
+      - name: Build the packages
+        run: bun run build
+      # Product repositories in Go, Rust and Swift run the built CLI under Node, not Bun.
+      - name: The built treaty CLI runs under Node
+        run: |
+          node packages/contracts/dist/cli.js cases schemas/superpipeline/gate.pending.v1.json > /dev/null
+          set +e; node packages/contracts/dist/cli.js verify; code=$?; set -e
+          test "$code" = 1
 
   docs:
     needs: [changes]
