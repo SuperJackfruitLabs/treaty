@@ -174,10 +174,11 @@
         "supertoolkit"
       ],
       "kind": "token",
-      "status": "partial",
-      "contract": ["fixtures/ecosystem-identity/token_claims.json"],
-      "gaps": "Only agentpod, accounts and superpipeline test against the claims; superwitness, superlibrary and superexchange verify with their own fixtures or decode by hand. Four verifiers, no shared one.",
-      "phase": 1,
+      "status": "contracted",
+      "contract": [
+        "fixtures/ecosystem-identity/token_claims.json",
+        "fixtures/ecosystem-identity/token_vectors.json"
+      ],
       "evidence": [
         "accounts:src/issuer/claims.ts",
         "agentpod:apps/hub/src/auth/org-plane/verify.ts",
@@ -190,7 +191,12 @@
       "id": "accounts.identity-corpus",
       "title": "Id grammar, run join key and card prompt",
       "owner": "accounts",
-      "consumers": ["agentpod", "superpipeline", "supermessage"],
+      "consumers": [
+        "agentpod",
+        "superpipeline",
+        "supermessage",
+        "superexchange"
+      ],
       "kind": "file",
       "status": "contracted",
       "contract": [
@@ -200,7 +206,8 @@
       ],
       "evidence": [
         "agentpod:packages/contract/src/ecosystem-identity.test.ts",
-        "superpipeline:apps/api/test/org-plane-claim-contract.test.ts"
+        "superpipeline:apps/api/test/org-plane-claim-contract.test.ts",
+        "superexchange:apps/exchange/src/board-chat/accounts.ts"
       ]
     },
     {
@@ -269,21 +276,20 @@
       "owner": "superpipeline",
       "consumers": ["agentpod", "superbench"],
       "kind": "http",
-      "status": "partial",
+      "status": "contracted",
       "contract": [
         "schemas/superpipeline-api/checkpoint-settlement.v1.json",
         "schemas/superpipeline-api/run-checkpoint-policy.v1.json",
         "schemas/superpipeline-api/run-checkpoint-receipt.v1.json",
         "schemas/superpipeline-api/run-checkpoint.v1.json",
         "fixtures/superpipeline-run-checkpoint/canonical.json",
-        "fixtures/superpipeline-run-checkpoint/cases.json"
+        "fixtures/superpipeline-run-checkpoint/cases.json",
+        "schemas/http/superpipeline/agent-work.v1.openapi.json"
       ],
       "evidence": [
         "superpipeline:apps/api/src/board/checkpoint-source.ts",
         "agentpod:apps/hub/src/services/bridge/checkpoint-settlement-data.ts"
-      ],
-      "gaps": "The bodies are contracted as JSON Schemas with cases; the routes that carry them are not yet an OpenAPI document.",
-      "phase": 1
+      ]
     },
     {
       "id": "agentpod.registered-worker",
@@ -307,10 +313,8 @@
       "owner": "superpipeline",
       "consumers": ["agentpod", "salaam"],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "AgentPod hand-mirrors SuperPipeline's unpublished agent SDK; error codes such as NOT_RUN_OWNER and STALE_LEASE are defined only locally.",
-      "phase": 1,
+      "status": "contracted",
+      "contract": ["schemas/http/superpipeline/agent-work.v1.openapi.json"],
       "evidence": [
         "superpipeline:apps/api/src/routes/boards/entry.ts",
         "superpipeline:packages/agent-sdk/src/index.ts",
@@ -323,15 +327,14 @@
       "owner": "superpipeline",
       "consumers": ["superexchange", "agentpod"],
       "kind": "http",
-      "status": "partial",
+      "status": "contracted",
       "contract": [
         "schemas/superpipeline/gate.pending.v1.json",
         "schemas/superpipeline/delivery.pending.v1.json",
         "schemas/superpipeline/attention.pending.v1.json",
-        "schemas/superpipeline/elicitation.pending.v1.json"
+        "schemas/superpipeline/elicitation.pending.v1.json",
+        "schemas/http/superpipeline/decisions.v1.openapi.json"
       ],
-      "gaps": "Pending list items reuse the pushed bodies, but the list wrappers, the gate read and every write (resolve, answer, delivery, resume, archive, pull-back, override) are hand-built on both sides.",
-      "phase": 1,
       "evidence": [
         "superpipeline:apps/api/src/service-routes.ts",
         "superexchange:apps/exchange/src/board-chat/superpipeline.ts",
@@ -344,10 +347,8 @@
       "owner": "superpipeline",
       "consumers": ["supertoolkit"],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "The stk-capability/v1 subject is contracted only inside the Matrix question.v2 card; the HTTP API that creates it is not.",
-      "phase": 1,
+      "status": "contracted",
+      "contract": ["schemas/http/superpipeline/approvals.v1.openapi.json"],
       "evidence": [
         "superpipeline:apps/api/src/board/approval-requests.ts",
         "supertoolkit:internal/approval/hosted_http.go",
@@ -368,10 +369,8 @@
         "supertoolkit"
       ],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "Request and response bodies live in Accounts' route validation and in a separate client in every consumer.",
-      "phase": 1,
+      "status": "contracted",
+      "contract": ["schemas/http/accounts/plane.v1.openapi.json"],
       "evidence": [
         "accounts:src/issuer/token-routes.ts",
         "accounts:src/principals/routes.ts",

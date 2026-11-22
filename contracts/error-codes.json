@@ -1,31 +1,1100 @@
 {
   "registry": "treaty error codes",
   "version": 1,
-  "description": "One code, one status, across a product's whole API. A code's owner is the product that returns it. Seeded with four of SuperPipeline's codes on 2026-11-22; each API's codes are added when the API is contracted.",
+  "description": "Every error code a suite product's API returns, with the status it carries and the envelope it travels in. SuperPipeline's codes are its statusForCode table and its route-level codes; Accounts' are its flat codes. Seeded 2026-11-22.",
   "codes": [
     {
-      "code": "NOT_RUN_OWNER",
+      "code": "AGENT_NOT_ELIGIBLE",
       "owner": "superpipeline",
-      "status": 403,
-      "meaning": "The caller is not the agent that holds this run."
-    },
-    {
-      "code": "SEPARATION_OF_DUTIES",
-      "owner": "superpipeline",
-      "status": 403,
-      "meaning": "The principal that produced or asked for something cannot also decide it."
-    },
-    {
-      "code": "STALE_LEASE",
-      "owner": "superpipeline",
+      "envelope": "error.v1",
       "status": 409,
-      "meaning": "The caller's lease on the run is no longer the current one."
+      "meaning": "Agent not eligible."
+    },
+    {
+      "code": "ALREADY_HAS_PARENT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Already has parent."
+    },
+    {
+      "code": "APPROVAL_DECIDER_NOT_ALLOWED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "Approval decider not allowed."
+    },
+    {
+      "code": "APPROVAL_DELIVERY_DELIVERED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Approval delivery delivered."
+    },
+    {
+      "code": "APPROVAL_DELIVERY_NOT_AVAILABLE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Approval delivery not available."
+    },
+    {
+      "code": "APPROVAL_DELIVERY_NOT_MANUAL",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Approval delivery not manual."
+    },
+    {
+      "code": "APPROVAL_DELIVERY_STARTED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Approval delivery started."
+    },
+    {
+      "code": "APPROVAL_HELD",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Approval held."
+    },
+    {
+      "code": "APPROVAL_RELEASED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Approval released."
+    },
+    {
+      "code": "APPROVAL_RELEASE_AFTER_EXPIRY",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Approval release after expiry."
+    },
+    {
+      "code": "APPROVAL_REQUEST_NOT_FOUND",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "Approval request not found."
+    },
+    {
+      "code": "APPROVAL_SUBJECT_EXPIRED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 410,
+      "meaning": "Approval subject expired."
+    },
+    {
+      "code": "APPROVAL_SUBJECT_MISMATCH",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Approval subject mismatch."
+    },
+    {
+      "code": "APPROVAL_SUBJECT_NOT_VERIFIED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Approval subject not verified."
+    },
+    {
+      "code": "APPROVAL_SUBJECT_REQUIRED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Approval subject required."
+    },
+    {
+      "code": "BUDGET_EXCEEDED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 402,
+      "meaning": "Budget exceeded."
+    },
+    {
+      "code": "CARD_BLOCKED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Card blocked."
+    },
+    {
+      "code": "CARD_CHANGED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Card changed."
+    },
+    {
+      "code": "CARD_NOT_CLAIMABLE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Card not claimable."
+    },
+    {
+      "code": "CARD_NOT_FOUND",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "Card not found."
+    },
+    {
+      "code": "CARD_NOT_WAITING",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Card not waiting."
+    },
+    {
+      "code": "CARD_RESERVED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Card reserved."
+    },
+    {
+      "code": "CHECKPOINT_CONFLICT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Checkpoint conflict."
+    },
+    {
+      "code": "CHECKPOINT_RECEIPT_MISSING",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "Checkpoint receipt missing."
+    },
+    {
+      "code": "CHECKPOINT_RECEIPT_NOT_SAVED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 500,
+      "meaning": "Checkpoint receipt not saved."
+    },
+    {
+      "code": "CHECKPOINT_REFERENCE_MAPPING_REQUIRED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 500,
+      "meaning": "Checkpoint reference mapping required."
+    },
+    {
+      "code": "CHECKPOINT_REFERENCE_NOT_SAVED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 500,
+      "meaning": "Checkpoint reference not saved."
+    },
+    {
+      "code": "CHECKPOINT_REQUIRED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Checkpoint required."
+    },
+    {
+      "code": "CHECKPOINT_SETTLEMENT_DISABLED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "Checkpoint settlement disabled."
+    },
+    {
+      "code": "CHECKPOINT_SETTLEMENT_FAILED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 500,
+      "meaning": "Checkpoint settlement failed."
+    },
+    {
+      "code": "CHECKPOINT_SOURCE_CONFLICT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Checkpoint source conflict."
+    },
+    {
+      "code": "CHECKPOINT_SOURCE_DISABLED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "Checkpoint source disabled."
+    },
+    {
+      "code": "CHECKPOINT_SOURCE_FAILED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 500,
+      "meaning": "Checkpoint source failed."
+    },
+    {
+      "code": "CHECKPOINT_SOURCE_MISSING",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "Checkpoint source missing."
+    },
+    {
+      "code": "CHECKPOINT_SOURCE_NOT_SAVED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 500,
+      "meaning": "Checkpoint source not saved."
+    },
+    {
+      "code": "CHECK_NOT_FOUND",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "Check not found."
+    },
+    {
+      "code": "CHECK_NOT_OPEN",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Check not open."
+    },
+    {
+      "code": "CHECK_OVERRIDE_NOT_ALLOWED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "Check override not allowed."
+    },
+    {
+      "code": "COMMENT_NOT_FOUND",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "Comment not found."
+    },
+    {
+      "code": "COMPLETION_REQUIRED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Completion required."
+    },
+    {
+      "code": "DECISION_CONFLICT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Decision conflict."
+    },
+    {
+      "code": "DECISION_EXPIRED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Decision expired."
+    },
+    {
+      "code": "ELICITATION_NOT_FOUND",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "Elicitation not found."
+    },
+    {
+      "code": "ELICITATION_NOT_PENDING",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Elicitation not pending."
+    },
+    {
+      "code": "GATE_DECISION_NOT_ALLOWED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Gate decision not allowed."
+    },
+    {
+      "code": "GATE_NOT_FOUND",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "Gate not found."
+    },
+    {
+      "code": "GATE_NOT_HELD",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Gate not held."
+    },
+    {
+      "code": "GATE_NOT_PENDING",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Gate not pending."
+    },
+    {
+      "code": "GATE_PENDING",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Gate pending."
+    },
+    {
+      "code": "INVALID_ANSWER",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid answer."
+    },
+    {
+      "code": "INVALID_APPROVAL_DELIVERY",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid approval delivery."
+    },
+    {
+      "code": "INVALID_APPROVAL_REQUEST",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid approval request."
+    },
+    {
+      "code": "INVALID_APPROVAL_SUBJECT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid approval subject."
+    },
+    {
+      "code": "INVALID_CHECKPOINT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid checkpoint."
+    },
+    {
+      "code": "INVALID_CHECKPOINT_RECEIPT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 500,
+      "meaning": "Invalid checkpoint receipt."
+    },
+    {
+      "code": "INVALID_CHECKPOINT_REFERENCE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid checkpoint reference."
+    },
+    {
+      "code": "INVALID_CHECKPOINT_SOURCE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid checkpoint source."
+    },
+    {
+      "code": "INVALID_CHECKPOINT_STATE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 500,
+      "meaning": "Invalid checkpoint state."
+    },
+    {
+      "code": "INVALID_COMMENT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid comment."
+    },
+    {
+      "code": "INVALID_COMPLETION_STATE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 500,
+      "meaning": "Invalid completion state."
+    },
+    {
+      "code": "INVALID_DELIVERY",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid delivery."
+    },
+    {
+      "code": "INVALID_ELICITATION",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid elicitation."
+    },
+    {
+      "code": "INVALID_LIVE_URL",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid live url."
+    },
+    {
+      "code": "INVALID_OUTCOME",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid outcome."
+    },
+    {
+      "code": "INVALID_RESERVATION",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid reservation."
+    },
+    {
+      "code": "INVALID_RESUME",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid resume."
+    },
+    {
+      "code": "INVALID_RULE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid rule."
+    },
+    {
+      "code": "INVALID_SCHEDULE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid schedule."
+    },
+    {
+      "code": "INVALID_SCHEDULING",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid scheduling."
+    },
+    {
+      "code": "INVALID_SIGNATURE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 401,
+      "meaning": "Invalid signature."
+    },
+    {
+      "code": "INVALID_STAGES",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid stages."
     },
     {
       "code": "INVALID_STALE_SETTINGS",
       "owner": "superpipeline",
+      "envelope": "error.v1",
       "status": 400,
       "meaning": "A board's stale-card settings are out of range."
+    },
+    {
+      "code": "INVALID_STRICT_DECISION",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid strict decision."
+    },
+    {
+      "code": "INVALID_TIMEOUT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid timeout."
+    },
+    {
+      "code": "INVALID_TIMEZONE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid timezone."
+    },
+    {
+      "code": "INVALID_URL",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid url."
+    },
+    {
+      "code": "INVALID_USAGE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Invalid usage."
+    },
+    {
+      "code": "LINK_WOULD_CYCLE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Link would cycle."
+    },
+    {
+      "code": "NOTHING_TO_SPLIT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Nothing to split."
+    },
+    {
+      "code": "NOT_CHECKPOINT_REPORTER",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "Not checkpoint reporter."
+    },
+    {
+      "code": "NOT_COMMENT_AUTHOR",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "Not comment author."
+    },
+    {
+      "code": "NOT_CONFIGURED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Not configured."
+    },
+    {
+      "code": "NOT_INITIALIZED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "Not initialized."
+    },
+    {
+      "code": "NOT_RUN_OWNER",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "The caller is not the agent that holds this run."
+    },
+    {
+      "code": "NO_RUN_ON_CARD",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "No run on card."
+    },
+    {
+      "code": "NO_SUCH_CARD",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "No such card."
+    },
+    {
+      "code": "QUESTION_PENDING",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Question pending."
+    },
+    {
+      "code": "QUORUM_ALREADY_APPROVED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Quorum already approved."
+    },
+    {
+      "code": "REQUEST_ID_CONFLICT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Request id conflict."
+    },
+    {
+      "code": "RUN_NOT_FOUND",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "Run not found."
+    },
+    {
+      "code": "SCHEDULE_NOT_FOUND",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "Schedule not found."
+    },
+    {
+      "code": "SEPARATION_OF_DUTIES",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "The principal that produced or asked for something cannot also decide it."
+    },
+    {
+      "code": "STAGE_NOT_EMPTY",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Stage not empty."
+    },
+    {
+      "code": "STALE_LEASE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "The caller's lease on the run is no longer the current one."
+    },
+    {
+      "code": "TOO_MANY_CHILDREN",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Too many children."
+    },
+    {
+      "code": "UNKNOWN_EVENT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Unknown event."
+    },
+    {
+      "code": "UNKNOWN_STAGE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Unknown stage."
+    },
+    {
+      "code": "WAIT_CHANGED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Wait changed."
+    },
+    {
+      "code": "WIP_LIMIT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "Wip limit."
+    },
+    {
+      "code": "WORKSPACE_ADMIN_REQUIRED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "Workspace admin required."
+    },
+    {
+      "code": "BOARD_NOT_FOUND",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "No such board in this workspace."
+    },
+    {
+      "code": "CHECKPOINT_SETTLEMENT_TOO_LARGE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 413,
+      "meaning": "A checkpoint settlement body over 64 KiB."
+    },
+    {
+      "code": "CHECKPOINT_SOURCE_TOO_LARGE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 413,
+      "meaning": "A checkpoint source body over 64 KiB."
+    },
+    {
+      "code": "EVIDENCE_LINK_UNAVAILABLE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 503,
+      "meaning": "The board cannot link evidence: no evidence host is configured."
+    },
+    {
+      "code": "FORBIDDEN",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "The credential is valid but lacks the scope or role this route needs."
+    },
+    {
+      "code": "INVALID_BODY",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "The request body does not match the operation."
+    },
+    {
+      "code": "INVALID_INPUT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "The request body does not match the operation."
+    },
+    {
+      "code": "INVALID_JSON",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "The request body is not JSON."
+    },
+    {
+      "code": "INVALID_WAIT_ID",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "expectedWaitId is present but not a non-empty string."
+    },
+    {
+      "code": "METHOD_NOT_ALLOWED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 405,
+      "meaning": "The route exists but not for this method."
+    },
+    {
+      "code": "UNAUTHORIZED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 401,
+      "meaning": "No valid credential for this route."
+    },
+    {
+      "code": "UNEXPECTED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 500,
+      "meaning": "Something failed that the board did not expect."
+    },
+    {
+      "code": "UNKNOWN_RUN_ACTION",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "The run has no action by that name."
+    },
+    {
+      "code": "invalid_credential",
+      "owner": "accounts",
+      "envelope": "flat-error.v1",
+      "status": 401,
+      "meaning": "No valid svc_ or dev_ credential."
+    },
+    {
+      "code": "suspended",
+      "owner": "accounts",
+      "envelope": "flat-error.v1",
+      "status": 423,
+      "meaning": "The caller or the principal it names is suspended."
+    },
+    {
+      "code": "insufficient_scope",
+      "owner": "accounts",
+      "envelope": "flat-error.v1",
+      "status": 403,
+      "meaning": "The service credential lacks the scope this route needs; the body names it as scope."
+    },
+    {
+      "code": "invalid_target",
+      "owner": "accounts",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "The audience is missing, malformed or not registered."
+    },
+    {
+      "code": "invalid_request",
+      "owner": "accounts",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "The request body does not match the route."
+    },
+    {
+      "code": "not_permitted",
+      "owner": "accounts",
+      "envelope": "flat-error.v1",
+      "status": 403,
+      "meaning": "The caller may not do this: audience restriction, missing grant scope, another organization or a reserved scope."
+    },
+    {
+      "code": "unknown_principal",
+      "owner": "accounts",
+      "envelope": "flat-error.v1",
+      "status": 404,
+      "meaning": "No such principal visible to the caller."
+    },
+    {
+      "code": "unknown_identity",
+      "owner": "accounts",
+      "envelope": "flat-error.v1",
+      "status": 404,
+      "meaning": "No principal holds that external identity in the caller's workspace."
+    },
+    {
+      "code": "not_human",
+      "owner": "accounts",
+      "envelope": "flat-error.v1",
+      "status": 409,
+      "meaning": "The identity belongs to a principal that is not a person."
+    },
+    {
+      "code": "identity_pending",
+      "owner": "accounts",
+      "envelope": "flat-error.v1",
+      "status": 403,
+      "meaning": "A self-made identity link is still in its hold; the body says usableAt. The lookup route answers it 404, so a reader that does not know the code fails closed.",
+      "alsoStatus": [404]
+    },
+    {
+      "code": "invalid_handle",
+      "owner": "accounts",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "An agent handle outside ^[a-z0-9][a-z0-9-]{2,31}$."
+    },
+    {
+      "code": "handle_taken",
+      "owner": "accounts",
+      "envelope": "flat-error.v1",
+      "status": 409,
+      "meaning": "Another principal has that handle."
+    },
+    {
+      "code": "invalid_grant",
+      "owner": "accounts",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "A grant naming an unknown scope or a dispatch target that is not an agent of the organization."
+    },
+    {
+      "code": "invalid_system",
+      "owner": "accounts",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "An identity system other than matrix, superpipeline or agentpod."
+    },
+    {
+      "code": "identity_taken",
+      "owner": "accounts",
+      "envelope": "flat-error.v1",
+      "status": 409,
+      "meaning": "Another principal holds that external identity."
+    },
+    {
+      "code": "access_denied",
+      "owner": "accounts",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "The device flow's token endpoint: the sign-in was approved with no workspace active, so no device credential is minted. The body carries error_description."
+    },
+    {
+      "code": "server_error",
+      "owner": "accounts",
+      "envelope": "flat-error.v1",
+      "status": 500,
+      "meaning": "The device flow's token endpoint: the approved session was gone when the credential was to be minted."
+    },
+    {
+      "code": "INVALID_DUE_AT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card dueAt that is not a date-time."
+    },
+    {
+      "code": "INVALID_ARCHIVED_AT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card archivedAt that is not a date-time."
+    },
+    {
+      "code": "INVALID_LABELS",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "Card labels that are not a list of label ids."
+    },
+    {
+      "code": "UNKNOWN_LABEL",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card label the board does not have."
+    },
+    {
+      "code": "INVALID_PROJECT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card project that is not a project id."
+    },
+    {
+      "code": "UNKNOWN_PROJECT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card project the workspace does not have."
+    },
+    {
+      "code": "MILESTONE_NOT_IN_PROJECT",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card milestone outside the card's project."
+    },
+    {
+      "code": "INVALID_PRECONDITION",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card precondition of the wrong shape."
+    },
+    {
+      "code": "INVALID_INTRO",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card intro of the wrong shape."
+    },
+    {
+      "code": "INVALID_LINK",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card link of the wrong shape."
+    },
+    {
+      "code": "INVALID_LINK_KIND",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card link kind the board does not know."
+    },
+    {
+      "code": "PARENT_MUST_BE_SAME_BOARD",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A parent link to a card on another board."
+    },
+    {
+      "code": "SELF_EDGE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A card linked to itself."
+    },
+    {
+      "code": "BAD_KIND",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A cross-board link kind the store does not know."
+    },
+    {
+      "code": "FOREIGN_BOARD",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "A cross-board link to a board outside the workspace."
+    },
+    {
+      "code": "SAME_BOARD_EDGE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 500,
+      "meaning": "The cross-board store was asked to hold a link within one board, which the board itself holds."
+    },
+    {
+      "code": "FIELD_NOT_COMPOSABLE",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "An agent composing a card set a field agents may not set."
+    },
+    {
+      "code": "AGENT_NOT_FOUND",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 404,
+      "meaning": "No such agent in the workspace."
+    },
+    {
+      "code": "AGENT_HAS_NO_OWNER",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "An agent queueing work has no owning person."
+    },
+    {
+      "code": "AGENT_QUEUE_POLICY_UNKNOWN",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "An agent queueing work under a policy the board does not know."
+    },
+    {
+      "code": "AGENT_CANNOT_SET_OWNER",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "An agent set a card owner, which only people may."
+    },
+    {
+      "code": "BOARD_NOT_PERMITTED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "An agent queueing work on a board its grant does not cover."
+    },
+    {
+      "code": "DISPATCH_GRANT_UNKNOWN",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "An agent queueing work for a dispatch grant the board does not know."
+    },
+    {
+      "code": "NO_DISPATCH_AUTHORITY",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "An agent queueing work for another agent without dispatch authority."
+    },
+    {
+      "code": "QUEUE_CEILING_REACHED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 429,
+      "meaning": "An agent queued more work than its ceiling allows."
+    },
+    {
+      "code": "BOARD_CEILING_REACHED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 429,
+      "meaning": "A board holds as many queued cards as it allows."
     }
   ]
 }

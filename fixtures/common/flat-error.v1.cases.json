@@ -1,0 +1,25 @@
+{
+  "valid": {
+    "a bare code": { "error": "invalid_credential" },
+    "a missing scope, named": {
+      "error": "insufficient_scope",
+      "scope": "principals:read"
+    },
+    "a link still in its hold": {
+      "error": "identity_pending",
+      "usableAt": "2026-11-22T10:15:00.000Z"
+    }
+  },
+  "invalid": [
+    { "why": "no error", "body": { "code": "invalid_credential" } },
+    {
+      "why": "an error that is an object",
+      "body": { "error": { "code": "invalid_credential" } }
+    },
+    {
+      "why": "a code that is not snake_case",
+      "body": { "error": "INVALID_CREDENTIAL" }
+    },
+    { "why": "an empty code", "body": { "error": "" } }
+  ]
+}

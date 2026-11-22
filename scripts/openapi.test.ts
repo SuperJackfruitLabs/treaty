@@ -13,7 +13,12 @@ const documents = [...bundle.files.keys()]
 
 describe("schemas/http", () => {
   test("the number of HTTP contracts is recorded here, so adding one is a visible diff", () => {
-    expect(documents).toEqual([]);
+    expect(documents).toEqual([
+      "schemas/http/accounts/plane.v1.openapi.json",
+      "schemas/http/superpipeline/agent-work.v1.openapi.json",
+      "schemas/http/superpipeline/approvals.v1.openapi.json",
+      "schemas/http/superpipeline/decisions.v1.openapi.json",
+    ]);
   });
 
   for (const path of documents) {

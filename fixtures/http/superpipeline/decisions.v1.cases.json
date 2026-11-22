@@ -1,0 +1,2530 @@
+{
+  "operations": {
+    "listPendingGates": {
+      "responses": {
+        "200": {
+          "valid": {
+            "none": {
+              "gates": []
+            },
+            "every kind": {
+              "gates": [
+                {
+                  "event": "gate.pending",
+                  "boardId": "brd_134a0ddb6d434478",
+                  "boardName": "Developer Experience",
+                  "cardId": "card_0f3c9a2b7d4e4a11",
+                  "gateId": "gate_5a1b2c3d4e5f6071",
+                  "stageKey": "review",
+                  "returnStageKey": "research",
+                  "cardTitle": "Research this",
+                  "producedBy": "agt_9e8d7c6b5a493827",
+                  "handoffSummary": "Two sources.",
+                  "options": [
+                    {
+                      "id": "approve",
+                      "label": "Approve",
+                      "meaning": "approve",
+                      "needsComment": false
+                    },
+                    {
+                      "id": "request_changes",
+                      "label": "Request changes",
+                      "meaning": "revise",
+                      "needsComment": true
+                    },
+                    {
+                      "id": "reject",
+                      "label": "Reject",
+                      "meaning": "reject",
+                      "needsComment": false
+                    }
+                  ],
+                  "ts": "2026-11-10T09:30:00.000Z"
+                },
+                {
+                  "event": "gate.pending",
+                  "boardId": "brd_134a0ddb6d434478",
+                  "boardName": "Developer Experience",
+                  "cardId": "card_0f3c9a2b7d4e4a11",
+                  "gateId": "gate_5a1b2c3d4e5f6071",
+                  "stageKey": "review",
+                  "returnStageKey": "research",
+                  "cardTitle": "Research this",
+                  "producedBy": "agt_9e8d7c6b5a493827",
+                  "handoffSummary": "Two sources.",
+                  "options": [
+                    {
+                      "id": "approve_automatic",
+                      "label": "Approve and post",
+                      "meaning": "approve",
+                      "needsComment": false,
+                      "delivery": "automatic"
+                    },
+                    {
+                      "id": "approve_manual",
+                      "label": "Approve, I'll post it",
+                      "meaning": "approve",
+                      "needsComment": false,
+                      "delivery": "manual"
+                    },
+                    {
+                      "id": "request_changes",
+                      "label": "Request changes",
+                      "meaning": "revise",
+                      "needsComment": true
+                    },
+                    {
+                      "id": "reject",
+                      "label": "Reject",
+                      "meaning": "reject",
+                      "needsComment": false
+                    }
+                  ],
+                  "ts": "2026-11-10T09:30:00.000Z",
+                  "approvalSubject": {
+                    "id": "aps_7d6c5b4a39281706",
+                    "digest": "sha256:4f2a0c1e9b8d7f6a5e4d3c2b1a09f8e7d6c5b4a39281706f5e4d3c2b1a09f8e7",
+                    "schema": "social-publish/v1",
+                    "revision": 1,
+                    "expiresAt": "2026-11-11T09:30:00.000Z",
+                    "preview": [
+                      {
+                        "type": "text",
+                        "label": "Post",
+                        "text": "We shipped the decision envelope."
+                      },
+                      {
+                        "type": "field",
+                        "label": "Account",
+                        "value": "@example"
+                      },
+                      {
+                        "type": "link",
+                        "label": "Draft",
+                        "url": "https://example.com/draft"
+                      }
+                    ],
+                    "previewComplete": true
+                  },
+                  "reviewUrl": "https://app.superpipeline.dev/b/brd_134a0ddb6d434478/c/card_0f3c9a2b7d4e4a11/review"
+                },
+                {
+                  "event": "gate.pending",
+                  "boardId": "brd_134a0ddb6d434478",
+                  "boardName": "Developer Experience",
+                  "cardId": "card_0f3c9a2b7d4e4a11",
+                  "gateId": "gate_5a1b2c3d4e5f6071",
+                  "stageKey": "review",
+                  "returnStageKey": "research",
+                  "cardTitle": "Research this",
+                  "producedBy": "agt_9e8d7c6b5a493827",
+                  "handoffSummary": "Two sources.",
+                  "options": [
+                    {
+                      "id": "choose",
+                      "label": "Choose a variant",
+                      "meaning": "choose",
+                      "needsComment": false
+                    },
+                    {
+                      "id": "reject",
+                      "label": "Reject",
+                      "meaning": "reject",
+                      "needsComment": false
+                    }
+                  ],
+                  "ts": "2026-11-10T09:30:00.000Z",
+                  "approvalSubject": {
+                    "variants": [
+                      {
+                        "id": "short",
+                        "label": "Short",
+                        "subject": {
+                          "id": "aps_7d6c5b4a39281706",
+                          "digest": "sha256:4f2a0c1e9b8d7f6a5e4d3c2b1a09f8e7d6c5b4a39281706f5e4d3c2b1a09f8e7",
+                          "schema": "social-publish/v1",
+                          "revision": 1,
+                          "expiresAt": "2026-11-11T09:30:00.000Z",
+                          "preview": [
+                            {
+                              "type": "text",
+                              "label": "Post",
+                              "text": "We shipped the decision envelope."
+                            },
+                            {
+                              "type": "field",
+                              "label": "Account",
+                              "value": "@example"
+                            },
+                            {
+                              "type": "link",
+                              "label": "Draft",
+                              "url": "https://example.com/draft"
+                            }
+                          ],
+                          "previewComplete": true
+                        }
+                      },
+                      {
+                        "id": "long",
+                        "label": "Long",
+                        "subject": {
+                          "id": "aps_8e7d6c5b4a392817",
+                          "digest": "sha256:4f2a0c1e9b8d7f6a5e4d3c2b1a09f8e7d6c5b4a39281706f5e4d3c2b1a09f8e7",
+                          "schema": "social-publish/v1",
+                          "revision": 1,
+                          "expiresAt": "2026-11-11T09:30:00.000Z",
+                          "preview": [
+                            {
+                              "type": "text",
+                              "label": "Post",
+                              "text": "We shipped the decision envelope."
+                            },
+                            {
+                              "type": "field",
+                              "label": "Account",
+                              "value": "@example"
+                            },
+                            {
+                              "type": "link",
+                              "label": "Draft",
+                              "url": "https://example.com/draft"
+                            }
+                          ],
+                          "previewComplete": true
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "event": "gate.pending",
+                  "boardId": "brd_134a0ddb6d434478",
+                  "boardName": "Developer Experience",
+                  "cardId": "card_0f3c9a2b7d4e4a11",
+                  "gateId": "gate_5a1b2c3d4e5f6071",
+                  "stageKey": "review",
+                  "returnStageKey": "research",
+                  "cardTitle": "Research this",
+                  "producedBy": "agt_9e8d7c6b5a493827",
+                  "handoffSummary": "Two sources.",
+                  "options": [
+                    {
+                      "id": "approve",
+                      "label": "Approve",
+                      "meaning": "approve",
+                      "needsComment": false
+                    },
+                    {
+                      "id": "request_changes",
+                      "label": "Request changes",
+                      "meaning": "revise",
+                      "needsComment": true
+                    },
+                    {
+                      "id": "reject",
+                      "label": "Reject",
+                      "meaning": "reject",
+                      "needsComment": false
+                    }
+                  ],
+                  "ts": "2026-11-10T09:30:00.000Z",
+                  "deadline": {
+                    "remindAt": "2026-11-10T13:30:00.000Z",
+                    "escalateAt": "2026-11-11T09:30:00.000Z"
+                  },
+                  "quorum": {
+                    "required": 2,
+                    "from": "deciders",
+                    "approvals": [
+                      {
+                        "principalId": "prn_0123456789abcdef0123",
+                        "at": "2026-11-10T10:00:00.000Z"
+                      }
+                    ]
+                  },
+                  "release": {
+                    "holdForMinutes": 30,
+                    "notBefore": "2026-11-10T12:00:00.000Z"
+                  },
+                  "checks": [
+                    {
+                      "name": "ci / test",
+                      "provider": "ci",
+                      "status": "passed",
+                      "url": "https://forge.example.com/runs/1"
+                    },
+                    {
+                      "name": "tone",
+                      "provider": "verdict",
+                      "status": "overridden"
+                    }
+                  ]
+                },
+                {
+                  "event": "gate.pending",
+                  "boardId": null,
+                  "boardName": "",
+                  "cardId": "card_0f3c9a2b7d4e4a11",
+                  "gateId": "gate_5a1b2c3d4e5f6071",
+                  "stageKey": "review",
+                  "returnStageKey": "research",
+                  "cardTitle": "Research this",
+                  "producedBy": "agt_9e8d7c6b5a493827",
+                  "handoffSummary": null,
+                  "options": [
+                    {
+                      "id": "approve",
+                      "label": "Approve",
+                      "meaning": "approve",
+                      "needsComment": false
+                    },
+                    {
+                      "id": "request_changes",
+                      "label": "Request changes",
+                      "meaning": "revise",
+                      "needsComment": true
+                    },
+                    {
+                      "id": "reject",
+                      "label": "Reject",
+                      "meaning": "reject",
+                      "needsComment": false
+                    }
+                  ],
+                  "ts": "2026-11-10T09:30:00.000Z"
+                }
+              ]
+            }
+          },
+          "invalid": [
+            {
+              "why": "an item that is not a gate.pending body",
+              "body": {
+                "gates": [
+                  {
+                    "event": "gate.pending",
+                    "gateId": "gate_5a1b2c3d4e5f6071"
+                  }
+                ]
+              }
+            },
+            {
+              "why": "no gates list",
+              "body": {}
+            }
+          ]
+        }
+      }
+    },
+    "readGate": {
+      "responses": {
+        "200": {
+          "valid": {
+            "pending": {
+              "gate": {
+                "id": "gate_5a1b2c3d4e5f6071",
+                "cardId": "card_0f3c9a2b7d4e4a11",
+                "stageKey": "review",
+                "status": "pending",
+                "decision": null,
+                "options": [
+                  {
+                    "name": "approve",
+                    "title": "Approve"
+                  },
+                  {
+                    "name": "request_changes",
+                    "title": "Request changes",
+                    "interactive": true
+                  },
+                  {
+                    "name": "reject",
+                    "title": "Reject"
+                  }
+                ],
+                "producedBy": "agt_9e8d7c6b5a493827",
+                "createdAt": "2026-11-10T09:30:00.000Z",
+                "decidedBy": null,
+                "comment": null,
+                "resolvedAt": null,
+                "references": [
+                  {
+                    "id": "ref_1b2c3d4e5f607182",
+                    "cardId": "card_0f3c9a2b7d4e4a11",
+                    "url": "https://example.com/source-a",
+                    "title": "Source A",
+                    "subtitle": null,
+                    "provider": "web",
+                    "sourceType": "link",
+                    "externalId": null,
+                    "metadata": null,
+                    "syncState": "synced",
+                    "lastSyncedAt": null,
+                    "addedBy": "agent",
+                    "runId": "run_0123456789abcdef",
+                    "createdAt": "2026-11-10T09:20:00.000Z",
+                    "updatedAt": null
+                  }
+                ],
+                "summary": "Two sources."
+              }
+            },
+            "resolved with delivery": {
+              "gate": {
+                "id": "gate_5a1b2c3d4e5f6071",
+                "cardId": "card_0f3c9a2b7d4e4a11",
+                "stageKey": "review",
+                "status": "resolved",
+                "decision": "approve_manual",
+                "options": [
+                  {
+                    "name": "approve_manual",
+                    "title": "Approve — I'll post it myself"
+                  },
+                  {
+                    "name": "approve_automatic",
+                    "title": "Approve — post automatically"
+                  },
+                  {
+                    "name": "request_changes",
+                    "title": "Request changes",
+                    "interactive": true
+                  },
+                  {
+                    "name": "reject",
+                    "title": "Reject"
+                  }
+                ],
+                "producedBy": "agt_9e8d7c6b5a493827",
+                "createdAt": "2026-11-10T09:30:00.000Z",
+                "decidedBy": "prn_0123456789abcdef0123",
+                "comment": "Ship it.",
+                "resolvedAt": "2026-11-10T10:00:00.000Z",
+                "references": [
+                  {
+                    "id": "ref_1b2c3d4e5f607182",
+                    "cardId": "card_0f3c9a2b7d4e4a11",
+                    "url": "https://example.com/source-a",
+                    "title": "Source A",
+                    "subtitle": null,
+                    "provider": "web",
+                    "sourceType": "link",
+                    "externalId": null,
+                    "metadata": null,
+                    "syncState": "synced",
+                    "lastSyncedAt": null,
+                    "addedBy": "agent",
+                    "runId": "run_0123456789abcdef",
+                    "createdAt": "2026-11-10T09:20:00.000Z",
+                    "updatedAt": null
+                  }
+                ],
+                "approvalSubject": {
+                  "id": "aps_7d6c5b4a39281706",
+                  "digest": "sha256:4f2a0c1e9b8d7f6a5e4d3c2b1a09f8e7d6c5b4a39281706f5e4d3c2b1a09f8e7",
+                  "schema": "social-publish/v1",
+                  "revision": 1,
+                  "canonical": {
+                    "text": "We shipped the decision envelope.",
+                    "account": "@example"
+                  }
+                },
+                "delivery": {
+                  "mode": "manual",
+                  "liveUrl": "https://example.com/posts/1",
+                  "remindAt": null,
+                  "readBackStatus": "matched",
+                  "recordedBy": "prn_0123456789abcdef0123",
+                  "recordedAt": "2026-11-10T10:05:00.000Z"
+                }
+              }
+            },
+            "cancelled": {
+              "gate": {
+                "id": "gate_5a1b2c3d4e5f6071",
+                "cardId": "card_0f3c9a2b7d4e4a11",
+                "stageKey": "review",
+                "status": "cancelled",
+                "decision": null,
+                "options": [
+                  {
+                    "name": "approve",
+                    "title": "Approve"
+                  },
+                  {
+                    "name": "request_changes",
+                    "title": "Request changes",
+                    "interactive": true
+                  },
+                  {
+                    "name": "reject",
+                    "title": "Reject"
+                  }
+                ],
+                "producedBy": "agt_9e8d7c6b5a493827",
+                "createdAt": "2026-11-10T09:30:00.000Z",
+                "decidedBy": null,
+                "comment": null,
+                "resolvedAt": "2026-11-10T11:00:00.000Z",
+                "references": [
+                  {
+                    "id": "ref_1b2c3d4e5f607182",
+                    "cardId": "card_0f3c9a2b7d4e4a11",
+                    "url": "https://example.com/source-a",
+                    "title": "Source A",
+                    "subtitle": null,
+                    "provider": "web",
+                    "sourceType": "link",
+                    "externalId": null,
+                    "metadata": null,
+                    "syncState": "synced",
+                    "lastSyncedAt": null,
+                    "addedBy": "agent",
+                    "runId": "run_0123456789abcdef",
+                    "createdAt": "2026-11-10T09:20:00.000Z",
+                    "updatedAt": null
+                  }
+                ],
+                "summary": "Two sources."
+              }
+            },
+            "quorum, release and checks": {
+              "gate": {
+                "id": "gate_5a1b2c3d4e5f6071",
+                "cardId": "card_0f3c9a2b7d4e4a11",
+                "stageKey": "review",
+                "status": "pending",
+                "decision": null,
+                "options": [
+                  {
+                    "name": "approve",
+                    "title": "Approve"
+                  },
+                  {
+                    "name": "request_changes",
+                    "title": "Request changes",
+                    "interactive": true
+                  },
+                  {
+                    "name": "reject",
+                    "title": "Reject"
+                  }
+                ],
+                "producedBy": "agt_9e8d7c6b5a493827",
+                "createdAt": "2026-11-10T09:30:00.000Z",
+                "decidedBy": null,
+                "comment": null,
+                "resolvedAt": null,
+                "references": [
+                  {
+                    "id": "ref_1b2c3d4e5f607182",
+                    "cardId": "card_0f3c9a2b7d4e4a11",
+                    "url": "https://example.com/source-a",
+                    "title": "Source A",
+                    "subtitle": null,
+                    "provider": "web",
+                    "sourceType": "link",
+                    "externalId": null,
+                    "metadata": null,
+                    "syncState": "synced",
+                    "lastSyncedAt": null,
+                    "addedBy": "agent",
+                    "runId": "run_0123456789abcdef",
+                    "createdAt": "2026-11-10T09:20:00.000Z",
+                    "updatedAt": null
+                  }
+                ],
+                "summary": "Two sources.",
+                "quorum": {
+                  "required": 2,
+                  "from": "deciders",
+                  "approvals": [
+                    {
+                      "principalId": "prn_0123456789abcdef0123",
+                      "at": "2026-11-10T09:50:00.000Z"
+                    }
+                  ]
+                },
+                "release": {
+                  "holdForMinutes": 30
+                },
+                "checks": [
+                  {
+                    "name": "ci",
+                    "provider": "ci",
+                    "status": "passed",
+                    "url": "https://forge.example.com/runs/1"
+                  }
+                ]
+              }
+            },
+            "held then pulled back": {
+              "gate": {
+                "id": "gate_5a1b2c3d4e5f6071",
+                "cardId": "card_0f3c9a2b7d4e4a11",
+                "stageKey": "review",
+                "status": "resolved",
+                "decision": "approve",
+                "options": [
+                  {
+                    "name": "approve",
+                    "title": "Approve"
+                  },
+                  {
+                    "name": "request_changes",
+                    "title": "Request changes",
+                    "interactive": true
+                  },
+                  {
+                    "name": "reject",
+                    "title": "Reject"
+                  }
+                ],
+                "producedBy": "agt_9e8d7c6b5a493827",
+                "createdAt": "2026-11-10T09:30:00.000Z",
+                "decidedBy": "prn_0123456789abcdef0123",
+                "comment": null,
+                "resolvedAt": "2026-11-10T10:00:00.000Z",
+                "references": [
+                  {
+                    "id": "ref_1b2c3d4e5f607182",
+                    "cardId": "card_0f3c9a2b7d4e4a11",
+                    "url": "https://example.com/source-a",
+                    "title": "Source A",
+                    "subtitle": null,
+                    "provider": "web",
+                    "sourceType": "link",
+                    "externalId": null,
+                    "metadata": null,
+                    "syncState": "synced",
+                    "lastSyncedAt": null,
+                    "addedBy": "agent",
+                    "runId": "run_0123456789abcdef",
+                    "createdAt": "2026-11-10T09:20:00.000Z",
+                    "updatedAt": null
+                  }
+                ],
+                "summary": "Two sources.",
+                "heldUntil": "2026-11-10T10:30:00.000Z",
+                "pulledBack": {
+                  "by": "prn_0123456789abcdef0123",
+                  "at": "2026-11-10T10:10:00.000Z",
+                  "comment": "Wait for the launch."
+                }
+              }
+            }
+          },
+          "invalid": [
+            {
+              "why": "a status the board never writes",
+              "body": {
+                "gate": {
+                  "id": "gate_5a1b2c3d4e5f6071",
+                  "cardId": "card_0f3c9a2b7d4e4a11",
+                  "stageKey": "review",
+                  "status": "open",
+                  "decision": null,
+                  "options": [
+                    {
+                      "name": "approve",
+                      "title": "Approve"
+                    },
+                    {
+                      "name": "request_changes",
+                      "title": "Request changes",
+                      "interactive": true
+                    },
+                    {
+                      "name": "reject",
+                      "title": "Reject"
+                    }
+                  ],
+                  "producedBy": "agt_9e8d7c6b5a493827",
+                  "createdAt": "2026-11-10T09:30:00.000Z",
+                  "decidedBy": null,
+                  "comment": null,
+                  "resolvedAt": null,
+                  "references": [
+                    {
+                      "id": "ref_1b2c3d4e5f607182",
+                      "cardId": "card_0f3c9a2b7d4e4a11",
+                      "url": "https://example.com/source-a",
+                      "title": "Source A",
+                      "subtitle": null,
+                      "provider": "web",
+                      "sourceType": "link",
+                      "externalId": null,
+                      "metadata": null,
+                      "syncState": "synced",
+                      "lastSyncedAt": null,
+                      "addedBy": "agent",
+                      "runId": "run_0123456789abcdef",
+                      "createdAt": "2026-11-10T09:20:00.000Z",
+                      "updatedAt": null
+                    }
+                  ],
+                  "summary": "Two sources."
+                }
+              }
+            },
+            {
+              "why": "no gate",
+              "body": {}
+            }
+          ]
+        }
+      }
+    },
+    "resolveGate": {
+      "request": {
+        "valid": {
+          "approve": {
+            "decision": "approve"
+          },
+          "request changes with a comment": {
+            "decision": "request_changes",
+            "comment": "Cite the second source."
+          },
+          "approve a bound subject": {
+            "decision": "approve_manual",
+            "approvalSubjectId": "aps_7d6c5b4a39281706",
+            "approvalSubjectDigest": "sha256:4f2a0c1e9b8d7f6a5e4d3c2b1a09f8e7d6c5b4a39281706f5e4d3c2b1a09f8e7"
+          },
+          "reject": {
+            "decision": "reject"
+          }
+        },
+        "invalid": [
+          {
+            "why": "no decision",
+            "body": {
+              "comment": "Looks fine."
+            }
+          },
+          {
+            "why": "a decision outside GateDecision (400 GATE_DECISION_NOT_ALLOWED, never a reject)",
+            "body": {
+              "decision": "approved"
+            }
+          },
+          {
+            "why": "a comment that is not text",
+            "body": {
+              "decision": "reject",
+              "comment": 3
+            }
+          },
+          {
+            "why": "a subject id that is not text",
+            "body": {
+              "decision": "approve_manual",
+              "approvalSubjectId": 7,
+              "approvalSubjectDigest": "sha256:4f2a0c1e9b8d7f6a5e4d3c2b1a09f8e7d6c5b4a39281706f5e4d3c2b1a09f8e7"
+            }
+          },
+          {
+            "why": "a subject digest that is not text",
+            "body": {
+              "decision": "approve_manual",
+              "approvalSubjectId": "aps_7d6c5b4a39281706",
+              "approvalSubjectDigest": null
+            }
+          },
+          {
+            "why": "not an object",
+            "body": [
+              "approve"
+            ]
+          }
+        ]
+      },
+      "responses": {
+        "200": {
+          "valid": {
+            "approved": {
+              "card": {
+                "id": "card_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "spec": {
+                  "brief": "Find two sources on decision envelopes."
+                },
+                "ownerUserId": "usr_3f2e1d0c9b8a7654",
+                "queuedBy": "prn_0123456789abcdef0123",
+                "queuedByAgentId": null,
+                "queuedGrant": [
+                  "prn_9f8e7d6c5b4a39281706"
+                ],
+                "labels": [],
+                "projectId": null,
+                "milestoneId": null,
+                "dueAt": null,
+                "archivedAt": null,
+                "currentStageKey": "publish",
+                "state": "submitted",
+                "delegateAgentId": null,
+                "lastAgentId": "agt_9e8d7c6b5a493827",
+                "queuedGrantOwner": "usr_3f2e1d0c9b8a7654",
+                "stageSince": "2026-11-10T09:45:00.000Z",
+                "currentRunId": null,
+                "priority": 0,
+                "contextId": "ctx_8a7b6c5d4e3f2a1b",
+                "createdAt": "2026-11-10T09:00:00.000Z",
+                "updatedAt": "2026-11-10T09:45:00.000Z",
+                "stateSince": "2026-11-10T09:45:00.000Z",
+                "costUsd": 0.42,
+                "overBudget": false,
+                "attemptCount": 1,
+                "parentCardId": null,
+                "openChildCount": 0,
+                "costUsdRollup": 0.42,
+                "blockedBy": []
+              }
+            },
+            "quorum not yet reached": {
+              "card": {
+                "id": "card_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "spec": {
+                  "brief": "Find two sources on decision envelopes."
+                },
+                "ownerUserId": "usr_3f2e1d0c9b8a7654",
+                "queuedBy": "prn_0123456789abcdef0123",
+                "queuedByAgentId": null,
+                "queuedGrant": [
+                  "prn_9f8e7d6c5b4a39281706"
+                ],
+                "labels": [],
+                "projectId": null,
+                "milestoneId": null,
+                "dueAt": null,
+                "archivedAt": null,
+                "currentStageKey": "review",
+                "state": "input-required",
+                "delegateAgentId": null,
+                "lastAgentId": "agt_9e8d7c6b5a493827",
+                "queuedGrantOwner": "usr_3f2e1d0c9b8a7654",
+                "stageSince": "2026-11-10T09:45:00.000Z",
+                "currentRunId": null,
+                "priority": 0,
+                "contextId": "ctx_8a7b6c5d4e3f2a1b",
+                "createdAt": "2026-11-10T09:00:00.000Z",
+                "updatedAt": "2026-11-10T09:45:00.000Z",
+                "stateSince": "2026-11-10T09:45:00.000Z",
+                "costUsd": 0.42,
+                "overBudget": false,
+                "attemptCount": 1,
+                "parentCardId": null,
+                "openChildCount": 0,
+                "costUsdRollup": 0.42,
+                "blockedBy": [],
+                "needsHuman": {
+                  "reason": "review"
+                }
+              }
+            },
+            "rejected": {
+              "card": {
+                "id": "card_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "spec": {
+                  "brief": "Find two sources on decision envelopes."
+                },
+                "ownerUserId": "usr_3f2e1d0c9b8a7654",
+                "queuedBy": "prn_0123456789abcdef0123",
+                "queuedByAgentId": null,
+                "queuedGrant": [
+                  "prn_9f8e7d6c5b4a39281706"
+                ],
+                "labels": [],
+                "projectId": null,
+                "milestoneId": null,
+                "dueAt": null,
+                "archivedAt": null,
+                "currentStageKey": "review",
+                "state": "rejected",
+                "delegateAgentId": null,
+                "lastAgentId": "agt_9e8d7c6b5a493827",
+                "queuedGrantOwner": "usr_3f2e1d0c9b8a7654",
+                "stageSince": "2026-11-10T09:45:00.000Z",
+                "currentRunId": null,
+                "priority": 0,
+                "contextId": "ctx_8a7b6c5d4e3f2a1b",
+                "createdAt": "2026-11-10T09:00:00.000Z",
+                "updatedAt": "2026-11-10T09:45:00.000Z",
+                "stateSince": "2026-11-10T09:45:00.000Z",
+                "costUsd": 0.42,
+                "overBudget": false,
+                "attemptCount": 1,
+                "parentCardId": null,
+                "openChildCount": 0,
+                "costUsdRollup": 0.42,
+                "blockedBy": []
+              }
+            }
+          },
+          "invalid": [
+            {
+              "why": "no card",
+              "body": {}
+            }
+          ]
+        }
+      }
+    },
+    "pullBackGate": {
+      "request": {
+        "valid": {
+          "a reason": {
+            "comment": "Wait for the launch."
+          }
+        },
+        "invalid": [
+          {
+            "why": "no comment (400 INVALID_COMMENT)",
+            "body": {}
+          },
+          {
+            "why": "a comment that is not text",
+            "body": {
+              "comment": 1
+            }
+          },
+          {
+            "why": "an empty comment",
+            "body": {
+              "comment": ""
+            }
+          },
+          {
+            "why": "a blank comment",
+            "body": {
+              "comment": "   "
+            }
+          },
+          {
+            "why": "not an object",
+            "body": "Wait"
+          }
+        ]
+      },
+      "responses": {
+        "200": {
+          "valid": {
+            "sent back": {
+              "card": {
+                "id": "card_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "spec": {
+                  "brief": "Find two sources on decision envelopes."
+                },
+                "ownerUserId": "usr_3f2e1d0c9b8a7654",
+                "queuedBy": "prn_0123456789abcdef0123",
+                "queuedByAgentId": null,
+                "queuedGrant": [
+                  "prn_9f8e7d6c5b4a39281706"
+                ],
+                "labels": [],
+                "projectId": null,
+                "milestoneId": null,
+                "dueAt": null,
+                "archivedAt": null,
+                "currentStageKey": "research",
+                "state": "submitted",
+                "delegateAgentId": null,
+                "lastAgentId": "agt_9e8d7c6b5a493827",
+                "queuedGrantOwner": "usr_3f2e1d0c9b8a7654",
+                "stageSince": "2026-11-10T09:45:00.000Z",
+                "currentRunId": null,
+                "priority": 0,
+                "contextId": "ctx_8a7b6c5d4e3f2a1b",
+                "createdAt": "2026-11-10T09:00:00.000Z",
+                "updatedAt": "2026-11-10T09:45:00.000Z",
+                "stateSince": "2026-11-10T09:45:00.000Z",
+                "costUsd": 0.42,
+                "overBudget": false,
+                "attemptCount": 1,
+                "parentCardId": null,
+                "openChildCount": 0,
+                "costUsdRollup": 0.42,
+                "blockedBy": []
+              }
+            }
+          },
+          "invalid": []
+        }
+      }
+    },
+    "setGateDelivery": {
+      "request": {
+        "valid": {
+          "switch to automatic": {
+            "mode": "automatic"
+          },
+          "record the live link": {
+            "liveUrl": "https://example.com/posts/1"
+          },
+          "schedule a reminder": {
+            "remindAt": "2026-11-11T09:00:00.000Z"
+          }
+        },
+        "invalid": [
+          {
+            "why": "nothing to change (400 INVALID_APPROVAL_DELIVERY)",
+            "body": {}
+          },
+          {
+            "why": "two changes at once",
+            "body": {
+              "mode": "manual",
+              "liveUrl": "https://example.com/posts/1"
+            }
+          },
+          {
+            "why": "a mode that is neither manual nor automatic",
+            "body": {
+              "mode": "scheduled"
+            }
+          },
+          {
+            "why": "a live link that is not text (400 INVALID_LIVE_URL)",
+            "body": {
+              "liveUrl": 42
+            }
+          },
+          {
+            "why": "a live link that is not https (400 INVALID_LIVE_URL)",
+            "body": {
+              "liveUrl": "http://example.com/posts/1"
+            }
+          },
+          {
+            "why": "a reminder that is not text",
+            "body": {
+              "remindAt": 1762765200000
+            }
+          },
+          {
+            "why": "not an object",
+            "body": null
+          }
+        ]
+      },
+      "responses": {
+        "200": {
+          "valid": {
+            "live link recorded": {
+              "card": {
+                "id": "card_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "spec": {
+                  "brief": "Find two sources on decision envelopes."
+                },
+                "ownerUserId": "usr_3f2e1d0c9b8a7654",
+                "queuedBy": "prn_0123456789abcdef0123",
+                "queuedByAgentId": null,
+                "queuedGrant": [
+                  "prn_9f8e7d6c5b4a39281706"
+                ],
+                "labels": [],
+                "projectId": null,
+                "milestoneId": null,
+                "dueAt": null,
+                "archivedAt": null,
+                "currentStageKey": "published",
+                "state": "completed",
+                "delegateAgentId": null,
+                "lastAgentId": "agt_9e8d7c6b5a493827",
+                "queuedGrantOwner": "usr_3f2e1d0c9b8a7654",
+                "stageSince": "2026-11-10T09:45:00.000Z",
+                "currentRunId": null,
+                "priority": 0,
+                "contextId": "ctx_8a7b6c5d4e3f2a1b",
+                "createdAt": "2026-11-10T09:00:00.000Z",
+                "updatedAt": "2026-11-10T09:45:00.000Z",
+                "stateSince": "2026-11-10T09:45:00.000Z",
+                "costUsd": 0.42,
+                "overBudget": false,
+                "attemptCount": 1,
+                "parentCardId": null,
+                "openChildCount": 0,
+                "costUsdRollup": 0.42,
+                "blockedBy": [],
+                "delivery": {
+                  "mode": "manual",
+                  "liveUrl": "https://example.com/posts/1",
+                  "remindAt": null,
+                  "readBackStatus": "matched",
+                  "recordedBy": "prn_0123456789abcdef0123",
+                  "recordedAt": "2026-11-10T10:05:00.000Z"
+                }
+              },
+              "delivery": {
+                "mode": "manual",
+                "liveUrl": "https://example.com/posts/1",
+                "remindAt": null,
+                "readBackStatus": "matched",
+                "recordedBy": "prn_0123456789abcdef0123",
+                "recordedAt": "2026-11-10T10:05:00.000Z"
+              }
+            }
+          },
+          "invalid": [
+            {
+              "why": "no delivery",
+              "body": {
+                "card": {
+                  "id": "card_0f3c9a2b7d4e4a11",
+                  "title": "Research this",
+                  "spec": {
+                    "brief": "Find two sources on decision envelopes."
+                  },
+                  "ownerUserId": "usr_3f2e1d0c9b8a7654",
+                  "queuedBy": "prn_0123456789abcdef0123",
+                  "queuedByAgentId": null,
+                  "queuedGrant": [
+                    "prn_9f8e7d6c5b4a39281706"
+                  ],
+                  "labels": [],
+                  "projectId": null,
+                  "milestoneId": null,
+                  "dueAt": null,
+                  "archivedAt": null,
+                  "currentStageKey": "research",
+                  "state": "submitted",
+                  "delegateAgentId": null,
+                  "lastAgentId": "agt_9e8d7c6b5a493827",
+                  "queuedGrantOwner": "usr_3f2e1d0c9b8a7654",
+                  "stageSince": "2026-11-10T09:45:00.000Z",
+                  "currentRunId": null,
+                  "priority": 0,
+                  "contextId": "ctx_8a7b6c5d4e3f2a1b",
+                  "createdAt": "2026-11-10T09:00:00.000Z",
+                  "updatedAt": "2026-11-10T09:45:00.000Z",
+                  "stateSince": "2026-11-10T09:45:00.000Z",
+                  "costUsd": 0.42,
+                  "overBudget": false,
+                  "attemptCount": 1,
+                  "parentCardId": null,
+                  "openChildCount": 0,
+                  "costUsdRollup": 0.42,
+                  "blockedBy": [],
+                  "delivery": {
+                    "mode": "manual",
+                    "liveUrl": "https://example.com/posts/1",
+                    "remindAt": null,
+                    "readBackStatus": "matched",
+                    "recordedBy": "prn_0123456789abcdef0123",
+                    "recordedAt": "2026-11-10T10:05:00.000Z"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "listPendingDeliveries": {
+      "responses": {
+        "200": {
+          "valid": {
+            "none": {
+              "deliveries": []
+            },
+            "every kind": {
+              "deliveries": [
+                {
+                  "event": "delivery.pending",
+                  "boardId": "brd_134a0ddb6d434478",
+                  "boardName": "Fixture board",
+                  "cardId": "card_0f3c9a2b7d4e4a11",
+                  "cardTitle": "Sanitized approval fixture",
+                  "gateId": "gate_5d1e2f3a4b5c6d7e",
+                  "stageKey": "approve",
+                  "approvalSubject": {
+                    "id": "aps_2b7c9d0e1f2a3b4c",
+                    "digest": "sha256:9f2c1a7e5b3d4c6a8e0f1b2d3c4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e",
+                    "schema": "social-publish/v1",
+                    "revision": 1,
+                    "expiresAt": "2030-01-02T03:04:05Z",
+                    "preview": [
+                      {
+                        "type": "text",
+                        "label": "Post",
+                        "text": "Shipping the new board view today."
+                      }
+                    ],
+                    "previewComplete": true
+                  },
+                  "options": [
+                    {
+                      "id": "record_live_url",
+                      "label": "I posted it — add the link",
+                      "meaning": "defer",
+                      "needsComment": false,
+                      "input": {
+                        "kind": "url",
+                        "label": "Live link",
+                        "required": true,
+                        "maxLength": 2000
+                      }
+                    },
+                    {
+                      "id": "switch_to_automatic",
+                      "label": "Post it automatically instead",
+                      "meaning": "approve",
+                      "needsComment": false,
+                      "delivery": "automatic"
+                    }
+                  ],
+                  "ts": "2026-11-10T09:30:00.000Z"
+                },
+                {
+                  "event": "delivery.pending",
+                  "boardId": "brd_134a0ddb6d434478",
+                  "boardName": "Fixture board",
+                  "cardId": "card_0f3c9a2b7d4e4a11",
+                  "cardTitle": "Sanitized approval fixture",
+                  "gateId": "gate_5d1e2f3a4b5c6d7e",
+                  "stageKey": "approve",
+                  "approvalSubject": {
+                    "id": "aps_2b7c9d0e1f2a3b4c",
+                    "digest": "sha256:9f2c1a7e5b3d4c6a8e0f1b2d3c4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e",
+                    "schema": "social-publish/v1",
+                    "revision": 1,
+                    "expiresAt": null,
+                    "preview": [
+                      {
+                        "type": "text",
+                        "label": "Post",
+                        "text": "Shipping the new board view today."
+                      }
+                    ],
+                    "previewComplete": false
+                  },
+                  "options": [
+                    {
+                      "id": "record_live_url",
+                      "label": "I posted it — add the link",
+                      "meaning": "defer",
+                      "needsComment": false,
+                      "input": {
+                        "kind": "url",
+                        "label": "Live link",
+                        "required": true,
+                        "maxLength": 2000
+                      }
+                    }
+                  ],
+                  "ts": "2026-11-10T09:30:00.000Z",
+                  "deadline": {
+                    "remindAt": "2026-11-10T10:30:00.000Z",
+                    "escalateAt": "2026-11-10T13:30:00.000Z"
+                  }
+                }
+              ]
+            }
+          },
+          "invalid": [
+            {
+              "why": "an item with an option the delivery body never offers",
+              "body": {
+                "deliveries": [
+                  {
+                    "event": "delivery.pending",
+                    "boardId": "brd_134a0ddb6d434478",
+                    "boardName": "Fixture board",
+                    "cardId": "card_0f3c9a2b7d4e4a11",
+                    "cardTitle": "Sanitized approval fixture",
+                    "gateId": "gate_5d1e2f3a4b5c6d7e",
+                    "stageKey": "approve",
+                    "approvalSubject": {
+                      "id": "aps_2b7c9d0e1f2a3b4c",
+                      "digest": "sha256:9f2c1a7e5b3d4c6a8e0f1b2d3c4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e",
+                      "schema": "social-publish/v1",
+                      "revision": 1,
+                      "expiresAt": "2030-01-02T03:04:05Z",
+                      "preview": [
+                        {
+                          "type": "text",
+                          "label": "Post",
+                          "text": "Shipping the new board view today."
+                        }
+                      ],
+                      "previewComplete": true
+                    },
+                    "options": [
+                      {
+                        "id": "approve",
+                        "label": "Approve",
+                        "meaning": "approve",
+                        "needsComment": false
+                      }
+                    ],
+                    "ts": "2026-11-10T09:30:00.000Z"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "listPendingElicitations": {
+      "responses": {
+        "200": {
+          "valid": {
+            "none": {
+              "elicitations": []
+            },
+            "every kind": {
+              "elicitations": [
+                {
+                  "event": "elicitation.pending",
+                  "boardId": "brd_134a0ddb6d434478",
+                  "boardName": "Developer Experience",
+                  "cardId": "card_0f3c9a2b7d4e4a11",
+                  "cardTitle": "Research this",
+                  "elicitationId": "elc_1a2b3c4d5e6f7081",
+                  "runId": "run_0123456789abcdef",
+                  "stageKey": "research",
+                  "agentId": "agt_9e8d7c6b5a493827",
+                  "question": "May I run the migration?",
+                  "options": [
+                    {
+                      "id": "allow_once",
+                      "label": "Allow once",
+                      "meaning": "approve",
+                      "needsComment": false,
+                      "scope": "once"
+                    },
+                    {
+                      "id": "allow_always",
+                      "label": "Always allow",
+                      "meaning": "approve",
+                      "needsComment": false,
+                      "scope": "always",
+                      "requires": "workspace-admin"
+                    },
+                    {
+                      "id": "deny",
+                      "label": "Deny",
+                      "meaning": "reject",
+                      "needsComment": false
+                    }
+                  ],
+                  "ts": "2026-11-10T09:30:00.000Z"
+                },
+                {
+                  "event": "elicitation.pending",
+                  "boardId": "brd_134a0ddb6d434478",
+                  "boardName": "Developer Experience",
+                  "cardId": "card_0f3c9a2b7d4e4a11",
+                  "cardTitle": "Research this",
+                  "elicitationId": "elc_2b3c4d5e6f708192",
+                  "runId": "run_0123456789abcdef",
+                  "stageKey": "research",
+                  "agentId": "agt_9e8d7c6b5a493827",
+                  "question": "Which branch should I base this on?",
+                  "options": [],
+                  "ts": "2026-11-10T09:30:00.000Z",
+                  "freeText": {
+                    "maxLength": 2000
+                  }
+                },
+                {
+                  "event": "elicitation.pending",
+                  "boardId": "brd_134a0ddb6d434478",
+                  "boardName": "Developer Experience",
+                  "cardId": "card_0f3c9a2b7d4e4a11",
+                  "cardTitle": "Research this",
+                  "elicitationId": "elc_3c4d5e6f70819203",
+                  "runId": "run_0123456789abcdef",
+                  "stageKey": "research",
+                  "agentId": "agt_9e8d7c6b5a493827",
+                  "question": "",
+                  "options": [],
+                  "ts": "2026-11-10T09:30:00.000Z"
+                },
+                {
+                  "event": "elicitation.pending",
+                  "boardId": null,
+                  "boardName": "Developer Experience",
+                  "cardId": "",
+                  "cardTitle": "",
+                  "elicitationId": "apr_4d5e6f7081920314",
+                  "runId": "",
+                  "stageKey": "",
+                  "agentId": "prn_0123456789abcdef0123",
+                  "question": "May I run the migration?",
+                  "options": [
+                    {
+                      "id": "allow_once",
+                      "label": "Allow once",
+                      "meaning": "approve",
+                      "needsComment": false,
+                      "scope": "once"
+                    },
+                    {
+                      "id": "allow_always",
+                      "label": "Always allow",
+                      "meaning": "approve",
+                      "needsComment": false,
+                      "scope": "always",
+                      "requires": "workspace-admin"
+                    },
+                    {
+                      "id": "deny",
+                      "label": "Deny",
+                      "meaning": "reject",
+                      "needsComment": false
+                    }
+                  ],
+                  "ts": "2026-11-10T09:30:00.000Z",
+                  "approvalRequestId": "apr_4d5e6f7081920314",
+                  "approvalSubject": {
+                    "id": "aps_7d6c5b4a39281706",
+                    "digest": "sha256:4f2a0c1e9b8d7f6a5e4d3c2b1a09f8e7d6c5b4a39281706f5e4d3c2b1a09f8e7",
+                    "schema": "stk-capability/v1",
+                    "revision": 1,
+                    "expiresAt": "2026-11-11T09:30:00.000Z",
+                    "preview": [
+                      {
+                        "type": "text",
+                        "label": "Post",
+                        "text": "We shipped the decision envelope."
+                      },
+                      {
+                        "type": "field",
+                        "label": "Account",
+                        "value": "@example"
+                      },
+                      {
+                        "type": "link",
+                        "label": "Draft",
+                        "url": "https://example.com/draft"
+                      }
+                    ],
+                    "previewComplete": true
+                  },
+                  "deadline": {
+                    "remindAt": "2026-11-10T10:30:00.000Z"
+                  }
+                }
+              ]
+            }
+          },
+          "invalid": [
+            {
+              "why": "an item with no elicitationId",
+              "body": {
+                "elicitations": [
+                  {
+                    "event": "elicitation.pending",
+                    "boardId": "brd_134a0ddb6d434478",
+                    "boardName": "Developer Experience",
+                    "cardId": "card_0f3c9a2b7d4e4a11",
+                    "cardTitle": "Research this",
+                    "runId": "run_0123456789abcdef",
+                    "stageKey": "research",
+                    "agentId": "agt_9e8d7c6b5a493827",
+                    "question": "May I run the migration?",
+                    "options": [
+                      {
+                        "id": "allow_once",
+                        "label": "Allow once",
+                        "meaning": "approve",
+                        "needsComment": false,
+                        "scope": "once"
+                      },
+                      {
+                        "id": "allow_always",
+                        "label": "Always allow",
+                        "meaning": "approve",
+                        "needsComment": false,
+                        "scope": "always",
+                        "requires": "workspace-admin"
+                      },
+                      {
+                        "id": "deny",
+                        "label": "Deny",
+                        "meaning": "reject",
+                        "needsComment": false
+                      }
+                    ],
+                    "ts": "2026-11-10T09:30:00.000Z"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "answerElicitation": {
+      "request": {
+        "valid": {
+          "an option": {
+            "option": "a"
+          },
+          "free text": {
+            "text": "Lead with the 2026 survey."
+          },
+          "an option and text": {
+            "option": "b",
+            "text": "It is newer."
+          },
+          "approve a bound question": {
+            "option": "allow_once",
+            "subject": {
+              "id": "aps_7d6c5b4a39281706",
+              "digest": "sha256:4f2a0c1e9b8d7f6a5e4d3c2b1a09f8e7d6c5b4a39281706f5e4d3c2b1a09f8e7"
+            }
+          },
+          "deny a broker request": {
+            "option": "deny"
+          }
+        },
+        "invalid": [
+          {
+            "why": "neither an option nor text (400 INVALID_ANSWER)",
+            "body": {}
+          },
+          {
+            "why": "an option that is not text",
+            "body": {
+              "option": 1
+            }
+          },
+          {
+            "why": "text that is not text",
+            "body": {
+              "text": [
+                "a"
+              ]
+            }
+          },
+          {
+            "why": "text past 2000 characters (400 INVALID_ANSWER)",
+            "body": {
+              "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            }
+          },
+          {
+            "why": "a subject with no digest",
+            "body": {
+              "option": "allow_once",
+              "subject": {
+                "id": "aps_7d6c5b4a39281706"
+              }
+            }
+          },
+          {
+            "why": "not an object",
+            "body": "a"
+          }
+        ]
+      },
+      "responses": {
+        "200": {
+          "valid": {
+            "a card question": {
+              "card": {
+                "id": "card_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "spec": {
+                  "brief": "Find two sources on decision envelopes."
+                },
+                "ownerUserId": "usr_3f2e1d0c9b8a7654",
+                "queuedBy": "prn_0123456789abcdef0123",
+                "queuedByAgentId": null,
+                "queuedGrant": [
+                  "prn_9f8e7d6c5b4a39281706"
+                ],
+                "labels": [],
+                "projectId": null,
+                "milestoneId": null,
+                "dueAt": null,
+                "archivedAt": null,
+                "currentStageKey": "research",
+                "state": "working",
+                "delegateAgentId": null,
+                "lastAgentId": "agt_9e8d7c6b5a493827",
+                "queuedGrantOwner": "usr_3f2e1d0c9b8a7654",
+                "stageSince": "2026-11-10T09:45:00.000Z",
+                "currentRunId": "run_0123456789abcdef",
+                "priority": 0,
+                "contextId": "ctx_8a7b6c5d4e3f2a1b",
+                "createdAt": "2026-11-10T09:00:00.000Z",
+                "updatedAt": "2026-11-10T09:45:00.000Z",
+                "stateSince": "2026-11-10T09:45:00.000Z",
+                "costUsd": 0.42,
+                "overBudget": false,
+                "attemptCount": 1,
+                "parentCardId": null,
+                "openChildCount": 0,
+                "costUsdRollup": 0.42,
+                "blockedBy": []
+              },
+              "elicitation": {
+                "id": "elc_1a2b3c4d5e6f7081",
+                "cardId": "card_0f3c9a2b7d4e4a11",
+                "runId": "run_0123456789abcdef",
+                "stageKey": "research",
+                "agentId": "agt_9e8d7c6b5a493827",
+                "question": "Which source should I lead with?",
+                "signal": "select",
+                "options": [
+                  {
+                    "name": "a",
+                    "title": "Source A"
+                  },
+                  {
+                    "name": "b",
+                    "title": "Source B"
+                  }
+                ],
+                "status": "answered",
+                "answer": {
+                  "option": "a",
+                  "text": null,
+                  "answeredBy": "usr_3f2e1d0c9b8a7654",
+                  "answeredAt": "2026-11-10T09:40:00.000Z"
+                },
+                "createdAt": "2026-11-10T09:35:00.000Z"
+              }
+            },
+            "a strict decision": {
+              "card": {
+                "id": "card_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "spec": {
+                  "brief": "Find two sources on decision envelopes."
+                },
+                "ownerUserId": "usr_3f2e1d0c9b8a7654",
+                "queuedBy": "prn_0123456789abcdef0123",
+                "queuedByAgentId": null,
+                "queuedGrant": [
+                  "prn_9f8e7d6c5b4a39281706"
+                ],
+                "labels": [],
+                "projectId": null,
+                "milestoneId": null,
+                "dueAt": null,
+                "archivedAt": null,
+                "currentStageKey": "research",
+                "state": "working",
+                "delegateAgentId": null,
+                "lastAgentId": "agt_9e8d7c6b5a493827",
+                "queuedGrantOwner": "usr_3f2e1d0c9b8a7654",
+                "stageSince": "2026-11-10T09:45:00.000Z",
+                "currentRunId": "run_0123456789abcdef",
+                "priority": 0,
+                "contextId": "ctx_8a7b6c5d4e3f2a1b",
+                "createdAt": "2026-11-10T09:00:00.000Z",
+                "updatedAt": "2026-11-10T09:45:00.000Z",
+                "stateSince": "2026-11-10T09:45:00.000Z",
+                "costUsd": 0.42,
+                "overBudget": false,
+                "attemptCount": 1,
+                "parentCardId": null,
+                "openChildCount": 0,
+                "costUsdRollup": 0.42,
+                "blockedBy": []
+              },
+              "elicitation": {
+                "id": "elc_1a2b3c4d5e6f7081",
+                "cardId": "card_0f3c9a2b7d4e4a11",
+                "runId": "run_0123456789abcdef",
+                "stageKey": "research",
+                "agentId": "agt_9e8d7c6b5a493827",
+                "question": "Write two files?",
+                "signal": "permission",
+                "options": [
+                  {
+                    "name": "allow_once",
+                    "title": "Allow once",
+                    "meaning": "approve",
+                    "scope": "once"
+                  },
+                  {
+                    "name": "allow_always",
+                    "title": "Always allow",
+                    "meaning": "approve",
+                    "scope": "always",
+                    "requires": "workspace-admin"
+                  },
+                  {
+                    "name": "deny",
+                    "title": "Deny",
+                    "meaning": "reject",
+                    "scope": "once"
+                  }
+                ],
+                "status": "answered",
+                "answer": {
+                  "option": "allow_once",
+                  "text": null,
+                  "answeredBy": "usr_3f2e1d0c9b8a7654",
+                  "answeredAt": "2026-11-10T09:40:00.000Z"
+                },
+                "createdAt": "2026-11-10T09:35:00.000Z",
+                "strictDecision": {
+                  "version": 1,
+                  "request_id": "6f1c2d3e-4a5b-4c6d-8e7f-90a1b2c3d4e5",
+                  "decision_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "expires_at": 1762771200000
+                },
+                "detail": {
+                  "version": 1,
+                  "summary": "Edit two files",
+                  "reason": "To add the contract.",
+                  "files": [
+                    {
+                      "path": "src/a.ts",
+                      "change": "edit",
+                      "bytes": 120,
+                      "preview": "export const a = 1;"
+                    }
+                  ],
+                  "digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                },
+                "approvalSubject": {
+                  "id": "aps_7d6c5b4a39281706",
+                  "digest": "sha256:4f2a0c1e9b8d7f6a5e4d3c2b1a09f8e7d6c5b4a39281706f5e4d3c2b1a09f8e7",
+                  "schema": "harness-permission/v1",
+                  "revision": 1,
+                  "expiresAt": "2026-11-10T10:35:00.000Z",
+                  "preview": [
+                    {
+                      "type": "field",
+                      "label": "Tool",
+                      "value": "write"
+                    }
+                  ],
+                  "previewComplete": true
+                }
+              }
+            },
+            "a broker approval request": {
+              "approvalRequest": {
+                "approvalRequestId": "apr_4d5e6f7081920314",
+                "requestId": "req-2026-11-10-0001",
+                "state": "approved",
+                "option": "allow_once",
+                "decidedBy": {
+                  "principalId": "prn_0123456789abcdef0123",
+                  "label": "Asha"
+                },
+                "decidedAt": "2026-11-10T09:40:00.000Z",
+                "subject": {
+                  "id": "aps_7d6c5b4a39281706",
+                  "digest": "sha256:4f2a0c1e9b8d7f6a5e4d3c2b1a09f8e7d6c5b4a39281706f5e4d3c2b1a09f8e7"
+                },
+                "expiresAt": "2026-11-10T10:30:00.000Z"
+              }
+            },
+            "a denied broker request": {
+              "approvalRequest": {
+                "approvalRequestId": "apr_4d5e6f7081920314",
+                "requestId": "req-2026-11-10-0001",
+                "state": "denied",
+                "option": "deny",
+                "decidedBy": {
+                  "principalId": "prn_0123456789abcdef0123",
+                  "label": "Asha"
+                },
+                "decidedAt": "2026-11-10T09:40:00.000Z",
+                "subject": {
+                  "id": "aps_7d6c5b4a39281706",
+                  "digest": "sha256:4f2a0c1e9b8d7f6a5e4d3c2b1a09f8e7d6c5b4a39281706f5e4d3c2b1a09f8e7"
+                },
+                "expiresAt": "2026-11-10T10:30:00.000Z"
+              }
+            }
+          },
+          "invalid": [
+            {
+              "why": "a card with no question",
+              "body": {
+                "card": {
+                  "id": "card_0f3c9a2b7d4e4a11",
+                  "title": "Research this",
+                  "spec": {
+                    "brief": "Find two sources on decision envelopes."
+                  },
+                  "ownerUserId": "usr_3f2e1d0c9b8a7654",
+                  "queuedBy": "prn_0123456789abcdef0123",
+                  "queuedByAgentId": null,
+                  "queuedGrant": [
+                    "prn_9f8e7d6c5b4a39281706"
+                  ],
+                  "labels": [],
+                  "projectId": null,
+                  "milestoneId": null,
+                  "dueAt": null,
+                  "archivedAt": null,
+                  "currentStageKey": "research",
+                  "state": "submitted",
+                  "delegateAgentId": null,
+                  "lastAgentId": "agt_9e8d7c6b5a493827",
+                  "queuedGrantOwner": "usr_3f2e1d0c9b8a7654",
+                  "stageSince": "2026-11-10T09:45:00.000Z",
+                  "currentRunId": null,
+                  "priority": 0,
+                  "contextId": "ctx_8a7b6c5d4e3f2a1b",
+                  "createdAt": "2026-11-10T09:00:00.000Z",
+                  "updatedAt": "2026-11-10T09:45:00.000Z",
+                  "stateSince": "2026-11-10T09:45:00.000Z",
+                  "costUsd": 0.42,
+                  "overBudget": false,
+                  "attemptCount": 1,
+                  "parentCardId": null,
+                  "openChildCount": 0,
+                  "costUsdRollup": 0.42,
+                  "blockedBy": []
+                }
+              }
+            },
+            {
+              "why": "an approval request in a state the board never writes",
+              "body": {
+                "approvalRequest": {
+                  "approvalRequestId": "apr_4d5e6f7081920314",
+                  "requestId": "req-2026-11-10-0001",
+                  "state": "allowed",
+                  "option": "allow_once",
+                  "decidedBy": {
+                    "principalId": "prn_0123456789abcdef0123",
+                    "label": "Asha"
+                  },
+                  "decidedAt": "2026-11-10T09:40:00.000Z",
+                  "subject": {
+                    "id": "aps_7d6c5b4a39281706",
+                    "digest": "sha256:4f2a0c1e9b8d7f6a5e4d3c2b1a09f8e7d6c5b4a39281706f5e4d3c2b1a09f8e7"
+                  },
+                  "expiresAt": "2026-11-10T10:30:00.000Z"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "listPendingAttention": {
+      "responses": {
+        "200": {
+          "valid": {
+            "none": {
+              "attention": []
+            },
+            "every kind": {
+              "attention": [
+                {
+                  "event": "attention.pending",
+                  "boardId": "brd_134a0ddb6d434478",
+                  "boardName": "Attention board",
+                  "cardId": "card_0f3c9a2b7d4e4a11",
+                  "cardTitle": "Add login",
+                  "stageKey": "build",
+                  "stageName": "Build",
+                  "waitId": "wait_3c4d5e6f7a8b9c0d",
+                  "reason": "blocked",
+                  "detail": "the staging database is down",
+                  "summary": "Staging DB down",
+                  "failureCount": null,
+                  "earlierStages": [
+                    {
+                      "key": "plan",
+                      "name": "Plan"
+                    }
+                  ],
+                  "options": [
+                    {
+                      "id": "resume_here",
+                      "label": "Resume here",
+                      "meaning": "approve",
+                      "needsComment": false,
+                      "input": {
+                        "kind": "text",
+                        "label": "What should the next attempt do?",
+                        "required": true,
+                        "maxLength": 2730
+                      }
+                    },
+                    {
+                      "id": "resume_at:plan",
+                      "label": "Resume at Plan",
+                      "meaning": "choose",
+                      "needsComment": false,
+                      "input": {
+                        "kind": "text",
+                        "label": "What should the next attempt do?",
+                        "required": true,
+                        "maxLength": 2730
+                      }
+                    },
+                    {
+                      "id": "archive",
+                      "label": "Archive",
+                      "meaning": "reject",
+                      "needsComment": false
+                    }
+                  ],
+                  "ts": "2026-11-10T09:30:00.000Z"
+                },
+                {
+                  "event": "attention.pending",
+                  "boardId": "brd_134a0ddb6d434478",
+                  "boardName": "Attention board",
+                  "cardId": "card_0f3c9a2b7d4e4a11",
+                  "cardTitle": "Add login",
+                  "stageKey": "build",
+                  "stageName": "Build",
+                  "waitId": "wait_3c4d5e6f7a8b9c0d",
+                  "reason": "repeated-failure",
+                  "detail": "flaky",
+                  "summary": null,
+                  "failureCount": 3,
+                  "earlierStages": [],
+                  "options": [
+                    {
+                      "id": "resume_here",
+                      "label": "Resume here",
+                      "meaning": "approve",
+                      "needsComment": false,
+                      "input": {
+                        "kind": "text",
+                        "label": "What should the next attempt do?",
+                        "required": true,
+                        "maxLength": 2730
+                      }
+                    },
+                    {
+                      "id": "archive",
+                      "label": "Archive",
+                      "meaning": "reject",
+                      "needsComment": false
+                    }
+                  ],
+                  "ts": "2026-11-10T09:30:00.000Z",
+                  "deadline": {
+                    "escalateAt": "2026-11-11T09:30:00.000Z"
+                  }
+                }
+              ]
+            }
+          },
+          "invalid": [
+            {
+              "why": "an item with a reason attention never carries",
+              "body": {
+                "attention": [
+                  {
+                    "event": "attention.pending",
+                    "boardId": "brd_134a0ddb6d434478",
+                    "boardName": "Attention board",
+                    "cardId": "card_0f3c9a2b7d4e4a11",
+                    "cardTitle": "Add login",
+                    "stageKey": "build",
+                    "stageName": "Build",
+                    "waitId": "wait_3c4d5e6f7a8b9c0d",
+                    "reason": "question",
+                    "detail": "the staging database is down",
+                    "summary": "Staging DB down",
+                    "failureCount": null,
+                    "earlierStages": [
+                      {
+                        "key": "plan",
+                        "name": "Plan"
+                      }
+                    ],
+                    "options": [
+                      {
+                        "id": "resume_here",
+                        "label": "Resume here",
+                        "meaning": "approve",
+                        "needsComment": false,
+                        "input": {
+                          "kind": "text",
+                          "label": "What should the next attempt do?",
+                          "required": true,
+                          "maxLength": 2730
+                        }
+                      },
+                      {
+                        "id": "resume_at:plan",
+                        "label": "Resume at Plan",
+                        "meaning": "choose",
+                        "needsComment": false,
+                        "input": {
+                          "kind": "text",
+                          "label": "What should the next attempt do?",
+                          "required": true,
+                          "maxLength": 2730
+                        }
+                      },
+                      {
+                        "id": "archive",
+                        "label": "Archive",
+                        "meaning": "reject",
+                        "needsComment": false
+                      }
+                    ],
+                    "ts": "2026-11-10T09:30:00.000Z"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "resumeCard": {
+      "request": {
+        "valid": {
+          "at its stage": {
+            "comment": "The API key is set now."
+          },
+          "at an earlier stage": {
+            "comment": "Start again from research.",
+            "toStageKey": "research"
+          },
+          "for the wait answered": {
+            "comment": "Fixed the credentials.",
+            "expectedWaitId": "wait_3c4d5e6f7a8b9c0d"
+          }
+        },
+        "invalid": [
+          {
+            "why": "no comment (400 INVALID_COMMENT)",
+            "body": {
+              "toStageKey": "research"
+            }
+          },
+          {
+            "why": "a blank comment (400 INVALID_COMMENT)",
+            "body": {
+              "comment": " "
+            }
+          },
+          {
+            "why": "a stage that is not text (400 UNKNOWN_STAGE)",
+            "body": {
+              "comment": "Again.",
+              "toStageKey": 2
+            }
+          },
+          {
+            "why": "an empty wait id (400 INVALID_WAIT_ID)",
+            "body": {
+              "comment": "Again.",
+              "expectedWaitId": ""
+            }
+          },
+          {
+            "why": "a wait id that is not text (400 INVALID_WAIT_ID)",
+            "body": {
+              "comment": "Again.",
+              "expectedWaitId": 5
+            }
+          },
+          {
+            "why": "not an object",
+            "body": null
+          }
+        ]
+      },
+      "responses": {
+        "200": {
+          "valid": {
+            "re-queued": {
+              "card": {
+                "id": "card_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "spec": {
+                  "brief": "Find two sources on decision envelopes."
+                },
+                "ownerUserId": "usr_3f2e1d0c9b8a7654",
+                "queuedBy": "prn_0123456789abcdef0123",
+                "queuedByAgentId": null,
+                "queuedGrant": [
+                  "prn_9f8e7d6c5b4a39281706"
+                ],
+                "labels": [],
+                "projectId": null,
+                "milestoneId": null,
+                "dueAt": null,
+                "archivedAt": null,
+                "currentStageKey": "research",
+                "state": "submitted",
+                "delegateAgentId": null,
+                "lastAgentId": "agt_9e8d7c6b5a493827",
+                "queuedGrantOwner": "usr_3f2e1d0c9b8a7654",
+                "stageSince": "2026-11-10T09:45:00.000Z",
+                "currentRunId": null,
+                "priority": 0,
+                "contextId": "ctx_8a7b6c5d4e3f2a1b",
+                "createdAt": "2026-11-10T09:00:00.000Z",
+                "updatedAt": "2026-11-10T09:45:00.000Z",
+                "stateSince": "2026-11-10T09:45:00.000Z",
+                "costUsd": 0.42,
+                "overBudget": false,
+                "attemptCount": 1,
+                "parentCardId": null,
+                "openChildCount": 0,
+                "costUsdRollup": 0.42,
+                "blockedBy": []
+              },
+              "comment": {
+                "id": "cmt_2c3d4e5f60718293",
+                "cardId": "card_0f3c9a2b7d4e4a11",
+                "author": {
+                  "kind": "human",
+                  "id": "usr_3f2e1d0c9b8a7654",
+                  "name": "Asha"
+                },
+                "body": "Use the newer source.",
+                "createdAt": "2026-11-10T10:00:00.000Z",
+                "deletedAt": null
+              }
+            }
+          },
+          "invalid": [
+            {
+              "why": "no comment",
+              "body": {
+                "card": {
+                  "id": "card_0f3c9a2b7d4e4a11",
+                  "title": "Research this",
+                  "spec": {
+                    "brief": "Find two sources on decision envelopes."
+                  },
+                  "ownerUserId": "usr_3f2e1d0c9b8a7654",
+                  "queuedBy": "prn_0123456789abcdef0123",
+                  "queuedByAgentId": null,
+                  "queuedGrant": [
+                    "prn_9f8e7d6c5b4a39281706"
+                  ],
+                  "labels": [],
+                  "projectId": null,
+                  "milestoneId": null,
+                  "dueAt": null,
+                  "archivedAt": null,
+                  "currentStageKey": "research",
+                  "state": "submitted",
+                  "delegateAgentId": null,
+                  "lastAgentId": "agt_9e8d7c6b5a493827",
+                  "queuedGrantOwner": "usr_3f2e1d0c9b8a7654",
+                  "stageSince": "2026-11-10T09:45:00.000Z",
+                  "currentRunId": null,
+                  "priority": 0,
+                  "contextId": "ctx_8a7b6c5d4e3f2a1b",
+                  "createdAt": "2026-11-10T09:00:00.000Z",
+                  "updatedAt": "2026-11-10T09:45:00.000Z",
+                  "stateSince": "2026-11-10T09:45:00.000Z",
+                  "costUsd": 0.42,
+                  "overBudget": false,
+                  "attemptCount": 1,
+                  "parentCardId": null,
+                  "openChildCount": 0,
+                  "costUsdRollup": 0.42,
+                  "blockedBy": []
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "archiveCard": {
+      "request": {
+        "valid": {
+          "no remark": {},
+          "with a remark": {
+            "comment": "Not needed any more."
+          },
+          "for the wait answered": {
+            "expectedWaitId": "wait_3c4d5e6f7a8b9c0d",
+            "comment": "Dropping it."
+          }
+        },
+        "invalid": [
+          {
+            "why": "a comment that is not text (400 INVALID_COMMENT)",
+            "body": {
+              "comment": false
+            }
+          },
+          {
+            "why": "an empty wait id (400 INVALID_WAIT_ID)",
+            "body": {
+              "expectedWaitId": ""
+            }
+          },
+          {
+            "why": "not an object (400 INVALID_COMMENT)",
+            "body": "archive"
+          }
+        ]
+      },
+      "responses": {
+        "200": {
+          "valid": {
+            "archived with a remark": {
+              "card": {
+                "id": "card_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "spec": {
+                  "brief": "Find two sources on decision envelopes."
+                },
+                "ownerUserId": "usr_3f2e1d0c9b8a7654",
+                "queuedBy": "prn_0123456789abcdef0123",
+                "queuedByAgentId": null,
+                "queuedGrant": [
+                  "prn_9f8e7d6c5b4a39281706"
+                ],
+                "labels": [],
+                "projectId": null,
+                "milestoneId": null,
+                "dueAt": null,
+                "archivedAt": "2026-11-10T11:00:00.000Z",
+                "currentStageKey": "research",
+                "state": "submitted",
+                "delegateAgentId": null,
+                "lastAgentId": "agt_9e8d7c6b5a493827",
+                "queuedGrantOwner": "usr_3f2e1d0c9b8a7654",
+                "stageSince": "2026-11-10T09:45:00.000Z",
+                "currentRunId": null,
+                "priority": 0,
+                "contextId": "ctx_8a7b6c5d4e3f2a1b",
+                "createdAt": "2026-11-10T09:00:00.000Z",
+                "updatedAt": "2026-11-10T09:45:00.000Z",
+                "stateSince": "2026-11-10T09:45:00.000Z",
+                "costUsd": 0.42,
+                "overBudget": false,
+                "attemptCount": 1,
+                "parentCardId": null,
+                "openChildCount": 0,
+                "costUsdRollup": 0.42,
+                "blockedBy": []
+              },
+              "comment": {
+                "id": "cmt_2c3d4e5f60718293",
+                "cardId": "card_0f3c9a2b7d4e4a11",
+                "author": {
+                  "kind": "human",
+                  "id": "usr_3f2e1d0c9b8a7654",
+                  "name": "Asha"
+                },
+                "body": "Not needed any more.",
+                "createdAt": "2026-11-10T10:00:00.000Z",
+                "deletedAt": null
+              }
+            },
+            "archived, no remark": {
+              "card": {
+                "id": "card_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "spec": {
+                  "brief": "Find two sources on decision envelopes."
+                },
+                "ownerUserId": "usr_3f2e1d0c9b8a7654",
+                "queuedBy": "prn_0123456789abcdef0123",
+                "queuedByAgentId": null,
+                "queuedGrant": [
+                  "prn_9f8e7d6c5b4a39281706"
+                ],
+                "labels": [],
+                "projectId": null,
+                "milestoneId": null,
+                "dueAt": null,
+                "archivedAt": "2026-11-10T11:00:00.000Z",
+                "currentStageKey": "research",
+                "state": "submitted",
+                "delegateAgentId": null,
+                "lastAgentId": "agt_9e8d7c6b5a493827",
+                "queuedGrantOwner": "usr_3f2e1d0c9b8a7654",
+                "stageSince": "2026-11-10T09:45:00.000Z",
+                "currentRunId": null,
+                "priority": 0,
+                "contextId": "ctx_8a7b6c5d4e3f2a1b",
+                "createdAt": "2026-11-10T09:00:00.000Z",
+                "updatedAt": "2026-11-10T09:45:00.000Z",
+                "stateSince": "2026-11-10T09:45:00.000Z",
+                "costUsd": 0.42,
+                "overBudget": false,
+                "attemptCount": 1,
+                "parentCardId": null,
+                "openChildCount": 0,
+                "costUsdRollup": 0.42,
+                "blockedBy": []
+              },
+              "comment": null
+            }
+          },
+          "invalid": [
+            {
+              "why": "no comment field",
+              "body": {
+                "card": {
+                  "id": "card_0f3c9a2b7d4e4a11",
+                  "title": "Research this",
+                  "spec": {
+                    "brief": "Find two sources on decision envelopes."
+                  },
+                  "ownerUserId": "usr_3f2e1d0c9b8a7654",
+                  "queuedBy": "prn_0123456789abcdef0123",
+                  "queuedByAgentId": null,
+                  "queuedGrant": [
+                    "prn_9f8e7d6c5b4a39281706"
+                  ],
+                  "labels": [],
+                  "projectId": null,
+                  "milestoneId": null,
+                  "dueAt": null,
+                  "archivedAt": null,
+                  "currentStageKey": "research",
+                  "state": "submitted",
+                  "delegateAgentId": null,
+                  "lastAgentId": "agt_9e8d7c6b5a493827",
+                  "queuedGrantOwner": "usr_3f2e1d0c9b8a7654",
+                  "stageSince": "2026-11-10T09:45:00.000Z",
+                  "currentRunId": null,
+                  "priority": 0,
+                  "contextId": "ctx_8a7b6c5d4e3f2a1b",
+                  "createdAt": "2026-11-10T09:00:00.000Z",
+                  "updatedAt": "2026-11-10T09:45:00.000Z",
+                  "stateSince": "2026-11-10T09:45:00.000Z",
+                  "costUsd": 0.42,
+                  "overBudget": false,
+                  "attemptCount": 1,
+                  "parentCardId": null,
+                  "openChildCount": 0,
+                  "costUsdRollup": 0.42,
+                  "blockedBy": []
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "readCardChecks": {
+      "responses": {
+        "200": {
+          "valid": {
+            "open": {
+              "checks": {
+                "cardId": "card_0f3c9a2b7d4e4a11",
+                "stageKey": "review",
+                "status": "open",
+                "checks": [
+                  {
+                    "name": "ci",
+                    "provider": "ci",
+                    "status": "failed",
+                    "detail": "lint failed",
+                    "headSha": "9fceb02d0ae598e95dc970b74767f19372d61af8",
+                    "url": "https://forge.example.com/runs/2",
+                    "updatedAt": "2026-11-10T09:31:00.000Z"
+                  },
+                  {
+                    "name": "verdict",
+                    "provider": "verdict",
+                    "status": "pending",
+                    "updatedAt": "2026-11-10T09:30:00.000Z"
+                  }
+                ]
+              }
+            },
+            "never reached a stage with checks": {
+              "checks": null
+            }
+          },
+          "invalid": [
+            {
+              "why": "a check status the board never writes",
+              "body": {
+                "checks": {
+                  "cardId": "card_0f3c9a2b7d4e4a11",
+                  "stageKey": "review",
+                  "status": "waiting",
+                  "checks": [
+                    {
+                      "name": "ci",
+                      "provider": "ci",
+                      "status": "failed",
+                      "detail": "lint failed",
+                      "headSha": "9fceb02d0ae598e95dc970b74767f19372d61af8",
+                      "url": "https://forge.example.com/runs/2",
+                      "updatedAt": "2026-11-10T09:31:00.000Z"
+                    },
+                    {
+                      "name": "verdict",
+                      "provider": "verdict",
+                      "status": "pending",
+                      "updatedAt": "2026-11-10T09:30:00.000Z"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "overrideCardCheck": {
+      "request": {
+        "valid": {
+          "a reason": {
+            "comment": "Flaky lint; checked by hand."
+          }
+        },
+        "invalid": [
+          {
+            "why": "no comment (400 INVALID_COMMENT)",
+            "body": {}
+          },
+          {
+            "why": "a comment that is not text",
+            "body": {
+              "comment": 0
+            }
+          },
+          {
+            "why": "a blank comment",
+            "body": {
+              "comment": ""
+            }
+          },
+          {
+            "why": "not an object",
+            "body": []
+          }
+        ]
+      },
+      "responses": {
+        "200": {
+          "valid": {
+            "overridden": {
+              "card": {
+                "id": "card_0f3c9a2b7d4e4a11",
+                "title": "Research this",
+                "spec": {
+                  "brief": "Find two sources on decision envelopes."
+                },
+                "ownerUserId": "usr_3f2e1d0c9b8a7654",
+                "queuedBy": "prn_0123456789abcdef0123",
+                "queuedByAgentId": null,
+                "queuedGrant": [
+                  "prn_9f8e7d6c5b4a39281706"
+                ],
+                "labels": [],
+                "projectId": null,
+                "milestoneId": null,
+                "dueAt": null,
+                "archivedAt": null,
+                "currentStageKey": "review",
+                "state": "input-required",
+                "delegateAgentId": null,
+                "lastAgentId": "agt_9e8d7c6b5a493827",
+                "queuedGrantOwner": "usr_3f2e1d0c9b8a7654",
+                "stageSince": "2026-11-10T09:45:00.000Z",
+                "currentRunId": null,
+                "priority": 0,
+                "contextId": "ctx_8a7b6c5d4e3f2a1b",
+                "createdAt": "2026-11-10T09:00:00.000Z",
+                "updatedAt": "2026-11-10T09:45:00.000Z",
+                "stateSince": "2026-11-10T09:45:00.000Z",
+                "costUsd": 0.42,
+                "overBudget": false,
+                "attemptCount": 1,
+                "parentCardId": null,
+                "openChildCount": 0,
+                "costUsdRollup": 0.42,
+                "blockedBy": [],
+                "needsHuman": {
+                  "reason": "review"
+                }
+              },
+              "checks": {
+                "cardId": "card_0f3c9a2b7d4e4a11",
+                "stageKey": "review",
+                "status": "passed",
+                "checks": [
+                  {
+                    "name": "ci",
+                    "provider": "ci",
+                    "status": "overridden",
+                    "detail": "lint failed",
+                    "headSha": "9fceb02d0ae598e95dc970b74767f19372d61af8",
+                    "url": "https://forge.example.com/runs/2",
+                    "updatedAt": "2026-11-10T09:31:00.000Z",
+                    "overridden": {
+                      "by": "prn_0123456789abcdef0123",
+                      "at": "2026-11-10T10:00:00.000Z",
+                      "comment": "Flaky lint; checked by hand."
+                    }
+                  },
+                  {
+                    "name": "verdict",
+                    "provider": "verdict",
+                    "status": "passed",
+                    "updatedAt": "2026-11-10T09:30:00.000Z",
+                    "detail": "pass"
+                  }
+                ]
+              }
+            }
+          },
+          "invalid": [
+            {
+              "why": "no checks",
+              "body": {
+                "card": {
+                  "id": "card_0f3c9a2b7d4e4a11",
+                  "title": "Research this",
+                  "spec": {
+                    "brief": "Find two sources on decision envelopes."
+                  },
+                  "ownerUserId": "usr_3f2e1d0c9b8a7654",
+                  "queuedBy": "prn_0123456789abcdef0123",
+                  "queuedByAgentId": null,
+                  "queuedGrant": [
+                    "prn_9f8e7d6c5b4a39281706"
+                  ],
+                  "labels": [],
+                  "projectId": null,
+                  "milestoneId": null,
+                  "dueAt": null,
+                  "archivedAt": null,
+                  "currentStageKey": "research",
+                  "state": "submitted",
+                  "delegateAgentId": null,
+                  "lastAgentId": "agt_9e8d7c6b5a493827",
+                  "queuedGrantOwner": "usr_3f2e1d0c9b8a7654",
+                  "stageSince": "2026-11-10T09:45:00.000Z",
+                  "currentRunId": null,
+                  "priority": 0,
+                  "contextId": "ctx_8a7b6c5d4e3f2a1b",
+                  "createdAt": "2026-11-10T09:00:00.000Z",
+                  "updatedAt": "2026-11-10T09:45:00.000Z",
+                  "stateSince": "2026-11-10T09:45:00.000Z",
+                  "costUsd": 0.42,
+                  "overBudget": false,
+                  "attemptCount": 1,
+                  "parentCardId": null,
+                  "openChildCount": 0,
+                  "costUsdRollup": 0.42,
+                  "blockedBy": []
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

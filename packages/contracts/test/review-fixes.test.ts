@@ -4,7 +4,12 @@
 import { describe, expect, test } from "bun:test";
 import { casesFor } from "../src/cases.ts";
 import { compareOpenApi, compareSchemas } from "../src/compat.ts";
-import { matchRoute, openApi, validateResponse } from "../src/http.ts";
+import {
+  matchRoute,
+  openApi,
+  validateRequest,
+  validateResponse,
+} from "../src/http.ts";
 import { checkOpenApi } from "../src/openapi-check.ts";
 import { createBundle } from "../src/schemas.ts";
 import { parseVersion, releasesBehind } from "../src/verify.ts";
@@ -152,6 +157,7 @@ describe("http", () => {
         path: "/files/{name}.json",
         responses: {},
         errorCodes: [],
+        requestRequired: false,
       },
       {
         id: "cafe",
@@ -159,6 +165,7 @@ describe("http", () => {
         path: "/caf%C3%A9",
         responses: {},
         errorCodes: [],
+        requestRequired: false,
       },
     ],
   };
@@ -199,6 +206,7 @@ const op = (id: string, path: string) => ({
   path,
   responses: {},
   errorCodes: [],
+  requestRequired: false,
 });
 
 describe("matchRoute ties", () => {
@@ -223,5 +231,69 @@ describe("cases by convention", () => {
     expect(
       casesFor(bundle, undefined, "schemas/common/error.v1.json")?.valid,
     ).toEqual({ a: {} });
+  });
+});
+
+describe("an optional request body", () => {
+  test("requestBody.required: false accepts no body at all, and still checks one that is sent", () => {
+    const path = "schemas/http/superpipeline/opt.v1.openapi.json";
+    const bundle = createBundle({
+      [path]: {
+        openapi: "3.1.0",
+        paths: {
+          "/v1/cards/{id}/archive": {
+            post: {
+              operationId: "archive",
+              requestBody: {
+                required: false,
+                content: {
+                  "application/json": {
+                    schema: {
+                      type: "object",
+                      properties: { comment: { type: "string" } },
+                    },
+                  },
+                },
+              },
+              responses: { "200": { description: "ok" } },
+            },
+          },
+        },
+      },
+    });
+    const archiveApi = openApi(bundle, path);
+    expect(
+      validateRequest(bundle, archiveApi, "archive", undefined).valid,
+    ).toBe(true);
+    expect(
+      validateRequest(bundle, archiveApi, "archive", { comment: "done" }).valid,
+    ).toBe(true);
+    expect(
+      validateRequest(bundle, archiveApi, "archive", { comment: 1 }).valid,
+    ).toBe(false);
+  });
+
+  test("a required body that is missing is refused", () => {
+    const path = "schemas/http/superpipeline/req.v1.openapi.json";
+    const bundle = createBundle({
+      [path]: {
+        openapi: "3.1.0",
+        paths: {
+          "/v1/x": {
+            post: {
+              operationId: "x",
+              requestBody: {
+                required: true,
+                content: { "application/json": { schema: { type: "object" } } },
+              },
+              responses: { "200": { description: "ok" } },
+            },
+          },
+        },
+      },
+    });
+    const r = validateRequest(bundle, openApi(bundle, path), "x", undefined);
+    expect(r.valid).toBe(false);
+    expect(r.errors[0]).toContain("requires a body");
   });
 });

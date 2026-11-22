@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/common/flat-error.v1.json",
+  "title": "A refusal from an API that answers with a flat error code",
+  "description": "Accounts' token, principal, identity and policy routes answer `{ \"error\": \"<snake_code>\" }`, sometimes with more fields beside it, such as `scope` or `usableAt`. `error` is a name from contracts/error-codes.json in this envelope. A v2 of such an API moves to error.v1.",
+  "type": "object",
+  "required": ["error"],
+  "properties": {
+    "error": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)*$"
+    }
+  }
+}
