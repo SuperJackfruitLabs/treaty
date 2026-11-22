@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/treaty/product-manifest.v1.json",
+  "title": "A product's treaty.json",
+  "description": "What a product produces and consumes, the treaty release it pins, and the treaty files it keeps copies of. `treaty verify` checks it against the pinned release.",
+  "type": "object",
+  "required": ["product", "treaty", "produces", "consumes"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "product": {
+      "enum": [
+        "accounts",
+        "agentpod",
+        "salaam",
+        "superbench",
+        "superdispatch",
+        "superexchange",
+        "superlibrary",
+        "supermessage",
+        "superpipeline",
+        "supertoolkit",
+        "superwitness"
+      ]
+    },
+    "treaty": {
+      "description": "The release of @superjackfruitlabs/treaty-contracts this product checks against.",
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "produces": {
+      "description": "Registry ids of the crossings this product owns.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string" }
+    },
+    "consumes": {
+      "description": "Registry ids of the crossings this product reads.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string" }
+    },
+    "vendored": {
+      "description": "Copies of treaty files kept in this repository, for languages that cannot read the npm package. Each must stay byte-identical to the pinned release; `treaty sync` rewrites them.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "source"],
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "source": {
+            "type": "string",
+            "pattern": "^(schemas|fixtures|contracts)/[A-Za-z0-9._/-]+\\.json$"
+          }
+        }
+      }
+    }
+  }
+}

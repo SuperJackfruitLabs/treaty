@@ -33,11 +33,18 @@ function walk(root: string, dir: string): string[] {
   });
 }
 
-export function buildBundle(root: string, out: string): Manifest {
-  const pkg = join(out, "..");
+function packageVersion(): string {
   const { version } = JSON.parse(
-    readFileSync(join(pkg, "package.json"), "utf8"),
+    readFileSync(join(import.meta.dir, "../package.json"), "utf8"),
   );
+  return String(version);
+}
+
+export function buildBundle(
+  root: string,
+  out: string,
+  version = packageVersion(),
+): Manifest {
   rmSync(out, { recursive: true, force: true });
   const files: Record<string, string> = {};
   for (const top of ROOTS) {
@@ -51,7 +58,7 @@ export function buildBundle(root: string, out: string): Manifest {
         .digest("hex");
     }
   }
-  const manifest: Manifest = { treaty: String(version), files };
+  const manifest: Manifest = { treaty: version, files };
   writeFileSync(
     join(out, "manifest.json"),
     `${JSON.stringify(manifest, null, 2)}\n`,

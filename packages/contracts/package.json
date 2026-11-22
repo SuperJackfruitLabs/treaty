@@ -15,8 +15,8 @@
       "import": "./dist/index.js"
     },
     "./node": {
-      "types": "./dist/node.d.ts",
-      "import": "./dist/node.js"
+      "types": "./dist/node-entry.d.ts",
+      "import": "./dist/node-entry.js"
     },
     "./data/*": "./data/*"
   },
@@ -34,5 +34,8 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "bin": {
+    "treaty": "dist/cli.js"
   }
 }
