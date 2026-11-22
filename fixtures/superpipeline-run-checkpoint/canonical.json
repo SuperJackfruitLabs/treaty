@@ -206,6 +206,104 @@
       },
       "canonical": "{\"checkpoint\":{\"binding\":{\"agentId\":\"agt_example\",\"attemptId\":\"attempt-1\",\"boardId\":\"brd_134a0ddb6d434478\",\"cardId\":\"card_0123456789abcdef\",\"leaseEpoch\":1,\"nodeId\":\"node_pilot01\",\"runId\":\"run_0123456789abcdef\",\"stageKey\":\"test\",\"stationId\":\"station_pilot01\"},\"checkpoint\":{\"benchId\":\"cccccccccccccccccccccccccccccccc\",\"checkpointRepository\":\"app\",\"generationId\":\"dddddddddddddddddddddddddddddddd\",\"key\":\"card_0123456789abcdef\",\"manifestSha256\":\"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\"members\":[{\"branch\":\"card/card_0123456789abcdef\",\"commit\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"name\":\"app\",\"objectFormat\":\"sha1\",\"provider\":\"forge\",\"repository\":\"example/app\"}],\"protocol\":\"superbench.v2\",\"requestId\":\"run-checkpoint-1\",\"seal\":\"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\"},\"disposition\":\"changed\",\"execution\":{\"exitCode\":0,\"id\":\"11111111111111111111111111111111\"},\"policyDigest\":\"e4854f02957e3d622fde729b62bdcd5c0334baa94c9fd0629bf8dd624887d144\",\"settlementId\":\"settlement-1\",\"sourceReceiptSha256\":\"677359ee412fda7dda39da134a386fa327ac769efe256a9dafebc5765676577b\",\"sourceRequestSha256\":\"06fe5c1708bb24efb100de74c217f0634e3cfdcc567438b239ff55570c6c2100\",\"start\":[{\"commit\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"name\":\"app\"}],\"version\":\"superpipeline.run-checkpoint.v1\",\"workerResultSha256\":\"2222222222222222222222222222222222222222222222222222222222222222\"},\"handoff\":{\"commit\":\"https://forge.example/example/app/commit/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"fails\":\"expected assertion failed\",\"test\":\"tests/example.test.ts\"},\"outcome\":\"pass\",\"version\":\"superpipeline.checkpoint-settlement.v1\"}",
       "sha256": "4f11eca8ad62020b73d79c31c85bbab71f9972ce55464be3c7450aff6a6f1039"
+    },
+    {
+      "name": "policy-v2",
+      "value": {
+        "version": "superpipeline.checkpoint-policy.v2",
+        "repositorySelection": "card",
+        "kind": "superbench",
+        "allowUnchanged": false,
+        "reporterPrincipalId": "prn_coordinator1",
+        "nodeId": "node_pilot01",
+        "executors": [
+          {
+            "agentId": "agt_example",
+            "stationId": "station_pilot01"
+          }
+        ],
+        "repositories": [
+          {
+            "name": "api",
+            "provider": "forge",
+            "repository": "example/api"
+          },
+          {
+            "name": "app",
+            "provider": "forge",
+            "repository": "example/app"
+          },
+          {
+            "name": "docs",
+            "provider": "github",
+            "repository": "example/docs"
+          }
+        ],
+        "checkpointRepository": "app",
+        "defaultRepositories": [
+          "app"
+        ]
+      },
+      "canonical": "{\"allowUnchanged\":false,\"checkpointRepository\":\"app\",\"defaultRepositories\":[\"app\"],\"executors\":[{\"agentId\":\"agt_example\",\"stationId\":\"station_pilot01\"}],\"kind\":\"superbench\",\"nodeId\":\"node_pilot01\",\"reporterPrincipalId\":\"prn_coordinator1\",\"repositories\":[{\"name\":\"api\",\"provider\":\"forge\",\"repository\":\"example/api\"},{\"name\":\"app\",\"provider\":\"forge\",\"repository\":\"example/app\"},{\"name\":\"docs\",\"provider\":\"github\",\"repository\":\"example/docs\"}],\"repositorySelection\":\"card\",\"version\":\"superpipeline.checkpoint-policy.v2\"}",
+      "sha256": "13444e672cbdb2bb6a3bb89105375c72ff8f854ec144dc89463b7ab41fec7532"
+    },
+    {
+      "name": "selection",
+      "value": {
+        "version": "superpipeline.checkpoint-selection.v1",
+        "stagePolicyDigest": "42b63b2623164c0ce6d52edea6735f2fad2b58a0b65a7db66dc3b758cd55a53b",
+        "source": "card",
+        "repositories": [
+          "api",
+          "app"
+        ],
+        "checkpointRepository": "app"
+      },
+      "canonical": "{\"checkpointRepository\":\"app\",\"repositories\":[\"api\",\"app\"],\"source\":\"card\",\"stagePolicyDigest\":\"42b63b2623164c0ce6d52edea6735f2fad2b58a0b65a7db66dc3b758cd55a53b\",\"version\":\"superpipeline.checkpoint-selection.v1\"}",
+      "sha256": "ad502f30a3e055e806d15707e22112b05734cf7411365a0ae506760af95dae9e"
+    },
+    {
+      "name": "narrowed-policy",
+      "value": {
+        "version": "superpipeline.checkpoint-policy.v1",
+        "kind": "superbench",
+        "allowUnchanged": false,
+        "repositories": [
+          {
+            "name": "api",
+            "provider": "forge",
+            "repository": "example/api"
+          },
+          {
+            "name": "app",
+            "provider": "forge",
+            "repository": "example/app"
+          }
+        ],
+        "checkpointRepository": "app",
+        "reporterPrincipalId": "prn_coordinator1",
+        "nodeId": "node_pilot01",
+        "executors": [
+          {
+            "agentId": "agt_example",
+            "stationId": "station_pilot01"
+          }
+        ]
+      },
+      "canonical": "{\"allowUnchanged\":false,\"checkpointRepository\":\"app\",\"executors\":[{\"agentId\":\"agt_example\",\"stationId\":\"station_pilot01\"}],\"kind\":\"superbench\",\"nodeId\":\"node_pilot01\",\"reporterPrincipalId\":\"prn_coordinator1\",\"repositories\":[{\"name\":\"api\",\"provider\":\"forge\",\"repository\":\"example/api\"},{\"name\":\"app\",\"provider\":\"forge\",\"repository\":\"example/app\"}],\"version\":\"superpipeline.checkpoint-policy.v1\"}",
+      "sha256": "9391341375209d0e0e2dad84a7fa16e669dbbc61120d95852ffbcf00feb2224c"
+    },
+    {
+      "name": "card-repositories",
+      "value": {
+        "repositories": [
+          "api",
+          "docs"
+        ],
+        "primaryRepository": "docs"
+      },
+      "canonical": "{\"primaryRepository\":\"docs\",\"repositories\":[\"api\",\"docs\"]}",
+      "sha256": "f370b8500e276a32ff5236cb0d4eb632d2faeb53832c7dba8726f367b4859574"
     }
   ]
 }

@@ -14,7 +14,15 @@
               "review"
             ]
           },
-          "checkpoint only": {
+          "cards choose repositories": {
+          "checkpointProtocol": "superpipeline.checkpoint-claim.v1",
+          "checkpointProtocols": [
+            "superpipeline.checkpoint-claim.v1",
+            "superpipeline.checkpoint-claim.v2"
+          ],
+          "checkpointOnly": true
+        },
+        "checkpoint only": {
             "checkpointProtocol": "superpipeline.checkpoint-claim.v1",
             "checkpointOnly": true
           }
@@ -65,6 +73,30 @@
             "why": "checkpointOnly not a boolean",
             "body": {
               "checkpointOnly": "yes"
+            }
+          },
+          {
+            "why": "checkpointProtocols without v1",
+            "body": {
+              "checkpointProtocol": "superpipeline.checkpoint-claim.v1",
+              "checkpointProtocols": ["superpipeline.checkpoint-claim.v2"]
+            }
+          },
+          {
+            "why": "checkpointProtocols names an unknown protocol",
+            "body": {
+              "checkpointProtocol": "superpipeline.checkpoint-claim.v1",
+              "checkpointProtocols": [
+                "superpipeline.checkpoint-claim.v1",
+                "superpipeline.checkpoint-claim.v3"
+              ]
+            }
+          },
+          {
+            "why": "checkpointProtocols empty",
+            "body": {
+              "checkpointProtocol": "superpipeline.checkpoint-claim.v1",
+              "checkpointProtocols": []
             }
           },
           {
@@ -308,6 +340,147 @@
                 },
                 "policyDigest": "e4854f02957e3d622fde729b62bdcd5c0334baa94c9fd0629bf8dd624887d144",
                 "admissionState": "pending"
+              }
+            },
+            "claimed on a stage whose cards choose repositories": {
+              "claimed": true,
+              "runId": "run_8d2e4b19c6a07f53",
+              "leaseEpoch": 1,
+              "card": {
+                "id": "card_3f9a1c07b2e84d65",
+                "title": "Write the release notes",
+                "spec": {
+                  "goal": "Release notes for v0.0.16"
+                },
+                "ownerUserId": "usr_0c4f7a2b9e1d3586",
+                "queuedBy": "prn_4e2a9c1f7b3d0e58",
+                "queuedByAgentId": null,
+                "queuedGrant": [
+                  "prn_4e2a9c1f7b3d0e58"
+                ],
+                "labels": [],
+                "projectId": null,
+                "milestoneId": null,
+                "dueAt": null,
+                "archivedAt": null,
+                "currentStageKey": "draft",
+                "state": "working",
+                "delegateAgentId": "agt_5c7e2a90d14b3f68",
+                "lastAgentId": "agt_5c7e2a90d14b3f68",
+                "queuedGrantOwner": "prn_4e2a9c1f7b3d0e58",
+                "stageSince": "2026-11-22T09:00:00.000Z",
+                "currentRunId": "run_8d2e4b19c6a07f53",
+                "priority": 0,
+                "contextId": "ctx_2b8e4f6a0c1d9e37",
+                "createdAt": "2026-11-22T08:55:00.000Z",
+                "updatedAt": "2026-11-22T09:00:00.000Z",
+                "stateSince": "2026-11-22T09:00:00.000Z",
+                "costUsd": 0,
+                "overBudget": false,
+                "attemptCount": 1,
+                "parentCardId": null,
+                "openChildCount": 0,
+                "costUsdRollup": 0,
+                "blockedBy": [],
+                "repositories": [
+                  "api",
+                  "app"
+                ]
+              },
+              "stage": {
+                "key": "draft",
+                "name": "Draft",
+                "order": 1,
+                "ownerKind": "capability",
+                "owner": "writing",
+                "instructions": "Draft from the merged pull requests.",
+                "completion": {
+                  "handoff": [
+                    "summary"
+                  ]
+                },
+                "cardCheckpointPolicy": {
+                  "version": "superpipeline.checkpoint-policy.v2",
+                  "repositorySelection": "card",
+                  "kind": "superbench",
+                  "allowUnchanged": false,
+                  "reporterPrincipalId": "prn_coordinator1",
+                  "nodeId": "node_pilot01",
+                  "executors": [
+                    {
+                      "agentId": "agt_example",
+                      "stationId": "station_pilot01"
+                    }
+                  ],
+                  "repositories": [
+                    {
+                      "name": "api",
+                      "provider": "forge",
+                      "repository": "example/api"
+                    },
+                    {
+                      "name": "app",
+                      "provider": "forge",
+                      "repository": "example/app"
+                    },
+                    {
+                      "name": "docs",
+                      "provider": "github",
+                      "repository": "example/docs"
+                    }
+                  ],
+                  "checkpointRepository": "app"
+                }
+              },
+              "handoff": null,
+              "lastFailure": null,
+              "checkpointClaim": {
+                "version": "superpipeline.checkpoint-claim.v1",
+                "tenantId": "tnt_9a3c5e7f1b2d4086",
+                "boardId": "brd_134a0ddb6d434478",
+                "cardId": "card_3f9a1c07b2e84d65",
+                "stageKey": "draft",
+                "agentId": "agt_5c7e2a90d14b3f68",
+                "runId": "run_8d2e4b19c6a07f53",
+                "leaseEpoch": 1,
+                "policy": {
+                  "version": "superpipeline.checkpoint-policy.v1",
+                  "kind": "superbench",
+                  "allowUnchanged": false,
+                  "repositories": [
+                    {
+                      "name": "api",
+                      "provider": "forge",
+                      "repository": "example/api"
+                    },
+                    {
+                      "name": "app",
+                      "provider": "forge",
+                      "repository": "example/app"
+                    }
+                  ],
+                  "checkpointRepository": "app",
+                  "reporterPrincipalId": "prn_coordinator1",
+                  "nodeId": "node_pilot01",
+                  "executors": [
+                    {
+                      "agentId": "agt_example",
+                      "stationId": "station_pilot01"
+                    }
+                  ]
+                },
+                "policyDigest": "9391341375209d0e0e2dad84a7fa16e669dbbc61120d95852ffbcf00feb2224c",
+                "admissionState": "pending",
+                "selection": {
+                  "version": "superpipeline.checkpoint-selection.v1",
+                  "stagePolicyDigest": "42b63b2623164c0ce6d52edea6735f2fad2b58a0b65a7db66dc3b758cd55a53b",
+                  "source": "card",
+                  "repositories": [
+                    "api",
+                    "app"
+                  ],
+                  "checkpointRepository": "app"
+                }
               }
             },
             "nothing ready": {
@@ -2679,6 +2852,68 @@
       "responses": {
         "200": {
           "valid": {
+            "admitted on a stage whose cards choose": {
+              "tenantId": "tnt_9a3c5e7f1b2d4086",
+              "policy": {
+                "version": "superpipeline.checkpoint-policy.v1",
+                "kind": "superbench",
+                "allowUnchanged": false,
+                "repositories": [
+                  {
+                    "name": "api",
+                    "provider": "forge",
+                    "repository": "example/api"
+                  },
+                  {
+                    "name": "app",
+                    "provider": "forge",
+                    "repository": "example/app"
+                  }
+                ],
+                "checkpointRepository": "app",
+                "reporterPrincipalId": "prn_coordinator1",
+                "nodeId": "node_pilot01",
+                "executors": [
+                  {
+                    "agentId": "agt_example",
+                    "stationId": "station_pilot01"
+                  }
+                ]
+              },
+              "policyDigest": "9391341375209d0e0e2dad84a7fa16e669dbbc61120d95852ffbcf00feb2224c",
+              "binding": {
+                "boardId": "brd_134a0ddb6d434478",
+                "cardId": "card_0123456789abcdef",
+                "stageKey": "test",
+                "runId": "run_0123456789abcdef",
+                "leaseEpoch": 1,
+                "agentId": "agt_example",
+                "stationId": "station_pilot01",
+                "nodeId": "node_pilot01",
+                "attemptId": "attempt-1"
+              },
+              "start": [{"name": "api", "commit": "9999999999999999999999999999999999999999"}, {"name": "app",
+                  "commit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                }
+              ],
+              "benchKey": "card_0123456789abcdef",
+              "benchId": "cccccccccccccccccccccccccccccccc",
+              "requestId": "run-checkpoint-1",
+              "sourceRequestSha256": "06fe5c1708bb24efb100de74c217f0634e3cfdcc567438b239ff55570c6c2100",
+              "workerContextSha256": "3333333333333333333333333333333333333333333333333333333333333333",
+              "status": "working",
+              "lastHeartbeatMs": 1795000000000,
+              "selection": {
+                "version": "superpipeline.checkpoint-selection.v1",
+                "stagePolicyDigest": "42b63b2623164c0ce6d52edea6735f2fad2b58a0b65a7db66dc3b758cd55a53b",
+                "source": "card",
+                "repositories": [
+                  "api",
+                  "app"
+                ],
+                "checkpointRepository": "app"
+              }
+            },
             "admitted": {
               "tenantId": "tnt_9a3c5e7f1b2d4086",
               "policy": {

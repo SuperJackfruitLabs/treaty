@@ -42,9 +42,12 @@ for (const [file, cases] of groups) {
 
 test("proposed HTTP schemas have exact publication identities, separate from events", () => {
   expect(readdirSync(join(root, directory)).toSorted()).toEqual([
+    "card-repositories.v1.json",
     "checkpoint-settlement.v1.json",
     "run-checkpoint-policy.v1.json",
+    "run-checkpoint-policy.v2.json",
     "run-checkpoint-receipt.v1.json",
+    "run-checkpoint-selection.v1.json",
     "run-checkpoint.v1.json",
   ]);
   for (const file of readdirSync(join(root, directory))) {

@@ -1,0 +1,1633 @@
+{
+  "version": "superpipeline.run-checkpoint-selection-cases.v1",
+  "status": "proposal; no acceptance, deployment or conformance claim",
+  "decision": "charter decisions/2026-11-15-checkpoint-settlement-needs-a-coordinator-grant.md, amended 2026-11-22",
+  "stages": {
+    "chooses": {
+      "version": "superpipeline.checkpoint-policy.v2",
+      "repositorySelection": "card",
+      "kind": "superbench",
+      "allowUnchanged": false,
+      "reporterPrincipalId": "prn_coordinator1",
+      "nodeId": "node_pilot01",
+      "executors": [
+        {
+          "agentId": "agt_example",
+          "stationId": "station_pilot01"
+        }
+      ],
+      "repositories": [
+        {
+          "name": "api",
+          "provider": "forge",
+          "repository": "example/api"
+        },
+        {
+          "name": "app",
+          "provider": "forge",
+          "repository": "example/app"
+        },
+        {
+          "name": "docs",
+          "provider": "github",
+          "repository": "example/docs"
+        }
+      ],
+      "checkpointRepository": "app"
+    },
+    "choosesWithDefault": {
+      "version": "superpipeline.checkpoint-policy.v2",
+      "repositorySelection": "card",
+      "kind": "superbench",
+      "allowUnchanged": false,
+      "reporterPrincipalId": "prn_coordinator1",
+      "nodeId": "node_pilot01",
+      "executors": [
+        {
+          "agentId": "agt_example",
+          "stationId": "station_pilot01"
+        }
+      ],
+      "repositories": [
+        {
+          "name": "api",
+          "provider": "forge",
+          "repository": "example/api"
+        },
+        {
+          "name": "app",
+          "provider": "forge",
+          "repository": "example/app"
+        },
+        {
+          "name": "docs",
+          "provider": "github",
+          "repository": "example/docs"
+        }
+      ],
+      "checkpointRepository": "app",
+      "defaultRepositories": [
+        "app"
+      ]
+    },
+    "choosesOne": {
+      "version": "superpipeline.checkpoint-policy.v2",
+      "repositorySelection": "card",
+      "kind": "superbench",
+      "allowUnchanged": false,
+      "reporterPrincipalId": "prn_coordinator1",
+      "nodeId": "node_pilot01",
+      "executors": [
+        {
+          "agentId": "agt_example",
+          "stationId": "station_pilot01"
+        }
+      ],
+      "repositories": [
+        {
+          "name": "app",
+          "provider": "forge",
+          "repository": "example/app"
+        }
+      ],
+      "checkpointRepository": "app"
+    },
+    "fixed": {
+      "version": "superpipeline.checkpoint-policy.v1",
+      "kind": "superbench",
+      "allowUnchanged": false,
+      "reporterPrincipalId": "prn_coordinator1",
+      "nodeId": "node_pilot01",
+      "executors": [
+        {
+          "agentId": "agt_example",
+          "stationId": "station_pilot01"
+        }
+      ],
+      "repositories": [
+        {
+          "name": "api",
+          "provider": "forge",
+          "repository": "example/api"
+        },
+        {
+          "name": "app",
+          "provider": "forge",
+          "repository": "example/app"
+        }
+      ],
+      "checkpointRepository": "app"
+    }
+  },
+  "narrowing": [
+    {
+      "name": "card-chooses-a-subset",
+      "stage": "chooses",
+      "card": {
+        "repositories": [
+          "api",
+          "app"
+        ]
+      },
+      "expect": {
+        "policy": {
+          "version": "superpipeline.checkpoint-policy.v1",
+          "kind": "superbench",
+          "allowUnchanged": false,
+          "repositories": [
+            {
+              "name": "api",
+              "provider": "forge",
+              "repository": "example/api"
+            },
+            {
+              "name": "app",
+              "provider": "forge",
+              "repository": "example/app"
+            }
+          ],
+          "checkpointRepository": "app",
+          "reporterPrincipalId": "prn_coordinator1",
+          "nodeId": "node_pilot01",
+          "executors": [
+            {
+              "agentId": "agt_example",
+              "stationId": "station_pilot01"
+            }
+          ]
+        },
+        "policyDigest": "9391341375209d0e0e2dad84a7fa16e669dbbc61120d95852ffbcf00feb2224c",
+        "selection": {
+          "version": "superpipeline.checkpoint-selection.v1",
+          "stagePolicyDigest": "42b63b2623164c0ce6d52edea6735f2fad2b58a0b65a7db66dc3b758cd55a53b",
+          "source": "card",
+          "repositories": [
+            "api",
+            "app"
+          ],
+          "checkpointRepository": "app"
+        }
+      }
+    },
+    {
+      "name": "card-names-its-start-repository",
+      "stage": "chooses",
+      "card": {
+        "repositories": [
+          "api",
+          "docs"
+        ],
+        "primaryRepository": "docs"
+      },
+      "expect": {
+        "policy": {
+          "version": "superpipeline.checkpoint-policy.v1",
+          "kind": "superbench",
+          "allowUnchanged": false,
+          "repositories": [
+            {
+              "name": "api",
+              "provider": "forge",
+              "repository": "example/api"
+            },
+            {
+              "name": "docs",
+              "provider": "github",
+              "repository": "example/docs"
+            }
+          ],
+          "checkpointRepository": "docs",
+          "reporterPrincipalId": "prn_coordinator1",
+          "nodeId": "node_pilot01",
+          "executors": [
+            {
+              "agentId": "agt_example",
+              "stationId": "station_pilot01"
+            }
+          ]
+        },
+        "policyDigest": "94e8177a256543442996cdbc9f89eceb75d2fb6c0e2e5229bbcdc483dfeeeeda",
+        "selection": {
+          "version": "superpipeline.checkpoint-selection.v1",
+          "stagePolicyDigest": "42b63b2623164c0ce6d52edea6735f2fad2b58a0b65a7db66dc3b758cd55a53b",
+          "source": "card",
+          "repositories": [
+            "api",
+            "docs"
+          ],
+          "checkpointRepository": "docs"
+        }
+      }
+    },
+    {
+      "name": "card-chooses-one-that-is-not-the-stage-start",
+      "stage": "chooses",
+      "card": {
+        "repositories": [
+          "docs"
+        ]
+      },
+      "expect": {
+        "policy": {
+          "version": "superpipeline.checkpoint-policy.v1",
+          "kind": "superbench",
+          "allowUnchanged": false,
+          "repositories": [
+            {
+              "name": "docs",
+              "provider": "github",
+              "repository": "example/docs"
+            }
+          ],
+          "checkpointRepository": "docs",
+          "reporterPrincipalId": "prn_coordinator1",
+          "nodeId": "node_pilot01",
+          "executors": [
+            {
+              "agentId": "agt_example",
+              "stationId": "station_pilot01"
+            }
+          ]
+        },
+        "policyDigest": "43bc63fa60958c4c8cbcd63b1182a3beabec0b2dc333c39fea13b8ac0a82d29f",
+        "selection": {
+          "version": "superpipeline.checkpoint-selection.v1",
+          "stagePolicyDigest": "42b63b2623164c0ce6d52edea6735f2fad2b58a0b65a7db66dc3b758cd55a53b",
+          "source": "card",
+          "repositories": [
+            "docs"
+          ],
+          "checkpointRepository": "docs"
+        }
+      }
+    },
+    {
+      "name": "card-chooses-the-whole-allowlist-explicitly",
+      "stage": "choosesWithDefault",
+      "card": {
+        "repositories": [
+          "api",
+          "app",
+          "docs"
+        ]
+      },
+      "expect": {
+        "policy": {
+          "version": "superpipeline.checkpoint-policy.v1",
+          "kind": "superbench",
+          "allowUnchanged": false,
+          "repositories": [
+            {
+              "name": "api",
+              "provider": "forge",
+              "repository": "example/api"
+            },
+            {
+              "name": "app",
+              "provider": "forge",
+              "repository": "example/app"
+            },
+            {
+              "name": "docs",
+              "provider": "github",
+              "repository": "example/docs"
+            }
+          ],
+          "checkpointRepository": "app",
+          "reporterPrincipalId": "prn_coordinator1",
+          "nodeId": "node_pilot01",
+          "executors": [
+            {
+              "agentId": "agt_example",
+              "stationId": "station_pilot01"
+            }
+          ]
+        },
+        "policyDigest": "c1ac1f276c3fcf5e402e3b6e92384704f8ccfd28a223da78343369ec05a0bd1b",
+        "selection": {
+          "version": "superpipeline.checkpoint-selection.v1",
+          "stagePolicyDigest": "13444e672cbdb2bb6a3bb89105375c72ff8f854ec144dc89463b7ab41fec7532",
+          "source": "card",
+          "repositories": [
+            "api",
+            "app",
+            "docs"
+          ],
+          "checkpointRepository": "app"
+        }
+      }
+    },
+    {
+      "name": "card-choice-wins-over-the-default",
+      "stage": "choosesWithDefault",
+      "card": {
+        "repositories": [
+          "docs"
+        ]
+      },
+      "expect": {
+        "policy": {
+          "version": "superpipeline.checkpoint-policy.v1",
+          "kind": "superbench",
+          "allowUnchanged": false,
+          "repositories": [
+            {
+              "name": "docs",
+              "provider": "github",
+              "repository": "example/docs"
+            }
+          ],
+          "checkpointRepository": "docs",
+          "reporterPrincipalId": "prn_coordinator1",
+          "nodeId": "node_pilot01",
+          "executors": [
+            {
+              "agentId": "agt_example",
+              "stationId": "station_pilot01"
+            }
+          ]
+        },
+        "policyDigest": "43bc63fa60958c4c8cbcd63b1182a3beabec0b2dc333c39fea13b8ac0a82d29f",
+        "selection": {
+          "version": "superpipeline.checkpoint-selection.v1",
+          "stagePolicyDigest": "13444e672cbdb2bb6a3bb89105375c72ff8f854ec144dc89463b7ab41fec7532",
+          "source": "card",
+          "repositories": [
+            "docs"
+          ],
+          "checkpointRepository": "docs"
+        }
+      }
+    },
+    {
+      "name": "no-choice-uses-the-default",
+      "stage": "choosesWithDefault",
+      "card": {},
+      "expect": {
+        "policy": {
+          "version": "superpipeline.checkpoint-policy.v1",
+          "kind": "superbench",
+          "allowUnchanged": false,
+          "repositories": [
+            {
+              "name": "app",
+              "provider": "forge",
+              "repository": "example/app"
+            }
+          ],
+          "checkpointRepository": "app",
+          "reporterPrincipalId": "prn_coordinator1",
+          "nodeId": "node_pilot01",
+          "executors": [
+            {
+              "agentId": "agt_example",
+              "stationId": "station_pilot01"
+            }
+          ]
+        },
+        "policyDigest": "e4854f02957e3d622fde729b62bdcd5c0334baa94c9fd0629bf8dd624887d144",
+        "selection": {
+          "version": "superpipeline.checkpoint-selection.v1",
+          "stagePolicyDigest": "13444e672cbdb2bb6a3bb89105375c72ff8f854ec144dc89463b7ab41fec7532",
+          "source": "default",
+          "repositories": [
+            "app"
+          ],
+          "checkpointRepository": "app"
+        }
+      }
+    },
+    {
+      "name": "no-choice-uses-the-only-repository",
+      "stage": "choosesOne",
+      "card": {},
+      "expect": {
+        "policy": {
+          "version": "superpipeline.checkpoint-policy.v1",
+          "kind": "superbench",
+          "allowUnchanged": false,
+          "repositories": [
+            {
+              "name": "app",
+              "provider": "forge",
+              "repository": "example/app"
+            }
+          ],
+          "checkpointRepository": "app",
+          "reporterPrincipalId": "prn_coordinator1",
+          "nodeId": "node_pilot01",
+          "executors": [
+            {
+              "agentId": "agt_example",
+              "stationId": "station_pilot01"
+            }
+          ]
+        },
+        "policyDigest": "e4854f02957e3d622fde729b62bdcd5c0334baa94c9fd0629bf8dd624887d144",
+        "selection": {
+          "version": "superpipeline.checkpoint-selection.v1",
+          "stagePolicyDigest": "fa01036980ed5c1c3d97765d0ee078632edf0a691ccbe056214b9c83c0f782f5",
+          "source": "single",
+          "repositories": [
+            "app"
+          ],
+          "checkpointRepository": "app"
+        }
+      }
+    },
+    {
+      "name": "no-choice-and-no-default-waits-for-a-person",
+      "stage": "chooses",
+      "card": {},
+      "refuse": "needs-person"
+    },
+    {
+      "name": "outside-the-allowlist",
+      "stage": "chooses",
+      "card": {
+        "repositories": [
+          "app",
+          "mobile"
+        ]
+      },
+      "refuse": "repository-not-allowed"
+    },
+    {
+      "name": "start-repository-not-chosen",
+      "stage": "chooses",
+      "card": {
+        "repositories": [
+          "api"
+        ],
+        "primaryRepository": "app"
+      },
+      "refuse": "primary-not-chosen"
+    },
+    {
+      "name": "two-chosen-and-no-start",
+      "stage": "chooses",
+      "card": {
+        "repositories": [
+          "api",
+          "docs"
+        ]
+      },
+      "refuse": "no-primary"
+    },
+    {
+      "name": "choice-not-sorted",
+      "stage": "chooses",
+      "card": {
+        "repositories": [
+          "app",
+          "api"
+        ]
+      },
+      "refuse": "repositories-not-canonical"
+    },
+    {
+      "name": "fixed-stage-ignores-the-card",
+      "stage": "fixed",
+      "card": {
+        "repositories": [
+          "api"
+        ]
+      },
+      "expect": {
+        "policy": {
+          "version": "superpipeline.checkpoint-policy.v1",
+          "kind": "superbench",
+          "allowUnchanged": false,
+          "reporterPrincipalId": "prn_coordinator1",
+          "nodeId": "node_pilot01",
+          "executors": [
+            {
+              "agentId": "agt_example",
+              "stationId": "station_pilot01"
+            }
+          ],
+          "repositories": [
+            {
+              "name": "api",
+              "provider": "forge",
+              "repository": "example/api"
+            },
+            {
+              "name": "app",
+              "provider": "forge",
+              "repository": "example/app"
+            }
+          ],
+          "checkpointRepository": "app"
+        },
+        "policyDigest": "9391341375209d0e0e2dad84a7fa16e669dbbc61120d95852ffbcf00feb2224c"
+      }
+    }
+  ],
+  "policyRelations": [
+    {
+      "name": "default-outside-the-allowlist",
+      "policy": {
+        "version": "superpipeline.checkpoint-policy.v2",
+        "repositorySelection": "card",
+        "kind": "superbench",
+        "allowUnchanged": false,
+        "reporterPrincipalId": "prn_coordinator1",
+        "nodeId": "node_pilot01",
+        "executors": [
+          {
+            "agentId": "agt_example",
+            "stationId": "station_pilot01"
+          }
+        ],
+        "repositories": [
+          {
+            "name": "api",
+            "provider": "forge",
+            "repository": "example/api"
+          },
+          {
+            "name": "app",
+            "provider": "forge",
+            "repository": "example/app"
+          },
+          {
+            "name": "docs",
+            "provider": "github",
+            "repository": "example/docs"
+          }
+        ],
+        "checkpointRepository": "app",
+        "defaultRepositories": [
+          "mobile"
+        ]
+      },
+      "refuse": "default-not-allowed"
+    },
+    {
+      "name": "default-with-no-start-repository",
+      "policy": {
+        "version": "superpipeline.checkpoint-policy.v2",
+        "repositorySelection": "card",
+        "kind": "superbench",
+        "allowUnchanged": false,
+        "reporterPrincipalId": "prn_coordinator1",
+        "nodeId": "node_pilot01",
+        "executors": [
+          {
+            "agentId": "agt_example",
+            "stationId": "station_pilot01"
+          }
+        ],
+        "repositories": [
+          {
+            "name": "api",
+            "provider": "forge",
+            "repository": "example/api"
+          },
+          {
+            "name": "app",
+            "provider": "forge",
+            "repository": "example/app"
+          },
+          {
+            "name": "docs",
+            "provider": "github",
+            "repository": "example/docs"
+          }
+        ],
+        "checkpointRepository": "app",
+        "defaultRepositories": [
+          "api",
+          "docs"
+        ]
+      },
+      "refuse": "default-without-start"
+    },
+    {
+      "name": "default-not-sorted",
+      "policy": {
+        "version": "superpipeline.checkpoint-policy.v2",
+        "repositorySelection": "card",
+        "kind": "superbench",
+        "allowUnchanged": false,
+        "reporterPrincipalId": "prn_coordinator1",
+        "nodeId": "node_pilot01",
+        "executors": [
+          {
+            "agentId": "agt_example",
+            "stationId": "station_pilot01"
+          }
+        ],
+        "repositories": [
+          {
+            "name": "api",
+            "provider": "forge",
+            "repository": "example/api"
+          },
+          {
+            "name": "app",
+            "provider": "forge",
+            "repository": "example/app"
+          },
+          {
+            "name": "docs",
+            "provider": "github",
+            "repository": "example/docs"
+          }
+        ],
+        "checkpointRepository": "app",
+        "defaultRepositories": [
+          "app",
+          "api"
+        ]
+      },
+      "refuse": "default-not-canonical"
+    },
+    {
+      "name": "start-repository-outside-the-allowlist",
+      "policy": {
+        "version": "superpipeline.checkpoint-policy.v2",
+        "repositorySelection": "card",
+        "kind": "superbench",
+        "allowUnchanged": false,
+        "reporterPrincipalId": "prn_coordinator1",
+        "nodeId": "node_pilot01",
+        "executors": [
+          {
+            "agentId": "agt_example",
+            "stationId": "station_pilot01"
+          }
+        ],
+        "repositories": [
+          {
+            "name": "api",
+            "provider": "forge",
+            "repository": "example/api"
+          },
+          {
+            "name": "app",
+            "provider": "forge",
+            "repository": "example/app"
+          },
+          {
+            "name": "docs",
+            "provider": "github",
+            "repository": "example/docs"
+          }
+        ],
+        "checkpointRepository": "mobile"
+      },
+      "refuse": "checkpoint-repository-not-allowed"
+    },
+    {
+      "name": "allowlist-not-sorted",
+      "policy": {
+        "version": "superpipeline.checkpoint-policy.v2",
+        "repositorySelection": "card",
+        "kind": "superbench",
+        "allowUnchanged": false,
+        "reporterPrincipalId": "prn_coordinator1",
+        "nodeId": "node_pilot01",
+        "executors": [
+          {
+            "agentId": "agt_example",
+            "stationId": "station_pilot01"
+          }
+        ],
+        "repositories": [
+          {
+            "name": "app",
+            "provider": "forge",
+            "repository": "example/app"
+          },
+          {
+            "name": "api",
+            "provider": "forge",
+            "repository": "example/api"
+          }
+        ],
+        "checkpointRepository": "app"
+      },
+      "refuse": "repositories-not-canonical"
+    },
+    {
+      "name": "allowlist-repeats-a-name",
+      "policy": {
+        "version": "superpipeline.checkpoint-policy.v2",
+        "repositorySelection": "card",
+        "kind": "superbench",
+        "allowUnchanged": false,
+        "reporterPrincipalId": "prn_coordinator1",
+        "nodeId": "node_pilot01",
+        "executors": [
+          {
+            "agentId": "agt_example",
+            "stationId": "station_pilot01"
+          }
+        ],
+        "repositories": [
+          {
+            "name": "app",
+            "provider": "forge",
+            "repository": "example/app"
+          },
+          {
+            "name": "app",
+            "provider": "github",
+            "repository": "example/app"
+          }
+        ],
+        "checkpointRepository": "app"
+      },
+      "refuse": "repositories-not-canonical"
+    }
+  ],
+  "structural": {
+    "policy": {
+      "schema": "schemas/superpipeline-api/run-checkpoint-policy.v2.json",
+      "accept": [
+        {
+          "name": "chooses",
+          "body": {
+            "version": "superpipeline.checkpoint-policy.v2",
+            "repositorySelection": "card",
+            "kind": "superbench",
+            "allowUnchanged": false,
+            "reporterPrincipalId": "prn_coordinator1",
+            "nodeId": "node_pilot01",
+            "executors": [
+              {
+                "agentId": "agt_example",
+                "stationId": "station_pilot01"
+              }
+            ],
+            "repositories": [
+              {
+                "name": "api",
+                "provider": "forge",
+                "repository": "example/api"
+              },
+              {
+                "name": "app",
+                "provider": "forge",
+                "repository": "example/app"
+              },
+              {
+                "name": "docs",
+                "provider": "github",
+                "repository": "example/docs"
+              }
+            ],
+            "checkpointRepository": "app"
+          }
+        },
+        {
+          "name": "choosesWithDefault",
+          "body": {
+            "version": "superpipeline.checkpoint-policy.v2",
+            "repositorySelection": "card",
+            "kind": "superbench",
+            "allowUnchanged": false,
+            "reporterPrincipalId": "prn_coordinator1",
+            "nodeId": "node_pilot01",
+            "executors": [
+              {
+                "agentId": "agt_example",
+                "stationId": "station_pilot01"
+              }
+            ],
+            "repositories": [
+              {
+                "name": "api",
+                "provider": "forge",
+                "repository": "example/api"
+              },
+              {
+                "name": "app",
+                "provider": "forge",
+                "repository": "example/app"
+              },
+              {
+                "name": "docs",
+                "provider": "github",
+                "repository": "example/docs"
+              }
+            ],
+            "checkpointRepository": "app",
+            "defaultRepositories": [
+              "app"
+            ]
+          }
+        },
+        {
+          "name": "choosesOne",
+          "body": {
+            "version": "superpipeline.checkpoint-policy.v2",
+            "repositorySelection": "card",
+            "kind": "superbench",
+            "allowUnchanged": false,
+            "reporterPrincipalId": "prn_coordinator1",
+            "nodeId": "node_pilot01",
+            "executors": [
+              {
+                "agentId": "agt_example",
+                "stationId": "station_pilot01"
+              }
+            ],
+            "repositories": [
+              {
+                "name": "app",
+                "provider": "forge",
+                "repository": "example/app"
+              }
+            ],
+            "checkpointRepository": "app"
+          }
+        }
+      ],
+      "reject": [
+        {
+          "name": "a v1 version",
+          "body": {
+            "version": "superpipeline.checkpoint-policy.v1",
+            "repositorySelection": "card",
+            "kind": "superbench",
+            "allowUnchanged": false,
+            "reporterPrincipalId": "prn_coordinator1",
+            "nodeId": "node_pilot01",
+            "executors": [
+              {
+                "agentId": "agt_example",
+                "stationId": "station_pilot01"
+              }
+            ],
+            "repositories": [
+              {
+                "name": "api",
+                "provider": "forge",
+                "repository": "example/api"
+              },
+              {
+                "name": "app",
+                "provider": "forge",
+                "repository": "example/app"
+              },
+              {
+                "name": "docs",
+                "provider": "github",
+                "repository": "example/docs"
+              }
+            ],
+            "checkpointRepository": "app",
+            "defaultRepositories": [
+              "app"
+            ]
+          }
+        },
+        {
+          "name": "no repositorySelection",
+          "body": {
+            "version": "superpipeline.checkpoint-policy.v2",
+            "kind": "superbench",
+            "allowUnchanged": false,
+            "reporterPrincipalId": "prn_coordinator1",
+            "nodeId": "node_pilot01",
+            "executors": [
+              {
+                "agentId": "agt_example",
+                "stationId": "station_pilot01"
+              }
+            ],
+            "repositories": [
+              {
+                "name": "api",
+                "provider": "forge",
+                "repository": "example/api"
+              },
+              {
+                "name": "app",
+                "provider": "forge",
+                "repository": "example/app"
+              },
+              {
+                "name": "docs",
+                "provider": "github",
+                "repository": "example/docs"
+              }
+            ],
+            "checkpointRepository": "app",
+            "defaultRepositories": [
+              "app"
+            ]
+          }
+        },
+        {
+          "name": "repositorySelection stage",
+          "body": {
+            "version": "superpipeline.checkpoint-policy.v2",
+            "repositorySelection": "stage",
+            "kind": "superbench",
+            "allowUnchanged": false,
+            "reporterPrincipalId": "prn_coordinator1",
+            "nodeId": "node_pilot01",
+            "executors": [
+              {
+                "agentId": "agt_example",
+                "stationId": "station_pilot01"
+              }
+            ],
+            "repositories": [
+              {
+                "name": "api",
+                "provider": "forge",
+                "repository": "example/api"
+              },
+              {
+                "name": "app",
+                "provider": "forge",
+                "repository": "example/app"
+              },
+              {
+                "name": "docs",
+                "provider": "github",
+                "repository": "example/docs"
+              }
+            ],
+            "checkpointRepository": "app",
+            "defaultRepositories": [
+              "app"
+            ]
+          }
+        },
+        {
+          "name": "empty default",
+          "body": {
+            "version": "superpipeline.checkpoint-policy.v2",
+            "repositorySelection": "card",
+            "kind": "superbench",
+            "allowUnchanged": false,
+            "reporterPrincipalId": "prn_coordinator1",
+            "nodeId": "node_pilot01",
+            "executors": [
+              {
+                "agentId": "agt_example",
+                "stationId": "station_pilot01"
+              }
+            ],
+            "repositories": [
+              {
+                "name": "api",
+                "provider": "forge",
+                "repository": "example/api"
+              },
+              {
+                "name": "app",
+                "provider": "forge",
+                "repository": "example/app"
+              },
+              {
+                "name": "docs",
+                "provider": "github",
+                "repository": "example/docs"
+              }
+            ],
+            "checkpointRepository": "app",
+            "defaultRepositories": []
+          }
+        },
+        {
+          "name": "default repeats a name",
+          "body": {
+            "version": "superpipeline.checkpoint-policy.v2",
+            "repositorySelection": "card",
+            "kind": "superbench",
+            "allowUnchanged": false,
+            "reporterPrincipalId": "prn_coordinator1",
+            "nodeId": "node_pilot01",
+            "executors": [
+              {
+                "agentId": "agt_example",
+                "stationId": "station_pilot01"
+              }
+            ],
+            "repositories": [
+              {
+                "name": "api",
+                "provider": "forge",
+                "repository": "example/api"
+              },
+              {
+                "name": "app",
+                "provider": "forge",
+                "repository": "example/app"
+              },
+              {
+                "name": "docs",
+                "provider": "github",
+                "repository": "example/docs"
+              }
+            ],
+            "checkpointRepository": "app",
+            "defaultRepositories": [
+              "app",
+              "app"
+            ]
+          }
+        },
+        {
+          "name": "default names a URL",
+          "body": {
+            "version": "superpipeline.checkpoint-policy.v2",
+            "repositorySelection": "card",
+            "kind": "superbench",
+            "allowUnchanged": false,
+            "reporterPrincipalId": "prn_coordinator1",
+            "nodeId": "node_pilot01",
+            "executors": [
+              {
+                "agentId": "agt_example",
+                "stationId": "station_pilot01"
+              }
+            ],
+            "repositories": [
+              {
+                "name": "api",
+                "provider": "forge",
+                "repository": "example/api"
+              },
+              {
+                "name": "app",
+                "provider": "forge",
+                "repository": "example/app"
+              },
+              {
+                "name": "docs",
+                "provider": "github",
+                "repository": "example/docs"
+              }
+            ],
+            "checkpointRepository": "app",
+            "defaultRepositories": [
+              "https://example.com/app"
+            ]
+          }
+        },
+        {
+          "name": "an unknown field",
+          "body": {
+            "version": "superpipeline.checkpoint-policy.v2",
+            "repositorySelection": "card",
+            "kind": "superbench",
+            "allowUnchanged": false,
+            "reporterPrincipalId": "prn_coordinator1",
+            "nodeId": "node_pilot01",
+            "executors": [
+              {
+                "agentId": "agt_example",
+                "stationId": "station_pilot01"
+              }
+            ],
+            "repositories": [
+              {
+                "name": "api",
+                "provider": "forge",
+                "repository": "example/api"
+              },
+              {
+                "name": "app",
+                "provider": "forge",
+                "repository": "example/app"
+              },
+              {
+                "name": "docs",
+                "provider": "github",
+                "repository": "example/docs"
+              }
+            ],
+            "checkpointRepository": "app",
+            "defaultRepositories": [
+              "app"
+            ],
+            "cardsMayAdd": true
+          }
+        },
+        {
+          "name": "more than 32 in the allowlist",
+          "body": {
+            "version": "superpipeline.checkpoint-policy.v2",
+            "repositorySelection": "card",
+            "kind": "superbench",
+            "allowUnchanged": false,
+            "reporterPrincipalId": "prn_coordinator1",
+            "nodeId": "node_pilot01",
+            "executors": [
+              {
+                "agentId": "agt_example",
+                "stationId": "station_pilot01"
+              }
+            ],
+            "repositories": [
+              {
+                "name": "r00",
+                "provider": "forge",
+                "repository": "example/r00"
+              },
+              {
+                "name": "r01",
+                "provider": "forge",
+                "repository": "example/r01"
+              },
+              {
+                "name": "r02",
+                "provider": "forge",
+                "repository": "example/r02"
+              },
+              {
+                "name": "r03",
+                "provider": "forge",
+                "repository": "example/r03"
+              },
+              {
+                "name": "r04",
+                "provider": "forge",
+                "repository": "example/r04"
+              },
+              {
+                "name": "r05",
+                "provider": "forge",
+                "repository": "example/r05"
+              },
+              {
+                "name": "r06",
+                "provider": "forge",
+                "repository": "example/r06"
+              },
+              {
+                "name": "r07",
+                "provider": "forge",
+                "repository": "example/r07"
+              },
+              {
+                "name": "r08",
+                "provider": "forge",
+                "repository": "example/r08"
+              },
+              {
+                "name": "r09",
+                "provider": "forge",
+                "repository": "example/r09"
+              },
+              {
+                "name": "r10",
+                "provider": "forge",
+                "repository": "example/r10"
+              },
+              {
+                "name": "r11",
+                "provider": "forge",
+                "repository": "example/r11"
+              },
+              {
+                "name": "r12",
+                "provider": "forge",
+                "repository": "example/r12"
+              },
+              {
+                "name": "r13",
+                "provider": "forge",
+                "repository": "example/r13"
+              },
+              {
+                "name": "r14",
+                "provider": "forge",
+                "repository": "example/r14"
+              },
+              {
+                "name": "r15",
+                "provider": "forge",
+                "repository": "example/r15"
+              },
+              {
+                "name": "r16",
+                "provider": "forge",
+                "repository": "example/r16"
+              },
+              {
+                "name": "r17",
+                "provider": "forge",
+                "repository": "example/r17"
+              },
+              {
+                "name": "r18",
+                "provider": "forge",
+                "repository": "example/r18"
+              },
+              {
+                "name": "r19",
+                "provider": "forge",
+                "repository": "example/r19"
+              },
+              {
+                "name": "r20",
+                "provider": "forge",
+                "repository": "example/r20"
+              },
+              {
+                "name": "r21",
+                "provider": "forge",
+                "repository": "example/r21"
+              },
+              {
+                "name": "r22",
+                "provider": "forge",
+                "repository": "example/r22"
+              },
+              {
+                "name": "r23",
+                "provider": "forge",
+                "repository": "example/r23"
+              },
+              {
+                "name": "r24",
+                "provider": "forge",
+                "repository": "example/r24"
+              },
+              {
+                "name": "r25",
+                "provider": "forge",
+                "repository": "example/r25"
+              },
+              {
+                "name": "r26",
+                "provider": "forge",
+                "repository": "example/r26"
+              },
+              {
+                "name": "r27",
+                "provider": "forge",
+                "repository": "example/r27"
+              },
+              {
+                "name": "r28",
+                "provider": "forge",
+                "repository": "example/r28"
+              },
+              {
+                "name": "r29",
+                "provider": "forge",
+                "repository": "example/r29"
+              },
+              {
+                "name": "r30",
+                "provider": "forge",
+                "repository": "example/r30"
+              },
+              {
+                "name": "r31",
+                "provider": "forge",
+                "repository": "example/r31"
+              },
+              {
+                "name": "r32",
+                "provider": "forge",
+                "repository": "example/r32"
+              }
+            ],
+            "checkpointRepository": "app",
+            "defaultRepositories": [
+              "app"
+            ]
+          }
+        }
+      ]
+    },
+    "card": {
+      "schema": "schemas/superpipeline-api/card-repositories.v1.json",
+      "accept": [
+        {
+          "name": "one repository",
+          "body": {
+            "repositories": [
+              "app"
+            ]
+          }
+        },
+        {
+          "name": "several with a start repository",
+          "body": {
+            "repositories": [
+              "api",
+              "app"
+            ],
+            "primaryRepository": "app"
+          }
+        },
+        {
+          "name": "thirty-two",
+          "body": {
+            "repositories": [
+              "r00",
+              "r01",
+              "r02",
+              "r03",
+              "r04",
+              "r05",
+              "r06",
+              "r07",
+              "r08",
+              "r09",
+              "r10",
+              "r11",
+              "r12",
+              "r13",
+              "r14",
+              "r15",
+              "r16",
+              "r17",
+              "r18",
+              "r19",
+              "r20",
+              "r21",
+              "r22",
+              "r23",
+              "r24",
+              "r25",
+              "r26",
+              "r27",
+              "r28",
+              "r29",
+              "r30",
+              "r31"
+            ]
+          }
+        }
+      ],
+      "reject": [
+        {
+          "name": "empty object",
+          "body": {}
+        },
+        {
+          "name": "empty list",
+          "body": {
+            "repositories": []
+          }
+        },
+        {
+          "name": "a repeated name",
+          "body": {
+            "repositories": [
+              "app",
+              "app"
+            ]
+          }
+        },
+        {
+          "name": "start repository alone",
+          "body": {
+            "primaryRepository": "app"
+          }
+        },
+        {
+          "name": "a provider path instead of a name",
+          "body": {
+            "repositories": [
+              "example/app"
+            ]
+          }
+        },
+        {
+          "name": "a repository object",
+          "body": {
+            "repositories": [
+              {
+                "name": "app",
+                "provider": "forge",
+                "repository": "example/app"
+              }
+            ]
+          }
+        },
+        {
+          "name": "an unknown field",
+          "body": {
+            "repositories": [
+              "app"
+            ],
+            "cloneUrl": "https://example.com/app.git"
+          }
+        },
+        {
+          "name": "thirty-three",
+          "body": {
+            "repositories": [
+              "r00",
+              "r01",
+              "r02",
+              "r03",
+              "r04",
+              "r05",
+              "r06",
+              "r07",
+              "r08",
+              "r09",
+              "r10",
+              "r11",
+              "r12",
+              "r13",
+              "r14",
+              "r15",
+              "r16",
+              "r17",
+              "r18",
+              "r19",
+              "r20",
+              "r21",
+              "r22",
+              "r23",
+              "r24",
+              "r25",
+              "r26",
+              "r27",
+              "r28",
+              "r29",
+              "r30",
+              "r31",
+              "r32"
+            ]
+          }
+        }
+      ]
+    },
+    "selection": {
+      "schema": "schemas/superpipeline-api/run-checkpoint-selection.v1.json",
+      "accept": [
+        {
+          "name": "card choice",
+          "body": {
+            "version": "superpipeline.checkpoint-selection.v1",
+            "stagePolicyDigest": "42b63b2623164c0ce6d52edea6735f2fad2b58a0b65a7db66dc3b758cd55a53b",
+            "source": "card",
+            "repositories": [
+              "api",
+              "app"
+            ],
+            "checkpointRepository": "app"
+          }
+        }
+      ],
+      "reject": [
+        {
+          "name": "source stage",
+          "body": {
+            "version": "superpipeline.checkpoint-selection.v1",
+            "stagePolicyDigest": "42b63b2623164c0ce6d52edea6735f2fad2b58a0b65a7db66dc3b758cd55a53b",
+            "source": "stage",
+            "repositories": [
+              "api",
+              "app"
+            ],
+            "checkpointRepository": "app"
+          }
+        },
+        {
+          "name": "no stage policy digest",
+          "body": {
+            "version": "superpipeline.checkpoint-selection.v1",
+            "source": "card",
+            "repositories": [
+              "api",
+              "app"
+            ],
+            "checkpointRepository": "app"
+          }
+        },
+        {
+          "name": "uppercase digest",
+          "body": {
+            "version": "superpipeline.checkpoint-selection.v1",
+            "stagePolicyDigest": "42B63B2623164C0CE6D52EDEA6735F2FAD2B58A0B65A7DB66DC3B758CD55A53B",
+            "source": "card",
+            "repositories": [
+              "api",
+              "app"
+            ],
+            "checkpointRepository": "app"
+          }
+        },
+        {
+          "name": "no repositories",
+          "body": {
+            "version": "superpipeline.checkpoint-selection.v1",
+            "stagePolicyDigest": "42b63b2623164c0ce6d52edea6735f2fad2b58a0b65a7db66dc3b758cd55a53b",
+            "source": "card",
+            "repositories": [],
+            "checkpointRepository": "app"
+          }
+        },
+        {
+          "name": "carries the policy",
+          "body": {
+            "version": "superpipeline.checkpoint-selection.v1",
+            "stagePolicyDigest": "42b63b2623164c0ce6d52edea6735f2fad2b58a0b65a7db66dc3b758cd55a53b",
+            "source": "card",
+            "repositories": [
+              "api",
+              "app"
+            ],
+            "checkpointRepository": "app",
+            "policy": {
+              "version": "superpipeline.checkpoint-policy.v1",
+              "kind": "superbench",
+              "allowUnchanged": false,
+              "reporterPrincipalId": "prn_coordinator1",
+              "nodeId": "node_pilot01",
+              "executors": [
+                {
+                  "agentId": "agt_example",
+                  "stationId": "station_pilot01"
+                }
+              ],
+              "repositories": [
+                {
+                  "name": "api",
+                  "provider": "forge",
+                  "repository": "example/api"
+                },
+                {
+                  "name": "app",
+                  "provider": "forge",
+                  "repository": "example/app"
+                }
+              ],
+              "checkpointRepository": "app"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "producer": [
+    {
+      "name": "refused-on-entry",
+      "expected": "reject",
+      "rule": "a card created, moved or edited into a stage whose cards choose, naming a repository outside the allowlist, a start repository it did not choose, or two or more repositories without a resolvable start, is refused with a named error; nothing is stored",
+      "scope": "producer-state assertions; not wire-only validation"
+    },
+    {
+      "name": "no-choice-enters-and-waits",
+      "expected": "accept",
+      "rule": "a card naming no repository may enter a stage with several repositories and no default; at claim it is parked for a person (needsHuman blocked, naming why), never benched with every repository",
+      "scope": "producer-state assertions; not wire-only validation"
+    },
+    {
+      "name": "allowlist-shrinks-after-entry",
+      "expected": "reject",
+      "rule": "the claim recomputes the narrowing from the current stage policy; a choice no longer inside it parks the card for a person instead of claiming, and never drops the missing repository silently",
+      "scope": "producer-state assertions; not wire-only validation"
+    },
+    {
+      "name": "frozen-once-a-bench-exists",
+      "expected": "reject",
+      "rule": "changing a card's repositories or start repository while a bench exists for the card is refused; reclaim the bench, then a new claim starts a new bench",
+      "scope": "producer-state assertions; not wire-only validation"
+    },
+    {
+      "name": "claim-freezes-the-selection",
+      "expected": "accept",
+      "rule": "the claim row stores the stage policy digest, the selection and the narrowed policy; source admission, settlement and references compare with the narrowed policy, and a stage policy change before settlement makes the claim stale",
+      "scope": "producer-state assertions; not wire-only validation"
+    },
+    {
+      "name": "old-claimant-never-offered",
+      "expected": "reject",
+      "rule": "a claimant whose checkpointProtocols does not list superpipeline.checkpoint-claim.v2 is never offered a stage with cardCheckpointPolicy, including with checkpointOnly",
+      "scope": "producer-state assertions; not wire-only validation"
+    },
+    {
+      "name": "fixed-stage-unchanged",
+      "expected": "accept",
+      "rule": "a stage with checkpointPolicy v1 behaves byte for byte as before for every claimant: no selection, policy equals the stage policy, the card's repositories are ignored",
+      "scope": "producer-state assertions; not wire-only validation"
+    },
+    {
+      "name": "one-policy-per-stage",
+      "expected": "reject",
+      "rule": "a stage carrying both checkpointPolicy and cardCheckpointPolicy is refused when the policy is written",
+      "scope": "producer-state assertions; not wire-only validation"
+    },
+    {
+      "name": "card-writers-choose",
+      "expected": "accept",
+      "rule": "any person or agent that may edit the card may set its repositories within the allowlist; one that may not edit the card may not; the allowlist itself stays an owner or admin write",
+      "scope": "producer-state assertions; not wire-only validation"
+    },
+    {
+      "name": "default-change-spares-existing-claims",
+      "expected": "accept",
+      "rule": "changing a stage default changes only claims made afterwards; an existing claim and its bench keep their frozen selection",
+      "scope": "producer-state assertions; not wire-only validation"
+    }
+  ]
+}

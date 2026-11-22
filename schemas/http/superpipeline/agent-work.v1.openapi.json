@@ -2299,6 +2299,14 @@
                 }
               }
             }
+          },
+          "repositories": {
+            "$ref": "../../superpipeline-api/card-repositories.v1.json#/properties/repositories",
+            "description": "Proposed. The repositories this card chose from a stage allowlist (run-checkpoint-policy.v2), sorted. Absent: the card names none. Fixed once the card's bench exists."
+          },
+          "primaryRepository": {
+            "$ref": "../../superpipeline-api/card-repositories.v1.json#/properties/primaryRepository",
+            "description": "Proposed. One of `repositories`: where the card's work starts. Only with `repositories`."
           }
         }
       },
@@ -2360,6 +2368,10 @@
         "properties": {
           "checkpointPolicy": {
             "$ref": "../../superpipeline-api/run-checkpoint-policy.v1.json"
+          },
+          "cardCheckpointPolicy": {
+            "$ref": "../../superpipeline-api/run-checkpoint-policy.v2.json",
+            "description": "Proposed. The checkpoint policy of a stage whose cards choose their repositories from its allowlist. Never together with `checkpointPolicy`. Offered only to a claimant whose `checkpointProtocols` lists superpipeline.checkpoint-claim.v2."
           },
           "key": {
             "type": "string"
@@ -2556,6 +2568,10 @@
           },
           "admissionState": {
             "const": "pending"
+          },
+          "selection": {
+            "$ref": "../../superpipeline-api/run-checkpoint-selection.v1.json",
+            "description": "Proposed, claim protocol v2. Present only when the stage has `cardCheckpointPolicy`: how its allowlist was narrowed for this card. `policy` is then the narrowed checkpoint-policy.v1 and `policyDigest` its digest; the reader recomputes both from the stage policy and refuses any difference."
           }
         }
       },
@@ -3297,6 +3313,22 @@
           "checkpointProtocol": {
             "const": "superpipeline.checkpoint-claim.v1"
           },
+          "checkpointProtocols": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 8,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "superpipeline.checkpoint-claim.v1",
+                "superpipeline.checkpoint-claim.v2"
+              ]
+            },
+            "contains": {
+              "const": "superpipeline.checkpoint-claim.v1"
+            },
+            "description": "Proposed. Every checkpoint claim protocol this claimant speaks, sent beside `checkpointProtocol` (which a server that predates this field still reads; without it this field is INVALID_INPUT). A stage with `cardCheckpointPolicy` is offered only when this lists superpipeline.checkpoint-claim.v2."
+          },
           "checkpointOnly": {
             "type": "boolean"
           }
@@ -3706,6 +3738,10 @@
           "policyDigest": {
             "type": "string",
             "pattern": "^[a-f0-9]{64}$"
+          },
+          "selection": {
+            "$ref": "../../superpipeline-api/run-checkpoint-selection.v1.json",
+            "description": "Proposed. The selection frozen with the claim, when the stage's cards choose; `policy` is then the narrowed policy."
           },
           "binding": {
             "$ref": "../../superpipeline-api/run-checkpoint.v1.json#/properties/binding"
