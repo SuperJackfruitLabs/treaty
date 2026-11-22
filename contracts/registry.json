@@ -345,7 +345,7 @@
       "consumers": ["supertoolkit"],
       "kind": "http",
       "status": "uncontracted",
-      "contract": [],
+      "contract": ["schemas/http/superpipeline/approvals.v1.openapi.json"],
       "gaps": "The stk-capability/v1 subject is contracted only inside the Matrix question.v2 card; the HTTP API that creates it is not.",
       "phase": 1,
       "evidence": [
