@@ -441,10 +441,26 @@
       "owner": "agentpod",
       "consumers": ["supermessage"],
       "kind": "matrix",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "Defined in AgentPod's own contract package and copied by hand into the Hermes plugin and SuperMessage.",
-      "phase": 2,
+      "status": "contracted",
+      "contract": [
+        "schemas/matrix/dev.agentpod.stream.delta.json",
+        "schemas/matrix/dev.agentpod.thought.delta.json",
+        "schemas/matrix/dev.agentpod.tool.update.json",
+        "schemas/matrix/dev.agentpod.turn.v1.json",
+        "schemas/matrix/dev.agentpod.turn_error.json",
+        "schemas/matrix/dev.agentpod.voice_reply.json",
+        "schemas/matrix/dev.agentpod.voice_transcript.json",
+        "fixtures/matrix-events/examples.json"
+      ],
+      "cases": {
+        "schemas/matrix/dev.agentpod.stream.delta.json": "fixtures/matrix-events/examples.json#/schemas/dev.agentpod.stream.delta",
+        "schemas/matrix/dev.agentpod.thought.delta.json": "fixtures/matrix-events/examples.json#/schemas/dev.agentpod.thought.delta",
+        "schemas/matrix/dev.agentpod.tool.update.json": "fixtures/matrix-events/examples.json#/schemas/dev.agentpod.tool.update",
+        "schemas/matrix/dev.agentpod.turn.v1.json": "fixtures/matrix-events/examples.json#/schemas/dev.agentpod.turn.v1",
+        "schemas/matrix/dev.agentpod.turn_error.json": "fixtures/matrix-events/examples.json#/schemas/dev.agentpod.turn_error",
+        "schemas/matrix/dev.agentpod.voice_reply.json": "fixtures/matrix-events/examples.json#/schemas/dev.agentpod.voice_reply",
+        "schemas/matrix/dev.agentpod.voice_transcript.json": "fixtures/matrix-events/examples.json#/schemas/dev.agentpod.voice_transcript"
+      },
       "evidence": [
         "agentpod:packages/contract/src/matrix-events.ts",
         "supermessage:crates/supermessage-core/src/live.rs"

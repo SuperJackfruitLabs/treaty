@@ -62,7 +62,8 @@ placement window instead of waiting for its next sweep.
 
 One schema per board-room Matrix event, named by its type string: the gates, questions,
 follow-ups, waiting cards, notices and receipts a board's work crosses chat on, the answers a
-person sends back, and AgentPod's harness permission envelope. Plain data, so SuperMessage's Rust
+person sends back, AgentPod's harness permission envelope, and AgentPod's chat activity in a
+station room. Plain data, so SuperMessage's Rust
 core and a Swift client read them without TypeScript. Published in
 `@superjackfruitlabs/treaty-matrix-events` (`packages/matrix-events`), which also holds the
 TypeScript that builds and reads them.
@@ -70,6 +71,23 @@ TypeScript that builds and reads them.
 - Three files describe a card that rides inside a prose message under a content key rather than as
   an event of its own: `dev.superpipeline.gate`, `dev.superpipeline.elicitation` and
   `dev.agentpod.permission`.
+- Seven files describe AgentPod's chat activity (ruling 6 of
+  `docs/2026-11-23-every-crossing-phase-2.md`): the turn record `dev.agentpod.turn.v1`, the live
+  deltas `dev.agentpod.stream.delta`, `dev.agentpod.thought.delta` and `dev.agentpod.tool.update`,
+  and the content keys `dev.agentpod.turn_error`, `dev.agentpod.voice_transcript` and
+  `dev.agentpod.voice_reply`. They describe bodies only; how often AgentPod sends them is its own.
+- **`x-treaty-carrier`** says how a body rides, on every schema that has one:
+  - `{"kind": "room-event"}`: the content of a room event whose type is the file's name;
+  - `{"kind": "to-device"}`: the content of a to-device event of that type, sent to a reader's own
+    devices and never stored in a room;
+  - `{"kind": "content-key", "key": "…", "msgtype": "…"}`: the value under `key` in the content of
+    an `m.room.message` with that `msgtype`, whose `body` stays the fallback every client shows.
+- **Enums are open to readers** where a schema lists `x-treaty-known-values`: the field is a
+  string, the list is what producers send today, and a value not in it is valid and drawn
+  generically, never dropped. The producer's narrower set is in the field's description.
+- **`schema_version`** in the activity shapes is an integer of at least 1, not a literal: a reader
+  draws a higher version best-effort and never drops it. The deltas carry no version and change
+  only additively. `session_id` there is a turn-scoped id: a new value starts a new turn.
 - `subject.expires_at` (gate.v2, question.v2, delivery.v2, permission.v2) is an RFC 3339 date-time with
   seconds and an explicit offset, or null. It carries both `"format": "date-time"` and a `pattern`,
   because a validator need not assert `format`; `isSubjectExpiry` is the same rule in TypeScript.

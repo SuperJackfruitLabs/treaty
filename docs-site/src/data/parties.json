@@ -513,6 +513,69 @@
       "readBy": [
         "SuperMessage"
       ]
+    },
+    "matrix/dev.agentpod.turn.v1": {
+      "group": "activity",
+      "sentBy": [
+        "AgentPod"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.agentpod.stream.delta": {
+      "group": "activity",
+      "sentBy": [
+        "AgentPod"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.agentpod.thought.delta": {
+      "group": "activity",
+      "sentBy": [
+        "AgentPod"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.agentpod.tool.update": {
+      "group": "activity",
+      "sentBy": [
+        "AgentPod"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.agentpod.turn_error": {
+      "group": "activity",
+      "sentBy": [
+        "AgentPod"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.agentpod.voice_transcript": {
+      "group": "activity",
+      "sentBy": [
+        "AgentPod"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
+    },
+    "matrix/dev.agentpod.voice_reply": {
+      "group": "activity",
+      "sentBy": [
+        "AgentPod"
+      ],
+      "readBy": [
+        "SuperMessage"
+      ]
     }
   }
 }

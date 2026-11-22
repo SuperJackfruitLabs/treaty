@@ -106,6 +106,7 @@ const CONSTRAINTS = [
   ['minItems', (v) => `at least ${plural(v, 'item', 'items')}`],
   ['maxItems', (v) => `at most ${plural(v, 'item', 'items')}`],
   ['default', (v) => `default ${code(JSON.stringify(v))}`],
+  ['x-treaty-known-values', (v) => `known values (open: any other is valid) ${v.map((x) => code(x)).join(', ')}`],
 ];
 
 function constraintsOf(schema, node) {
@@ -317,9 +318,14 @@ const GROUPS = {
   receipts: { label: 'Receipts', what: 'what closes a card once the board accepted a decision' },
   notices: { label: 'Notices', what: 'replies that report progress on a card' },
   permissions: { label: 'Permissions', what: "AgentPod's harness permission prompts, in a station room" },
+  activity: { label: 'Chat activity', what: "AgentPod's turns, live deltas, error cards and voice keys, in a station room" },
 };
 
 function howItRides(name, schema) {
+  const carrier = schema['x-treaty-carrier'];
+  if (carrier?.kind === 'room-event') return `A room event of type \`${name}\` (\`x-treaty-carrier\`: room-event).`;
+  if (carrier?.kind === 'to-device') return `A to-device event of type \`${name}\`, sent to the reader's own devices and never stored in a room (\`x-treaty-carrier\`: to-device).`;
+  if (carrier?.kind === 'content-key') return `The value under the content key \`${carrier.key}\` of an \`m.room.message\` whose \`msgtype\` is \`${carrier.msgtype}\`; the message's \`body\` stays the fallback (\`x-treaty-carrier\`: content-key).`;
   const marker = schema.properties?.suite_event_type?.const;
   if (marker && schema.properties?.msgtype) return `An \`m.room.message\` whose content carries \`suite_event_type: "${marker}"\`.`;
   if (marker) return `Content that carries \`suite_event_type: "${marker}"\`.`;
@@ -401,7 +407,7 @@ function matrixIndex(keys) {
     frontmatter({ title: 'Matrix events', description: 'Every board-room Matrix event treaty has a schema for, by what it does.', order: 0 }),
     GENERATED,
     '',
-    `The board-room contract, published as \`@superjackfruitlabs/treaty-matrix-events\`: ${keys.length} schemas, one per event type. A type string never changes; a breaking change is a new type beside the old one (\`.v1\` to \`.v2\`).`,
+    `The Matrix contract, published as \`@superjackfruitlabs/treaty-matrix-events\`: ${keys.length} schemas, one per event type or content key. A type string never changes; a breaking change is a new type beside the old one (\`.v1\` to \`.v2\`).`,
     '',
   ];
   for (const [g, { label, what }] of Object.entries(GROUPS)) {
