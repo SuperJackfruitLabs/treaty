@@ -28,5 +28,8 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "jose": "6.2.12"
   }
 }
