@@ -147,7 +147,7 @@ These are defaults. Each is a line in a contract, so changing one later is a ver
 
 ## Release order
 
-1. **treaty `v0.0.16`** carries this phase's treaty tasks, plus #54's parameter validation.
+1. **treaty `v0.0.17`** carries this phase's treaty tasks, (#54's parameter validation shipped in v0.0.16, 2026-11-22).
 2. **SuperPipeline (producer):**
    - per-event ids;
    - the direct push on the relay's envelope, dual-signed;
@@ -250,14 +250,14 @@ Cases go in `fixtures/matrix-events/examples.json`, including:
 - Registry statuses and coverage. Exactly 53% is recorded in `scripts/registry.test.ts`.
 - `CHANGELOG.md`.
 - The docs site, with a page per new schema.
-- Then the operator tags `v0.0.16`.
+- Then the operator tags `v0.0.17`.
 
 ---
 
 ## Product tasks
 
 Each is one pull request in its repository, with that repository's CI run locally before
-pushing, pinned to `0.0.16`.
+pushing, pinned to `0.0.17`.
 
 ### SuperPipeline (producer; merges first)
 
@@ -314,7 +314,7 @@ pushing, pinned to `0.0.16`.
    - `agentpod.live-activity`
 
    The `include_str!` and `project.yml` paths move. `check-treaty-corpus.sh` is replaced by
-   `treaty verify`. It moves to 0.0.16, which picks up the strict `expires_at` cases.
+   `treaty verify`. It moves to 0.0.17, which picks up the strict `expires_at` cases.
 
 2. **Readers follow the contract:**
    - add `harness_disconnected`, and `attention` on iOS;
