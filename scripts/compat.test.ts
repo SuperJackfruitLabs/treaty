@@ -207,3 +207,64 @@ describe("hardening", () => {
     expect(r.stderr).not.toContain("    at ");
   });
 });
+
+const runDefault = () =>
+  spawnSync("bun", [SCRIPT, "--root", repo], { encoding: "utf8" });
+
+describe("the default base is the latest release", () => {
+  test("a change made after the release, then changed again before the next one, is not breaking", () => {
+    git("tag", "v0.0.1");
+    // An unreleased schema lands, then changes in place: nothing could have pinned it.
+    const fresh = "schemas/superpipeline/fresh.v1.json";
+    write(fresh, thing({}, fresh));
+    git("add", "-A");
+    git("commit", "-q", "-m", "unreleased");
+    write(fresh, thing({ required: [] }, fresh));
+    git("add", "-A");
+    git("commit", "-q", "-m", "unreleased, changed");
+    const r = runDefault();
+    expect(r.status).toBe(0);
+    expect(r.stdout).toContain("against v0.0.1");
+  });
+
+  test("a change to what the release holds is breaking", () => {
+    git("tag", "v0.0.1");
+    write(SCHEMA, thing({ properties: { id: { type: "integer" } } }));
+    git("add", "-A");
+    git("commit", "-q", "-m", "break a released schema");
+    const r = runDefault();
+    expect(r.status).toBe(1);
+    expect(r.stdout).toContain("type-changed");
+  });
+});
+
+describe("an exception scoped to a release", () => {
+  test("excuses a change against that release, and stops applying against the next", () => {
+    git("tag", "v0.0.1");
+    write(SCHEMA, thing({ properties: { id: { type: "integer" } } }));
+    write("contracts/compat-exceptions.json", {
+      exceptions: [
+        {
+          path: SCHEMA,
+          rule: "type-changed",
+          reason: "test",
+          against: "v0.0.1",
+        },
+      ],
+    });
+    git("add", "-A");
+    git("commit", "-q", "-m", "a recorded break");
+    const excused = spawnSync("bun", [SCRIPT, "--root", repo], {
+      encoding: "utf8",
+    });
+    expect(excused.status).toBe(0);
+    expect(excused.stdout).toContain("excused");
+
+    git("tag", "v0.0.2");
+    const later = spawnSync("bun", [SCRIPT, "--root", repo], {
+      encoding: "utf8",
+    });
+    expect(later.status).toBe(0);
+    expect(later.stdout).toContain("expired");
+  });
+});
