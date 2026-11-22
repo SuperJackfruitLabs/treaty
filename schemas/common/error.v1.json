@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/common/error.v1.json",
+  "title": "A refusal or failure from a product's HTTP API",
+  "description": "Every 4xx and 5xx body a suite product's API returns. `code` is a name from contracts/error-codes.json; `message` is for people and may change. Extra properties are allowed: many routes return the whole result object, `ok: false` included.",
+  "type": "object",
+  "required": ["error"],
+  "properties": {
+    "error": {
+      "type": "object",
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"
+        },
+        "message": { "type": "string" },
+        "detail": { "type": "object" }
+      }
+    }
+  }
+}

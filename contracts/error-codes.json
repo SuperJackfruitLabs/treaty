@@ -1,0 +1,31 @@
+{
+  "registry": "treaty error codes",
+  "version": 1,
+  "description": "One code, one status, across a product's whole API. A code's owner is the product that returns it. Seeded with four of SuperPipeline's codes on 2026-11-22; each API's codes are added when the API is contracted.",
+  "codes": [
+    {
+      "code": "NOT_RUN_OWNER",
+      "owner": "superpipeline",
+      "status": 403,
+      "meaning": "The caller is not the agent that holds this run."
+    },
+    {
+      "code": "SEPARATION_OF_DUTIES",
+      "owner": "superpipeline",
+      "status": 403,
+      "meaning": "The principal that produced or asked for something cannot also decide it."
+    },
+    {
+      "code": "STALE_LEASE",
+      "owner": "superpipeline",
+      "status": 409,
+      "meaning": "The caller's lease on the run is no longer the current one."
+    },
+    {
+      "code": "INVALID_STALE_SETTINGS",
+      "owner": "superpipeline",
+      "status": 400,
+      "meaning": "A board's stale-card settings are out of range."
+    }
+  ]
+}

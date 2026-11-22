@@ -197,7 +197,7 @@ runtime dependency of the new package), JSON Schema 2020-12, OpenAPI 3.1 in JSON
   - `codes are unique, SCREAMING_SNAKE_CASE, and owned by a known product`;
   - `status is an HTTP status from 400 to 599`.
 - [ ] **Step 2: Run** `bun test scripts/error-codes.test.ts`. Expected: FAIL.
-- [ ] **Step 3: Write the schema, the cases and the code registry.** Seed the registry with SuperPipeline's codes verified on its `main`: `NOT_RUN_OWNER` (409), `SEPARATION_OF_DUTIES` (403), `INVALID_STALE_SETTINGS` (400). Phase 1 adds the rest as each API is contracted.
+- [ ] **Step 3: Write the schema, the cases and the code registry.** Seed the registry with four of SuperPipeline's codes, with the statuses its `statusForCode` (`apps/api/src/routes/errors.ts`) gives them on `main`: `NOT_RUN_OWNER` (403), `SEPARATION_OF_DUTIES` (403), `STALE_LEASE` (409) and `INVALID_STALE_SETTINGS` (400). Phase 1 adds all 105, checked against that function by SuperPipeline's own test.
 - [ ] **Step 4: Run** the test and `bun run check`. Expected: PASS.
 - [ ] **Step 5: Commit** `contracts: one error envelope and a registry of error codes`.
 
