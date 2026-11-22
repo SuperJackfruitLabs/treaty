@@ -87,6 +87,31 @@ const err403 = [
   "schema",
 ];
 
+/** A Matrix-envelope API with one operation, declaring `envelope`. */
+const matrixDoc = (envelope: string) => ({
+  openapi: "3.1.0",
+  "x-treaty-error-envelope": envelope,
+  paths: {
+    "/_supermessage/v1/live-activity/tokens": {
+      delete: {
+        operationId: "removeLiveActivityToken",
+        "x-treaty-error-codes": ["M_MISSING_TOKEN", "M_UNKNOWN_TOKEN"],
+        responses: {
+          "204": { description: "removed" },
+          "401": {
+            description: "refused",
+            content: {
+              "application/json": {
+                schema: { $ref: "../../common/matrix-error.v1.json" },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+});
+
 describe("checkOpenApi", () => {
   test("the sample keeps every rule", () => {
     expect(checkOpenApi(bundleWith(), DOC, registry)).toEqual([]);
@@ -214,6 +239,47 @@ describe("checkOpenApi", () => {
       ],
     };
     expect(checkOpenApi(bundle, accountsDoc, reg)).toEqual([]);
+  });
+
+  describe("a matrix-error.v1 API", () => {
+    const agentpodDoc = "schemas/http/agentpod/sample.v1.openapi.json";
+    const bundleFor = (envelope: string) =>
+      createBundle({
+        "schemas/common/matrix-error.v1.json": json(
+          join(root, "schemas/common/matrix-error.v1.json"),
+        ),
+        "contracts/error-codes.json": json(
+          join(root, "contracts/error-codes.json"),
+        ),
+        [agentpodDoc]: matrixDoc(envelope),
+        ["fixtures/http/agentpod/sample.v1.cases.json"]: { operations: {} },
+      });
+    const [first] = registry.crossings;
+    if (!first) throw new Error("the sample registry is empty");
+    const reg: Registry = {
+      ...registry,
+      crossings: [
+        {
+          ...first,
+          id: "agentpod.sample",
+          owner: "agentpod",
+          consumers: ["supermessage"],
+          contract: [agentpodDoc],
+        },
+      ],
+    };
+
+    test("passes with Matrix error responses and its owner's Matrix codes", () => {
+      expect(
+        checkOpenApi(bundleFor("matrix-error.v1"), agentpodDoc, reg),
+      ).toEqual([]);
+    });
+
+    test("fails when the document declares another envelope", () => {
+      expect(
+        checkOpenApi(bundleFor("error.v1"), agentpodDoc, reg).join("\n"),
+      ).toContain("an error response must be schemas/common/error.v1.json");
+    });
   });
 
   test("refuses an error response in another envelope than the document declares", () => {
