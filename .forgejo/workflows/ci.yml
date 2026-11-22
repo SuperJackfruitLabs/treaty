@@ -62,8 +62,8 @@ jobs:
           BEFORE: ${{ github.event.before }}
         run: |
           if [ "$EVENT" = pull_request ]; then
-            git fetch --no-tags origin main
-            BASE=$(git merge-base HEAD FETCH_HEAD)
+            # fetch-depth: 0 above already holds every branch, origin/main included.
+            BASE=$(git merge-base HEAD origin/main)
           else
             BASE=$BEFORE
           fi
