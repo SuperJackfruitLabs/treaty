@@ -43,6 +43,8 @@ interface Exception {
   path: string;
   rule?: string;
   reason: string;
+  /** The release the change breaks against. Once compat compares with another base, the entry no longer applies. */
+  against?: string;
 }
 
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -274,12 +276,31 @@ function exceptionsIn(root: string): Exception[] {
               path: e.path,
               reason: e.reason,
               ...(typeof e.rule === "string" ? { rule: e.rule } : {}),
+              ...(typeof e.against === "string" ? { against: e.against } : {}),
             },
           ]
         : [],
     );
   } catch {
     return [];
+  }
+}
+
+/** The latest release tag (vX.Y.Z) HEAD's history holds, or undefined. */
+function latestRelease(root: string): string | undefined {
+  try {
+    return (
+      git(root, [
+        "describe",
+        "--tags",
+        "--abbrev=0",
+        "--match",
+        "v[0-9]*",
+        "HEAD",
+      ]).trim() || undefined
+    );
+  } catch {
+    return undefined;
   }
 }
 
@@ -291,26 +312,34 @@ function arg(name: string): string | undefined {
 if (import.meta.main) {
   const root = arg("--root") ?? join(import.meta.dir, "..");
   const asked = arg("--base");
-  let base: string | undefined;
-  if (asked !== undefined) base = commitOf(root, asked);
-  else {
-    try {
-      base = git(root, ["merge-base", "HEAD", "origin/main"]).trim();
-    } catch {
-      base = undefined;
-    }
-  }
+  // What can break is what a consumer pins: a release. By default compare with the latest
+  // release tag HEAD descends from, so a contract added and changed again between two releases
+  // is never called breaking, and anything a release holds always is.
+  const release = asked === undefined ? latestRelease(root) : undefined;
+  const base =
+    asked !== undefined
+      ? commitOf(root, asked)
+      : release && commitOf(root, release);
+  const label = asked ?? release;
   if (!base) {
     process.stderr.write(
       asked !== undefined
         ? `compat: --base ${JSON.stringify(asked)} is not a commit in this repository\n`
-        : "compat: no merge base with origin/main; fetch it, or pass --base <commit>\n",
+        : "compat: no release tag (v*) in HEAD's history; fetch the tags, or pass --base <commit>\n",
     );
     process.exit(2);
   }
+  const all = exceptionsIn(root);
+  const active = all.filter(
+    (e) => e.against === undefined || e.against === label,
+  );
+  for (const e of all.filter((x) => !active.includes(x)))
+    console.log(
+      `expired   contracts/compat-exceptions.json: ${e.path} (against ${e.against}); remove it`,
+    );
   const outcome = judge(
     compare(bundleAt(root, base), loadBundle(root)),
-    exceptionsIn(root),
+    active,
   );
   for (const f of outcome.breaking)
     console.log(
@@ -325,7 +354,7 @@ if (import.meta.main) {
       `stale     contracts/compat-exceptions.json: ${e.path}${e.rule ? ` ${e.rule}` : ""} matches no change`,
     );
   console.log(
-    `compat: ${outcome.breaking.length} breaking, ${outcome.excused.length} excused, ${outcome.stale.length} stale exceptions (against ${base.slice(0, 12)})`,
+    `compat: ${outcome.breaking.length} breaking, ${outcome.excused.length} excused, ${outcome.stale.length} stale exceptions (against ${label === base ? base.slice(0, 12) : `${label}, ${base.slice(0, 12)}`})`,
   );
   process.exit(outcome.breaking.length > 0 || outcome.stale.length > 0 ? 1 : 0);
 }

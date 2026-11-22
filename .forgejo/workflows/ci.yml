@@ -53,21 +53,12 @@ jobs:
         run: bun run typecheck
       - name: Lint
         run: bun run lint
-      # Within a version a contract may only add optional things. What can break is what main
-      # already holds, so a pull request is compared with its merge base with main, even when it is
-      # stacked on another branch; a push to main is compared with the commit before it.
+      # Within a version a contract may only add optional things. What can break is what a consumer
+      # pins, which is a release, so compat compares with the latest v* tag in this commit's history
+      # (fetch-depth: 0 above brings the tags). A contract added and changed again between two
+      # releases is never breaking; anything a release holds always is.
       - name: Contract compatibility
-        env:
-          EVENT: ${{ github.event_name }}
-          BEFORE: ${{ github.event.before }}
-        run: |
-          if [ "$EVENT" = pull_request ]; then
-            # fetch-depth: 0 above already holds every branch, origin/main included.
-            BASE=$(git merge-base HEAD origin/main)
-          else
-            BASE=$BEFORE
-          fi
-          bun run compat --base "$BASE"
+        run: bun run compat
       - name: Start nats-server for the relay's tests (pinned, checksum checked)
         run: |
           v=2.15.2

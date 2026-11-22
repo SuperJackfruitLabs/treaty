@@ -1,4 +1,23 @@
 {
-  "description": "Breaking changes allowed through scripts/compat.ts, each with its reason. Kept empty: a contract that must break gets a new version beside the old one instead. An entry that matches no change fails as stale.",
-  "exceptions": []
+  "description": "Breaking changes allowed through scripts/compat.ts, each with its reason and the release it breaks against. An entry applies only while compat compares with that release; an entry that matches no change fails as stale.",
+  "exceptions": [
+    {
+      "path": "schemas/superbench/operation.v2.json",
+      "rule": "composition-changed",
+      "against": "v0.0.14",
+      "reason": "SuperBench v2's reclaim operation and phases, widened in place after v0.0.14 and before the compatibility check existed (CHANGELOG, Unreleased: 'The v2 response phase enum is widened in place'). Its only consumer, AgentPod's node agent, accepts the new values before the producer sends them. From v0.0.15 a change like this is a new version."
+    },
+    {
+      "path": "schemas/superbench/response.v2.json",
+      "rule": "enum-widened",
+      "against": "v0.0.14",
+      "reason": "SuperBench v2's reclaim operation and phases, widened in place after v0.0.14 and before the compatibility check existed (CHANGELOG, Unreleased: 'The v2 response phase enum is widened in place'). Its only consumer, AgentPod's node agent, accepts the new values before the producer sends them. From v0.0.15 a change like this is a new version."
+    },
+    {
+      "path": "schemas/superbench/response.v2.json",
+      "rule": "composition-changed",
+      "against": "v0.0.14",
+      "reason": "SuperBench v2's reclaim operation and phases, widened in place after v0.0.14 and before the compatibility check existed (CHANGELOG, Unreleased: 'The v2 response phase enum is widened in place'). Its only consumer, AgentPod's node agent, accepts the new values before the producer sends them. From v0.0.15 a change like this is a new version."
+    }
+  ]
 }
