@@ -75,6 +75,8 @@ export interface DocOperation {
   node: Node;
   /** Path-level and operation-level parameters, resolved; the operation's win by `in` and `name`. */
   parameters: Map<string, Node>;
+  /** Where each of those parameters sits in the document, by the same `in:name` key. */
+  parameterPointers: Map<string, string>;
   /** The request body, resolved, or undefined. */
   requestBody?: { node: Node; pointer: string };
 }
@@ -84,12 +86,21 @@ function resolvedParameters(
   list: unknown,
   pointer: string,
   into: Map<string, Node>,
+  pointers: Map<string, string>,
 ): void {
   if (!Array.isArray(list)) return;
   for (const [i, entry] of list.entries()) {
-    const p = deref(doc, entry, `${pointer}/${i}`)?.node;
-    if (p && typeof p.name === "string" && typeof p.in === "string")
+    const resolved = deref(doc, entry, `${pointer}/${i}`);
+    const p = resolved?.node;
+    if (
+      resolved &&
+      p &&
+      typeof p.name === "string" &&
+      typeof p.in === "string"
+    ) {
       into.set(`${p.in}:${p.name}`, p);
+      pointers.set(`${p.in}:${p.name}`, resolved.pointer);
+    }
   }
 }
 
@@ -104,18 +115,12 @@ export function documentOperations(doc: unknown): DocOperation[] {
       if (!isObject(op)) continue;
       const pointer = `${itemPointer}/${method}`;
       const parameters = new Map<string, Node>();
-      resolvedParameters(
-        doc,
-        item.parameters,
-        `${itemPointer}/parameters`,
-        parameters,
-      );
-      resolvedParameters(
-        doc,
-        op.parameters,
-        `${pointer}/parameters`,
-        parameters,
-      );
+      const parameterPointers = new Map<string, string>();
+      for (const [list, at] of [
+        [item.parameters, `${itemPointer}/parameters`],
+        [op.parameters, `${pointer}/parameters`],
+      ] as const)
+        resolvedParameters(doc, list, at, parameters, parameterPointers);
       const requestBody =
         op.requestBody === undefined
           ? undefined
@@ -130,6 +135,7 @@ export function documentOperations(doc: unknown): DocOperation[] {
         pointer,
         node: op,
         parameters,
+        parameterPointers,
         ...(requestBody ? { requestBody } : {}),
       });
     }

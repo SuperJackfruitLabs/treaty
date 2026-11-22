@@ -67,7 +67,9 @@ gatePending(body); // { valid, errors }
 | `validatorFor()` | A validator for a schema, by path, path and JSON pointer, or `$id`. Never reaches the network; an unresolvable `$ref` is a refusal, not a throw. |
 | `openApi()` | An HTTP API from `schemas/http/`, with its operations. |
 | `matchRoute()` | The operation a method and path reach. A literal segment outranks a parameter. |
-| `validateRequest()`, `validateResponse()` | A body against an operation's contract. A status the contract does not name is refused. |
+| `validateRequest()`, `validateResponse()` | A body against an operation's contract. A status the contract does not name is refused; an absent optional body is accepted. |
+| `validateParameters()` | A request's path, query and header values against the operation's parameters, path-level ones included. URL text is converted to the schema's type first; parameters the contract does not name are ignored. |
+| `routeParams()` | The operation a request reaches and its path values, decoded, ready for `validateParameters()`. |
 | `readRegistry()`, `coverage()` | The crossing registry and the share of crossings under contract. |
 | `compareSchemas()`, `compareOpenApi()` | The breaking changes between two versions of a contract. |
 | `verify()`, `sync()` | What `treaty verify` and `treaty sync` run, from `./node`. |

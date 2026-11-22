@@ -4,6 +4,7 @@
  * Only `application/json` bodies are contracted. A response with no content accepts only an
  * empty body.
  */
+import { resolvePointer } from "./cases.ts";
 import {
   bodySchemaPointer,
   documentOperations,
@@ -24,6 +25,16 @@ export interface Operation {
   /** Status (or `default`, `4XX`) → pointer to the body's schema, or null for no body. */
   responses: Record<string, string | null>;
   errorCodes: string[];
+  /** Path, query and header parameters, path-level ones merged in; the operation's own win. */
+  parameters?: Parameter[];
+}
+
+export interface Parameter {
+  in: "path" | "query" | "header" | "cookie";
+  name: string;
+  required: boolean;
+  /** JSON pointer, within the document, to the parameter's schema. */
+  schema?: string;
 }
 
 export interface Api {
@@ -55,12 +66,32 @@ export function operations(doc: unknown): Operation[] {
             response,
             `${op.pointer}/responses/${status}`,
           ) ?? null;
+    const parameters: Parameter[] = [];
+    for (const [key, param] of op.parameters) {
+      const where = param.in;
+      if (
+        where !== "path" &&
+        where !== "query" &&
+        where !== "header" &&
+        where !== "cookie"
+      )
+        continue;
+      const at = op.parameterPointers.get(key);
+      parameters.push({
+        in: where,
+        name: String(param.name),
+        // A path parameter is always required (OpenAPI 3.1 §4.8.12.1).
+        required: where === "path" || param.required === true,
+        ...(at && isObject(param.schema) ? { schema: `${at}/schema` } : {}),
+      });
+    }
     return {
       id: op.key,
       method: op.method,
       path: op.path,
       ...(request ? { request } : {}),
       requestRequired: op.requestBody?.node.required === true,
+      parameters,
       responses,
       errorCodes: stringArray(op.node["x-treaty-error-codes"]),
     };
@@ -207,4 +238,120 @@ export function validateResponse(
       errors: [`status ${key} is not in the contract for ${operationId}`],
     };
   return check(bundle, api, pointer, body, `${operationId}'s ${key}`);
+}
+
+export interface ParameterValues {
+  path?: Record<string, string>;
+  /** A repeated query key arrives as an array. */
+  query?: Record<string, string | string[]>;
+  /** Header names compare case-insensitively. */
+  header?: Record<string, string>;
+}
+
+function schemaType(schema: unknown): string[] {
+  if (!isObject(schema)) return [];
+  const t = schema.type;
+  return Array.isArray(t)
+    ? t.filter((x): x is string => typeof x === "string")
+    : typeof t === "string"
+      ? [t]
+      : [];
+}
+
+/** A value from a URL is text; turn it into what its schema says, or leave it for the validator to refuse. */
+function convert(raw: string, schema: unknown): unknown {
+  const types = schemaType(schema);
+  if (
+    (types.includes("integer") || types.includes("number")) &&
+    /^-?\d+(\.\d+)?$/.test(raw)
+  )
+    return Number(raw);
+  if (types.includes("boolean") && (raw === "true" || raw === "false"))
+    return raw === "true";
+  return raw;
+}
+
+function rawValue(
+  values: ParameterValues,
+  param: Parameter,
+): string | string[] | undefined {
+  if (param.in === "path") return values.path?.[param.name];
+  if (param.in === "query") return values.query?.[param.name];
+  if (param.in === "header") {
+    const want = param.name.toLowerCase();
+    const found = Object.entries(values.header ?? {}).find(
+      ([k]) => k.toLowerCase() === want,
+    );
+    return found?.[1];
+  }
+  return undefined;
+}
+
+/**
+ * Checks a request's path, query and header values against an operation's parameters. Values
+ * arrive as text and are converted to their schema's type first; a parameter the contract does
+ * not name is ignored, as readers ignore what they do not know.
+ */
+export function validateParameters(
+  bundle: Bundle,
+  api: Api,
+  operationId: string,
+  values: ParameterValues,
+): Result {
+  const op = find(api, operationId);
+  const doc = bundle.files.get(api.path);
+  const errors: string[] = [];
+  for (const param of op.parameters ?? []) {
+    const raw = rawValue(values, param);
+    const label = `${param.in} parameter ${param.name}`;
+    if (raw === undefined) {
+      if (param.required) errors.push(`${label} is required`);
+      continue;
+    }
+    if (!param.schema) continue;
+    const schema = resolvePointer(doc, param.schema);
+    const value = schemaType(schema).includes("array")
+      ? (Array.isArray(raw) ? raw : [raw]).map((v) =>
+          convert(v, isObject(schema) ? schema.items : undefined),
+        )
+      : convert(Array.isArray(raw) ? (raw[0] ?? "") : raw, schema);
+    const result = validatorFor(bundle, `${api.path}#${param.schema}`)(value);
+    for (const e of result.errors) errors.push(`${label}: ${e}`);
+  }
+  return { valid: errors.length === 0, errors };
+}
+
+/** The operation a request reaches and its path parameter values, decoded; or undefined. */
+export function routeParams(
+  api: Api,
+  method: string,
+  path: string,
+): { operationId: string; path: Record<string, string> } | undefined {
+  const operationId = matchRoute(api, method, path);
+  if (!operationId) return undefined;
+  const op = find(api, operationId);
+  const template = segments(op.path);
+  const actual = segments(path);
+  const values: Record<string, string> = {};
+  for (const [i, part] of template.entries()) {
+    if (!part.includes("{")) continue;
+    const names: string[] = [];
+    const pattern = part
+      .split(/(\{[^}]+\})/)
+      .map((piece) => {
+        const m = /^\{([^}]+)\}$/.exec(piece);
+        if (m?.[1]) {
+          names.push(m[1]);
+          return "([^/]+)";
+        }
+        return escapeRegex(piece);
+      })
+      .join("");
+    const match = new RegExp(`^${pattern}$`).exec(actual[i] ?? "");
+    for (const [j, name] of names.entries()) {
+      const v = match?.[j + 1];
+      if (v !== undefined) values[name] = v;
+    }
+  }
+  return { operationId, path: values };
 }
