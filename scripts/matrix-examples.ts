@@ -17,10 +17,12 @@
  *
  * The cases are made in `scripts/matrix-examples/`: `source.ts` (the source corpus), `inputs.ts`
  * (the SuperPipeline bodies), `built.ts` (valid cases from the builders), `card-invalid.ts` and
- * `derived-invalid.ts` (the invalid cases the source corpus does not hold).
+ * `derived-invalid.ts` (the invalid cases the source corpus does not hold), and `activity.ts`
+ * (AgentPod's chat activity, which no builder here makes).
  */
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { activity } from "./matrix-examples/activity.ts";
 import { built } from "./matrix-examples/built.ts";
 import { cardInvalid } from "./matrix-examples/card-invalid.ts";
 import { derivedInvalid } from "./matrix-examples/derived-invalid.ts";
@@ -36,6 +38,7 @@ export function buildExamples(): unknown {
   built(schemas);
   cardInvalid(schemas);
   derivedInvalid(schemas);
+  activity(schemas);
   const sorted = Object.fromEntries(
     Object.entries(schemas).toSorted(([a], [b]) => (a < b ? -1 : 1)),
   );
@@ -46,6 +49,7 @@ export function buildExamples(): unknown {
     sources: [
       "fixtures/ecosystem-identity/matrix_gate_events.json (version 11): every accept and reject case",
       "content built by @superjackfruitlabs/treaty-matrix-events from bodies SuperPipeline sends (labels starting `built:`)",
+      "AgentPod's chat activity, written from its producers' code: the hub's builders (labels starting `hub:`), the Hermes plugin (`hermes:`), and what a reader must still draw (`reader:`)",
     ],
     howToRead: {
       valid:
