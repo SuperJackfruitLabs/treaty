@@ -154,13 +154,23 @@ const OUTCOME_VERBS: Record<string, string> = {
 };
 
 /**
+ * The decision a gate's receipt carries when the board ended the gate without a decision: its card
+ * was moved by hand or archived while the review was pending, and SuperPipeline reads the gate as
+ * `cancelled`. Nobody chose it, so the receipt names nobody (`decidedBy` null), and a card that still
+ * offered answers would offer ones the board can no longer take.
+ */
+export const GATE_CANCELLED_DECISION = "cancelled";
+
+/**
  * Outcomes nobody chose, said as a whole sentence. A subject-bound gate whose subject passed its
  * `expires_at` is closed by the board as `expired`, and "Expired — the board has it" would read as
- * though someone had answered.
+ * though someone had answered. A cancelled gate is the same: nobody decided it, so "by" nobody.
  */
 const OUTCOME_SENTENCES: Record<string, string> = {
   expired:
     "Expired — what this gate approves passed its expiry before anyone approved it, so it can no longer be approved here.",
+  [GATE_CANCELLED_DECISION]:
+    "Cancelled — the card was moved or archived before anyone decided, so this gate can no longer be answered here.",
 };
 
 /** How a decision reads in a sentence; an approval that chose a variant names it. */

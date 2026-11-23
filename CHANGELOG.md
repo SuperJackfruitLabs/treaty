@@ -5,6 +5,8 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- **A cancelled gate has a receipt.** `dev.superpipeline.gate.outcome.v1` gains the decision `cancelled`, for a gate the board ended without a decision (its card was moved by hand or archived while the review was pending). `GATE_CANCELLED_DECISION` names it, and `gateOutcomeBody` says it as a whole sentence that names nobody. The schema now lists the decisions it carries in `x-treaty-known-values`; the field stays an open string, and a reader that does not know a value still closes the card.
+
 ## v0.0.17 — 2026-11-22
 
 - **Events: one delivery contract on both paths.**
