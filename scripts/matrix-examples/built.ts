@@ -9,6 +9,7 @@ import {
   deliveryV2Content,
   elicitationRequestCard,
   gateEventContent,
+  GATE_CANCELLED_DECISION,
   gateOutcomeContent,
   gateProgressContent,
   gateRequestCard,
@@ -210,6 +211,17 @@ export function built(out: Examples): void {
       decidedBy: "rakesh",
       chosen: { id: "short", label: "Short" },
       heldUntil: "2030-01-02T09:00:00Z",
+      gateEventId: "$gateEvent",
+    }),
+  );
+  add(
+    "dev.superpipeline.gate.outcome.v1",
+    "a gate cancelled when its card was moved or archived: nobody decided it",
+    gateOutcomeContent({
+      gateId: "gate_8f3a",
+      boardId: "brd_7c1f",
+      decision: GATE_CANCELLED_DECISION,
+      decidedBy: null,
       gateEventId: "$gateEvent",
     }),
   );

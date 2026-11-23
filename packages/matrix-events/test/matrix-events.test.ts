@@ -8,7 +8,10 @@ import {
   boardRoomNames,
   boardSpeakerMxid,
   deliveryV2Content,
+  GATE_CANCELLED_DECISION,
   gateEventContent,
+  gateOutcomeBody,
+  gateOutcomeContent,
   gateOptionsV2,
   gateProseBody,
   gateSubjectV2,
@@ -356,6 +359,48 @@ describe("answers", () => {
       text: "  ",
     });
     expect(parsed?.text).toBeNull();
+  });
+});
+
+describe("a gate's receipt", () => {
+  test("an approval is said by whoever decided it", () => {
+    expect(gateOutcomeBody({ decision: "approve", decidedBy: "rakesh" })).toBe(
+      "Approved by rakesh — the board has it.",
+    );
+  });
+
+  test("a cancelled gate is a whole sentence that names nobody, whoever is passed", () => {
+    const sentence =
+      "Cancelled — the card was moved or archived before anyone decided, so this gate can no longer be answered here.";
+    expect(GATE_CANCELLED_DECISION).toBe("cancelled");
+    expect(
+      gateOutcomeBody({ decision: GATE_CANCELLED_DECISION, decidedBy: null }),
+    ).toBe(sentence);
+    expect(
+      gateOutcomeBody({
+        decision: GATE_CANCELLED_DECISION,
+        decidedBy: "rakesh",
+      }),
+    ).toBe(sentence);
+  });
+
+  test("a cancelled gate's content points at its card and names no decider", () => {
+    expect(
+      gateOutcomeContent({
+        gateId: "gate_1",
+        boardId: "brd_1",
+        decision: GATE_CANCELLED_DECISION,
+        decidedBy: null,
+        gateEventId: "$card",
+      }),
+    ).toEqual({
+      suite_event_type: "dev.superpipeline.gate.outcome.v1",
+      gate_id: "gate_1",
+      board_id: "brd_1",
+      decision: "cancelled",
+      decided_by: null,
+      "m.relates_to": { rel_type: "m.reference", event_id: "$card" },
+    });
   });
 });
 

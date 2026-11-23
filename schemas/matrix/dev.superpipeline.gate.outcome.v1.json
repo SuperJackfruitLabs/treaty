@@ -25,7 +25,20 @@
     },
     "decision": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "x-treaty-known-values": [
+        "approve",
+        "approve_automatic",
+        "approve_manual",
+        "request_changes",
+        "reject",
+        "expired",
+        "cancelled",
+        "record_live_url",
+        "switch_to_automatic",
+        "settled_elsewhere"
+      ],
+      "description": "What closed the gate (or follow-up). A person's decision is the option id they chose; expired and cancelled are closed by the board with nobody deciding (decided_by null): expired when what the gate approves passed its expiry, cancelled when the card was moved or archived while the gate was pending. A follow-up is settled with record_live_url, switch_to_automatic or settled_elsewhere. Open to readers: a value not listed in x-treaty-known-values is valid and closes the card all the same, said generically, never dropped."
     },
     "decided_by": {
       "type": ["string", "null"]
