@@ -1,9 +1,9 @@
 ---
 title: Status
-description: "Where Treaty stands: v0.0.17, what ships in it, what is not decided yet, and what is still to come."
+description: "Where Treaty stands: v0.0.18, what ships in it, what is not decided yet, and what is still to come."
 ---
 
-**Current version: v0.0.17**, released 2026-11-22. Treaty is early and moves quickly, so start here
+**Current version: v0.0.18**, released 2026-11-23. Treaty is early and moves quickly, so start here
 when you need to know what is solid and what is still open. You can trace every release in the
 [changelog](https://github.com/SuperJackfruitLabs/treaty/blob/main/CHANGELOG.md) and on the [GitHub
 releases page](https://github.com/SuperJackfruitLabs/treaty/releases).
