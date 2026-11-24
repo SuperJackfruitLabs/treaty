@@ -1,6 +1,12 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import { execFileSync, spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { createBundle } from "../packages/contracts/src/schemas.ts";
@@ -266,5 +272,203 @@ describe("an exception scoped to a release", () => {
     });
     expect(later.status).toBe(0);
     expect(later.stdout).toContain("expired");
+  });
+});
+
+/** One tool of a sample catalog. */
+const tool = (name: string, input: Record<string, unknown> = {}) => ({
+  name,
+  scope: "run",
+  description: name,
+  inputSchema: {
+    type: "object",
+    properties: { id: { type: "string" } },
+    ...input,
+  },
+  result: { carrier: "text-json", schema: { type: "object" } },
+});
+
+describe("an MCP catalog", () => {
+  const PATH = "schemas/mcp/sample.v1.json";
+  const RAW =
+    "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/";
+  const catalog = (tools: unknown[]) => ({
+    $schema: `${RAW}schemas/treaty/mcp-catalog.v1.json`,
+    $id: `${RAW}${PATH}`,
+    catalog: "treaty mcp catalog",
+    version: 1,
+    server: { name: "sample" },
+    tools,
+  });
+  const cases = {
+    tools: {
+      a: { arguments: { valid: { "an id": { id: "x" } }, invalid: [] } },
+    },
+  };
+  const bundle = (tools: unknown[]) =>
+    createBundle({
+      [PATH]: catalog(tools),
+      "fixtures/mcp/sample.v1.cases.json": cases,
+    });
+
+  test("a tool added is no finding", () => {
+    expect(
+      compare(bundle([tool("a")]), bundle([tool("a"), tool("b")])),
+    ).toEqual([]);
+  });
+
+  test("a tool removed, a scope changed and a required argument added are breaking, named by tool", () => {
+    const head = bundle([
+      { ...tool("a", { required: ["id"] }), scope: "claim" },
+    ]);
+    expect(compare(bundle([tool("a"), tool("b")]), head)).toEqual([
+      { path: PATH, pointer: "/tools/a/scope", rule: "scope-changed" },
+      {
+        path: PATH,
+        pointer: "/tools/a/inputSchema/required/id",
+        rule: "required-added",
+      },
+      { path: PATH, pointer: "/tools/b", rule: "tool-removed" },
+    ]);
+  });
+
+  test("an old argument case the new input schema refuses is breaking", () => {
+    const head = bundle([
+      tool("a", { properties: { id: { type: "string", maxLength: 0 } } }),
+    ]);
+    expect(compare(bundle([tool("a")]), head).map((f) => f.rule)).toContain(
+      "old-case-refused a arguments: an id",
+    );
+  });
+});
+
+describe("telemetry conventions", () => {
+  const PATH = "schemas/telemetry/sample.v1.json";
+  const RAW =
+    "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/";
+  const doc = (extra: Record<string, unknown> = {}) => ({
+    $schema: `${RAW}schemas/treaty/telemetry-conventions.v1.json`,
+    $id: `${RAW}${PATH}`,
+    conventions: "treaty telemetry conventions",
+    version: 1,
+    attributes: {
+      "run.id": { type: "string", description: "r" },
+      "acp.seq_from": { type: "int", description: "s" },
+    },
+    spans: {
+      attempt: {
+        description: "a",
+        producers: ["agentpod"],
+        required: ["run.id"],
+      },
+    },
+    ...extra,
+  });
+  const one = (d: unknown) => createBundle({ [PATH]: d });
+
+  test("an attribute or a span added is no finding", () => {
+    const head = doc({
+      attributes: {
+        ...doc().attributes,
+        "card.id": { type: "string", description: "c" },
+      },
+      spans: {
+        ...doc().spans,
+        turn: {
+          description: "t",
+          producers: ["agentpod"],
+          required: ["run.id"],
+        },
+      },
+    });
+    expect(compare(one(doc()), one(head))).toEqual([]);
+  });
+
+  test("a type changed, a key made required and a span removed are breaking", () => {
+    const head = doc({
+      attributes: {
+        ...doc().attributes,
+        "run.id": { type: "int", description: "r" },
+      },
+      spans: {},
+      logs: {},
+    });
+    const base = doc({
+      logs: {
+        "run route": {
+          description: "l",
+          producers: ["superpipeline"],
+          required: [],
+        },
+      },
+    });
+    const headLogs = doc({
+      attributes: head.attributes,
+      spans: {},
+      logs: {
+        "run route": {
+          description: "l",
+          producers: ["superpipeline"],
+          required: ["run.id"],
+        },
+      },
+    });
+    expect(compare(one(base), one(headLogs))).toEqual([
+      { path: PATH, pointer: "/attributes/run.id", rule: "type-changed" },
+      { path: PATH, pointer: "/spans/attempt", rule: "record-removed" },
+      {
+        path: PATH,
+        pointer: "/logs/run route/required/run.id",
+        rule: "required-added",
+      },
+    ]);
+  });
+});
+
+describe("a URL shape", () => {
+  const PATH = "schemas/urls/sample.v1.json";
+  const RAW =
+    "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/";
+  const shape = (extra: Record<string, unknown> = {}) => ({
+    $schema: `${RAW}schemas/treaty/url-shape.v1.json`,
+    $id: `${RAW}${PATH}`,
+    shape: "treaty url shape",
+    version: 1,
+    origins: [{ scheme: "https" }],
+    path: "/open",
+    fragment: { t: { required: true, schema: { type: "string" } } },
+    ...extra,
+  });
+  const meta = JSON.parse(
+    readFileSync(
+      join(import.meta.dir, "../schemas/treaty/url-shape.v1.json"),
+      "utf8",
+    ),
+  );
+  const one = (doc: unknown, valid: Record<string, string> = {}) =>
+    createBundle({
+      "schemas/treaty/url-shape.v1.json": meta,
+      [PATH]: doc,
+      "fixtures/urls/sample.v1.cases.json": { valid, invalid: [] },
+    });
+
+  test("an optional parameter added is no finding", () => {
+    const head = shape({
+      query: { next: { required: false, schema: { type: "string" } } },
+    });
+    expect(compare(one(shape()), one(head))).toEqual([]);
+  });
+
+  test("a path changed and a parameter removed are breaking, and an old URL the new shape refuses is named", () => {
+    const head = shape({ path: "/link", fragment: {} });
+    const findings = compare(
+      one(shape(), { plain: "https://example.com/open#t=x" }),
+      one(head),
+    ).map((f) => `${f.pointer} ${f.rule}`);
+    expect(findings).toEqual([
+      "/path path-changed",
+      "/fragment/t parameter-removed",
+      " old-case-refused: plain",
+    ]);
   });
 });

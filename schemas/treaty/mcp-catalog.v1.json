@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/treaty/mcp-catalog.v1.json",
+  "title": "treaty MCP tool catalog",
+  "description": "The tools one MCP server offers: each tool's name, the scope a caller needs for it to be offered, its input schema and the shape of what it returns. A catalog lives at schemas/mcp/<server>.v<N>.json and its cases at fixtures/mcp/<server>.v<N>.cases.json. A business failure stays a tool result with `isError: true`, as MCP defines it; `error` names what that result carries. Readers ignore properties they do not know: an input schema without `additionalProperties: false` accepts arguments it does not name.",
+  "type": "object",
+  "required": ["$schema", "$id", "catalog", "version", "server", "tools"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "const": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/treaty/mcp-catalog.v1.json"
+    },
+    "$id": {
+      "type": "string",
+      "pattern": "^https://raw\\.githubusercontent\\.com/SuperJackfruitLabs/treaty/main/schemas/mcp/[a-z0-9-]+\\.v[1-9][0-9]*\\.json$"
+    },
+    "catalog": { "const": "treaty mcp catalog" },
+    "version": { "const": 1 },
+    "description": { "type": "string" },
+    "server": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "The name the server reports in `initialize` (serverInfo.name).",
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "description": "The HTTP path the server answers on, for a Streamable HTTP server.",
+          "type": "string",
+          "pattern": "^/"
+        },
+        "description": { "type": "string" }
+      }
+    },
+    "error": {
+      "description": "What a tool result with `isError: true` carries, for every tool.",
+      "$ref": "#/$defs/payload"
+    },
+    "tools": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/tool" }
+    },
+    "$defs": {
+      "description": "Schemas the tools' result schemas share, referenced as `#/$defs/<name>`.",
+      "type": "object",
+      "additionalProperties": { "type": ["object", "boolean"] }
+    }
+  },
+  "$defs": {
+    "tool": {
+      "type": "object",
+      "required": ["name", "scope", "description", "inputSchema", "result"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "The tool's name in `tools/list` and `tools/call`.",
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]{1,128}$"
+        },
+        "scope": {
+          "description": "The token scope a caller needs for the server to offer the tool, or null when every authenticated caller is offered it.",
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "description": {
+          "description": "The description the server sends in `tools/list`.",
+          "type": "string",
+          "minLength": 1
+        },
+        "inputSchema": {
+          "description": "The JSON Schema the tool's arguments satisfy, as `tools/list` sends it, read as draft 2020-12.",
+          "type": "object",
+          "required": ["type"],
+          "properties": { "type": { "const": "object" } }
+        },
+        "result": {
+          "description": "What a successful result carries.",
+          "$ref": "#/$defs/payload"
+        },
+        "annotations": {
+          "description": "The tool's MCP annotations, as `tools/list` sends them.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "title": { "type": "string" },
+            "readOnlyHint": { "type": "boolean" },
+            "destructiveHint": { "type": "boolean" },
+            "idempotentHint": { "type": "boolean" },
+            "openWorldHint": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "payload": {
+      "type": "object",
+      "required": ["carrier", "schema"],
+      "additionalProperties": false,
+      "properties": {
+        "carrier": {
+          "description": "text-json: the result's first `text` content item holds a JSON document. structured: the result's `structuredContent` holds it.",
+          "enum": ["text-json", "structured"]
+        },
+        "schema": {
+          "description": "The JSON Schema the carried document satisfies. A `$ref` resolves against the catalog, so `#/$defs/<name>` reaches the catalog's shared schemas.",
+          "type": ["object", "boolean"]
+        }
+      }
+    }
+  }
+}

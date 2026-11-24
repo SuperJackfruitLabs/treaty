@@ -190,6 +190,25 @@ describe("the treaty CLI", () => {
     expect(JSON.parse(r.stdout).invalid.length).toBeGreaterThan(0);
   });
 
+  test("cases --at reaches a pointer in a contract's cases file", () => {
+    const r = cli(
+      [
+        "cases",
+        "schemas/mcp/superpipeline.v1.json",
+        "--at",
+        "/tools/superpipeline_heartbeat/arguments",
+      ],
+      work,
+    );
+    expect(r.status).toBe(0);
+    expect(JSON.parse(r.stdout).invalid.length).toBeGreaterThan(0);
+    const none = cli(
+      ["cases", "schemas/mcp/superpipeline.v1.json", "--at", "/tools/ghost"],
+      work,
+    );
+    expect(none.status).toBe(1);
+  });
+
   test("an unknown command prints usage and exits 2", () => {
     const r = cli(["frobnicate"], work);
     expect(r.status).toBe(2);
