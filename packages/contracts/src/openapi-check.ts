@@ -3,7 +3,7 @@
  * document under schemas/http/.
  */
 import { resolvePointer, type Cases } from "./cases.ts";
-import { operations } from "./http.ts";
+import { gateRefusals, operations } from "./http.ts";
 import { documentOperations } from "./openapi-doc.ts";
 import type { Registry } from "./registry.ts";
 import { idOf, validatorFor, type Bundle } from "./schemas.ts";
@@ -39,6 +39,8 @@ export interface ApiCases {
     string,
     { request?: Cases; responses?: Record<string, Cases> }
   >;
+  /** Cases for each refusal `x-treaty-gate-refusals` declares, by status. */
+  gateRefusals?: Record<string, Cases>;
 }
 
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -140,6 +142,103 @@ function checkCases(
   for (const { why, body } of cases.invalid) {
     if (validate(body).valid)
       problems.push(`${where}: invalid case "${why}" passes`);
+  }
+  return problems;
+}
+
+/** The code an error body carries in an envelope, or undefined. */
+function codeOf(envelope: ErrorEnvelope, body: unknown): unknown {
+  if (!isObject(body)) return undefined;
+  if (envelope === "matrix-error.v1") return body.errcode;
+  if (envelope === "error.v1")
+    return isObject(body.error) ? body.error.code : undefined;
+  return body.error;
+}
+
+/**
+ * The rules `x-treaty-gate-refusals` keeps. A gate (an entitlement check in front of every route)
+ * refuses before any operation runs, so its refusal may travel in another of the suite's
+ * envelopes than the document's. Each one is declared once for the document: its status, the
+ * envelope, the owner's codes recorded in that envelope, and a schema that is that envelope;
+ * its cases sit under `gateRefusals` in the cases file.
+ */
+function checkGateRefusals(
+  bundle: Bundle,
+  path: string,
+  doc: Record<string, unknown>,
+  apiCases: ApiCases | undefined,
+): string[] {
+  const declared = doc["x-treaty-gate-refusals"];
+  const cases = apiCases?.gateRefusals ?? {};
+  if (declared === undefined)
+    return Object.keys(cases).map(
+      (s) => `gateRefusals ${s} has cases but no x-treaty-gate-refusals entry`,
+    );
+  if (!isObject(declared))
+    return ["x-treaty-gate-refusals must be an object keyed by status"];
+  const problems: string[] = [];
+  const owner = ownerOf(path);
+  const known = errorCodes(bundle);
+  const pointers = gateRefusals(doc);
+  for (const status of Object.keys(cases))
+    if (!(status in declared))
+      problems.push(
+        `gateRefusals ${status} has cases but no x-treaty-gate-refusals entry`,
+      );
+  for (const [status, gate] of Object.entries(declared)) {
+    const where = `x-treaty-gate-refusals ${status}`;
+    if (!/^[45]\d\d$/.test(status))
+      problems.push(`${where}: a gate refusal's status is a 4xx or 5xx`);
+    if (!isObject(gate)) {
+      problems.push(`${where} is not an object`);
+      continue;
+    }
+    if (typeof gate.description !== "string" || gate.description === "")
+      problems.push(`${where} has no description: say which gate refuses`);
+    const envelope = ERROR_ENVELOPES.find((e) => e === gate.envelope);
+    if (!envelope) {
+      problems.push(
+        `${where}: envelope is ${JSON.stringify(gate.envelope)}; it must be one of ${ERROR_ENVELOPES.join(", ")}`,
+      );
+      continue;
+    }
+    const schema = `schemas/common/${envelope}.json`;
+    const ref =
+      isObject(gate.schema) && typeof gate.schema.$ref === "string"
+        ? gate.schema.$ref
+        : "";
+    if (new URL(ref, idOf(path)).href !== idOf(schema))
+      problems.push(`${where}: its schema must be ${schema}`);
+    const codes = Array.isArray(gate.codes)
+      ? gate.codes.filter((c): c is string => typeof c === "string")
+      : [];
+    if (codes.length === 0) problems.push(`${where} names no codes`);
+    const standard = standardCodes(bundle, envelope);
+    const codeEnvelope = STANDARD_ENVELOPES[envelope] ?? envelope;
+    for (const code of codes) {
+      if (standard.includes(code)) continue;
+      const mine = known.find((k) => k.code === code && k.owner === owner);
+      if (!mine)
+        problems.push(
+          `${where}: error code ${code} is not ${owner}'s in contracts/error-codes.json`,
+        );
+      else if (mine.envelope !== codeEnvelope)
+        problems.push(
+          `${where}: error code ${code} travels in ${mine.envelope}, not ${codeEnvelope}`,
+        );
+    }
+    const pointer = pointers[status];
+    if (!pointer) continue;
+    problems.push(
+      ...checkCases(bundle, path, pointer, cases[status], where, true),
+    );
+    for (const [label, body] of Object.entries(cases[status]?.valid ?? {})) {
+      const code = codeOf(envelope, body);
+      if (typeof code !== "string" || !codes.includes(code))
+        problems.push(
+          `${where}: valid case "${label}" carries ${JSON.stringify(code)}, not a code the gate names`,
+        );
+    }
   }
   return problems;
 }
@@ -255,6 +354,8 @@ export function checkOpenApi(
       );
     }
   }
+
+  problems.push(...checkGateRefusals(bundle, path, doc, apiCases));
 
   const named = registry.crossings.some(
     (c) => c.kind === "http" && c.contract.includes(path),

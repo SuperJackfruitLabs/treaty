@@ -3497,5 +3497,47 @@
         }
       }
     }
+  },
+  "gateRefusals": {
+    "403": {
+      "valid": {
+        "the token's workspace has not enabled SuperPipeline": {
+          "error": "product_not_enabled",
+          "org": "org_0123456789abcdef0123"
+        }
+      },
+      "invalid": [
+        {
+          "why": "the plane's refusal always names the workspace",
+          "body": {
+            "error": "product_not_enabled"
+          }
+        },
+        {
+          "why": "the gate answers in flat-error.v1, not error.v1",
+          "body": {
+            "error": {
+              "code": "PRODUCT_NOT_ENABLED",
+              "message": "Not enabled."
+            },
+            "org": "org_0123456789abcdef0123"
+          }
+        },
+        {
+          "why": "the gate names only product_not_enabled",
+          "body": {
+            "error": "forbidden",
+            "org": "org_0123456789abcdef0123"
+          }
+        },
+        {
+          "why": "org is an Organization-plane id",
+          "body": {
+            "error": "product_not_enabled",
+            "org": "tnt_0123456789abcdef0123"
+          }
+        }
+      ]
+    }
   }
 }

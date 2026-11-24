@@ -1,7 +1,7 @@
 {
   "registry": "treaty error codes",
   "version": 2,
-  "description": "Every error code a suite product's API returns, with the status it carries and the envelope it travels in. SuperPipeline's codes are its statusForCode table and its route-level codes; Accounts' are its flat codes; SuperLibrary's are the flat codes of the routes other products call; AgentPod's are the Matrix errcodes of its Live Activity token routes and the flat codes of its service reads. Seeded 2026-11-22.",
+  "description": "Every error code a suite product's API returns, with the status it carries and the envelope it travels in. SuperPipeline's codes are its statusForCode table, its route-level codes and its entitlement gate's flat product_not_enabled; Accounts' are its flat codes; SuperLibrary's are the flat codes of the routes other products call; AgentPod's are the Matrix errcodes of its Live Activity token routes and the flat codes of its service reads. Seeded 2026-11-22.",
   "codes": [
     {
       "code": "AGENT_NOT_ELIGIBLE",
@@ -1103,6 +1103,13 @@
       "envelope": "error.v1",
       "status": 409,
       "meaning": "A card's choice of repositories is refused: it is not an ordered subset of the stage's allow-list, or the card's bench already exists so its choice is fixed. `detail.reason` says which (`frozen` for a bench that exists)."
+    },
+    {
+      "code": "product_not_enabled",
+      "owner": "superpipeline",
+      "envelope": "flat-error.v1",
+      "status": 403,
+      "meaning": "In Organization-plane mode, the token's workspace (`org`, named beside the code) has not enabled SuperPipeline. Sent by the entitlement check in front of every route, in the Organization plane's flat shape rather than error.v1; each SuperPipeline HTTP contract declares it in `x-treaty-gate-refusals`."
     },
     {
       "code": "M_BAD_JSON",

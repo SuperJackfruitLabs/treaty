@@ -135,7 +135,24 @@ describe("schemas/common/oauth-bearer-error.v1.json", () => {
   }
 });
 
-/** The envelopes each owner's HTTP contracts declare, a standard one counted as its extension codes' envelope. */
+/** The envelopes a document's `x-treaty-gate-refusals` declare. */
+function gateEnvelopes(doc: unknown): string[] {
+  const gates =
+    doc !== null && typeof doc === "object" && "x-treaty-gate-refusals" in doc
+      ? doc["x-treaty-gate-refusals"]
+      : undefined;
+  if (gates === null || typeof gates !== "object") return [];
+  return Object.values(gates).flatMap((g: unknown) =>
+    g !== null && typeof g === "object" && "envelope" in g
+      ? [String(g.envelope)]
+      : [],
+  );
+}
+
+/**
+ * The envelopes each owner's HTTP contracts declare, a standard one counted as its extension
+ * codes' envelope, and a gate refusal's envelope counted as its document's.
+ */
 function declaredEnvelopes(): Map<string, Set<string>> {
   const out = new Map<string, Set<string>>();
   for (const owner of readdirSync(join(root, "schemas/http"), {
@@ -144,16 +161,16 @@ function declaredEnvelopes(): Map<string, Set<string>> {
     if (!owner.isDirectory()) continue;
     for (const file of readdirSync(join(root, "schemas/http", owner.name))) {
       if (!file.endsWith(".openapi.json")) continue;
-      const envelope = envelopeOf(
-        readJson(`schemas/http/${owner.name}/${file}`),
-      );
+      const doc: unknown = readJson(`schemas/http/${owner.name}/${file}`);
+      const envelope = envelopeOf(doc);
       if (!envelope) continue;
-      out.set(
-        owner.name,
-        (out.get(owner.name) ?? new Set()).add(
-          STANDARD_ENVELOPES[envelope] ?? envelope,
-        ),
-      );
+      const set = out.get(owner.name) ?? new Set<string>();
+      set.add(STANDARD_ENVELOPES[envelope] ?? envelope);
+      for (const gate of gateEnvelopes(doc)) {
+        const known = envelopeOf({ "x-treaty-error-envelope": gate });
+        set.add(known ? (STANDARD_ENVELOPES[known] ?? known) : gate);
+      }
+      out.set(owner.name, set);
     }
   }
   return out;

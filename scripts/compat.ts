@@ -22,7 +22,7 @@ import {
   compareSchemas,
 } from "../packages/contracts/src/compat.ts";
 import { compareForms } from "../packages/contracts/src/forms-compat.ts";
-import { operations } from "../packages/contracts/src/http.ts";
+import { gateRefusals, operations } from "../packages/contracts/src/http.ts";
 import { mcpCasesPath } from "../packages/contracts/src/mcp.ts";
 import { urlShape, validateUrl } from "../packages/contracts/src/urls.ts";
 import { loadBundle } from "../packages/contracts/src/node.ts";
@@ -153,6 +153,45 @@ function apiCases(
         ? op.responses[part]
         : undefined;
   return isCases(node) ? node : undefined;
+}
+
+/** The corpus rule for a document's gate refusals: each side's valid cases fit the other's schema. */
+function gateCorpus(
+  base: Bundle,
+  head: Bundle,
+  path: string,
+  out: Finding[],
+): void {
+  const baseGates = gateRefusals(base.files.get(path));
+  const headGates = gateRefusals(head.files.get(path));
+  const casesAt = (bundle: Bundle, status: string) => {
+    const file = bundle.files.get(casesPathFor(path));
+    const node =
+      isObject(file) && isObject(file.gateRefusals)
+        ? file.gateRefusals[status]
+        : undefined;
+    return isCases(node) ? node : undefined;
+  };
+  for (const [status, basePtr] of Object.entries(baseGates)) {
+    const headPtr = headGates[status];
+    if (!headPtr) continue;
+    corpus(
+      path,
+      headPtr,
+      casesAt(base, status),
+      validatorFor(head, `${path}#${headPtr}`),
+      `old-case-refused gate ${status}`,
+      out,
+    );
+    corpus(
+      path,
+      headPtr,
+      casesAt(head, status),
+      validatorFor(base, `${path}#${basePtr}`),
+      `new-case-refused-by-old gate ${status}`,
+      out,
+    );
+  }
 }
 
 /** The corpus rule for a URL shape: each side's valid URLs fit the other side's shape. */
@@ -319,6 +358,7 @@ export function compare(base: Bundle, head: Bundle): Finding[] {
           );
         }
       }
+      gateCorpus(base, head, path, out);
       continue;
     }
     for (const b of compareSchemas(before, after)) out.push({ path, ...b });

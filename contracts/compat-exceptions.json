@@ -1,4 +1,29 @@
 {
   "description": "Breaking changes allowed through scripts/compat.ts, each with its reason and the release it breaks against. An entry applies only while compat compares with that release; an entry that matches no change fails as stale.",
-  "exceptions": []
+  "exceptions": [
+    {
+      "path": "schemas/http/superlibrary/api.v1.openapi.json",
+      "rule": "ref-changed",
+      "against": "v0.0.19",
+      "reason": "SuperLibrary api.v1's ItemSummary was written from uploaded artifacts only. SuperLibrary has always sent work records ingested from SuperPipeline with createdBy `source:superpipeline` and latestVersion 0 (apps/api/src/ingest/consumer.ts), and its own treaty tests held exactly those two as known mismatches. The schema is widened to what the producer sends, and no further: a reader that validated v0.0.19's shape strictly was already refusing these real bodies. From the next release a change like this is a new version. Recorded in the charter: decisions/2026-11-24-a-contract-wrong-about-what-ships-is-fixed-in-place.md (charter#47)."
+    },
+    {
+      "path": "schemas/http/superlibrary/api.v1.openapi.json",
+      "rule": "composition-changed",
+      "against": "v0.0.19",
+      "reason": "SuperLibrary api.v1's ItemSummary was written from uploaded artifacts only. SuperLibrary has always sent work records ingested from SuperPipeline with createdBy `source:superpipeline` and latestVersion 0 (apps/api/src/ingest/consumer.ts), and its own treaty tests held exactly those two as known mismatches. The schema is widened to what the producer sends, and no further: a reader that validated v0.0.19's shape strictly was already refusing these real bodies. From the next release a change like this is a new version. Recorded in the charter: decisions/2026-11-24-a-contract-wrong-about-what-ships-is-fixed-in-place.md (charter#47)."
+    },
+    {
+      "path": "schemas/http/superlibrary/api.v1.openapi.json",
+      "rule": "constraint-changed",
+      "against": "v0.0.19",
+      "reason": "SuperLibrary api.v1's ItemSummary was written from uploaded artifacts only. SuperLibrary has always sent work records ingested from SuperPipeline with createdBy `source:superpipeline` and latestVersion 0 (apps/api/src/ingest/consumer.ts), and its own treaty tests held exactly those two as known mismatches. The schema is widened to what the producer sends, and no further: a reader that validated v0.0.19's shape strictly was already refusing these real bodies. From the next release a change like this is a new version. Recorded in the charter: decisions/2026-11-24-a-contract-wrong-about-what-ships-is-fixed-in-place.md (charter#47)."
+    },
+    {
+      "path": "schemas/http/superlibrary/api.v1.openapi.json",
+      "rule": "new-case-refused-by-old getItem 200",
+      "against": "v0.0.19",
+      "reason": "SuperLibrary api.v1's ItemSummary was written from uploaded artifacts only. SuperLibrary has always sent work records ingested from SuperPipeline with createdBy `source:superpipeline` and latestVersion 0 (apps/api/src/ingest/consumer.ts), and its own treaty tests held exactly those two as known mismatches. The schema is widened to what the producer sends, and no further: a reader that validated v0.0.19's shape strictly was already refusing these real bodies. From the next release a change like this is a new version. Recorded in the charter: decisions/2026-11-24-a-contract-wrong-about-what-ships-is-fixed-in-place.md (charter#47)."
+    }
+  ]
 }

@@ -204,7 +204,7 @@
       "responses": {
         "200": {
           "valid": {
-            "every execution of AgentPod's corpus": {
+            "AgentPod's corpus execution empty-unreported, the one the hub holds": {
               "schema_version": "agentpod-execution-evidence/v1",
               "external_source": "superpipeline",
               "external_run_id": "run_abcdef",
@@ -276,7 +276,17 @@
                     ]
                   },
                   "fingerprints": []
-                },
+                }
+              ],
+              "as_of": "2026-10-21T00:00:01.000Z"
+            },
+            "AgentPod's corpus execution joined-child-receipts-proposed-not-integrated, the one the hub holds": {
+              "schema_version": "agentpod-execution-evidence/v1",
+              "external_source": "superpipeline",
+              "external_run_id": "run_abcdef",
+              "board_id": "brd_abcdef",
+              "card_id": "card_abcdef",
+              "executions": [
                 {
                   "schema_version": "salaam-execution-evidence/v1",
                   "source": "salaam",
@@ -433,7 +443,17 @@
                     ]
                   },
                   "fingerprints": []
-                },
+                }
+              ],
+              "as_of": "2026-10-21T00:00:01.000Z"
+            },
+            "AgentPod's corpus execution operator-attestation-retains-native-uncertainty, the one the hub holds": {
+              "schema_version": "agentpod-execution-evidence/v1",
+              "external_source": "superpipeline",
+              "external_run_id": "run_abcdef",
+              "board_id": "brd_abcdef",
+              "card_id": "card_abcdef",
+              "executions": [
                 {
                   "schema_version": "salaam-execution-evidence/v1",
                   "source": "salaam",

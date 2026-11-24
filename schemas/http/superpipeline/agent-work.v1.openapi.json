@@ -6,6 +6,27 @@
     "description": "The loop an agent drives a card with: claim, read, heartbeat, activities, and the verbs that end a run; plus the proposed checkpoint routes a coordinator service settles a run with. Every refusal is error.v1. Malformed JSON is 400 INVALID_JSON; a run verb this document does not name (`POST \u2026/runs/{runId}/{other}`) is 404 UNKNOWN_RUN_ACTION; an unplanned failure is 500 UNEXPECTED. A run verb's lease is checked before anything else in its body: a missing or old `leaseEpoch` is 409 STALE_LEASE, another agent's run 403 NOT_RUN_OWNER."
   },
   "x-treaty-error-envelope": "error.v1",
+  "x-treaty-gate-refusals": {
+    "403": {
+      "description": "SuperPipeline's Organization-plane entitlement check, which runs before any route (apps/api/src/routes/table.ts, `orgPlaneEntitlement`; apps/api/src/auth/org-plane-resolve.ts, `entitlementRefusal`). In Organization-plane mode a verified plane token whose `ent` does not name superpipeline is refused with the plane's own refusal, `{ \"error\": \"product_not_enabled\", \"org\" }` (fixtures/ecosystem-identity/token_claims.json, case product-not-enabled), not error.v1. It may answer any operation in this document. Outside that mode, and for SuperPipeline's own `spa_` credentials, it never answers.",
+      "envelope": "flat-error.v1",
+      "codes": ["product_not_enabled"],
+      "schema": {
+        "$ref": "../../common/flat-error.v1.json",
+        "required": ["error", "org"],
+        "properties": {
+          "error": {
+            "const": "product_not_enabled"
+          },
+          "org": {
+            "type": "string",
+            "pattern": "^org_[0-9a-f]{20}$",
+            "description": "The token's workspace, which has not enabled SuperPipeline."
+          }
+        }
+      }
+    }
+  },
   "tags": [
     {
       "name": "agent work",

@@ -6,6 +6,27 @@
     "description": "How a subscriber registers for SuperPipeline's direct push: an agent for its own work (`work.available`) and whatever else it subscribes to, and a service for record events and, as a decision carrier, the decision events. Written from SuperPipeline's apps/api/src/routes/boards/integrations.ts (the agent form), apps/api/src/service-routes.ts (the service form) and registerPushConfig in apps/api/src/board/push.ts. The delivery itself, the CloudEvent the board sends to `url` signed with `token`, is fixtures/cloudevents/push-delivery.json, and the bodies are the schemas schemas/catalog.json names. Every refusal is the error.v1 envelope with the status statusForCode gives its code. Response bodies are open: a reader ignores properties it does not know."
   },
   "x-treaty-error-envelope": "error.v1",
+  "x-treaty-gate-refusals": {
+    "403": {
+      "description": "SuperPipeline's Organization-plane entitlement check, which runs before any route (apps/api/src/routes/table.ts, `orgPlaneEntitlement`; apps/api/src/auth/org-plane-resolve.ts, `entitlementRefusal`). In Organization-plane mode a verified plane token whose `ent` does not name superpipeline is refused with the plane's own refusal, `{ \"error\": \"product_not_enabled\", \"org\" }` (fixtures/ecosystem-identity/token_claims.json, case product-not-enabled), not error.v1. It may answer any operation in this document. Outside that mode, and for SuperPipeline's own `spa_` credentials, it never answers.",
+      "envelope": "flat-error.v1",
+      "codes": ["product_not_enabled"],
+      "schema": {
+        "$ref": "../../common/flat-error.v1.json",
+        "required": ["error", "org"],
+        "properties": {
+          "error": {
+            "const": "product_not_enabled"
+          },
+          "org": {
+            "type": "string",
+            "pattern": "^org_[0-9a-f]{20}$",
+            "description": "The token's workspace, which has not enabled SuperPipeline."
+          }
+        }
+      }
+    }
+  },
   "paths": {
     "/v1/boards/{boardId}/push-configs": {
       "parameters": [

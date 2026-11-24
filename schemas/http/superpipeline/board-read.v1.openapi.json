@@ -6,6 +6,27 @@
     "description": "What a service reads of a board: the board list, the board snapshot, one card and its attempts, comments, links and activities, and a run's evidence. Written from SuperPipeline's apps/api/src/service-routes.ts (the reads, `cards:read`), apps/api/src/routes/boards/evidence.ts (the evidence, `evidence:read`), board/pipeline.ts (the snapshot), board/run-history.ts, board/comments.ts, card-links.ts and db/catalog.ts. A person and a coordinator agent read the same paths and get the same bodies; this document contracts the service form, whose tenant comes from the token, so a board in another tenant is 404 BOARD_NOT_FOUND. Every refusal is error.v1. Bodies are open, a reader ignores properties it does not know, except the run evidence, which is closed: its C4 shape is frozen and its v1 shape is read strictly."
   },
   "x-treaty-error-envelope": "error.v1",
+  "x-treaty-gate-refusals": {
+    "403": {
+      "description": "SuperPipeline's Organization-plane entitlement check, which runs before any route (apps/api/src/routes/table.ts, `orgPlaneEntitlement`; apps/api/src/auth/org-plane-resolve.ts, `entitlementRefusal`). In Organization-plane mode a verified plane token whose `ent` does not name superpipeline is refused with the plane's own refusal, `{ \"error\": \"product_not_enabled\", \"org\" }` (fixtures/ecosystem-identity/token_claims.json, case product-not-enabled), not error.v1. It may answer any operation in this document. Outside that mode, and for SuperPipeline's own `spa_` credentials, it never answers.",
+      "envelope": "flat-error.v1",
+      "codes": ["product_not_enabled"],
+      "schema": {
+        "$ref": "../../common/flat-error.v1.json",
+        "required": ["error", "org"],
+        "properties": {
+          "error": {
+            "const": "product_not_enabled"
+          },
+          "org": {
+            "type": "string",
+            "pattern": "^org_[0-9a-f]{20}$",
+            "description": "The token's workspace, which has not enabled SuperPipeline."
+          }
+        }
+      }
+    }
+  },
   "paths": {
     "/v1/boards": {
       "get": {
