@@ -592,7 +592,8 @@
         "superwitness:internal/source/agentpod/transcript.go",
         "superpipeline:apps/api/src/routes/boards/runs.ts",
         "superpipeline:apps/api/src/board/run-history.ts",
-        "salaam:test/fixtures/execution-evidence-v1.schema.json"
+        "salaam:treaty.json",
+        "salaam:test/unit/agentpod-work.test.ts"
       ]
     },
     {
