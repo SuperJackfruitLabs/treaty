@@ -494,6 +494,64 @@
             "a reason the reader does not know yet": {
               "claimed": false,
               "reason": "board_paused"
+            },
+            "claimed on a stage sent without an order": {
+              "claimed": true,
+              "runId": "run_8d2e4b19c6a07f53",
+              "leaseEpoch": 1,
+              "card": {
+                "id": "card_3f9a1c07b2e84d65",
+                "title": "Write the release notes",
+                "spec": {
+                  "goal": "Release notes for v0.0.16"
+                },
+                "ownerUserId": "usr_0c4f7a2b9e1d3586",
+                "queuedBy": "prn_4e2a9c1f7b3d0e58",
+                "queuedByAgentId": null,
+                "queuedGrant": [
+                  "prn_4e2a9c1f7b3d0e58"
+                ],
+                "labels": [],
+                "projectId": null,
+                "milestoneId": null,
+                "dueAt": null,
+                "archivedAt": null,
+                "currentStageKey": "draft",
+                "state": "working",
+                "delegateAgentId": "agt_5c7e2a90d14b3f68",
+                "lastAgentId": "agt_5c7e2a90d14b3f68",
+                "queuedGrantOwner": "prn_4e2a9c1f7b3d0e58",
+                "stageSince": "2026-11-22T09:00:00.000Z",
+                "currentRunId": "run_8d2e4b19c6a07f53",
+                "priority": 0,
+                "contextId": "ctx_2b8e4f6a0c1d9e37",
+                "createdAt": "2026-11-22T08:55:00.000Z",
+                "updatedAt": "2026-11-22T09:00:00.000Z",
+                "stateSince": "2026-11-22T09:00:00.000Z",
+                "costUsd": 0,
+                "overBudget": false,
+                "attemptCount": 1,
+                "parentCardId": null,
+                "openChildCount": 0,
+                "costUsdRollup": 0,
+                "blockedBy": []
+              },
+              "stage": {
+                "key": "draft",
+                "name": "Draft",
+                "ownerKind": "capability",
+                "owner": "writing",
+                "instructions": "Draft from the merged pull requests.",
+                "completion": {
+                  "handoff": [
+                    "summary"
+                  ]
+                }
+              },
+              "handoff": {
+                "summary": "Three pull requests merged"
+              },
+              "lastFailure": null
             }
           },
           "invalid": [
@@ -974,6 +1032,136 @@
                     ],
                     "previewComplete": false
                   }
+                }
+              ],
+              "comments": [
+                {
+                  "id": "cmt_1d4e7a0b3c6f9285",
+                  "cardId": "card_3f9a1c07b2e84d65",
+                  "author": {
+                    "kind": "human",
+                    "id": "usr_0c4f7a2b9e1d3586",
+                    "name": "Asha"
+                  },
+                  "body": "Mention the relay.",
+                  "createdAt": "2026-11-22T09:12:00.000Z",
+                  "deletedAt": null
+                }
+              ],
+              "commentsOmitted": 0
+            },
+            "working on a stage sent without an order": {
+              "run": {
+                "runId": "run_8d2e4b19c6a07f53",
+                "cardId": "card_3f9a1c07b2e84d65",
+                "stageKey": "draft",
+                "leaseEpoch": 1,
+                "status": "working",
+                "outcome": null,
+                "startedAt": "2026-11-22T09:00:00.000Z",
+                "endedAt": null,
+                "handoff": null,
+                "completion": null
+              },
+              "card": {
+                "id": "card_3f9a1c07b2e84d65",
+                "title": "Write the release notes",
+                "spec": {
+                  "goal": "Release notes for v0.0.16"
+                },
+                "ownerUserId": "usr_0c4f7a2b9e1d3586",
+                "queuedBy": "prn_4e2a9c1f7b3d0e58",
+                "queuedByAgentId": null,
+                "queuedGrant": [
+                  "prn_4e2a9c1f7b3d0e58"
+                ],
+                "labels": [],
+                "projectId": null,
+                "milestoneId": null,
+                "dueAt": null,
+                "archivedAt": null,
+                "currentStageKey": "draft",
+                "state": "working",
+                "delegateAgentId": "agt_5c7e2a90d14b3f68",
+                "lastAgentId": "agt_5c7e2a90d14b3f68",
+                "queuedGrantOwner": "prn_4e2a9c1f7b3d0e58",
+                "stageSince": "2026-11-22T09:00:00.000Z",
+                "currentRunId": "run_8d2e4b19c6a07f53",
+                "priority": 0,
+                "contextId": "ctx_2b8e4f6a0c1d9e37",
+                "createdAt": "2026-11-22T08:55:00.000Z",
+                "updatedAt": "2026-11-22T09:00:00.000Z",
+                "stateSince": "2026-11-22T09:00:00.000Z",
+                "costUsd": 0,
+                "overBudget": false,
+                "attemptCount": 1,
+                "parentCardId": null,
+                "openChildCount": 0,
+                "costUsdRollup": 0,
+                "blockedBy": []
+              },
+              "stage": {
+                "key": "draft",
+                "name": "Draft",
+                "ownerKind": "capability",
+                "owner": "writing",
+                "instructions": "Draft from the merged pull requests.",
+                "completion": {
+                  "handoff": [
+                    "summary"
+                  ]
+                }
+              },
+              "handoff": {
+                "summary": "Three pull requests merged"
+              },
+              "references": [
+                {
+                  "id": "ref_6b03d8e1f25c49a7",
+                  "cardId": "card_3f9a1c07b2e84d65",
+                  "url": "https://app.superlibrary.dev/items/itm_7d1e",
+                  "title": "Release notes",
+                  "subtitle": null,
+                  "provider": "superlibrary",
+                  "sourceType": "item",
+                  "externalId": "itm_7d1e",
+                  "metadata": null,
+                  "syncState": "synced",
+                  "lastSyncedAt": null,
+                  "addedBy": "agent",
+                  "runId": "run_8d2e4b19c6a07f53",
+                  "createdAt": "2026-11-22T09:20:00.000Z",
+                  "updatedAt": null
+                }
+              ],
+              "elicitations": [
+                {
+                  "id": "elc_a41f09c3e7b25d86",
+                  "cardId": "card_3f9a1c07b2e84d65",
+                  "runId": "run_8d2e4b19c6a07f53",
+                  "stageKey": "draft",
+                  "agentId": "agt_5c7e2a90d14b3f68",
+                  "question": "Which tone?",
+                  "signal": null,
+                  "options": [
+                    {
+                      "name": "formal",
+                      "title": "Formal"
+                    },
+                    {
+                      "name": "casual",
+                      "title": "Casual"
+                    }
+                  ],
+                  "status": "answered",
+                  "answer": {
+                    "option": "formal",
+                    "text": null,
+                    "answeredBy": "usr_0c4f7a2b9e1d3586",
+                    "answeredAt": "2026-11-22T09:10:00.000Z",
+                    "answeredByPrincipal": "prn_4e2a9c1f7b3d0e58"
+                  },
+                  "createdAt": "2026-11-22T09:05:00.000Z"
                 }
               ],
               "comments": [

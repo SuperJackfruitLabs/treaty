@@ -2,28 +2,34 @@
   "description": "Breaking changes allowed through scripts/compat.ts, each with its reason and the release it breaks against. An entry applies only while compat compares with that release; an entry that matches no change fails as stale.",
   "exceptions": [
     {
-      "path": "schemas/http/superlibrary/api.v1.openapi.json",
-      "rule": "ref-changed",
-      "against": "v0.0.19",
-      "reason": "SuperLibrary api.v1's ItemSummary was written from uploaded artifacts only. SuperLibrary has always sent work records ingested from SuperPipeline with createdBy `source:superpipeline` and latestVersion 0 (apps/api/src/ingest/consumer.ts), and its own treaty tests held exactly those two as known mismatches. The schema is widened to what the producer sends, and no further: a reader that validated v0.0.19's shape strictly was already refusing these real bodies. From the next release a change like this is a new version. Recorded in the charter: decisions/2026-11-24-a-contract-wrong-about-what-ships-is-fixed-in-place.md (charter#47)."
+      "path": "schemas/http/superpipeline/agent-work.v1.openapi.json",
+      "rule": "required-removed",
+      "against": "v0.0.20",
+      "reason": "SuperPipeline's StageDef was written from boards made from its templates and web app, which number every stage. SuperPipeline has never required `order`: board create (POST /v1/boards, apps/api/src/routes/boards/collection.ts) needs only a string `key`, and the whole-pipeline write (setStages in apps/api/src/board/pipeline.ts) needs `key` and `name`; both store stages as sent, sorted by `order`, where a stage without one keeps its place. So a board whose stages were sent without `order` has always been read back without it, and SuperDispatch, validating board-read v0.0.20 strictly, refused such a production board at #/stages/0 on every pass. `order` is made optional, and no more: `key` and `name` stay required and `order`, when present, is still a number. A reader that validated v0.0.20's shape strictly was already refusing these real bodies. Recorded in the charter: decisions/2026-11-24-a-contract-wrong-about-what-ships-is-fixed-in-place.md (charter#47)."
     },
     {
-      "path": "schemas/http/superlibrary/api.v1.openapi.json",
-      "rule": "composition-changed",
-      "against": "v0.0.19",
-      "reason": "SuperLibrary api.v1's ItemSummary was written from uploaded artifacts only. SuperLibrary has always sent work records ingested from SuperPipeline with createdBy `source:superpipeline` and latestVersion 0 (apps/api/src/ingest/consumer.ts), and its own treaty tests held exactly those two as known mismatches. The schema is widened to what the producer sends, and no further: a reader that validated v0.0.19's shape strictly was already refusing these real bodies. From the next release a change like this is a new version. Recorded in the charter: decisions/2026-11-24-a-contract-wrong-about-what-ships-is-fixed-in-place.md (charter#47)."
+      "path": "schemas/http/superpipeline/agent-work.v1.openapi.json",
+      "rule": "new-case-refused-by-old claimCard 200",
+      "against": "v0.0.20",
+      "reason": "SuperPipeline's StageDef was written from boards made from its templates and web app, which number every stage. SuperPipeline has never required `order`: board create (POST /v1/boards, apps/api/src/routes/boards/collection.ts) needs only a string `key`, and the whole-pipeline write (setStages in apps/api/src/board/pipeline.ts) needs `key` and `name`; both store stages as sent, sorted by `order`, where a stage without one keeps its place. So a board whose stages were sent without `order` has always been read back without it, and SuperDispatch, validating board-read v0.0.20 strictly, refused such a production board at #/stages/0 on every pass. `order` is made optional, and no more: `key` and `name` stay required and `order`, when present, is still a number. A reader that validated v0.0.20's shape strictly was already refusing these real bodies. Recorded in the charter: decisions/2026-11-24-a-contract-wrong-about-what-ships-is-fixed-in-place.md (charter#47)."
     },
     {
-      "path": "schemas/http/superlibrary/api.v1.openapi.json",
-      "rule": "constraint-changed",
-      "against": "v0.0.19",
-      "reason": "SuperLibrary api.v1's ItemSummary was written from uploaded artifacts only. SuperLibrary has always sent work records ingested from SuperPipeline with createdBy `source:superpipeline` and latestVersion 0 (apps/api/src/ingest/consumer.ts), and its own treaty tests held exactly those two as known mismatches. The schema is widened to what the producer sends, and no further: a reader that validated v0.0.19's shape strictly was already refusing these real bodies. From the next release a change like this is a new version. Recorded in the charter: decisions/2026-11-24-a-contract-wrong-about-what-ships-is-fixed-in-place.md (charter#47)."
+      "path": "schemas/http/superpipeline/agent-work.v1.openapi.json",
+      "rule": "new-case-refused-by-old readRun 200",
+      "against": "v0.0.20",
+      "reason": "SuperPipeline's StageDef was written from boards made from its templates and web app, which number every stage. SuperPipeline has never required `order`: board create (POST /v1/boards, apps/api/src/routes/boards/collection.ts) needs only a string `key`, and the whole-pipeline write (setStages in apps/api/src/board/pipeline.ts) needs `key` and `name`; both store stages as sent, sorted by `order`, where a stage without one keeps its place. So a board whose stages were sent without `order` has always been read back without it, and SuperDispatch, validating board-read v0.0.20 strictly, refused such a production board at #/stages/0 on every pass. `order` is made optional, and no more: `key` and `name` stay required and `order`, when present, is still a number. A reader that validated v0.0.20's shape strictly was already refusing these real bodies. Recorded in the charter: decisions/2026-11-24-a-contract-wrong-about-what-ships-is-fixed-in-place.md (charter#47)."
     },
     {
-      "path": "schemas/http/superlibrary/api.v1.openapi.json",
-      "rule": "new-case-refused-by-old getItem 200",
-      "against": "v0.0.19",
-      "reason": "SuperLibrary api.v1's ItemSummary was written from uploaded artifacts only. SuperLibrary has always sent work records ingested from SuperPipeline with createdBy `source:superpipeline` and latestVersion 0 (apps/api/src/ingest/consumer.ts), and its own treaty tests held exactly those two as known mismatches. The schema is widened to what the producer sends, and no further: a reader that validated v0.0.19's shape strictly was already refusing these real bodies. From the next release a change like this is a new version. Recorded in the charter: decisions/2026-11-24-a-contract-wrong-about-what-ships-is-fixed-in-place.md (charter#47)."
+      "path": "schemas/http/superpipeline/board-read.v1.openapi.json",
+      "rule": "required-removed",
+      "against": "v0.0.20",
+      "reason": "SuperPipeline's StageDef was written from boards made from its templates and web app, which number every stage. SuperPipeline has never required `order`: board create (POST /v1/boards, apps/api/src/routes/boards/collection.ts) needs only a string `key`, and the whole-pipeline write (setStages in apps/api/src/board/pipeline.ts) needs `key` and `name`; both store stages as sent, sorted by `order`, where a stage without one keeps its place. So a board whose stages were sent without `order` has always been read back without it, and SuperDispatch, validating board-read v0.0.20 strictly, refused such a production board at #/stages/0 on every pass. `order` is made optional, and no more: `key` and `name` stay required and `order`, when present, is still a number. A reader that validated v0.0.20's shape strictly was already refusing these real bodies. Recorded in the charter: decisions/2026-11-24-a-contract-wrong-about-what-ships-is-fixed-in-place.md (charter#47)."
+    },
+    {
+      "path": "schemas/http/superpipeline/board-read.v1.openapi.json",
+      "rule": "new-case-refused-by-old readBoard 200",
+      "against": "v0.0.20",
+      "reason": "SuperPipeline's StageDef was written from boards made from its templates and web app, which number every stage. SuperPipeline has never required `order`: board create (POST /v1/boards, apps/api/src/routes/boards/collection.ts) needs only a string `key`, and the whole-pipeline write (setStages in apps/api/src/board/pipeline.ts) needs `key` and `name`; both store stages as sent, sorted by `order`, where a stage without one keeps its place. So a board whose stages were sent without `order` has always been read back without it, and SuperDispatch, validating board-read v0.0.20 strictly, refused such a production board at #/stages/0 on every pass. `order` is made optional, and no more: `key` and `name` stay required and `order`, when present, is still a number. A reader that validated v0.0.20's shape strictly was already refusing these real bodies. Recorded in the charter: decisions/2026-11-24-a-contract-wrong-about-what-ships-is-fixed-in-place.md (charter#47)."
     }
   ]
 }

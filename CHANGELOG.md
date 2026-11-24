@@ -5,6 +5,10 @@ deploys the event relay to production.
 
 ## Unreleased
 
+### Fixed
+
+- **A SuperPipeline stage's `order` is optional** (`StageDef` in `schemas/http/superpipeline/board-read.v1.openapi.json` and `agent-work.v1.openapi.json`). SuperPipeline has never required it: board create needs only a stage's `key` and the whole-pipeline write its `key` and `name`, and both store stages as sent. A board whose stages were sent without `order` has always been read back without it, so a reader validating v0.0.20 strictly (SuperDispatch's placement pass) refused real boards at `#/stages/0`. `key` and `name` stay required, and `order`, when present, is a number. `stages` is always in board order: a reader orders stages by their position in the array. New cases: a board snapshot whose stages have no `order`, and a claim and a run read whose stage has none. This widens two v1 responses in place, as the charter's decision for a contract wrong about what ships allows (charter#47): the five findings are recorded in `contracts/compat-exceptions.json` against v0.0.20. The lapsed v0.0.19 entries are removed.
+
 ## v0.0.20 — 2026-11-24
 
 - **Registry evidence:** `agentpod.evidence` cited Salaam's copied `test/fixtures/execution-evidence-v1.schema.json`, which Salaam deleted when it began vendoring treaty's data; it now cites `salaam:treaty.json` and `salaam:test/unit/agentpod-work.test.ts`. Every other evidence path for Salaam, SuperWitness and SuperMessage exists on their main.
