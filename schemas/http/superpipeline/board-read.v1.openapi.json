@@ -2362,7 +2362,7 @@
       },
       "StageDef": {
         "type": "object",
-        "required": ["key", "name", "order"],
+        "required": ["key", "name"],
         "properties": {
           "checkpointPolicy": {
             "$ref": "../../superpipeline-api/run-checkpoint-policy.v1.json"
@@ -2378,7 +2378,8 @@
             "type": "string"
           },
           "order": {
-            "type": "number"
+            "type": "number",
+            "description": "The stage's place in the pipeline. Optional: SuperPipeline has never required it. Board create (POST /v1/boards needs only a string `key`) and the whole-pipeline write (PUT /v1/boards/{id}/stages needs `key` and `name`) store stages as sent, so a board whose stages were sent without `order` (by the API, the CLI or an agent composing one) has always returned them without it; boards made from SuperPipeline's templates and its web app carry it. Both writes sort stages by `order`, and a stage without one keeps its place, so `stages` is always in board order: a reader orders stages by their position in the array, never by `order`."
           },
           "ownerKind": {
             "enum": ["capability", "agent", "human"]

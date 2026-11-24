@@ -335,6 +335,60 @@
                 "remindAfterMinutes": 60,
                 "escalateAfterMinutes": 240
               }
+            },
+            "a board whose stages were sent without an order, in board order": {
+              "boardId": "brd_9c1d4e5f6a7b8c9d",
+              "tenantId": "tnt_5a6b7c8d9e0f1a2b",
+              "name": "Web",
+              "stages": [
+                {
+                  "key": "intake",
+                  "name": "Intake",
+                  "ownerKind": "human",
+                  "instructions": "Say what the change is for."
+                },
+                {
+                  "key": "draft",
+                  "name": "Draft",
+                  "ownerKind": "capability",
+                  "owner": "writing",
+                  "instructions": "Draft from the merged pull requests."
+                },
+                {
+                  "key": "done",
+                  "name": "Done",
+                  "ownerKind": "human"
+                }
+              ],
+              "cards": [],
+              "gates": [],
+              "elicitations": [],
+              "references": [],
+              "usage": {
+                "totalCostUsd": 0,
+                "estimatedCostUsd": 0,
+                "budgetUsd": null,
+                "cardUsdCap": null,
+                "overBudget": false
+              },
+              "github": {
+                "issueTrigger": false,
+                "webhookConfigured": false,
+                "webhookUrl": "https://app.superpipeline.dev/v1/boards/brd_9c1d4e5f6a7b8c9d/webhooks/github?tenant=tnt_5a6b7c8d9e0f1a2b",
+                "triggerGrantCount": null
+              },
+              "stale": {
+                "enabled": true,
+                "afterHours": 48
+              },
+              "intro": {
+                "lede": "Ship the web app.",
+                "composeHint": "Describe a change"
+              },
+              "decisionTimeout": {
+                "remindAfterMinutes": 60,
+                "escalateAfterMinutes": 240
+              }
             }
           },
           "invalid": [
@@ -1686,6 +1740,497 @@
                         "forge:github"
                       ]
                     }
+                  }
+                ],
+                "cards": [
+                  {
+                    "id": "card_1a2b3c4d5e6f7a8b",
+                    "title": "Add OAuth login",
+                    "spec": {
+                      "goal": "Sign in with the workspace's identity provider"
+                    },
+                    "ownerUserId": "usr_0f1e2d3c4b5a6978",
+                    "queuedBy": "prn_0123456789abcdef0b01",
+                    "queuedByAgentId": null,
+                    "queuedGrant": null,
+                    "labels": [],
+                    "projectId": null,
+                    "milestoneId": null,
+                    "dueAt": null,
+                    "archivedAt": null,
+                    "currentStageKey": "build",
+                    "state": "submitted",
+                    "delegateAgentId": null,
+                    "lastAgentId": null,
+                    "queuedGrantOwner": null,
+                    "stageSince": "2026-11-23T09:00:00.000Z",
+                    "currentRunId": null,
+                    "priority": 0,
+                    "contextId": "ctx_1a2b3c4d5e6f7a8b",
+                    "createdAt": "2026-11-23T09:00:00.000Z",
+                    "updatedAt": null,
+                    "stateSince": "2026-11-23T09:00:00.000Z",
+                    "costUsd": 0,
+                    "overBudget": false,
+                    "attemptCount": 0,
+                    "parentCardId": null,
+                    "openChildCount": 0,
+                    "costUsdRollup": 0,
+                    "blockedBy": [],
+                    "reservation": {
+                      "agentId": "agt_3f9a1c0b7e24d5a6",
+                      "reservedUntil": "2026-11-23T09:01:00.000Z",
+                      "decisionId": "dec_01JDX4Q7Z8",
+                      "reservedBy": "prn_0123456789abcdef0c01"
+                    },
+                    "placementWindowUntil": "2026-11-23T09:00:10.000Z"
+                  },
+                  {
+                    "id": "card_2b3c4d5e6f7a8b9c",
+                    "title": "Write the migration guide",
+                    "spec": {
+                      "goal": "Sign in with the workspace's identity provider"
+                    },
+                    "ownerUserId": "usr_0f1e2d3c4b5a6978",
+                    "queuedBy": "prn_0123456789abcdef0b01",
+                    "queuedByAgentId": null,
+                    "queuedGrant": null,
+                    "labels": [],
+                    "projectId": null,
+                    "milestoneId": null,
+                    "dueAt": null,
+                    "archivedAt": null,
+                    "currentStageKey": "review",
+                    "state": "input-required",
+                    "delegateAgentId": null,
+                    "lastAgentId": "agt_7b1e2d3c4a5f6e70",
+                    "queuedGrantOwner": null,
+                    "stageSince": "2026-11-23T09:00:00.000Z",
+                    "currentRunId": "run_e074a2160c4b4f28",
+                    "priority": 1,
+                    "contextId": "ctx_1a2b3c4d5e6f7a8b",
+                    "createdAt": "2026-11-23T09:00:00.000Z",
+                    "updatedAt": "2026-11-23T10:05:00.000Z",
+                    "stateSince": "2026-11-23T09:00:00.000Z",
+                    "costUsd": 0.42,
+                    "overBudget": false,
+                    "attemptCount": 2,
+                    "parentCardId": null,
+                    "openChildCount": 0,
+                    "costUsdRollup": 0.42,
+                    "blockedBy": [],
+                    "needsHuman": {
+                      "reason": "review"
+                    }
+                  },
+                  {
+                    "id": "card_3c4d5e6f7a8b9c0d",
+                    "title": "Retire the old login",
+                    "spec": {
+                      "goal": "Sign in with the workspace's identity provider"
+                    },
+                    "ownerUserId": "usr_0f1e2d3c4b5a6978",
+                    "queuedBy": "prn_0123456789abcdef0b01",
+                    "queuedByAgentId": null,
+                    "queuedGrant": null,
+                    "labels": [],
+                    "projectId": null,
+                    "milestoneId": null,
+                    "dueAt": null,
+                    "archivedAt": "2026-11-22T17:00:00.000Z",
+                    "currentStageKey": "done",
+                    "state": "completed",
+                    "delegateAgentId": null,
+                    "lastAgentId": null,
+                    "queuedGrantOwner": null,
+                    "stageSince": "2026-11-23T09:00:00.000Z",
+                    "currentRunId": null,
+                    "priority": 0,
+                    "contextId": "ctx_1a2b3c4d5e6f7a8b",
+                    "createdAt": "2026-11-23T09:00:00.000Z",
+                    "updatedAt": null,
+                    "stateSince": "2026-11-23T09:00:00.000Z",
+                    "costUsd": 0,
+                    "overBudget": false,
+                    "attemptCount": 0,
+                    "parentCardId": null,
+                    "openChildCount": 0,
+                    "costUsdRollup": 0,
+                    "blockedBy": []
+                  }
+                ],
+                "gates": [
+                  {
+                    "id": "gate_3c4d5e6f7a8b9c0d",
+                    "cardId": "card_2b3c4d5e6f7a8b9c",
+                    "stageKey": "review",
+                    "status": "pending",
+                    "decision": null,
+                    "options": [
+                      {
+                        "name": "approve",
+                        "title": "Approve"
+                      },
+                      {
+                        "name": "request_changes",
+                        "title": "Request changes"
+                      }
+                    ],
+                    "producedBy": "agt_7b1e2d3c4a5f6e70",
+                    "createdAt": "2026-11-23T10:05:00.000Z",
+                    "decidedBy": null,
+                    "comment": null,
+                    "resolvedAt": null,
+                    "references": [
+                      {
+                        "id": "ref_5e6f7a8b9c0d1e2f",
+                        "cardId": "card_2b3c4d5e6f7a8b9c",
+                        "url": "https://forge.example.com/acme/web/pulls/42",
+                        "title": "Migration guide",
+                        "subtitle": null,
+                        "provider": "url",
+                        "sourceType": "pull-request",
+                        "externalId": "42",
+                        "metadata": null,
+                        "syncState": "synced",
+                        "lastSyncedAt": null,
+                        "addedBy": "agent",
+                        "runId": "run_e074a2160c4b4f28",
+                        "createdAt": "2026-11-23T10:00:00.000Z",
+                        "updatedAt": null
+                      }
+                    ],
+                    "summary": "The guide covers both upgrade paths."
+                  }
+                ],
+                "elicitations": [],
+                "references": [
+                  {
+                    "id": "ref_5e6f7a8b9c0d1e2f",
+                    "cardId": "card_2b3c4d5e6f7a8b9c",
+                    "url": "https://forge.example.com/acme/web/pulls/42",
+                    "title": "Migration guide",
+                    "subtitle": null,
+                    "provider": "url",
+                    "sourceType": "pull-request",
+                    "externalId": "42",
+                    "metadata": null,
+                    "syncState": "synced",
+                    "lastSyncedAt": null,
+                    "addedBy": "agent",
+                    "runId": "run_e074a2160c4b4f28",
+                    "createdAt": "2026-11-23T10:00:00.000Z",
+                    "updatedAt": null
+                  }
+                ],
+                "usage": {
+                  "totalCostUsd": 0.42,
+                  "estimatedCostUsd": 0,
+                  "budgetUsd": 50,
+                  "cardUsdCap": null,
+                  "overBudget": false
+                },
+                "github": {
+                  "issueTrigger": false,
+                  "webhookConfigured": false,
+                  "webhookUrl": "https://app.superpipeline.dev/v1/boards/brd_9c1d4e5f6a7b8c9d/webhooks/github?tenant=tnt_5a6b7c8d9e0f1a2b",
+                  "triggerGrantCount": null
+                },
+                "stale": {
+                  "enabled": true,
+                  "afterHours": 48
+                }
+              }
+            },
+            {
+              "why": "a stage has a name",
+              "body": {
+                "boardId": "brd_9c1d4e5f6a7b8c9d",
+                "tenantId": "tnt_5a6b7c8d9e0f1a2b",
+                "name": "Web",
+                "stages": [
+                  {
+                    "key": "build",
+                    "order": 0,
+                    "ownerKind": "capability",
+                    "owner": "code",
+                    "requires": {
+                      "all": [
+                        "code"
+                      ],
+                      "any": [
+                        "typescript",
+                        "go"
+                      ]
+                    },
+                    "placement": {
+                      "isolation": "container",
+                      "tools": [
+                        "mcp:superpipeline",
+                        "cli:stk"
+                      ],
+                      "credentials": [
+                        "forge:github"
+                      ]
+                    }
+                  },
+                  {
+                    "key": "review",
+                    "name": "Review",
+                    "order": 1,
+                    "ownerKind": "human",
+                    "gate": "approval"
+                  },
+                  {
+                    "key": "done",
+                    "name": "Done",
+                    "order": 2
+                  }
+                ],
+                "cards": [
+                  {
+                    "id": "card_1a2b3c4d5e6f7a8b",
+                    "title": "Add OAuth login",
+                    "spec": {
+                      "goal": "Sign in with the workspace's identity provider"
+                    },
+                    "ownerUserId": "usr_0f1e2d3c4b5a6978",
+                    "queuedBy": "prn_0123456789abcdef0b01",
+                    "queuedByAgentId": null,
+                    "queuedGrant": null,
+                    "labels": [],
+                    "projectId": null,
+                    "milestoneId": null,
+                    "dueAt": null,
+                    "archivedAt": null,
+                    "currentStageKey": "build",
+                    "state": "submitted",
+                    "delegateAgentId": null,
+                    "lastAgentId": null,
+                    "queuedGrantOwner": null,
+                    "stageSince": "2026-11-23T09:00:00.000Z",
+                    "currentRunId": null,
+                    "priority": 0,
+                    "contextId": "ctx_1a2b3c4d5e6f7a8b",
+                    "createdAt": "2026-11-23T09:00:00.000Z",
+                    "updatedAt": null,
+                    "stateSince": "2026-11-23T09:00:00.000Z",
+                    "costUsd": 0,
+                    "overBudget": false,
+                    "attemptCount": 0,
+                    "parentCardId": null,
+                    "openChildCount": 0,
+                    "costUsdRollup": 0,
+                    "blockedBy": [],
+                    "reservation": {
+                      "agentId": "agt_3f9a1c0b7e24d5a6",
+                      "reservedUntil": "2026-11-23T09:01:00.000Z",
+                      "decisionId": "dec_01JDX4Q7Z8",
+                      "reservedBy": "prn_0123456789abcdef0c01"
+                    },
+                    "placementWindowUntil": "2026-11-23T09:00:10.000Z"
+                  },
+                  {
+                    "id": "card_2b3c4d5e6f7a8b9c",
+                    "title": "Write the migration guide",
+                    "spec": {
+                      "goal": "Sign in with the workspace's identity provider"
+                    },
+                    "ownerUserId": "usr_0f1e2d3c4b5a6978",
+                    "queuedBy": "prn_0123456789abcdef0b01",
+                    "queuedByAgentId": null,
+                    "queuedGrant": null,
+                    "labels": [],
+                    "projectId": null,
+                    "milestoneId": null,
+                    "dueAt": null,
+                    "archivedAt": null,
+                    "currentStageKey": "review",
+                    "state": "input-required",
+                    "delegateAgentId": null,
+                    "lastAgentId": "agt_7b1e2d3c4a5f6e70",
+                    "queuedGrantOwner": null,
+                    "stageSince": "2026-11-23T09:00:00.000Z",
+                    "currentRunId": "run_e074a2160c4b4f28",
+                    "priority": 1,
+                    "contextId": "ctx_1a2b3c4d5e6f7a8b",
+                    "createdAt": "2026-11-23T09:00:00.000Z",
+                    "updatedAt": "2026-11-23T10:05:00.000Z",
+                    "stateSince": "2026-11-23T09:00:00.000Z",
+                    "costUsd": 0.42,
+                    "overBudget": false,
+                    "attemptCount": 2,
+                    "parentCardId": null,
+                    "openChildCount": 0,
+                    "costUsdRollup": 0.42,
+                    "blockedBy": [],
+                    "needsHuman": {
+                      "reason": "review"
+                    }
+                  },
+                  {
+                    "id": "card_3c4d5e6f7a8b9c0d",
+                    "title": "Retire the old login",
+                    "spec": {
+                      "goal": "Sign in with the workspace's identity provider"
+                    },
+                    "ownerUserId": "usr_0f1e2d3c4b5a6978",
+                    "queuedBy": "prn_0123456789abcdef0b01",
+                    "queuedByAgentId": null,
+                    "queuedGrant": null,
+                    "labels": [],
+                    "projectId": null,
+                    "milestoneId": null,
+                    "dueAt": null,
+                    "archivedAt": "2026-11-22T17:00:00.000Z",
+                    "currentStageKey": "done",
+                    "state": "completed",
+                    "delegateAgentId": null,
+                    "lastAgentId": null,
+                    "queuedGrantOwner": null,
+                    "stageSince": "2026-11-23T09:00:00.000Z",
+                    "currentRunId": null,
+                    "priority": 0,
+                    "contextId": "ctx_1a2b3c4d5e6f7a8b",
+                    "createdAt": "2026-11-23T09:00:00.000Z",
+                    "updatedAt": null,
+                    "stateSince": "2026-11-23T09:00:00.000Z",
+                    "costUsd": 0,
+                    "overBudget": false,
+                    "attemptCount": 0,
+                    "parentCardId": null,
+                    "openChildCount": 0,
+                    "costUsdRollup": 0,
+                    "blockedBy": []
+                  }
+                ],
+                "gates": [
+                  {
+                    "id": "gate_3c4d5e6f7a8b9c0d",
+                    "cardId": "card_2b3c4d5e6f7a8b9c",
+                    "stageKey": "review",
+                    "status": "pending",
+                    "decision": null,
+                    "options": [
+                      {
+                        "name": "approve",
+                        "title": "Approve"
+                      },
+                      {
+                        "name": "request_changes",
+                        "title": "Request changes"
+                      }
+                    ],
+                    "producedBy": "agt_7b1e2d3c4a5f6e70",
+                    "createdAt": "2026-11-23T10:05:00.000Z",
+                    "decidedBy": null,
+                    "comment": null,
+                    "resolvedAt": null,
+                    "references": [
+                      {
+                        "id": "ref_5e6f7a8b9c0d1e2f",
+                        "cardId": "card_2b3c4d5e6f7a8b9c",
+                        "url": "https://forge.example.com/acme/web/pulls/42",
+                        "title": "Migration guide",
+                        "subtitle": null,
+                        "provider": "url",
+                        "sourceType": "pull-request",
+                        "externalId": "42",
+                        "metadata": null,
+                        "syncState": "synced",
+                        "lastSyncedAt": null,
+                        "addedBy": "agent",
+                        "runId": "run_e074a2160c4b4f28",
+                        "createdAt": "2026-11-23T10:00:00.000Z",
+                        "updatedAt": null
+                      }
+                    ],
+                    "summary": "The guide covers both upgrade paths."
+                  }
+                ],
+                "elicitations": [],
+                "references": [
+                  {
+                    "id": "ref_5e6f7a8b9c0d1e2f",
+                    "cardId": "card_2b3c4d5e6f7a8b9c",
+                    "url": "https://forge.example.com/acme/web/pulls/42",
+                    "title": "Migration guide",
+                    "subtitle": null,
+                    "provider": "url",
+                    "sourceType": "pull-request",
+                    "externalId": "42",
+                    "metadata": null,
+                    "syncState": "synced",
+                    "lastSyncedAt": null,
+                    "addedBy": "agent",
+                    "runId": "run_e074a2160c4b4f28",
+                    "createdAt": "2026-11-23T10:00:00.000Z",
+                    "updatedAt": null
+                  }
+                ],
+                "usage": {
+                  "totalCostUsd": 0.42,
+                  "estimatedCostUsd": 0,
+                  "budgetUsd": 50,
+                  "cardUsdCap": null,
+                  "overBudget": false
+                },
+                "github": {
+                  "issueTrigger": false,
+                  "webhookConfigured": false,
+                  "webhookUrl": "https://app.superpipeline.dev/v1/boards/brd_9c1d4e5f6a7b8c9d/webhooks/github?tenant=tnt_5a6b7c8d9e0f1a2b",
+                  "triggerGrantCount": null
+                },
+                "stale": {
+                  "enabled": true,
+                  "afterHours": 48
+                }
+              }
+            },
+            {
+              "why": "a stage's order, when present, is a number",
+              "body": {
+                "boardId": "brd_9c1d4e5f6a7b8c9d",
+                "tenantId": "tnt_5a6b7c8d9e0f1a2b",
+                "name": "Web",
+                "stages": [
+                  {
+                    "key": "build",
+                    "name": "Build",
+                    "order": "0",
+                    "ownerKind": "capability",
+                    "owner": "code",
+                    "requires": {
+                      "all": [
+                        "code"
+                      ],
+                      "any": [
+                        "typescript",
+                        "go"
+                      ]
+                    },
+                    "placement": {
+                      "isolation": "container",
+                      "tools": [
+                        "mcp:superpipeline",
+                        "cli:stk"
+                      ],
+                      "credentials": [
+                        "forge:github"
+                      ]
+                    }
+                  },
+                  {
+                    "key": "review",
+                    "name": "Review",
+                    "order": 1,
+                    "ownerKind": "human",
+                    "gate": "approval"
+                  },
+                  {
+                    "key": "done",
+                    "name": "Done",
+                    "order": 2
                   }
                 ],
                 "cards": [
