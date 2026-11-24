@@ -672,7 +672,10 @@
       "consumers": ["agentpod", "superpipeline"],
       "kind": "http",
       "status": "contracted",
-      "contract": ["schemas/http/superlibrary/api.v1.openapi.json"],
+      "contract": [
+        "schemas/http/superlibrary/api.v1.openapi.json",
+        "contracts/artifacts/superlibrary-embed.json"
+      ],
       "evidence": [
         "superlibrary:apps/api/src/index.ts",
         "superlibrary:apps/api/src/uploads/routes.ts",
@@ -681,12 +684,14 @@
         "superlibrary:apps/api/src/auth/caller.ts",
         "superlibrary:apps/api/src/http.ts",
         "superlibrary:packages/contract/src/refusals.ts",
+        "superlibrary:packages/embed/package.json",
         "agentpod:apps/hub/src/services/superlibrary/client.ts",
         "agentpod:apps/hub/src/services/superlibrary/link.ts",
         "agentpod:apps/hub/src/services/superlibrary/execution-export.ts",
         "agentpod:apps/hub/src/services/superlibrary/related.ts",
         "agentpod:apps/console/src/lib/api/superlibrary.ts",
-        "superpipeline:apps/web/src/lib/superlibrary.ts"
+        "superpipeline:apps/web/src/lib/superlibrary.ts",
+        "superpipeline:apps/web/src/lib/vendor/superlibrary-embed/VENDORED.json"
       ]
     },
     {

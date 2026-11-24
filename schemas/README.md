@@ -6,8 +6,8 @@ the public repository, and every schema belongs to a crossing in
 
 - `common/`: pieces other contracts reference, such as `error.v1.json`, the one error envelope.
 - `http/`: HTTP APIs as OpenAPI 3.1 documents ([conventions](http/README.md)).
-- `treaty/`: the shape of treaty's own files: the registry, the error codes and a product's
-  `treaty.json`.
+- `treaty/`: the shape of treaty's own files: the registry, the error codes, a product's
+  `treaty.json` and an artifact record (`contracts/artifacts/`).
 
 The sections below describe the event and Matrix schemas.
 
