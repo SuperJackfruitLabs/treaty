@@ -333,6 +333,13 @@ function compareOperation(
   }
 }
 
+/** A document's `x-treaty-gate-refusals`, by status. */
+function gates(doc: unknown): Node {
+  if (!isObject(doc)) return {};
+  const declared = doc["x-treaty-gate-refusals"];
+  return isObject(declared) ? declared : {};
+}
+
 function components(doc: unknown): Node {
   if (!isObject(doc) || !isObject(doc.components)) return {};
   return isObject(doc.components.schemas) ? doc.components.schemas : {};
@@ -350,6 +357,22 @@ export function compareOpenApi(base: unknown, head: unknown): Breaking[] {
     const next = after.get(op.key);
     if (!next) out.push({ pointer: op.pointer, rule: "operation-removed" });
     else compareOperation(base, head, op, next, out);
+  }
+  // A gate's refusal answers every operation, like a response status: adding one is no finding,
+  // removing one or changing its body is.
+  const headGates = gates(head);
+  for (const [status, gate] of Object.entries(gates(base))) {
+    const where = `/x-treaty-gate-refusals/${escape(status)}`;
+    const next = headGates[status];
+    if (!isObject(next))
+      out.push({ pointer: where, rule: "gate-refusal-removed" });
+    else
+      compareNode(
+        isObject(gate) ? gate.schema : undefined,
+        next.schema,
+        `${where}/schema`,
+        out,
+      );
   }
   const baseSchemas = components(base);
   const headSchemas = components(head);

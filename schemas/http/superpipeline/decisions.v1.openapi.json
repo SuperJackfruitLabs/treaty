@@ -6,6 +6,27 @@
     "description": "Human decisions written back to a board, and the pending reads that feed them. Written from SuperPipeline's routes on main (apps/api/src/routes/boards/gates.ts, cards.ts, checks.ts and service-routes.ts), not from its zod package. Every refusal is error.v1; its `detail` carries what the producer adds, such as GATE_NOT_PENDING's `reason`. A pending list item is the pushed event body, by reference, so a pushed body and a read body are one contract."
   },
   "x-treaty-error-envelope": "error.v1",
+  "x-treaty-gate-refusals": {
+    "403": {
+      "description": "SuperPipeline's Organization-plane entitlement check, which runs before any route (apps/api/src/routes/table.ts, `orgPlaneEntitlement`; apps/api/src/auth/org-plane-resolve.ts, `entitlementRefusal`). In Organization-plane mode a verified plane token whose `ent` does not name superpipeline is refused with the plane's own refusal, `{ \"error\": \"product_not_enabled\", \"org\" }` (fixtures/ecosystem-identity/token_claims.json, case product-not-enabled), not error.v1. It may answer any operation in this document. Outside that mode, and for SuperPipeline's own `spa_` credentials, it never answers.",
+      "envelope": "flat-error.v1",
+      "codes": ["product_not_enabled"],
+      "schema": {
+        "$ref": "../../common/flat-error.v1.json",
+        "required": ["error", "org"],
+        "properties": {
+          "error": {
+            "const": "product_not_enabled"
+          },
+          "org": {
+            "type": "string",
+            "pattern": "^org_[0-9a-f]{20}$",
+            "description": "The token's workspace, which has not enabled SuperPipeline."
+          }
+        }
+      }
+    }
+  },
   "paths": {
     "/v1/boards/{boardId}/gates/pending": {
       "parameters": [

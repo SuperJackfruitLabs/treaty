@@ -29,6 +29,14 @@ Every document keeps these rules, checked by `scripts/openapi.test.ts`:
 - An operation names the codes it may return in `x-treaty-error-codes`. Each is the owner's in
   `contracts/error-codes.json`, recorded in the document's envelope. In `oauth-bearer-error.v1`
   a code is RFC 6750's (the schema's `$defs/standardCode`) or the owner's `flat-error.v1` code.
+- A gate that runs before every route (SuperPipeline's Organization-plane entitlement check) may
+  refuse in another of the suite's envelopes. The document declares it once, in
+  `x-treaty-gate-refusals`, keyed by status: a `description` naming the gate, its `envelope`, the
+  `codes` it sends (each the owner's, recorded in that envelope) and a `schema` that is that
+  envelope. Its valid and invalid cases sit under `gateRefusals.<status>` in the cases file, and
+  every valid case carries one of the named codes. `validateResponse` accepts a gate's refusal at
+  its status on every operation, beside what the operation itself declares. A gate added is no
+  compat finding; a gate removed, or its body changed, is.
 - Every request has valid and invalid cases, and every success response has valid cases. An
   error response may have cases too, for the fields a document pins beside a code. Each case
   validates as it is labelled.

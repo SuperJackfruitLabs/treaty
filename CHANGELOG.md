@@ -5,6 +5,8 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- **A gate's refusal is contracted** (`x-treaty-gate-refusals`). SuperPipeline's Organization-plane entitlement check runs before any route and refuses a token whose workspace has not enabled SuperPipeline with the plane's flat `{ "error": "product_not_enabled", "org" }`, not error.v1. All six SuperPipeline HTTP documents (agent-work, approvals, board-read, decisions, placement, push) now declare it once at document level, in flat-error.v1, with cases; `product_not_enabled` joins `contracts/error-codes.json` for superpipeline in flat-error.v1. An operation still names only codes in its document's envelope. `checkOpenApi` checks the declaration (status, envelope, the owner's codes in that envelope, a schema that is that envelope, valid and invalid cases carrying a named code), `validateResponse` accepts the gate's refusal at its status on every operation, and `bun run compat` treats a gate removed or its body changed as breaking. SuperPipeline can drop its `readBoard 403` allowance once it adds `schemas/common/flat-error.v1.json` to its test bundle; its body does not change.
+
 ## v0.0.19 — 2026-11-24
 
 - **SuperPipeline's board reads and placement are contracts.**

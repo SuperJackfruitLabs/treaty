@@ -9,6 +9,7 @@ import {
   bodySchemaPointer,
   documentOperations,
   isObject,
+  token,
   type Method,
 } from "./openapi-doc.ts";
 import { validatorFor, type Bundle, type Result } from "./schemas.ts";
@@ -41,6 +42,25 @@ export interface Api {
   /** Repository path of the document. */
   path: string;
   operations: Operation[];
+  /**
+   * Status → pointer to the body's schema, for the refusals a gate in front of every route may
+   * answer any operation with (`x-treaty-gate-refusals`). Absent when the document declares none.
+   */
+  gateRefusals?: Record<string, string>;
+}
+
+/**
+ * The refusals a document declares in `x-treaty-gate-refusals`: status → pointer to the schema.
+ * A gate runs before any route, so its refusal may answer every operation in the document.
+ */
+export function gateRefusals(doc: unknown): Record<string, string> {
+  const out: Record<string, string> = {};
+  const gates = isObject(doc) ? doc["x-treaty-gate-refusals"] : undefined;
+  if (!isObject(gates)) return out;
+  for (const [status, gate] of Object.entries(gates))
+    if (isObject(gate) && isObject(gate.schema))
+      out[status] = `/x-treaty-gate-refusals/${token(status)}/schema`;
+  return out;
 }
 
 function stringArray(value: unknown): string[] {
@@ -102,7 +122,12 @@ export function operations(doc: unknown): Operation[] {
 export function openApi(bundle: Bundle, path: string): Api {
   const doc = bundle.files.get(path);
   if (!isObject(doc)) throw new Error(`${path} is not in the bundle`);
-  return { path, operations: operations(doc) };
+  const gates = gateRefusals(doc);
+  return {
+    path,
+    operations: operations(doc),
+    ...(Object.keys(gates).length > 0 ? { gateRefusals: gates } : {}),
+  };
 }
 
 function decode(segment: string): string {
@@ -232,12 +257,28 @@ export function validateResponse(
         : "default" in op.responses
           ? op.responses.default
           : undefined;
+  // A gate's refusal answers before the operation runs, so it is accepted at its status on
+  // every operation, beside whatever the operation itself answers with that status.
+  const gate = api.gateRefusals?.[key];
   if (pointer === undefined)
-    return {
-      valid: false,
-      errors: [`status ${key} is not in the contract for ${operationId}`],
-    };
-  return check(bundle, api, pointer, body, `${operationId}'s ${key}`);
+    return gate
+      ? check(bundle, api, gate, body, `the gate's ${key}`)
+      : {
+          valid: false,
+          errors: [`status ${key} is not in the contract for ${operationId}`],
+        };
+  const result = check(bundle, api, pointer, body, `${operationId}'s ${key}`);
+  if (result.valid || !gate) return result;
+  const refusal = check(bundle, api, gate, body, `the gate's ${key}`);
+  return refusal.valid
+    ? refusal
+    : {
+        valid: false,
+        errors: [
+          ...result.errors,
+          ...refusal.errors.map((e) => `as the gate's refusal: ${e}`),
+        ],
+      };
 }
 
 export interface ParameterValues {

@@ -119,6 +119,18 @@ const registry = (cases: string) => ({
   ],
 });
 
+/** A document whose only content is a 403 gate refusal with `org` as given. */
+const gated = (org: Record<string, unknown>) => ({
+  openapi: "3.1.0",
+  paths: {},
+  "x-treaty-gate-refusals": {
+    "403": {
+      envelope: "flat-error.v1",
+      schema: { type: "object", properties: { org } },
+    },
+  },
+});
+
 describe("the corpus rule", () => {
   const CASES = "fixtures/thing.json";
 
@@ -139,6 +151,30 @@ describe("the corpus rule", () => {
     });
     const rules = compare(base, head).map((f) => f.rule);
     expect(rules).toContain("old-case-refused: a long id");
+  });
+
+  test("a gate refusal's old valid case the new gate refuses is named", () => {
+    const DOC = "schemas/http/superpipeline/gated.v1.openapi.json";
+    const GATED = "fixtures/http/superpipeline/gated.v1.cases.json";
+    const cases = {
+      operations: {},
+      gateRefusals: {
+        "403": {
+          valid: { "a long org": { error: "x", org: "org_abcdef" } },
+          invalid: [],
+        },
+      },
+    };
+    const base = createBundle({
+      [DOC]: gated({ type: "string" }),
+      [GATED]: cases,
+    });
+    const head = createBundle({
+      [DOC]: gated({ type: "string", maxLength: 3 }),
+      [GATED]: cases,
+    });
+    const rules = compare(base, head).map((f) => f.rule);
+    expect(rules).toContain("old-case-refused gate 403: a long org");
   });
 
   test("judge separates breaking, excused and stale", () => {
