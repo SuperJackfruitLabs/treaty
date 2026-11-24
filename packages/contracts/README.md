@@ -18,6 +18,8 @@ npx -y @superjackfruitlabs/treaty-contracts@<version> verify
   contract's cases file (an MCP catalog's tool, a telemetry span, a URL shape).
 - MCP tool catalogs (`schemas/mcp/`): `mcpCatalog`, `validateToolArguments`,
   `validateToolResult`.
+- Telemetry conventions (`schemas/telemetry/`): `telemetryConventions`,
+  `validateSpanAttributes`, `validateLogRecord`, `validatePropagation`.
 - The main entry validates bodies against schemas and OpenAPI 3.1 documents offline, and runs in
   Workers. `./node` adds loading from disk, `verify` and `sync`.
 

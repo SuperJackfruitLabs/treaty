@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/treaty/telemetry-conventions.v1.json",
+  "title": "treaty telemetry conventions",
+  "description": "The names products agree on in their telemetry: the attribute keys and their OpenTelemetry types, the spans and structured log records that carry them and which keys each must carry, and how a trace's context travels between processes. Attribute data, not a schema for traces: producers test what they emit, the consumer queries only the keys named here, and a missing key is a test failure, never a runtime refusal. Keys not named here (OpenTelemetry's own semantic conventions among them) are ignored. Conventions live at schemas/telemetry/<name>.v<N>.json, their cases at fixtures/telemetry/<name>.v<N>.cases.json.",
+  "type": "object",
+  "required": [
+    "$schema",
+    "$id",
+    "conventions",
+    "version",
+    "attributes",
+    "spans"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "const": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/treaty/telemetry-conventions.v1.json"
+    },
+    "$id": {
+      "type": "string",
+      "pattern": "^https://raw\\.githubusercontent\\.com/SuperJackfruitLabs/treaty/main/schemas/telemetry/[a-z0-9-]+\\.v[1-9][0-9]*\\.json$"
+    },
+    "conventions": { "const": "treaty telemetry conventions" },
+    "version": { "const": 1 },
+    "description": { "type": "string" },
+    "attributes": {
+      "description": "Every attribute key, by name.",
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*(\\.[a-z0-9_]+)+$" },
+      "additionalProperties": { "$ref": "#/$defs/attribute" }
+    },
+    "spans": {
+      "description": "Spans by name.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/record" }
+    },
+    "logs": {
+      "description": "Structured log records, by their message (`msg`).",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/record" }
+    },
+    "propagation": {
+      "description": "How a trace's context crosses from one process to another, by name.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/propagation" }
+    }
+  },
+  "$defs": {
+    "product": {
+      "enum": [
+        "accounts",
+        "agentpod",
+        "salaam",
+        "superbench",
+        "superdispatch",
+        "superexchange",
+        "superlibrary",
+        "supermessage",
+        "superpipeline",
+        "supertoolkit",
+        "superwitness"
+      ]
+    },
+    "products": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/product" }
+    },
+    "attribute": {
+      "type": "object",
+      "required": ["type", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "description": "The OpenTelemetry attribute type. int and double are both numbers in JSON; an int has no fraction.",
+          "enum": ["string", "int", "double", "boolean"]
+        },
+        "description": { "type": "string", "minLength": 1 },
+        "enum": {
+          "description": "The only values the key carries.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "minimum": { "type": "number" }
+      }
+    },
+    "record": {
+      "type": "object",
+      "required": ["description", "producers", "required"],
+      "additionalProperties": false,
+      "properties": {
+        "description": { "type": "string", "minLength": 1 },
+        "producers": { "$ref": "#/$defs/products" },
+        "service": {
+          "description": "The `service.name` of the process that emits it.",
+          "type": "string"
+        },
+        "required": {
+          "description": "Keys every emitted record carries (on a span, by the time it ends).",
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string" }
+        },
+        "optional": {
+          "description": "Keys it carries when it has a value for them.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "propagation": {
+      "type": "object",
+      "required": ["description", "carrier", "producers", "fields"],
+      "additionalProperties": false,
+      "properties": {
+        "description": { "type": "string", "minLength": 1 },
+        "carrier": {
+          "description": "acp-meta: the `_meta` object of an ACP JSON-RPC request's params. http-headers: request headers.",
+          "enum": ["acp-meta", "http-headers"]
+        },
+        "methods": {
+          "description": "For acp-meta: the ACP methods whose params carry it.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string" }
+        },
+        "producers": { "$ref": "#/$defs/products" },
+        "consumers": { "$ref": "#/$defs/products" },
+        "fields": {
+          "description": "The carrier's fields, by name: whether each is required, and the JSON Schema its value satisfies.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["required", "schema"],
+            "additionalProperties": false,
+            "properties": {
+              "required": { "type": "boolean" },
+              "description": { "type": "string" },
+              "schema": { "type": "object" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -6,3 +6,5 @@ export * from "./cases.ts";
 export * from "./compat.ts";
 export * from "./openapi-doc.ts";
 export * from "./mcp.ts";
+export * from "./telemetry.ts";
+export * from "./forms-compat.ts";

@@ -335,3 +335,86 @@ describe("an MCP catalog", () => {
     );
   });
 });
+
+describe("telemetry conventions", () => {
+  const PATH = "schemas/telemetry/sample.v1.json";
+  const RAW =
+    "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/";
+  const doc = (extra: Record<string, unknown> = {}) => ({
+    $schema: `${RAW}schemas/treaty/telemetry-conventions.v1.json`,
+    $id: `${RAW}${PATH}`,
+    conventions: "treaty telemetry conventions",
+    version: 1,
+    attributes: {
+      "run.id": { type: "string", description: "r" },
+      "acp.seq_from": { type: "int", description: "s" },
+    },
+    spans: {
+      attempt: {
+        description: "a",
+        producers: ["agentpod"],
+        required: ["run.id"],
+      },
+    },
+    ...extra,
+  });
+  const one = (d: unknown) => createBundle({ [PATH]: d });
+
+  test("an attribute or a span added is no finding", () => {
+    const head = doc({
+      attributes: {
+        ...doc().attributes,
+        "card.id": { type: "string", description: "c" },
+      },
+      spans: {
+        ...doc().spans,
+        turn: {
+          description: "t",
+          producers: ["agentpod"],
+          required: ["run.id"],
+        },
+      },
+    });
+    expect(compare(one(doc()), one(head))).toEqual([]);
+  });
+
+  test("a type changed, a key made required and a span removed are breaking", () => {
+    const head = doc({
+      attributes: {
+        ...doc().attributes,
+        "run.id": { type: "int", description: "r" },
+      },
+      spans: {},
+      logs: {},
+    });
+    const base = doc({
+      logs: {
+        "run route": {
+          description: "l",
+          producers: ["superpipeline"],
+          required: [],
+        },
+      },
+    });
+    const headLogs = doc({
+      attributes: head.attributes,
+      spans: {},
+      logs: {
+        "run route": {
+          description: "l",
+          producers: ["superpipeline"],
+          required: ["run.id"],
+        },
+      },
+    });
+    expect(compare(one(base), one(headLogs))).toEqual([
+      { path: PATH, pointer: "/attributes/run.id", rule: "type-changed" },
+      { path: PATH, pointer: "/spans/attempt", rule: "record-removed" },
+      {
+        path: PATH,
+        pointer: "/logs/run route/required/run.id",
+        rule: "required-added",
+      },
+    ]);
+  });
+});

@@ -1,6 +1,7 @@
 /**
  * Within a version, a contract may only add optional things: the rule `compat.ts` holds for
- * schemas, applied to the forms that are not one schema but hold several (an MCP catalog).
+ * schemas, applied to the forms that are not one plain schema: an MCP catalog, telemetry
+ * conventions.
  *
  * Each compare walks the form's own structure and hands every embedded schema to
  * `compareSchemas`, so a tool added is no finding and a tool's input narrowed is one.
@@ -16,11 +17,18 @@ function escape(token: string): string {
 }
 
 /** Which form a document under schemas/ follows, by its `$schema`; undefined for a plain schema. */
-export function formOf(doc: unknown): "mcp-catalog" | undefined {
+export type Form = "mcp-catalog" | "telemetry-conventions";
+
+const FORMS: Record<string, Form> = {
+  "mcp-catalog.v1.json": "mcp-catalog",
+  "telemetry-conventions.v1.json": "telemetry-conventions",
+};
+
+export function formOf(doc: unknown): Form | undefined {
   if (!isObject(doc) || typeof doc.$schema !== "string") return undefined;
-  if (doc.$schema.endsWith("/schemas/treaty/mcp-catalog.v1.json"))
-    return "mcp-catalog";
-  return undefined;
+  const prefix = "/schemas/treaty/";
+  const at = doc.$schema.lastIndexOf(prefix);
+  return at === -1 ? undefined : FORMS[doc.$schema.slice(at + prefix.length)];
 }
 
 function nested(
@@ -94,6 +102,107 @@ export function compareMcpCatalogs(base: unknown, head: unknown): Breaking[] {
   return out;
 }
 
+const objectAt = (node: unknown, key: string): Record<string, unknown> => {
+  const value = isObject(node) ? node[key] : undefined;
+  return isObject(value) ? value : {};
+};
+
+const list = (node: unknown, key: string): string[] => {
+  const value = isObject(node) ? node[key] : undefined;
+  return Array.isArray(value)
+    ? value.filter((v): v is string => typeof v === "string")
+    : [];
+};
+
+const stable = (value: unknown): string => JSON.stringify(value ?? null);
+
+/** Breaking changes between two versions of one set of telemetry conventions. */
+export function compareTelemetryConventions(
+  base: unknown,
+  head: unknown,
+): Breaking[] {
+  const out: Breaking[] = [];
+  const headAttrs = objectAt(head, "attributes");
+  for (const [key, b] of Object.entries(objectAt(base, "attributes"))) {
+    const at = `/attributes/${escape(key)}`;
+    const h = headAttrs[key];
+    if (!isObject(h) || !isObject(b)) {
+      out.push({ pointer: at, rule: "attribute-removed" });
+      continue;
+    }
+    if (b.type !== h.type) out.push({ pointer: at, rule: "type-changed" });
+    for (const constraint of ["enum", "minimum"])
+      if (stable(b[constraint]) !== stable(h[constraint]))
+        out.push({ pointer: at, rule: `constraint-changed:${constraint}` });
+  }
+  for (const kind of ["spans", "logs"]) {
+    const headRecords = objectAt(head, kind);
+    for (const [name, b] of Object.entries(objectAt(base, kind))) {
+      const at = `/${kind}/${escape(name)}`;
+      const h = headRecords[name];
+      if (!isObject(h)) {
+        out.push({ pointer: at, rule: "record-removed" });
+        continue;
+      }
+      const before = list(b, "required");
+      const after = list(h, "required");
+      for (const key of after)
+        if (!before.includes(key))
+          out.push({
+            pointer: `${at}/required/${escape(key)}`,
+            rule: "required-added",
+          });
+      for (const key of before)
+        if (!after.includes(key))
+          out.push({
+            pointer: `${at}/required/${escape(key)}`,
+            rule: "required-removed",
+          });
+      const named = new Set([...after, ...list(h, "optional")]);
+      for (const key of list(b, "optional"))
+        if (!named.has(key))
+          out.push({
+            pointer: `${at}/optional/${escape(key)}`,
+            rule: "optional-removed",
+          });
+    }
+  }
+  const headProps = objectAt(head, "propagation");
+  for (const [name, b] of Object.entries(objectAt(base, "propagation"))) {
+    const at = `/propagation/${escape(name)}`;
+    const h = headProps[name];
+    if (!isObject(h)) {
+      out.push({ pointer: at, rule: "propagation-removed" });
+      continue;
+    }
+    if (isObject(b) && b.carrier !== h.carrier)
+      out.push({ pointer: `${at}/carrier`, rule: "carrier-changed" });
+    const headFields = objectAt(h, "fields");
+    for (const [field, bf] of Object.entries(objectAt(b, "fields"))) {
+      const where = `${at}/fields/${escape(field)}`;
+      const hf = headFields[field];
+      if (!isObject(hf) || !isObject(bf)) {
+        out.push({ pointer: where, rule: "field-removed" });
+        continue;
+      }
+      if (bf.required !== true && hf.required === true)
+        out.push({ pointer: where, rule: "field-became-required" });
+      nested(bf.schema, hf.schema, `${where}/schema`, out);
+    }
+    for (const [field, hf] of Object.entries(headFields))
+      if (
+        !(field in objectAt(b, "fields")) &&
+        isObject(hf) &&
+        hf.required === true
+      )
+        out.push({
+          pointer: `${at}/fields/${escape(field)}`,
+          rule: "field-required-added",
+        });
+  }
+  return out;
+}
+
 /** Breaking changes between two versions of a form's document, or undefined for a plain schema. */
 export function compareForms(
   base: unknown,
@@ -102,5 +211,7 @@ export function compareForms(
   const form = formOf(base);
   if (form === undefined) return undefined;
   if (formOf(head) !== form) return [{ pointer: "", rule: "form-changed" }];
-  return compareMcpCatalogs(base, head);
+  return form === "mcp-catalog"
+    ? compareMcpCatalogs(base, head)
+    : compareTelemetryConventions(base, head);
 }
