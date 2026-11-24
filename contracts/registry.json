@@ -597,11 +597,13 @@
       "owner": "agentpod",
       "consumers": ["superpipeline"],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "Read in the browser with an unchecked cast.",
-      "phase": 3,
-      "evidence": ["superpipeline:apps/web/src/lib/api/agents.ts"]
+      "status": "contracted",
+      "contract": ["schemas/http/agentpod/fleet.v1.openapi.json"],
+      "evidence": [
+        "agentpod:apps/hub/src/routes/fleet-dispatchable.ts",
+        "agentpod:apps/hub/src/auth/hub-token.ts",
+        "superpipeline:apps/web/src/lib/api/agents.ts"
+      ]
     },
     {
       "id": "agentpod.salaam-station",
