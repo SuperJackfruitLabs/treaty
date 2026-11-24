@@ -3,7 +3,7 @@ title: Which package
 description: "The six @superjackfruitlabs/treaty-* packages on npm, what each holds, and when to use it."
 ---
 
-Treaty gives you six MIT packages, all published together at the version of each release (v0.0.19
+Treaty gives you six MIT packages, all published together at the version of each release (v0.0.20
 today). Choose the boundary you need from the table below, then pin its exact version.
 
 | You want to | Use |
@@ -16,7 +16,7 @@ today). Choose the boundary you need from the table below, then pin its exact ve
 | Check your repository against the contracts it produces and consumes, or validate a body against any schema or HTTP API treaty holds | [`treaty-contracts`](/packages/contracts/) |
 
 ```sh
-npm install @superjackfruitlabs/treaty-cloudevents@0.0.19
+npm install @superjackfruitlabs/treaty-cloudevents@0.0.20
 ```
 
 That command gives your project the CloudEvents codec and types at the same version this page
