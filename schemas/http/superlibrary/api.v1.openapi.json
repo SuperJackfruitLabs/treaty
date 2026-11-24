@@ -1,0 +1,2174 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SuperLibrary API",
+    "version": "1",
+    "description": "The SuperLibrary routes other products call: uploads (declare, send, commit, verify), related work, roster invalidation, the signed-in person, and an item's read, embed grant and widening. Written from SuperLibrary's main (apps/api/src/index.ts, uploads/, items/, search/routes.ts, auth/caller.ts, sources/link.ts; the zod in packages/contract/src). Its consumers: the AgentPod hub (uploads, verification, related work, roster invalidation), the AgentPod console (uploads, as the person), and SuperPipeline's web app (me, items, embed, scope, related work). Every refusal is flat-error.v1, `{ \"error\": \"<snake_code>\" }`, often with fields beside it: each error response names the ones its codes carry, and requires them where SuperLibrary always sends them. Every caller refusal comes first: a token that does not verify (401 sign_in_required), a workspace not entitled (403 product_not_enabled), a caller of the wrong kind (403 principal_not_supported), a malformed X-On-Behalf-Of (400 invalid), SuperLibrary's own sign-in settings broken (500 misconfigured). The embed itself is a JavaScript artifact SuperPipeline vendors; treaty records it by version and hash (contracts/artifacts/superlibrary-embed.json), not by shape."
+  },
+  "x-treaty-error-envelope": "flat-error.v1",
+  "servers": [
+    {
+      "url": "https://app.superlibrary.dev"
+    }
+  ],
+  "paths": {
+    "/api/v1/uploads": {
+      "post": {
+        "operationId": "createUpload",
+        "summary": "Declare an upload",
+        "description": "A person uploads with their own token (the AgentPod console, optionally with a `stationFile`); the AgentPod hub uploads for an agent with its service token, the X-On-Behalf headers and a `source`. An agent never uploads directly (principal_not_supported). The checks: the caller, the link source (source_not_trusted, source_required, scope_mismatch, path_refused), the station file (station_not_yours, hub_unreachable), the paths (path_refused, duplicate_path), the sizes (too_many_files, file_too_large, folder_too_large), the entry, the item named for a new version (not_found, revoked, expired), then the quota. The upload routes answer CORS for the console's origins.",
+        "security": [
+          {
+            "personToken": []
+          },
+          {
+            "hubService": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OnBehalfOf"
+          },
+          {
+            "$ref": "#/components/parameters/OnBehalfKind"
+          },
+          {
+            "$ref": "#/components/parameters/OnBehalfToken"
+          }
+        ],
+        "x-treaty-error-codes": [
+          "invalid",
+          "sign_in_required",
+          "product_not_enabled",
+          "principal_not_supported",
+          "misconfigured",
+          "unexpected",
+          "path_refused",
+          "duplicate_path",
+          "entry_not_found",
+          "source_required",
+          "scope_mismatch",
+          "source_not_trusted",
+          "station_not_yours",
+          "not_found",
+          "revoked",
+          "expired",
+          "too_many_files",
+          "file_too_large",
+          "folder_too_large",
+          "quota_exceeded",
+          "hub_unreachable"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Declared",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadCreated"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "413": {
+            "$ref": "#/components/responses/TooLarge"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "502": {
+            "$ref": "#/components/responses/HubUnreachable"
+          }
+        }
+      }
+    },
+    "/api/v1/uploads/{uploadId}/files": {
+      "put": {
+        "operationId": "putUploadFile",
+        "summary": "Send one declared file",
+        "description": "The raw bytes of one declared file, named by `path` (the declared path, URL-encoded once). The size and SHA-256 must be the declared ones. The file is scanned for secrets before it is stored; a hit is kept in the upload's quarantine and reported in `findings`, and commit then refuses. Only the session's own maker reaches it: anyone else's session is not_found. An open session past its expiry is upload_expired.",
+        "security": [
+          {
+            "personToken": []
+          },
+          {
+            "hubService": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "uploadId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UploadId"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/OnBehalfOf"
+          },
+          {
+            "$ref": "#/components/parameters/OnBehalfKind"
+          },
+          {
+            "$ref": "#/components/parameters/OnBehalfToken"
+          }
+        ],
+        "x-treaty-error-codes": [
+          "invalid",
+          "sign_in_required",
+          "product_not_enabled",
+          "principal_not_supported",
+          "misconfigured",
+          "unexpected",
+          "path_refused",
+          "size_mismatch",
+          "sha256_mismatch",
+          "not_found",
+          "not_declared",
+          "already_committed",
+          "upload_expired"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "contentMediaType": "application/octet-stream"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Received",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceivedFile"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/api/v1/uploads/{uploadId}/commit": {
+      "post": {
+        "operationId": "commitUpload",
+        "summary": "Make the upload an item, or the item's next version",
+        "description": "No body. Idempotent per session: a commit of a committed session answers 200 with the first commit's result (and repairs what it left undone); the first commit answers 201. A 409 means nothing was committed. Only the session's own maker reaches it: anyone else's session is not_found. An open session past its expiry is upload_expired.",
+        "security": [
+          {
+            "personToken": []
+          },
+          {
+            "hubService": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "uploadId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UploadId"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/OnBehalfOf"
+          },
+          {
+            "$ref": "#/components/parameters/OnBehalfKind"
+          },
+          {
+            "$ref": "#/components/parameters/OnBehalfToken"
+          }
+        ],
+        "x-treaty-error-codes": [
+          "invalid",
+          "sign_in_required",
+          "product_not_enabled",
+          "principal_not_supported",
+          "misconfigured",
+          "unexpected",
+          "not_found",
+          "incomplete",
+          "version_conflict",
+          "upload_expired",
+          "gone",
+          "revoked",
+          "expired",
+          "quota_exceeded",
+          "secret_found"
+        ],
+        "responses": {
+          "200": {
+            "description": "Committed before; the first commit's result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommitResult"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Committed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommitResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "413": {
+            "$ref": "#/components/responses/TooLarge"
+          },
+          "422": {
+            "$ref": "#/components/responses/SecretFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/api/v1/uploads/{uploadId}/verification": {
+      "post": {
+        "operationId": "verifyUpload",
+        "summary": "Read back what a committed upload holds",
+        "description": "For the upload's own maker, about the version that upload made: no item, version or digest can be chosen. A commit that is not confirmed is replayed with `commitUpload` first; this route repairs nothing. Only the session's own maker reaches it: anyone else's session is not_found. An open session past its expiry is upload_expired.",
+        "security": [
+          {
+            "personToken": []
+          },
+          {
+            "hubService": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "uploadId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UploadId"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/OnBehalfOf"
+          },
+          {
+            "$ref": "#/components/parameters/OnBehalfKind"
+          },
+          {
+            "$ref": "#/components/parameters/OnBehalfToken"
+          }
+        ],
+        "x-treaty-error-codes": [
+          "invalid",
+          "sign_in_required",
+          "product_not_enabled",
+          "principal_not_supported",
+          "misconfigured",
+          "unexpected",
+          "not_found",
+          "not_committed",
+          "upload_expired",
+          "gone",
+          "revoked",
+          "expired"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadVerificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The committed upload",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadVerificationGrant"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/api/v1/related": {
+      "post": {
+        "operationId": "relatedWork",
+        "summary": "Items related to a card or an item, as the caller may see them",
+        "description": "A person's own token (SuperPipeline's card drawer) or an agent's own token (the AgentPod hub's related-work section of a card prompt): the answer holds only what that caller may see. Answers CORS for the embedding hosts.",
+        "security": [
+          {
+            "personToken": []
+          },
+          {
+            "agentToken": []
+          }
+        ],
+        "x-treaty-error-codes": [
+          "invalid",
+          "sign_in_required",
+          "product_not_enabled",
+          "principal_not_supported",
+          "misconfigured",
+          "unexpected"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RelatedQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Related items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RelatedItems"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/api/v1/roster/invalidate": {
+      "post": {
+        "operationId": "invalidateRoster",
+        "summary": "Forget what SuperLibrary cached of a principal's roster",
+        "description": "The AgentPod hub's own service token, naming no one (X-On-Behalf headers are refused). Sent when an agent's boards change, best effort.",
+        "security": [
+          {
+            "hubService": []
+          }
+        ],
+        "x-treaty-error-codes": [
+          "invalid",
+          "sign_in_required",
+          "product_not_enabled",
+          "principal_not_supported",
+          "misconfigured",
+          "unexpected"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RosterInvalidation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Forgotten. No body."
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/api/v1/me": {
+      "get": {
+        "operationId": "me",
+        "summary": "Who the signed-in person is in SuperLibrary",
+        "description": "A person's own token only. An embedding host reads it to decide whether to offer widening an item. Answers CORS for the embedding hosts.",
+        "security": [
+          {
+            "personToken": []
+          }
+        ],
+        "x-treaty-error-codes": [
+          "invalid",
+          "sign_in_required",
+          "product_not_enabled",
+          "principal_not_supported",
+          "misconfigured",
+          "unexpected"
+        ],
+        "responses": {
+          "200": {
+            "description": "The person",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Me"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/api/v1/items/{itemId}": {
+      "get": {
+        "operationId": "getItem",
+        "summary": "An item and its versions",
+        "description": "A person's own token. An item the person cannot see is not_found; a revoked or expired one is revoked or expired. Answers CORS for the embedding hosts.",
+        "security": [
+          {
+            "personToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ItemId"
+            }
+          }
+        ],
+        "x-treaty-error-codes": [
+          "invalid",
+          "sign_in_required",
+          "product_not_enabled",
+          "principal_not_supported",
+          "misconfigured",
+          "unexpected",
+          "not_found",
+          "revoked",
+          "expired"
+        ],
+        "responses": {
+          "200": {
+            "description": "The item",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/api/v1/items/{itemId}/embed": {
+      "post": {
+        "operationId": "embedItem",
+        "summary": "A short-lived grant to frame one version",
+        "description": "What the SuperLibrary embed's host asks for (`getEmbedUrl`). A version asked for that does not exist is not_found; with none asked and no live version, revoked. Answers CORS for the embedding hosts.",
+        "security": [
+          {
+            "personToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ItemId"
+            }
+          }
+        ],
+        "x-treaty-error-codes": [
+          "invalid",
+          "sign_in_required",
+          "product_not_enabled",
+          "principal_not_supported",
+          "misconfigured",
+          "unexpected",
+          "not_found",
+          "revoked",
+          "expired"
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmbedRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The grant",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmbedGrant"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/api/v1/items/{itemId}/scope": {
+      "post": {
+        "operationId": "widenItemScope",
+        "summary": "Widen an item to the whole workspace",
+        "description": "Its uploader or a workspace owner (not_permitted otherwise). Widening an item already workspace-wide changes nothing and answers the item. Answers CORS for the embedding hosts.",
+        "security": [
+          {
+            "personToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ItemId"
+            }
+          }
+        ],
+        "x-treaty-error-codes": [
+          "invalid",
+          "sign_in_required",
+          "product_not_enabled",
+          "principal_not_supported",
+          "misconfigured",
+          "unexpected",
+          "not_permitted",
+          "not_found",
+          "revoked"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScopeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The item, widened",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemOnly"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "personToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "A person's own Accounts access token for SuperLibrary's audience. A token a service minted for a person (with `act`, or amr `assertion`) is refused."
+      },
+      "agentToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "An agent's own Accounts access token for SuperLibrary's audience: reads only, as the agent's roster sees."
+      },
+      "hubService": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "The AgentPod hub's service token. On the upload routes it must name the agent it acts for with X-On-Behalf-Of, X-On-Behalf-Kind `agent` and X-On-Behalf-Token, the agent's own token minted for the hub. Any other service is principal_not_supported."
+      }
+    },
+    "parameters": {
+      "OnBehalfOf": {
+        "name": "X-On-Behalf-Of",
+        "in": "header",
+        "required": false,
+        "description": "The hub only: the agent it acts for.",
+        "schema": {
+          "$ref": "#/components/schemas/PrincipalId"
+        }
+      },
+      "OnBehalfKind": {
+        "name": "X-On-Behalf-Kind",
+        "in": "header",
+        "required": false,
+        "description": "The hub only: always `agent`; the hub never acts for a person.",
+        "schema": {
+          "const": "agent"
+        }
+      },
+      "OnBehalfToken": {
+        "name": "X-On-Behalf-Token",
+        "in": "header",
+        "required": false,
+        "description": "The hub only: the agent's own token, minted for the hub, as proof.",
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "The body, query or headers do not match the route",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/flat-error.v1.json",
+              "description": "path_refused carries `path`, `reason` and, for denied, `rule`; duplicate_path, size_mismatch and sha256_mismatch carry `path`; entry_not_found carries `entry`; invalid may say why in `detail` or list `issues`.",
+              "allOf": [
+                {
+                  "if": {
+                    "required": ["error"],
+                    "properties": {
+                      "error": {
+                        "const": "path_refused"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": ["path", "reason"],
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "reason": {
+                        "type": "string",
+                        "description": "Why the path rules refused it.",
+                        "x-treaty-known-values": [
+                          "empty",
+                          "too_long",
+                          "control_character",
+                          "backslash",
+                          "absolute",
+                          "parent",
+                          "denied"
+                        ]
+                      },
+                      "rule": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "required": ["error"],
+                    "properties": {
+                      "error": {
+                        "enum": [
+                          "duplicate_path",
+                          "size_mismatch",
+                          "sha256_mismatch"
+                        ]
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": ["path"],
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "required": ["error"],
+                    "properties": {
+                      "error": {
+                        "const": "entry_not_found"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": ["entry"],
+                    "properties": {
+                      "entry": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "required": ["error"],
+                    "properties": {
+                      "error": {
+                        "const": "invalid"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "detail": {
+                        "type": "string"
+                      },
+                      "issues": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": ["path", "message"],
+                          "properties": {
+                            "path": {
+                              "type": "string"
+                            },
+                            "message": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "required": ["error"],
+                    "properties": {
+                      "error": {
+                        "enum": ["source_required", "scope_mismatch"]
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": ["detail"],
+                    "properties": {
+                      "detail": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "sign_in_required: no bearer token, or one that does not verify",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/flat-error.v1.json"
+            }
+          }
+        },
+        "headers": {
+          "WWW-Authenticate": {
+            "description": "`Bearer resource_metadata=\"<app>/.well-known/oauth-protected-resource\"`",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Refused for who the caller is",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/flat-error.v1.json",
+              "description": "product_not_enabled names the workspace as `org`; principal_not_supported, source_not_trusted and station_not_yours say why in `detail`.",
+              "allOf": [
+                {
+                  "if": {
+                    "required": ["error"],
+                    "properties": {
+                      "error": {
+                        "const": "product_not_enabled"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": ["org"],
+                    "properties": {
+                      "org": {
+                        "$ref": "#/components/schemas/OrgId"
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "required": ["error"],
+                    "properties": {
+                      "error": {
+                        "enum": [
+                          "principal_not_supported",
+                          "source_not_trusted",
+                          "station_not_yours"
+                        ]
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": ["detail"],
+                    "properties": {
+                      "detail": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not there, or not visible to the caller",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/flat-error.v1.json",
+              "description": "not_declared names the `path` sent.",
+              "allOf": [
+                {
+                  "if": {
+                    "required": ["error"],
+                    "properties": {
+                      "error": {
+                        "const": "not_declared"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": ["path"],
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Refused for the upload's state",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/flat-error.v1.json",
+              "description": "incomplete lists the paths still to send as `missing`.",
+              "allOf": [
+                {
+                  "if": {
+                    "required": ["error"],
+                    "properties": {
+                      "error": {
+                        "const": "incomplete"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": ["missing"],
+                    "properties": {
+                      "missing": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Gone": {
+        "description": "Expired, revoked or deleted",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/flat-error.v1.json"
+            }
+          }
+        }
+      },
+      "TooLarge": {
+        "description": "Over a size limit or the workspace's quota",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/flat-error.v1.json",
+              "description": "Each carries its `limit`; file_too_large adds the `path`, quota_exceeded the bytes `used`.",
+              "allOf": [
+                {
+                  "if": {
+                    "required": ["error"],
+                    "properties": {
+                      "error": {
+                        "enum": ["too_many_files", "folder_too_large"]
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": ["limit"],
+                    "properties": {
+                      "limit": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "required": ["error"],
+                    "properties": {
+                      "error": {
+                        "const": "file_too_large"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": ["path", "limit"],
+                    "properties": {
+                      "path": {
+                        "type": "string"
+                      },
+                      "limit": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "required": ["error"],
+                    "properties": {
+                      "error": {
+                        "const": "quota_exceeded"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": ["limit", "used"],
+                    "properties": {
+                      "limit": {
+                        "type": "integer"
+                      },
+                      "used": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "SecretFound": {
+        "description": "secret_found: a file looks like it holds a secret",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/flat-error.v1.json",
+              "description": "`findings` lists each file, line and rule. Nothing was added; a person may override the scan, an agent may not.",
+              "allOf": [
+                {
+                  "if": {
+                    "required": ["error"],
+                    "properties": {
+                      "error": {
+                        "const": "secret_found"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": ["findings"],
+                    "properties": {
+                      "findings": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                          "type": "object",
+                          "required": ["path", "line", "rule"],
+                          "properties": {
+                            "path": {
+                              "type": "string"
+                            },
+                            "line": {
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "rule": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "ServerError": {
+        "description": "misconfigured or unexpected",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/flat-error.v1.json",
+              "description": "misconfigured names the `setting` that is wrong.",
+              "allOf": [
+                {
+                  "if": {
+                    "required": ["error"],
+                    "properties": {
+                      "error": {
+                        "const": "misconfigured"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": ["setting"],
+                    "properties": {
+                      "setting": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "HubUnreachable": {
+        "description": "hub_unreachable: the AgentPod hub could not confirm the station",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/flat-error.v1.json",
+              "allOf": [
+                {
+                  "if": {
+                    "required": ["error"],
+                    "properties": {
+                      "error": {
+                        "const": "hub_unreachable"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": ["detail"],
+                    "properties": {
+                      "detail": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "UploadId": {
+        "type": "string",
+        "pattern": "^upl_[0-9a-f]{16}$",
+        "description": "`upl_` and 16 lowercase hex."
+      },
+      "ItemId": {
+        "type": "string",
+        "pattern": "^itm_[0-9a-f]{16}$",
+        "description": "`itm_` and 16 lowercase hex."
+      },
+      "PrincipalId": {
+        "type": "string",
+        "pattern": "^prn_[0-9a-f]{20}$",
+        "description": "An Accounts principal: `prn_` and 20 lowercase hex."
+      },
+      "OrgId": {
+        "type": "string",
+        "pattern": "^org_[0-9a-f]{20}$",
+        "description": "An Accounts organization (the workspace's external id)."
+      },
+      "WorkspaceId": {
+        "type": "string",
+        "pattern": "^wsp_[0-9a-f]{16}$",
+        "description": "SuperLibrary's own workspace id, not the Accounts `org_` id."
+      },
+      "BoardId": {
+        "type": "string",
+        "pattern": "^brd_[0-9a-f]{16}$",
+        "description": "A SuperPipeline board."
+      },
+      "CardId": {
+        "type": "string",
+        "pattern": "^card_[0-9a-f]{16}$",
+        "description": "A SuperPipeline card."
+      },
+      "RunId": {
+        "type": "string",
+        "pattern": "^run_[0-9a-f]{16}$",
+        "description": "A SuperPipeline run."
+      },
+      "Sha256": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$",
+        "description": "SHA-256, 64 lowercase hex."
+      },
+      "Scope": {
+        "type": "string",
+        "pattern": "^(workspace|board:brd_[0-9a-f]{16})$",
+        "description": "Who may see an item: the whole workspace, or the people and agents of one SuperPipeline board."
+      },
+      "Timestamp": {
+        "type": "string",
+        "format": "date-time",
+        "description": "ISO 8601 in UTC, with `Z`."
+      },
+      "Outcome": {
+        "type": "string",
+        "description": "How the work an item came from ended. Open: a reader shows a value it does not know as it is.",
+        "x-treaty-known-values": [
+          "approved",
+          "completed",
+          "rejected",
+          "failed",
+          "abandoned",
+          "superseded",
+          "in-progress"
+        ]
+      },
+      "ItemKind": {
+        "type": "string",
+        "description": "What an item is. Open: a reader skips a kind it does not know.",
+        "x-treaty-known-values": ["artifact", "work-record"]
+      },
+      "View": {
+        "type": "string",
+        "description": "How the content origin shows a file. Open: a reader treats a view it does not know as `download`.",
+        "x-treaty-known-values": [
+          "html",
+          "markdown",
+          "image",
+          "svg",
+          "pdf",
+          "code",
+          "text",
+          "json",
+          "yaml",
+          "toml",
+          "csv",
+          "tsv",
+          "ipynb",
+          "mermaid",
+          "graphviz",
+          "audio",
+          "video",
+          "download"
+        ]
+      },
+      "LinkSource": {
+        "type": "object",
+        "description": "Where the AgentPod hub, acting for an agent, says a file came from. Only the hub may send one (source_not_trusted otherwise), and an agent's upload must (source_required). Its scope must be `board:` plus `board` (scope_mismatch). Closed: SuperLibrary refuses a key it does not model.",
+        "required": ["station", "path", "board"],
+        "additionalProperties": false,
+        "properties": {
+          "station": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "The hub's station id."
+          },
+          "stationName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "The station's readable key."
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024,
+            "description": "Relative to the station's workspace root. Linking the same path on the same board again makes the item's next version."
+          },
+          "board": {
+            "$ref": "#/components/schemas/BoardId"
+          },
+          "card": {
+            "$ref": "#/components/schemas/CardId"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunId"
+          }
+        }
+      },
+      "StationFile": {
+        "type": "object",
+        "description": "A person's link from their own station (the AgentPod console). SuperLibrary asks the hub whose the station is and records it only for its owner (station_not_yours, hub_unreachable). Never with `source` or `item`. Closed.",
+        "required": ["station", "path"],
+        "additionalProperties": false,
+        "properties": {
+          "station": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          }
+        }
+      },
+      "DeclaredFile": {
+        "type": "object",
+        "required": ["path", "bytes", "sha256"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024,
+            "description": "Normalised by the path rules (path_refused); two paths that normalise alike are duplicate_path."
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sha256": {
+            "$ref": "#/components/schemas/Sha256"
+          }
+        }
+      },
+      "UploadCreate": {
+        "type": "object",
+        "description": "Declare an upload: its files by size and SHA-256, then send each (`putUploadFile`) and commit. A person declares with their own token; the AgentPod hub declares for an agent with a `source`. Keys it does not model are dropped, except inside `source` and `stationFile`.",
+        "required": ["title", "files"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "\\S",
+            "description": "Trimmed; not only spaces."
+          },
+          "scope": {
+            "$ref": "#/components/schemas/Scope",
+            "default": "workspace"
+          },
+          "item": {
+            "$ref": "#/components/schemas/ItemId",
+            "description": "Upload a new version of this item; a person's only, and only one they may manage."
+          },
+          "entry": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024,
+            "description": "The file a folder opens on; one of `files` (entry_not_found). Defaults to the shallowest index.html, then the shallowest README.md, then the first path."
+          },
+          "expiresAt": {
+            "$ref": "#/components/schemas/Timestamp",
+            "description": "When the item is deleted; in the future. A person's only."
+          },
+          "source": {
+            "$ref": "#/components/schemas/LinkSource"
+          },
+          "stationFile": {
+            "$ref": "#/components/schemas/StationFile"
+          },
+          "files": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/DeclaredFile"
+            }
+          }
+        }
+      },
+      "UploadCreated": {
+        "type": "object",
+        "required": ["uploadId", "expiresAt", "entry", "held"],
+        "properties": {
+          "uploadId": {
+            "$ref": "#/components/schemas/UploadId"
+          },
+          "expiresAt": {
+            "$ref": "#/components/schemas/Timestamp",
+            "description": "The open session's expiry; files arriving renew it."
+          },
+          "entry": {
+            "type": "string",
+            "description": "The entry as chosen or defaulted, normalised."
+          },
+          "held": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Declared paths whose bytes this caller has sent before; a batch may send them as held instead of again."
+          }
+        }
+      },
+      "SecretHit": {
+        "type": "object",
+        "required": ["line", "rule"],
+        "properties": {
+          "line": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "rule": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "ReceivedFile": {
+        "type": "object",
+        "description": "A file as SuperLibrary took it. Files with `findings` wait in the upload's quarantine; commit then refuses with secret_found.",
+        "required": ["path", "mediaType", "view", "findings"],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "mediaType": {
+            "type": "string",
+            "minLength": 1
+          },
+          "view": {
+            "$ref": "#/components/schemas/View"
+          },
+          "findings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SecretHit"
+            }
+          }
+        }
+      },
+      "CommitResult": {
+        "type": "object",
+        "required": [
+          "itemId",
+          "version",
+          "url",
+          "sha256",
+          "mediaType",
+          "bytes"
+        ],
+        "properties": {
+          "itemId": {
+            "$ref": "#/components/schemas/ItemId"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The item's page in SuperLibrary's app."
+          },
+          "sha256": {
+            "$ref": "#/components/schemas/Sha256",
+            "description": "A single file's SHA-256; a folder's is the SHA-256 of the JSON array of its [path, sha256] pairs, sorted by path."
+          },
+          "mediaType": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The entry's."
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "All files together."
+          }
+        }
+      },
+      "UploadVerificationRequest": {
+        "type": "object",
+        "required": ["schemaVersion"],
+        "additionalProperties": false,
+        "properties": {
+          "schemaVersion": {
+            "const": "superlibrary-upload-verification/v1"
+          }
+        }
+      },
+      "VerifiedFile": {
+        "type": "object",
+        "required": ["path", "sha256", "bytes"],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "sha256": {
+            "$ref": "#/components/schemas/Sha256"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "UploadVerificationGrant": {
+        "type": "object",
+        "description": "What a committed upload holds, with short-lived signed URLs to read it back. Only the upload's own maker gets it, and only for the version that upload made.",
+        "required": [
+          "schemaVersion",
+          "uploadId",
+          "itemId",
+          "version",
+          "sha256",
+          "bytes",
+          "entry",
+          "expiresAt",
+          "url",
+          "downloadUrl",
+          "files"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "const": "superlibrary-upload-verification/v1"
+          },
+          "uploadId": {
+            "$ref": "#/components/schemas/UploadId"
+          },
+          "itemId": {
+            "$ref": "#/components/schemas/ItemId"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "$ref": "#/components/schemas/Sha256"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entry": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "$ref": "#/components/schemas/Timestamp",
+            "description": "At most a minute ahead, and never past the item's expiry."
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The content origin's viewer, `<origin>/_view?sig=<token>`."
+          },
+          "downloadUrl": {
+            "type": ["string", "null"],
+            "format": "uri",
+            "description": "A single file's download, `<origin>/s/<token>/<entry>?download=1`; null for a folder."
+          },
+          "files": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/VerifiedFile"
+            }
+          }
+        }
+      },
+      "ItemSource": {
+        "type": "object",
+        "description": "Where an item came from, beyond who and when. Every field is optional: a reader shows what is there.",
+        "properties": {
+          "agent": {
+            "type": "boolean",
+            "description": "The creator is an agent."
+          },
+          "sourceKind": {
+            "type": "string",
+            "description": "Which source made it; `upload` is a person's direct upload.",
+            "x-treaty-known-values": ["upload", "agentpod", "superpipeline"]
+          },
+          "agentPrincipal": {
+            "type": "string"
+          },
+          "station": {
+            "type": "string"
+          },
+          "stationName": {
+            "type": "string"
+          },
+          "stationRemoved": {
+            "type": "boolean"
+          },
+          "path": {
+            "type": "string"
+          },
+          "board": {
+            "type": "string"
+          },
+          "card": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "run": {
+            "type": "string"
+          },
+          "sourceId": {
+            "type": "string"
+          },
+          "sourceUrl": {
+            "type": "string"
+          },
+          "via": {
+            "type": "string",
+            "description": "The service (the AgentPod hub) that acted for the agent."
+          },
+          "linkedBy": {
+            "type": "string",
+            "description": "The person who linked it from their station."
+          }
+        }
+      },
+      "ItemSummary": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "scope",
+          "outcome",
+          "createdBy",
+          "createdAt",
+          "latestVersion",
+          "expiresAt",
+          "revokedAt"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/ItemId"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ItemKind"
+          },
+          "title": {
+            "type": "string"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/Scope"
+          },
+          "outcome": {
+            "$ref": "#/components/schemas/Outcome"
+          },
+          "createdBy": {
+            "$ref": "#/components/schemas/PrincipalId"
+          },
+          "createdAt": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "latestVersion": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "expiresAt": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Timestamp"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "revokedAt": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Timestamp"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "$ref": "#/components/schemas/ItemSource"
+          },
+          "audience": {
+            "type": "string",
+            "description": "Who can see it, in the Share panel's terms. `uploader` when its board is one SuperLibrary does not know.",
+            "x-treaty-known-values": ["uploader", "board", "workspace"]
+          },
+          "supersededBy": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ItemId"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The visible item that replaces it."
+          },
+          "caption": {
+            "type": ["string", "null"]
+          }
+        }
+      },
+      "FileEntry": {
+        "type": "object",
+        "required": ["path", "mediaType", "view", "bytes"],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "mediaType": {
+            "type": "string"
+          },
+          "view": {
+            "$ref": "#/components/schemas/View"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "VersionSummary": {
+        "type": "object",
+        "required": [
+          "version",
+          "entry",
+          "view",
+          "mediaType",
+          "totalBytes",
+          "fileCount",
+          "sha256",
+          "createdAt",
+          "revokedAt",
+          "scanOverride",
+          "files"
+        ],
+        "properties": {
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "entry": {
+            "type": "string"
+          },
+          "view": {
+            "$ref": "#/components/schemas/View"
+          },
+          "mediaType": {
+            "type": "string"
+          },
+          "totalBytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "fileCount": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "$ref": "#/components/schemas/Sha256"
+          },
+          "createdAt": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "revokedAt": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Timestamp"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "scanOverride": {
+            "type": "boolean",
+            "description": "A person waved a secret finding through for this version."
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileEntry"
+            },
+            "description": "The entry first, then tree order."
+          }
+        }
+      },
+      "ItemDetail": {
+        "type": "object",
+        "required": ["item", "versions"],
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/ItemSummary"
+          },
+          "versions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VersionSummary"
+            },
+            "description": "Newest first, revoked ones included with `revokedAt`."
+          }
+        }
+      },
+      "ItemOnly": {
+        "type": "object",
+        "required": ["item"],
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/ItemSummary"
+          }
+        }
+      },
+      "EmbedRequest": {
+        "type": "object",
+        "description": "Which version to show; the latest live one when absent. SuperLibrary ignores a `version` that is not an integer, which this contract does not allow.",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "EmbedGrant": {
+        "type": "object",
+        "description": "A short-lived grant to frame one version. The frame talks only to the caller's origin when it is an allowed embedding host, else to SuperLibrary's app.",
+        "required": [
+          "url",
+          "downloadUrl",
+          "expiresAt",
+          "version",
+          "itemUrl",
+          "entry",
+          "files"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "downloadUrl": {
+            "type": ["string", "null"],
+            "format": "uri",
+            "description": "Null for a folder."
+          },
+          "expiresAt": {
+            "$ref": "#/components/schemas/Timestamp",
+            "description": "Five minutes ahead."
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "itemUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "`<app>/a/<itemId>/v/<version>`."
+          },
+          "entry": {
+            "type": "string"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileEntry"
+            },
+            "description": "The entry first, then tree order."
+          }
+        }
+      },
+      "ScopeRequest": {
+        "type": "object",
+        "description": "Only `workspace` is accepted: SuperLibrary refuses any other scope with invalid (`detail` says why). Widening is a person's act and is recorded.",
+        "required": ["scope"],
+        "properties": {
+          "scope": {
+            "$ref": "#/components/schemas/Scope"
+          }
+        }
+      },
+      "RelatedCaps": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5
+          },
+          "maxTokens": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 4000,
+            "default": 1500
+          }
+        }
+      },
+      "RelatedQuery": {
+        "description": "Related to a card (by its work record, or, while the card has none, by the caller's `text`) or to an item. Each form is closed.",
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["cardId"],
+            "additionalProperties": false,
+            "properties": {
+              "cardId": {
+                "$ref": "#/components/schemas/CardId"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4000,
+                "pattern": "\\S",
+                "description": "The card's title and spec as the caller has them; used only while the card has no record, never stored."
+              },
+              "limit": {
+                "$ref": "#/components/schemas/RelatedCaps/properties/limit"
+              },
+              "maxTokens": {
+                "$ref": "#/components/schemas/RelatedCaps/properties/maxTokens"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["itemId"],
+            "additionalProperties": false,
+            "properties": {
+              "itemId": {
+                "$ref": "#/components/schemas/ItemId"
+              },
+              "limit": {
+                "$ref": "#/components/schemas/RelatedCaps/properties/limit"
+              },
+              "maxTokens": {
+                "$ref": "#/components/schemas/RelatedCaps/properties/maxTokens"
+              }
+            }
+          }
+        ]
+      },
+      "RelatedItem": {
+        "type": "object",
+        "required": [
+          "itemId",
+          "kind",
+          "title",
+          "outcome",
+          "scope",
+          "provenance",
+          "snippet",
+          "url",
+          "score",
+          "supersededBy",
+          "wrapped",
+          "tokens"
+        ],
+        "properties": {
+          "itemId": {
+            "$ref": "#/components/schemas/ItemId"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ItemKind"
+          },
+          "title": {
+            "type": "string"
+          },
+          "outcome": {
+            "$ref": "#/components/schemas/Outcome"
+          },
+          "scope": {
+            "type": "string"
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/ItemSource"
+          },
+          "snippet": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "score": {
+            "type": "number"
+          },
+          "supersededBy": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ItemId"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "wrapped": {
+            "type": "string",
+            "description": "The item as one `<library-item ...>` block, its body cut to fit the caps. Data, not instructions."
+          },
+          "tokens": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "The estimate of `wrapped`'s tokens."
+          }
+        }
+      },
+      "RelatedItems": {
+        "type": "object",
+        "required": ["items"],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RelatedItem"
+            },
+            "description": "What the caller may see, best first, within `limit` and `maxTokens`. Empty when the card's record is not visible to the caller."
+          }
+        }
+      },
+      "RosterInvalidation": {
+        "type": "object",
+        "required": ["principal"],
+        "properties": {
+          "principal": {
+            "$ref": "#/components/schemas/PrincipalId"
+          }
+        }
+      },
+      "Me": {
+        "type": "object",
+        "required": ["kind", "principalId", "org", "workspaceId", "role"],
+        "properties": {
+          "kind": {
+            "const": "human"
+          },
+          "principalId": {
+            "$ref": "#/components/schemas/PrincipalId"
+          },
+          "org": {
+            "$ref": "#/components/schemas/OrgId"
+          },
+          "workspaceId": {
+            "$ref": "#/components/schemas/WorkspaceId"
+          },
+          "role": {
+            "type": "string",
+            "description": "The person's role in SuperLibrary's workspace. An owner may widen any item.",
+            "x-treaty-known-values": ["owner", "member"]
+          }
+        }
+      }
+    }
+  }
+}
