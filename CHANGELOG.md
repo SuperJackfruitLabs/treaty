@@ -5,6 +5,8 @@ deploys the event relay to production.
 
 ## Unreleased
 
+## v0.0.19 — 2026-11-24
+
 - **SuperPipeline's board reads and placement are contracts.**
   - `schemas/http/superpipeline/board-read.v1.openapi.json` (`cards:read`): the board list, the board snapshot, one card, and a card's attempts, comments, links and activities. The run evidence routes `…/runs/{runId}/evidence` and `…/evidence-v1` are in it too, on `evidence:read`. The evidence shapes are closed: C4 is frozen, and `superpipeline-run-evidence/v1` is read strictly.
   - `schemas/http/superpipeline/placement.v1.openapi.json`: card eligibility (`dispatch:read`), reservation `PUT`/`DELETE` (`dispatch:reserve`), scheduling `GET`/`PUT`, and `GET /v1/agents/load` (`dispatch:read`). The load route is proposed: SuperPipeline builds it to this shape, `{agents: [{agentId, principalId, inFlight, capacity, lastHeartbeatAt}]}`.
