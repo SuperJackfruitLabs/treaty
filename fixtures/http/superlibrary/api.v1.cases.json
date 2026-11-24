@@ -1041,6 +1041,73 @@
                   ]
                 }
               ]
+            },
+            "a work record ingested from SuperPipeline": {
+              "item": {
+                "id": "itm_3c4d5e6f708192a3",
+                "kind": "work-record",
+                "title": "Ship the release notes",
+                "scope": "board:brd_0435b5ea3d4d4e44",
+                "outcome": "completed",
+                "createdBy": "source:superpipeline",
+                "createdAt": "2026-11-23T10:15:00Z",
+                "latestVersion": 0,
+                "expiresAt": null,
+                "revokedAt": null,
+                "source": {
+                  "sourceKind": "superpipeline",
+                  "board": "brd_0435b5ea3d4d4e44",
+                  "card": "card_00000000000000c1",
+                  "stage": "done"
+                },
+                "audience": "board",
+                "supersededBy": null
+              },
+              "versions": []
+            },
+            "an ingested work record a workspace owner uploaded a version to": {
+              "item": {
+                "id": "itm_3c4d5e6f708192a3",
+                "kind": "work-record",
+                "title": "Ship the release notes",
+                "scope": "board:brd_0435b5ea3d4d4e44",
+                "outcome": "completed",
+                "createdBy": "source:superpipeline",
+                "createdAt": "2026-11-23T10:15:00Z",
+                "latestVersion": 1,
+                "expiresAt": null,
+                "revokedAt": null,
+                "source": {
+                  "sourceKind": "superpipeline",
+                  "board": "brd_0435b5ea3d4d4e44",
+                  "card": "card_00000000000000c1",
+                  "stage": "done"
+                },
+                "audience": "board",
+                "supersededBy": null
+              },
+              "versions": [
+                {
+                  "version": 1,
+                  "entry": "notes.md",
+                  "view": "markdown",
+                  "mediaType": "text/markdown; charset=utf-8",
+                  "totalBytes": 512,
+                  "fileCount": 1,
+                  "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+                  "createdAt": "2026-11-23T11:00:00Z",
+                  "revokedAt": null,
+                  "scanOverride": false,
+                  "files": [
+                    {
+                      "path": "notes.md",
+                      "mediaType": "text/markdown; charset=utf-8",
+                      "view": "markdown",
+                      "bytes": 512
+                    }
+                  ]
+                }
+              ]
             }
           },
           "invalid": [
@@ -1102,6 +1169,180 @@
                   "audience": "board"
                 },
                 "versions": []
+              }
+            },
+            {
+              "why": "a source other than SuperPipeline's ingest",
+              "body": {
+                "item": {
+                  "id": "itm_3c4d5e6f708192a3",
+                  "kind": "work-record",
+                  "title": "Ship the release notes",
+                  "scope": "board:brd_0435b5ea3d4d4e44",
+                  "outcome": "completed",
+                  "createdBy": "source:agentpod",
+                  "createdAt": "2026-11-23T10:15:00Z",
+                  "latestVersion": 0,
+                  "expiresAt": null,
+                  "revokedAt": null,
+                  "source": {
+                    "sourceKind": "superpipeline",
+                    "board": "brd_0435b5ea3d4d4e44",
+                    "card": "card_00000000000000c1",
+                    "stage": "done"
+                  },
+                  "audience": "board",
+                  "supersededBy": null
+                },
+                "versions": []
+              }
+            },
+            {
+              "why": "a source with no name",
+              "body": {
+                "item": {
+                  "id": "itm_3c4d5e6f708192a3",
+                  "kind": "work-record",
+                  "title": "Ship the release notes",
+                  "scope": "board:brd_0435b5ea3d4d4e44",
+                  "outcome": "completed",
+                  "createdBy": "source:",
+                  "createdAt": "2026-11-23T10:15:00Z",
+                  "latestVersion": 0,
+                  "expiresAt": null,
+                  "revokedAt": null,
+                  "source": {
+                    "sourceKind": "superpipeline",
+                    "board": "brd_0435b5ea3d4d4e44",
+                    "card": "card_00000000000000c1",
+                    "stage": "done"
+                  },
+                  "audience": "board",
+                  "supersededBy": null
+                },
+                "versions": []
+              }
+            },
+            {
+              "why": "a version number below 0",
+              "body": {
+                "item": {
+                  "id": "itm_3c4d5e6f708192a3",
+                  "kind": "work-record",
+                  "title": "Ship the release notes",
+                  "scope": "board:brd_0435b5ea3d4d4e44",
+                  "outcome": "completed",
+                  "createdBy": "source:superpipeline",
+                  "createdAt": "2026-11-23T10:15:00Z",
+                  "latestVersion": -1,
+                  "expiresAt": null,
+                  "revokedAt": null,
+                  "source": {
+                    "sourceKind": "superpipeline",
+                    "board": "brd_0435b5ea3d4d4e44",
+                    "card": "card_00000000000000c1",
+                    "stage": "done"
+                  },
+                  "audience": "board",
+                  "supersededBy": null
+                },
+                "versions": []
+              }
+            },
+            {
+              "why": "an uploaded artifact always has a version",
+              "body": {
+                "item": {
+                  "id": "itm_3c4d5e6f708192a3",
+                  "kind": "artifact",
+                  "title": "Ship the release notes",
+                  "scope": "board:brd_0435b5ea3d4d4e44",
+                  "outcome": "completed",
+                  "createdBy": "prn_4f1c2a9e8b7d6c5a4e3f",
+                  "createdAt": "2026-11-23T10:15:00Z",
+                  "latestVersion": 0,
+                  "expiresAt": null,
+                  "revokedAt": null,
+                  "source": {
+                    "sourceKind": "upload"
+                  },
+                  "audience": "board",
+                  "supersededBy": null
+                },
+                "versions": []
+              }
+            },
+            {
+              "why": "a principal's item is never at version 0",
+              "body": {
+                "item": {
+                  "id": "itm_3c4d5e6f708192a3",
+                  "kind": "work-record",
+                  "title": "Ship the release notes",
+                  "scope": "board:brd_0435b5ea3d4d4e44",
+                  "outcome": "completed",
+                  "createdBy": "prn_4f1c2a9e8b7d6c5a4e3f",
+                  "createdAt": "2026-11-23T10:15:00Z",
+                  "latestVersion": 0,
+                  "expiresAt": null,
+                  "revokedAt": null,
+                  "source": {
+                    "sourceKind": "superpipeline",
+                    "board": "brd_0435b5ea3d4d4e44",
+                    "card": "card_00000000000000c1",
+                    "stage": "done"
+                  },
+                  "audience": "board",
+                  "supersededBy": null
+                },
+                "versions": []
+              }
+            },
+            {
+              "why": "a source creates only work records",
+              "body": {
+                "item": {
+                  "id": "itm_3c4d5e6f708192a3",
+                  "kind": "artifact",
+                  "title": "Ship the release notes",
+                  "scope": "board:brd_0435b5ea3d4d4e44",
+                  "outcome": "completed",
+                  "createdBy": "source:superpipeline",
+                  "createdAt": "2026-11-23T10:15:00Z",
+                  "latestVersion": 1,
+                  "expiresAt": null,
+                  "revokedAt": null,
+                  "source": {
+                    "sourceKind": "superpipeline",
+                    "board": "brd_0435b5ea3d4d4e44",
+                    "card": "card_00000000000000c1",
+                    "stage": "done"
+                  },
+                  "audience": "board",
+                  "supersededBy": null
+                },
+                "versions": [
+                  {
+                    "version": 1,
+                    "entry": "notes.md",
+                    "view": "markdown",
+                    "mediaType": "text/markdown; charset=utf-8",
+                    "totalBytes": 512,
+                    "fileCount": 1,
+                    "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+                    "createdAt": "2026-11-23T11:00:00Z",
+                    "revokedAt": null,
+                    "scanOverride": false,
+                    "files": [
+                      {
+                        "path": "notes.md",
+                        "mediaType": "text/markdown; charset=utf-8",
+                        "view": "markdown",
+                        "bytes": 512
+                      }
+                    ]
+                  }
+                ]
               }
             }
           ]

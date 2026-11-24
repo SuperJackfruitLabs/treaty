@@ -1750,6 +1750,31 @@
           "expiresAt",
           "revokedAt"
         ],
+        "allOf": [
+          {
+            "if": {
+              "required": ["latestVersion"],
+              "properties": { "latestVersion": { "const": 0 } }
+            },
+            "then": {
+              "properties": {
+                "kind": { "const": "work-record" },
+                "createdBy": { "const": "source:superpipeline" }
+              }
+            },
+            "description": "Version 0 is only an ingested work record's."
+          },
+          {
+            "if": {
+              "required": ["createdBy"],
+              "properties": { "createdBy": { "const": "source:superpipeline" } }
+            },
+            "then": {
+              "properties": { "kind": { "const": "work-record" } }
+            },
+            "description": "A source creates only work records."
+          }
+        ],
         "properties": {
           "id": {
             "$ref": "#/components/schemas/ItemId"
@@ -1767,14 +1792,23 @@
             "$ref": "#/components/schemas/Outcome"
           },
           "createdBy": {
-            "$ref": "#/components/schemas/PrincipalId"
+            "description": "Who made it: the Accounts principal that uploaded it, or, for a work record SuperLibrary ingested from SuperPipeline (apps/api/src/ingest/consumer.ts), the source `source:superpipeline`. No other source writes items.",
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PrincipalId"
+              },
+              {
+                "const": "source:superpipeline"
+              }
+            ]
           },
           "createdAt": {
             "$ref": "#/components/schemas/Timestamp"
           },
           "latestVersion": {
             "type": "integer",
-            "minimum": 1
+            "minimum": 0,
+            "description": "The newest version's number. An upload starts at 1; an ingested work record has no uploaded version and is 0 until a person uploads one to it."
           },
           "expiresAt": {
             "oneOf": [
