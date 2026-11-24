@@ -15,8 +15,17 @@ export const ERROR_ENVELOPES = [
   "error.v1",
   "flat-error.v1",
   "matrix-error.v1",
+  "oauth-bearer-error.v1",
 ] as const;
 export type ErrorEnvelope = (typeof ERROR_ENVELOPES)[number];
+
+/**
+ * Envelopes a published standard defines rather than the suite, each with the envelope its
+ * owner's extension codes are recorded in. The standard's own codes are listed in the envelope
+ * schema's `$defs/standardCode` and belong to no product.
+ */
+export const STANDARD_ENVELOPES: Partial<Record<ErrorEnvelope, ErrorEnvelope>> =
+  { "oauth-bearer-error.v1": "flat-error.v1" };
 
 /** The envelope a document declares, error.v1 when it declares none, or undefined when unknown. */
 export function envelopeOf(doc: unknown): ErrorEnvelope | undefined {
@@ -97,6 +106,18 @@ function errorCodes(
   );
 }
 
+/** The codes a standard envelope's schema lists in `$defs/standardCode`; none for the suite's own. */
+function standardCodes(bundle: Bundle, envelope: ErrorEnvelope): string[] {
+  if (!STANDARD_ENVELOPES[envelope]) return [];
+  const codes = resolvePointer(
+    bundle.files.get(`schemas/common/${envelope}.json`),
+    "/$defs/standardCode/enum",
+  );
+  return Array.isArray(codes)
+    ? codes.filter((c): c is string => typeof c === "string")
+    : [];
+}
+
 function checkCases(
   bundle: Bundle,
   path: string,
@@ -160,15 +181,26 @@ export function checkOpenApi(
   }
 
   const known = errorCodes(bundle);
+  const standard = envelope ? standardCodes(bundle, envelope) : [];
+  /** The envelope the owner's codes must be recorded in for this document. */
+  const codeEnvelope = envelope
+    ? (STANDARD_ENVELOPES[envelope] ?? envelope)
+    : undefined;
   const casesFile = bundle.files.get(casesPathFor(path));
   const apiCases = isApiCases(casesFile) ? casesFile : undefined;
   if (!apiCases) problems.push(`${casesPathFor(path)} is missing`);
 
   for (const op of ops) {
     for (const code of op.errorCodes) {
-      if (!known.some((k) => k.code === code && k.owner === owner))
+      if (standard.includes(code)) continue;
+      const mine = known.find((k) => k.code === code && k.owner === owner);
+      if (!mine)
         problems.push(
           `${op.id}: error code ${code} is not ${owner}'s in contracts/error-codes.json`,
+        );
+      else if (codeEnvelope && mine.envelope !== codeEnvelope)
+        problems.push(
+          `${op.id}: error code ${code} travels in ${mine.envelope}, not ${codeEnvelope}`,
         );
     }
     const opCases = apiCases?.operations[op.id];

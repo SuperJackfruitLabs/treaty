@@ -564,16 +564,32 @@
       "id": "agentpod.evidence",
       "title": "Run evidence, attempts, transcripts and execution export",
       "owner": "agentpod",
-      "consumers": ["superwitness", "superpipeline"],
+      "consumers": ["superwitness", "superpipeline", "salaam"],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "Held together by byte-identical files copied into Salaam and SuperWitness; transcripts pass through untyped; SuperPipeline builds the export URL from a string.",
+      "status": "contracted",
+      "contract": [
+        "schemas/http/agentpod/evidence.v1.openapi.json",
+        "schemas/agentpod/execution-artifacts.v1.json",
+        "schemas/agentpod/execution-evidence.v1.json",
+        "schemas/agentpod/execution-export.v1.json",
+        "fixtures/agentpod-evidence/examples.json"
+      ],
+      "cases": {
+        "schemas/agentpod/execution-artifacts.v1.json": "fixtures/agentpod-evidence/examples.json#/schemas/execution-artifacts.v1",
+        "schemas/agentpod/execution-evidence.v1.json": "fixtures/agentpod-evidence/examples.json#/schemas/execution-evidence.v1",
+        "schemas/agentpod/execution-export.v1.json": "fixtures/agentpod-evidence/examples.json#/schemas/execution-export.v1"
+      },
       "phase": 3,
       "evidence": [
         "agentpod:apps/hub/src/routes/evidence.ts",
+        "agentpod:packages/contract/src/evidence.ts",
+        "agentpod:packages/contract/src/execution-evidence.ts",
+        "agentpod:apps/hub/src/services/evidence/transcript.ts",
         "superwitness:internal/source/agentpod/adapter.go",
-        "superpipeline:apps/api/src/routes/boards/runs.ts"
+        "superwitness:internal/source/agentpod/transcript.go",
+        "superpipeline:apps/api/src/routes/boards/runs.ts",
+        "superpipeline:apps/api/src/board/run-history.ts",
+        "salaam:test/fixtures/execution-evidence-v1.schema.json"
       ]
     },
     {
@@ -582,15 +598,15 @@
       "owner": "agentpod",
       "consumers": ["superdispatch", "superlibrary"],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "AgentPod's own contract package types it; each consumer reimplements.",
-      "phase": 3,
+      "status": "contracted",
+      "contract": ["schemas/http/agentpod/capability-catalog.v1.openapi.json"],
       "evidence": [
         "agentpod:apps/hub/src/routes/capability-catalog.ts",
         "agentpod:apps/hub/src/routes/bridge-roster.ts",
+        "agentpod:packages/contract/src/capability-catalog.ts",
         "superdispatch:apps/dispatch/src/sources/agentpod.ts",
-        "superlibrary:apps/api/src/clients/roster.ts"
+        "superlibrary:apps/api/src/clients/roster.ts",
+        "superlibrary:apps/api/src/clients/stations.ts"
       ]
     },
     {
@@ -599,11 +615,13 @@
       "owner": "agentpod",
       "consumers": ["superpipeline"],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "Read in the browser with an unchecked cast.",
-      "phase": 3,
-      "evidence": ["superpipeline:apps/web/src/lib/api/agents.ts"]
+      "status": "contracted",
+      "contract": ["schemas/http/agentpod/fleet.v1.openapi.json"],
+      "evidence": [
+        "agentpod:apps/hub/src/routes/fleet-dispatchable.ts",
+        "agentpod:apps/hub/src/auth/hub-token.ts",
+        "superpipeline:apps/web/src/lib/api/agents.ts"
+      ]
     },
     {
       "id": "agentpod.salaam-station",

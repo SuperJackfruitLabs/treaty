@@ -52,7 +52,7 @@ describe("coverage across the workspace", () => {
   );
 
   test("reports the registry's coverage", () => {
-    expect(out.coverage.percent).toBe(60);
+    expect(out.coverage.percent).toBe(73);
   });
 
   test("an agreeing product has nothing against it", () => {

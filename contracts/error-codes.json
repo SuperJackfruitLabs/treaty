@@ -1,7 +1,7 @@
 {
   "registry": "treaty error codes",
   "version": 2,
-  "description": "Every error code a suite product's API returns, with the status it carries and the envelope it travels in. SuperPipeline's codes are its statusForCode table and its route-level codes; Accounts' are its flat codes; SuperLibrary's are the flat codes of the routes other products call; AgentPod's are the Matrix errcodes of its Live Activity token routes. Seeded 2026-11-22.",
+  "description": "Every error code a suite product's API returns, with the status it carries and the envelope it travels in. SuperPipeline's codes are its statusForCode table and its route-level codes; Accounts' are its flat codes; SuperLibrary's are the flat codes of the routes other products call; AgentPod's are the Matrix errcodes of its Live Activity token routes and the flat codes of its service reads. Seeded 2026-11-22.",
   "codes": [
     {
       "code": "AGENT_NOT_ELIGIBLE",
@@ -1362,6 +1362,98 @@
       "envelope": "flat-error.v1",
       "status": 502,
       "meaning": "SuperLibrary could not ask the AgentPod hub whose the station file's station is."
+    },
+    {
+      "code": "unauthorized",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 401,
+      "meaning": "No bearer token, or one the hub's Organization-plane verifier does not accept: unknown key, foreign signature, expired, wrong issuer or audience. One word for all of them, on the hub's service reads (catalog, roster, evidence)."
+    },
+    {
+      "code": "forbidden",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 403,
+      "meaning": "The token is valid but does not admit the read: a service the route's allowlist (CATALOG_READERS, ROSTER_READERS) does not name, or, on the evidence routes, a human token or one whose grant scopes lack the route's scope."
+    },
+    {
+      "code": "product_not_enabled",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 403,
+      "meaning": "The token's organization has not enabled AgentPod. `org` names the organization beside the code. On the fleet list it is an extension code of oauth-bearer-error.v1."
+    },
+    {
+      "code": "invalid_station",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "The station id in the path is not `[A-Za-z0-9_-]{1,100}`."
+    },
+    {
+      "code": "invalid_principal",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "The principal id in the path is not a `prn_` id."
+    },
+    {
+      "code": "invalid_board",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "The board id in the path is not a `brd_` id."
+    },
+    {
+      "code": "not_found",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 404,
+      "meaning": "No such thing in the caller's workspace: a station, run, attempt, export, session or transcript item, or a principal neither id form names. Another workspace's is not_found too, never forbidden, which would confirm it exists."
+    },
+    {
+      "code": "unsupported_evidence_version",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "A versioned evidence read's `schema_version` is not the one version the route answers, is repeated, or has another query key beside it. A reader is refused, never answered in another version."
+    },
+    {
+      "code": "artifact_export_unconfirmed",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 409,
+      "alsoStatus": [502],
+      "meaning": "An execution export is recorded but not committed and verified, so it has no receipt: 409 on the receipt read. The agent-only export route, not contracted, answers it 502 with `request_id` when the commit could not be confirmed."
+    },
+    {
+      "code": "execution_evidence_unavailable",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 502,
+      "meaning": "The hub could not read a run's executions."
+    },
+    {
+      "code": "identity_unavailable",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 503,
+      "meaning": "The Organization plane did not answer a principal lookup. Down is not nobody: a reader must not record the principal as unknown."
+    },
+    {
+      "code": "bad_range",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "A transcript read's seq_from or seq_to is not digits, lies outside the session or is reversed, or its cursor does not decode or points outside the range."
+    },
+    {
+      "code": "item_too_large",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 413,
+      "meaning": "A transcript item asked for whole (`full=1`) is over 1 MiB serialised."
     }
   ]
 }

@@ -15,6 +15,9 @@ describe("schemas/http", () => {
   test("the number of HTTP contracts is recorded here, so adding one is a visible diff", () => {
     expect(documents).toEqual([
       "schemas/http/accounts/plane.v1.openapi.json",
+      "schemas/http/agentpod/capability-catalog.v1.openapi.json",
+      "schemas/http/agentpod/evidence.v1.openapi.json",
+      "schemas/http/agentpod/fleet.v1.openapi.json",
       "schemas/http/agentpod/live-activity.v1.openapi.json",
       "schemas/http/superlibrary/api.v1.openapi.json",
       "schemas/http/superpipeline/agent-work.v1.openapi.json",

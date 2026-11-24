@@ -1,0 +1,700 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AgentPod capability catalog and board roster",
+    "version": "1",
+    "description": "What a placement service reads of AgentPod: the capability catalog and per-station registry (charter decision 2026-11-13: AgentPod owns the capability catalog; SuperDispatch reads it), and the bridge roster: the boards an agent claims from, whose station a station is, and a board's roster with each station's readiness and load. Written from AgentPod's routes on main (apps/hub/src/routes/capability-catalog.ts and bridge-roster.ts, mounted ahead of authMiddleware) and its zod (packages/contract/src/capability-catalog.ts, the BoardRosterEntry type in bridge-roster.ts). Reads only, names only: no secret, token or credential value is ever in an answer. Every refusal is flat-error.v1. The checks run in this order: a bearer token is present and the Organization plane's verifier accepts it (401 unauthorized), the token's organization has AgentPod enabled (403 product_not_enabled, with `org`), the caller is a service principal the route's allowlist names (403 forbidden), and the path parameter has its form (400). Ruling 2 of the phase 3 plan moves these routes from free-text errors (`invalid station`, `not found`) to the snake codes here; no consumer read the old words."
+  },
+  "x-treaty-error-envelope": "flat-error.v1",
+  "servers": [
+    {
+      "url": "https://hub.agentpod.dev",
+      "description": "An AgentPod hub."
+    }
+  ],
+  "paths": {
+    "/api/catalog": {
+      "get": {
+        "operationId": "listCatalog",
+        "summary": "What exists in the caller's workspace",
+        "description": "Every skill, MCP server, CLI, harness and service any station of the caller's workspace has, once each. The caller's workspace is its token's tenant.",
+        "security": [
+          {
+            "catalogReader": []
+          }
+        ],
+        "x-treaty-error-codes": [
+          "unauthorized",
+          "forbidden",
+          "product_not_enabled"
+        ],
+        "responses": {
+          "200": {
+            "description": "The catalog",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/api/catalog/stations": {
+      "get": {
+        "operationId": "listStationCapabilities",
+        "summary": "Every station's registry row",
+        "description": "Each station of the caller's workspace with its harness, isolation, model, tools and credential names, each fact with how it is known. SuperDispatch reads it to check a stage's stated needs; a hub without the route answers 404, and SuperDispatch then leaves every need unchecked.",
+        "security": [
+          {
+            "catalogReader": []
+          }
+        ],
+        "x-treaty-error-codes": [
+          "unauthorized",
+          "forbidden",
+          "product_not_enabled"
+        ],
+        "responses": {
+          "200": {
+            "description": "The registry",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogStationsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/api/catalog/stations/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "A station id. One that is not this form is invalid_station; one that is not a station of the caller's workspace is not_found.",
+          "schema": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,100}$"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "readStationCapabilities",
+        "summary": "One station's registry row",
+        "description": "The row `GET /api/catalog/stations` lists for the station.",
+        "security": [
+          {
+            "catalogReader": []
+          }
+        ],
+        "x-treaty-error-codes": [
+          "unauthorized",
+          "forbidden",
+          "product_not_enabled",
+          "invalid_station",
+          "not_found"
+        ],
+        "responses": {
+          "200": {
+            "description": "The station's row",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StationCapabilities"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidStation"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/bridge/principals/{prn}/boards": {
+      "parameters": [
+        {
+          "name": "prn",
+          "in": "path",
+          "required": true,
+          "description": "An agent's principal id. One that is not this form is invalid_principal.",
+          "schema": {
+            "type": "string",
+            "pattern": "^prn_[0-9a-f]{20}$"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "listPrincipalBoards",
+        "summary": "The boards an agent sees",
+        "description": "The boards on which the principal's station holds an enabled bridge row, in the caller's workspace, sorted; empty for a principal with none. SuperLibrary scopes an agent's reads with it (its spec, section 4).",
+        "security": [
+          {
+            "rosterReader": []
+          }
+        ],
+        "x-treaty-error-codes": [
+          "unauthorized",
+          "forbidden",
+          "product_not_enabled",
+          "invalid_principal"
+        ],
+        "responses": {
+          "200": {
+            "description": "The boards",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrincipalBoards"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidPrincipal"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/api/bridge/stations/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "A station id. One that is not this form is invalid_station; one that is not a station of the caller's workspace is not_found.",
+          "schema": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,100}$"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "readStationOwner",
+        "summary": "Whose station a station is",
+        "description": "The station's id, key and owning user, in the caller's workspace. SuperLibrary records a person's console link only for the station's owner (its gap S1).",
+        "security": [
+          {
+            "rosterReader": []
+          }
+        ],
+        "x-treaty-error-codes": [
+          "unauthorized",
+          "forbidden",
+          "product_not_enabled",
+          "invalid_station",
+          "not_found"
+        ],
+        "responses": {
+          "200": {
+            "description": "The station",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StationOwner"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidStation"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/bridge/boards/{boardId}/roster": {
+      "parameters": [
+        {
+          "name": "boardId",
+          "in": "path",
+          "required": true,
+          "description": "A SuperPipeline board id. One that is not this form is invalid_board. A board with no bridge rows answers an empty roster, not 404.",
+          "schema": {
+            "type": "string",
+            "pattern": "^brd_[0-9a-f]{16}$"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "readBoardRoster",
+        "summary": "A board's roster, with readiness and load",
+        "description": "Every bridge row on the board in the caller's workspace, enabled or not, sorted by key: its station and that station's agent principal, whether the bridge would claim on the station now (`ready`, the console's readiness answer, asked of each enabled row's station with a 5 second bound), whether the station has a dispatch in hand on any board (`busy`), and when it last took one. SuperDispatch places work with it.",
+        "security": [
+          {
+            "rosterReader": []
+          }
+        ],
+        "x-treaty-error-codes": [
+          "unauthorized",
+          "forbidden",
+          "product_not_enabled",
+          "invalid_board"
+        ],
+        "responses": {
+          "200": {
+            "description": "The roster",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardRoster"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidBoard"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "catalogReader": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "An Organization-plane access token for a service principal, audience the hub, checked by the hub's one plane verifier. The service must be one the hub's `CATALOG_READERS` names (comma-separated principal ids, read at request time; unset, no service may read)."
+      },
+      "rosterReader": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "An Organization-plane access token for a service principal, audience the hub. The service must be one the hub's `ROSTER_READERS` names (read at request time; unset, no service may read)."
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "unauthorized: no bearer token, or one the hub's verifier does not accept",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/flat-error.v1.json",
+              "properties": {
+                "error": {
+                  "enum": ["unauthorized"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "forbidden: the caller is not a service the route's allowlist names; product_not_enabled: the token's organization has not enabled AgentPod, and `org` names it",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/flat-error.v1.json",
+              "properties": {
+                "error": {
+                  "enum": ["forbidden", "product_not_enabled"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "InvalidStation": {
+        "description": "invalid_station: the station id is not `[A-Za-z0-9_-]{1,100}`",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/flat-error.v1.json",
+              "properties": {
+                "error": {
+                  "enum": ["invalid_station"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "InvalidPrincipal": {
+        "description": "invalid_principal: not a `prn_` principal id",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/flat-error.v1.json",
+              "properties": {
+                "error": {
+                  "enum": ["invalid_principal"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "InvalidBoard": {
+        "description": "invalid_board: not a `brd_` board id",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/flat-error.v1.json",
+              "properties": {
+                "error": {
+                  "enum": ["invalid_board"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "not_found: no such station in the caller's workspace",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/flat-error.v1.json",
+              "properties": {
+                "error": {
+                  "enum": ["not_found"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Proof": {
+        "type": "string",
+        "enum": ["probed", "installed", "declared"],
+        "description": "How a registry fact is known, strongest first: `probed` (something checked it works), `installed` (AgentPod put it there), `declared` (someone said so, and nothing has checked it)."
+      },
+      "CatalogEntry": {
+        "type": "object",
+        "description": "One thing that exists in the workspace.",
+        "required": [
+          "id",
+          "kind",
+          "name",
+          "version",
+          "source",
+          "licence",
+          "credentials"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "`<kind>:<name>`, e.g. `harness:hermes`, `skill:engineering`, `mcp:superpipeline`."
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["skill", "mcp", "cli", "harness", "service"]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": ["string", "null"],
+            "description": "The newest version any station reported; null when none did."
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Where it comes from: `agentpod`, `supertoolkit`, `superpipeline`, `trusted-release`, `upload`."
+          },
+          "licence": {
+            "type": ["string", "null"],
+            "description": "An SPDX id when known; null means nobody has checked, not that it has none."
+          },
+          "credentials": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "The names of the credentials it needs. Names only."
+          }
+        }
+      },
+      "CatalogResponse": {
+        "type": "object",
+        "required": ["entries"],
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CatalogEntry"
+            }
+          }
+        }
+      },
+      "StationTool": {
+        "type": "object",
+        "required": ["id", "proof"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "A catalog entry id, such as `cli:stk`."
+          },
+          "proof": {
+            "$ref": "#/components/schemas/Proof"
+          }
+        }
+      },
+      "StationCredential": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "A credential the station's broker holds a grant for, by name. Closed: a credential's value, or any field beside these, is never in an answer.",
+        "required": ["name", "instance", "proof"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "`forge:<provider>`: a forge the station's broker holds a grant for."
+          },
+          "instance": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The forge instance (base URL) the grant is for."
+          },
+          "proof": {
+            "$ref": "#/components/schemas/Proof"
+          }
+        }
+      },
+      "StationCapabilities": {
+        "type": "object",
+        "description": "One station's row in the registry.",
+        "required": [
+          "stationId",
+          "principalId",
+          "harness",
+          "isolation",
+          "model",
+          "tools",
+          "credentials"
+        ],
+        "properties": {
+          "stationId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "principalId": {
+            "type": ["string", "null"],
+            "description": "The agent occupying the station; null for a station with no agent."
+          },
+          "harness": {
+            "type": "string",
+            "minLength": 1
+          },
+          "isolation": {
+            "type": "object",
+            "required": ["level", "runtime", "proof"],
+            "description": "How strongly the station's harness is kept from its machine.",
+            "properties": {
+              "level": {
+                "type": "string",
+                "enum": ["host", "container", "sandbox"],
+                "description": "Weakest first: `host` (the node's own user, no provisioned runtime), `container` (a shared kernel), `sandbox` (gVisor or a microVM)."
+              },
+              "runtime": {
+                "type": ["string", "null"],
+                "description": "The container runtime, such as `runsc`; null on the host."
+              },
+              "proof": {
+                "$ref": "#/components/schemas/Proof"
+              }
+            }
+          },
+          "model": {
+            "description": "The model the harness last ran with; null when no run has reported one.",
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "required": ["id", "proof"],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "proof": {
+                    "$ref": "#/components/schemas/Proof"
+                  }
+                }
+              }
+            ]
+          },
+          "tools": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StationTool"
+            }
+          },
+          "credentials": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StationCredential"
+            }
+          }
+        }
+      },
+      "CatalogStationsResponse": {
+        "type": "object",
+        "required": ["stations"],
+        "properties": {
+          "stations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StationCapabilities"
+            }
+          }
+        }
+      },
+      "PrincipalBoards": {
+        "type": "object",
+        "required": ["boards"],
+        "properties": {
+          "boards": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^brd_[0-9a-f]{16}$"
+            },
+            "description": "Sorted, each once."
+          }
+        }
+      },
+      "StationOwner": {
+        "type": "object",
+        "required": ["id", "key", "owner"],
+        "description": "SuperLibrary reads all three and refuses an answer whose `id` is not the station it asked for.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The station id asked for."
+          },
+          "key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The station's key on its node."
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The hub user id of the station's owner."
+          }
+        }
+      },
+      "BoardRosterEntry": {
+        "type": "object",
+        "description": "One bridge row on the board. SuperDispatch reads every field: a `ready` other than true is not ready, and a `busy` other than false is busy.",
+        "required": [
+          "key",
+          "stationId",
+          "principalId",
+          "enabled",
+          "busy",
+          "lastDispatchedAt",
+          "ready",
+          "reason"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The bridge row's key."
+          },
+          "stationId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "principalId": {
+            "type": ["string", "null"],
+            "description": "The station's agent principal; null for a station with no agent yet."
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "busy": {
+            "type": "boolean",
+            "description": "The station has a dispatch in hand (`working`) on any board of the workspace. A parked run does not count."
+          },
+          "lastDispatchedAt": {
+            "type": ["string", "null"],
+            "format": "date-time",
+            "description": "When the station last took a dispatch, on any board; null when it never has."
+          },
+          "ready": {
+            "type": "boolean",
+            "description": "Whether the bridge would claim on the station now. Always false for a disabled row, whose station is not asked."
+          },
+          "reason": {
+            "type": ["string", "null"],
+            "description": "Why not, in the words the bridge logs; for people, never parsed. Null when ready."
+          }
+        }
+      },
+      "BoardRoster": {
+        "type": "object",
+        "required": ["boardId", "agents"],
+        "properties": {
+          "boardId": {
+            "type": "string",
+            "pattern": "^brd_[0-9a-f]{16}$"
+          },
+          "agents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BoardRosterEntry"
+            }
+          }
+        }
+      }
+    }
+  }
+}
