@@ -24,6 +24,7 @@ import {
 import { compareForms } from "../packages/contracts/src/forms-compat.ts";
 import { operations } from "../packages/contracts/src/http.ts";
 import { mcpCasesPath } from "../packages/contracts/src/mcp.ts";
+import { urlShape, validateUrl } from "../packages/contracts/src/urls.ts";
 import { loadBundle } from "../packages/contracts/src/node.ts";
 import { casesPathFor } from "../packages/contracts/src/openapi-check.ts";
 import {
@@ -154,6 +155,38 @@ function apiCases(
   return isCases(node) ? node : undefined;
 }
 
+/** The corpus rule for a URL shape: each side's valid URLs fit the other side's shape. */
+function urlCorpus(
+  base: Bundle,
+  head: Bundle,
+  path: string,
+  out: Finding[],
+): void {
+  const sides: [Bundle, Bundle, string][] = [
+    [base, head, "old-case-refused"],
+    [head, base, "new-case-refused-by-old"],
+  ];
+  for (const [from, under, rule] of sides) {
+    let shape: ReturnType<typeof urlShape>;
+    try {
+      shape = urlShape(under, path);
+    } catch {
+      continue; // compareForms already reports a shape that is not one
+    }
+    corpus(
+      path,
+      "",
+      casesFor(from, registryOf(from), path),
+      (url) =>
+        typeof url === "string"
+          ? validateUrl(under, shape, url)
+          : { valid: false },
+      rule,
+      out,
+    );
+  }
+}
+
 /** Each tool's index in a catalog, by name. */
 function toolIndex(doc: unknown): Map<string, number> {
   const tools = isObject(doc) && Array.isArray(doc.tools) ? doc.tools : [];
@@ -173,6 +206,10 @@ function formCorpus(
   path: string,
   out: Finding[],
 ): void {
+  if (path.startsWith("schemas/urls/")) {
+    urlCorpus(base, head, path, out);
+    return;
+  }
   const baseTools = toolIndex(base.files.get(path));
   const headTools = toolIndex(head.files.get(path));
   const casesAt = (bundle: Bundle, tool: string, part: string) => {

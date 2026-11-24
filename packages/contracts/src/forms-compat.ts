@@ -1,7 +1,7 @@
 /**
  * Within a version, a contract may only add optional things: the rule `compat.ts` holds for
  * schemas, applied to the forms that are not one plain schema: an MCP catalog, telemetry
- * conventions.
+ * conventions, a URL shape.
  *
  * Each compare walks the form's own structure and hands every embedded schema to
  * `compareSchemas`, so a tool added is no finding and a tool's input narrowed is one.
@@ -17,11 +17,12 @@ function escape(token: string): string {
 }
 
 /** Which form a document under schemas/ follows, by its `$schema`; undefined for a plain schema. */
-export type Form = "mcp-catalog" | "telemetry-conventions";
+export type Form = "mcp-catalog" | "telemetry-conventions" | "url-shape";
 
 const FORMS: Record<string, Form> = {
   "mcp-catalog.v1.json": "mcp-catalog",
   "telemetry-conventions.v1.json": "telemetry-conventions",
+  "url-shape.v1.json": "url-shape",
 };
 
 export function formOf(doc: unknown): Form | undefined {
@@ -203,6 +204,48 @@ export function compareTelemetryConventions(
   return out;
 }
 
+/**
+ * Breaking changes between two versions of one URL shape. Any change to the origins or the path
+ * breaks one side: a producer building the new URL for a consumer reading the old, or the other
+ * way round.
+ */
+export function compareUrlShapes(base: unknown, head: unknown): Breaking[] {
+  const out: Breaking[] = [];
+  if (!isObject(base) || !isObject(head)) return out;
+  if (stable(base.origins) !== stable(head.origins))
+    out.push({ pointer: "/origins", rule: "origins-changed" });
+  if (base.path !== head.path)
+    out.push({ pointer: "/path", rule: "path-changed" });
+  for (const where of ["query", "fragment"]) {
+    const before = objectAt(base, where);
+    const after = objectAt(head, where);
+    for (const [name, b] of Object.entries(before)) {
+      const at = `/${where}/${escape(name)}`;
+      const h = after[name];
+      if (!isObject(h) || !isObject(b)) {
+        out.push({ pointer: at, rule: "parameter-removed" });
+        continue;
+      }
+      if (b.required !== true && h.required === true)
+        out.push({ pointer: at, rule: "parameter-became-required" });
+      nested(b.schema, h.schema, `${at}/schema`, out);
+    }
+    for (const [name, h] of Object.entries(after))
+      if (!(name in before) && isObject(h) && h.required === true)
+        out.push({
+          pointer: `/${where}/${escape(name)}`,
+          rule: "parameter-required-added",
+        });
+  }
+  return out;
+}
+
+const COMPARE: Record<Form, (base: unknown, head: unknown) => Breaking[]> = {
+  "mcp-catalog": compareMcpCatalogs,
+  "telemetry-conventions": compareTelemetryConventions,
+  "url-shape": compareUrlShapes,
+};
+
 /** Breaking changes between two versions of a form's document, or undefined for a plain schema. */
 export function compareForms(
   base: unknown,
@@ -211,7 +254,5 @@ export function compareForms(
   const form = formOf(base);
   if (form === undefined) return undefined;
   if (formOf(head) !== form) return [{ pointer: "", rule: "form-changed" }];
-  return form === "mcp-catalog"
-    ? compareMcpCatalogs(base, head)
-    : compareTelemetryConventions(base, head);
+  return COMPARE[form](base, head);
 }

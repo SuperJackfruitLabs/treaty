@@ -20,6 +20,7 @@ npx -y @superjackfruitlabs/treaty-contracts@<version> verify
   `validateToolResult`.
 - Telemetry conventions (`schemas/telemetry/`): `telemetryConventions`,
   `validateSpanAttributes`, `validateLogRecord`, `validatePropagation`.
+- URL shapes (`schemas/urls/`): `urlShape`, `validateUrl`.
 - The main entry validates bodies against schemas and OpenAPI 3.1 documents offline, and runs in
   Workers. `./node` adds loading from disk, `verify` and `sync`.
 

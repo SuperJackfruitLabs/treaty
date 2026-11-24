@@ -1,6 +1,12 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import { execFileSync, spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { createBundle } from "../packages/contracts/src/schemas.ts";
@@ -415,6 +421,54 @@ describe("telemetry conventions", () => {
         pointer: "/logs/run route/required/run.id",
         rule: "required-added",
       },
+    ]);
+  });
+});
+
+describe("a URL shape", () => {
+  const PATH = "schemas/urls/sample.v1.json";
+  const RAW =
+    "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/";
+  const shape = (extra: Record<string, unknown> = {}) => ({
+    $schema: `${RAW}schemas/treaty/url-shape.v1.json`,
+    $id: `${RAW}${PATH}`,
+    shape: "treaty url shape",
+    version: 1,
+    origins: [{ scheme: "https" }],
+    path: "/open",
+    fragment: { t: { required: true, schema: { type: "string" } } },
+    ...extra,
+  });
+  const meta = JSON.parse(
+    readFileSync(
+      join(import.meta.dir, "../schemas/treaty/url-shape.v1.json"),
+      "utf8",
+    ),
+  );
+  const one = (doc: unknown, valid: Record<string, string> = {}) =>
+    createBundle({
+      "schemas/treaty/url-shape.v1.json": meta,
+      [PATH]: doc,
+      "fixtures/urls/sample.v1.cases.json": { valid, invalid: [] },
+    });
+
+  test("an optional parameter added is no finding", () => {
+    const head = shape({
+      query: { next: { required: false, schema: { type: "string" } } },
+    });
+    expect(compare(one(shape()), one(head))).toEqual([]);
+  });
+
+  test("a path changed and a parameter removed are breaking, and an old URL the new shape refuses is named", () => {
+    const head = shape({ path: "/link", fragment: {} });
+    const findings = compare(
+      one(shape(), { plain: "https://example.com/open#t=x" }),
+      one(head),
+    ).map((f) => `${f.pointer} ${f.rule}`);
+    expect(findings).toEqual([
+      "/path path-changed",
+      "/fragment/t parameter-removed",
+      " old-case-refused: plain",
     ]);
   });
 });
