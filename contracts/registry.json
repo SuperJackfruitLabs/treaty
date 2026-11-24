@@ -580,15 +580,15 @@
       "owner": "agentpod",
       "consumers": ["superdispatch", "superlibrary"],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "AgentPod's own contract package types it; each consumer reimplements.",
-      "phase": 3,
+      "status": "contracted",
+      "contract": ["schemas/http/agentpod/capability-catalog.v1.openapi.json"],
       "evidence": [
         "agentpod:apps/hub/src/routes/capability-catalog.ts",
         "agentpod:apps/hub/src/routes/bridge-roster.ts",
+        "agentpod:packages/contract/src/capability-catalog.ts",
         "superdispatch:apps/dispatch/src/sources/agentpod.ts",
-        "superlibrary:apps/api/src/clients/roster.ts"
+        "superlibrary:apps/api/src/clients/roster.ts",
+        "superlibrary:apps/api/src/clients/stations.ts"
       ]
     },
     {

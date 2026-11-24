@@ -6,6 +6,7 @@ deploys the event relay to production.
 ## Unreleased
 
 - **A standard error envelope, `schemas/common/oauth-bearer-error.v1.json`:** RFC 6750's `{ "error", "error_description" }`, for routes that refuse an OAuth bearer token in that shape. Its three codes are RFC 6750's, listed in the schema's `$defs/standardCode`, and need no entry in `contracts/error-codes.json`; an owner's extension codes are its `flat-error.v1` codes. `checkOpenApi` now also refuses a code recorded in another envelope than the document's, so one product may answer in more than one envelope (AgentPod: Matrix for Live Activity, flat for its service reads).
+- **AgentPod's capability catalog and board roster** (`schemas/http/agentpod/capability-catalog.v1.openapi.json`): `GET /api/catalog`, `/api/catalog/stations` and `/api/catalog/stations/{id}`, and the bridge reads `GET /api/bridge/principals/{prn}/boards`, `/api/bridge/stations/{id}` (SuperLibrary's station-owner read, which the registry did not list) and `/api/bridge/boards/{boardId}/roster`, with cases. Refusals are `flat-error.v1`: `unauthorized`, `forbidden`, `product_not_enabled`, and the snake codes AgentPod moves to from its free-text errors, `invalid_station`, `invalid_principal`, `invalid_board` and `not_found`. A station's credentials are closed objects, so a credential value in an answer fails. `agentpod.capability-catalog` is contracted.
 
 ## v0.0.18 — 2026-11-23
 

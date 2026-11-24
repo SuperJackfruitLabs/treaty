@@ -1,0 +1,589 @@
+{
+  "operations": {
+    "listCatalog": {
+      "responses": {
+        "200": {
+          "valid": {
+            "a CLI and a harness": {
+              "entries": [
+                {
+                  "id": "cli:stk",
+                  "kind": "cli",
+                  "name": "stk",
+                  "version": "0.0.9",
+                  "source": "supertoolkit",
+                  "licence": "Apache-2.0",
+                  "credentials": []
+                },
+                {
+                  "id": "harness:hermes",
+                  "kind": "harness",
+                  "name": "hermes",
+                  "version": null,
+                  "source": "agentpod",
+                  "licence": null,
+                  "credentials": [
+                    "forge:github"
+                  ]
+                }
+              ]
+            },
+            "an empty workspace": {
+              "entries": []
+            }
+          },
+          "invalid": [
+            {
+              "why": "a kind the hub does not have",
+              "body": {
+                "entries": [
+                  {
+                    "id": "cli:stk",
+                    "kind": "plugin",
+                    "name": "stk",
+                    "version": "0.0.9",
+                    "source": "supertoolkit",
+                    "licence": "Apache-2.0",
+                    "credentials": []
+                  }
+                ]
+              }
+            },
+            {
+              "why": "no licence: null is sent when nobody has checked",
+              "body": {
+                "entries": [
+                  {
+                    "id": "cli:stk",
+                    "kind": "cli",
+                    "name": "stk",
+                    "version": "0.0.9",
+                    "source": "supertoolkit",
+                    "credentials": []
+                  }
+                ]
+              }
+            },
+            {
+              "why": "no entries",
+              "body": {}
+            }
+          ]
+        }
+      }
+    },
+    "listStationCapabilities": {
+      "responses": {
+        "200": {
+          "valid": {
+            "a sandboxed station with an agent, and a bare one": {
+              "stations": [
+                {
+                  "stationId": "station_4a1482de-9c3f-4b17-8a55-0d6e2f7c1b90",
+                  "principalId": "prn_0123456789abcdef0123",
+                  "harness": "salaam",
+                  "isolation": {
+                    "level": "sandbox",
+                    "runtime": "runsc",
+                    "proof": "installed"
+                  },
+                  "model": {
+                    "id": "kimi-k2",
+                    "proof": "probed"
+                  },
+                  "tools": [
+                    {
+                      "id": "cli:stk",
+                      "proof": "probed"
+                    },
+                    {
+                      "id": "mcp:superpipeline",
+                      "proof": "installed"
+                    }
+                  ],
+                  "credentials": [
+                    {
+                      "name": "forge:github",
+                      "instance": "https://github.com",
+                      "proof": "installed"
+                    }
+                  ]
+                },
+                {
+                  "stationId": "station_1b2c3d4e-5f60-4718-8293-a4b5c6d7e8f9",
+                  "principalId": null,
+                  "harness": "hermes",
+                  "isolation": {
+                    "level": "host",
+                    "runtime": null,
+                    "proof": "declared"
+                  },
+                  "model": null,
+                  "tools": [],
+                  "credentials": []
+                }
+              ]
+            },
+            "no stations": {
+              "stations": []
+            }
+          },
+          "invalid": [
+            {
+              "why": "a proof the hub does not know",
+              "body": {
+                "stations": [
+                  {
+                    "stationId": "station_4a1482de-9c3f-4b17-8a55-0d6e2f7c1b90",
+                    "principalId": "prn_0123456789abcdef0123",
+                    "harness": "salaam",
+                    "isolation": {
+                      "level": "sandbox",
+                      "runtime": "runsc",
+                      "proof": "installed"
+                    },
+                    "model": {
+                      "id": "kimi-k2",
+                      "proof": "probed"
+                    },
+                    "tools": [
+                      {
+                        "id": "cli:stk",
+                        "proof": "certain"
+                      }
+                    ],
+                    "credentials": [
+                      {
+                        "name": "forge:github",
+                        "instance": "https://github.com",
+                        "proof": "installed"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "why": "an isolation level the hub does not know",
+              "body": {
+                "stations": [
+                  {
+                    "stationId": "station_4a1482de-9c3f-4b17-8a55-0d6e2f7c1b90",
+                    "principalId": "prn_0123456789abcdef0123",
+                    "harness": "salaam",
+                    "isolation": {
+                      "level": "vm",
+                      "runtime": null,
+                      "proof": "declared"
+                    },
+                    "model": {
+                      "id": "kimi-k2",
+                      "proof": "probed"
+                    },
+                    "tools": [
+                      {
+                        "id": "cli:stk",
+                        "proof": "probed"
+                      },
+                      {
+                        "id": "mcp:superpipeline",
+                        "proof": "installed"
+                      }
+                    ],
+                    "credentials": [
+                      {
+                        "name": "forge:github",
+                        "instance": "https://github.com",
+                        "proof": "installed"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "why": "a credential's value beside its name",
+              "body": {
+                "stations": [
+                  {
+                    "stationId": "station_4a1482de-9c3f-4b17-8a55-0d6e2f7c1b90",
+                    "principalId": "prn_0123456789abcdef0123",
+                    "harness": "salaam",
+                    "isolation": {
+                      "level": "sandbox",
+                      "runtime": "runsc",
+                      "proof": "installed"
+                    },
+                    "model": {
+                      "id": "kimi-k2",
+                      "proof": "probed"
+                    },
+                    "tools": [
+                      {
+                        "id": "cli:stk",
+                        "proof": "probed"
+                      },
+                      {
+                        "id": "mcp:superpipeline",
+                        "proof": "installed"
+                      }
+                    ],
+                    "credentials": [
+                      {
+                        "name": "forge:github",
+                        "instance": "https://github.com",
+                        "proof": "installed",
+                        "token": "ghp_secret"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "why": "no stations",
+              "body": {
+                "entries": []
+              }
+            }
+          ]
+        }
+      }
+    },
+    "readStationCapabilities": {
+      "responses": {
+        "200": {
+          "valid": {
+            "a sandboxed station with an agent": {
+              "stationId": "station_4a1482de-9c3f-4b17-8a55-0d6e2f7c1b90",
+              "principalId": "prn_0123456789abcdef0123",
+              "harness": "salaam",
+              "isolation": {
+                "level": "sandbox",
+                "runtime": "runsc",
+                "proof": "installed"
+              },
+              "model": {
+                "id": "kimi-k2",
+                "proof": "probed"
+              },
+              "tools": [
+                {
+                  "id": "cli:stk",
+                  "proof": "probed"
+                },
+                {
+                  "id": "mcp:superpipeline",
+                  "proof": "installed"
+                }
+              ],
+              "credentials": [
+                {
+                  "name": "forge:github",
+                  "instance": "https://github.com",
+                  "proof": "installed"
+                }
+              ]
+            },
+            "a station with no agent and no model yet": {
+              "stationId": "station_1b2c3d4e-5f60-4718-8293-a4b5c6d7e8f9",
+              "principalId": null,
+              "harness": "hermes",
+              "isolation": {
+                "level": "host",
+                "runtime": null,
+                "proof": "declared"
+              },
+              "model": null,
+              "tools": [],
+              "credentials": []
+            }
+          },
+          "invalid": [
+            {
+              "why": "no model: null is sent when no run has reported one",
+              "body": {
+                "stationId": "station_4a1482de-9c3f-4b17-8a55-0d6e2f7c1b90",
+                "principalId": "prn_0123456789abcdef0123",
+                "harness": "salaam",
+                "isolation": {
+                  "level": "sandbox",
+                  "runtime": "runsc",
+                  "proof": "installed"
+                },
+                "tools": [
+                  {
+                    "id": "cli:stk",
+                    "proof": "probed"
+                  },
+                  {
+                    "id": "mcp:superpipeline",
+                    "proof": "installed"
+                  }
+                ],
+                "credentials": [
+                  {
+                    "name": "forge:github",
+                    "instance": "https://github.com",
+                    "proof": "installed"
+                  }
+                ]
+              }
+            },
+            {
+              "why": "the list's wrapper instead of one row",
+              "body": {
+                "stations": [
+                  {
+                    "stationId": "station_4a1482de-9c3f-4b17-8a55-0d6e2f7c1b90",
+                    "principalId": "prn_0123456789abcdef0123",
+                    "harness": "salaam",
+                    "isolation": {
+                      "level": "sandbox",
+                      "runtime": "runsc",
+                      "proof": "installed"
+                    },
+                    "model": {
+                      "id": "kimi-k2",
+                      "proof": "probed"
+                    },
+                    "tools": [
+                      {
+                        "id": "cli:stk",
+                        "proof": "probed"
+                      },
+                      {
+                        "id": "mcp:superpipeline",
+                        "proof": "installed"
+                      }
+                    ],
+                    "credentials": [
+                      {
+                        "name": "forge:github",
+                        "instance": "https://github.com",
+                        "proof": "installed"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "why": "a model without its proof",
+              "body": {
+                "stationId": "station_4a1482de-9c3f-4b17-8a55-0d6e2f7c1b90",
+                "principalId": "prn_0123456789abcdef0123",
+                "harness": "salaam",
+                "isolation": {
+                  "level": "sandbox",
+                  "runtime": "runsc",
+                  "proof": "installed"
+                },
+                "model": {
+                  "id": "kimi-k2"
+                },
+                "tools": [
+                  {
+                    "id": "cli:stk",
+                    "proof": "probed"
+                  },
+                  {
+                    "id": "mcp:superpipeline",
+                    "proof": "installed"
+                  }
+                ],
+                "credentials": [
+                  {
+                    "name": "forge:github",
+                    "instance": "https://github.com",
+                    "proof": "installed"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "listPrincipalBoards": {
+      "responses": {
+        "200": {
+          "valid": {
+            "two boards": {
+              "boards": [
+                "brd_0123456789abcdef",
+                "brd_9c1d4e5f6a7b8c9d"
+              ]
+            },
+            "none": {
+              "boards": []
+            }
+          },
+          "invalid": [
+            {
+              "why": "a board id that is not a brd_ id",
+              "body": {
+                "boards": [
+                  "board-1"
+                ]
+              }
+            },
+            {
+              "why": "no boards",
+              "body": {}
+            }
+          ]
+        }
+      }
+    },
+    "readStationOwner": {
+      "responses": {
+        "200": {
+          "valid": {
+            "a station": {
+              "id": "station_4a1482de-9c3f-4b17-8a55-0d6e2f7c1b90",
+              "key": "coder-kai",
+              "owner": "7b0c9f1e-2d3a-4b5c-8d6e-0f1a2b3c4d5e"
+            }
+          },
+          "invalid": [
+            {
+              "why": "no owner",
+              "body": {
+                "id": "station_4a1482de-9c3f-4b17-8a55-0d6e2f7c1b90",
+                "key": "coder-kai"
+              }
+            },
+            {
+              "why": "an owner that is not a string",
+              "body": {
+                "id": "station_4a1482de-9c3f-4b17-8a55-0d6e2f7c1b90",
+                "key": "coder-kai",
+                "owner": null
+              }
+            }
+          ]
+        }
+      }
+    },
+    "readBoardRoster": {
+      "responses": {
+        "200": {
+          "valid": {
+            "a ready agent, a busy one and a disabled row": {
+              "boardId": "brd_9c1d4e5f6a7b8c9d",
+              "agents": [
+                {
+                  "key": "coder-kai",
+                  "stationId": "station_4a1482de-9c3f-4b17-8a55-0d6e2f7c1b90",
+                  "principalId": "prn_0123456789abcdef0123",
+                  "enabled": true,
+                  "busy": false,
+                  "lastDispatchedAt": "2026-11-22T09:14:03.000Z",
+                  "ready": true,
+                  "reason": null
+                },
+                {
+                  "key": "press-writer",
+                  "stationId": "station_1b2c3d4e-5f60-4718-8293-a4b5c6d7e8f9",
+                  "principalId": "prn_abcdefabcdefabcdef01",
+                  "enabled": true,
+                  "busy": true,
+                  "lastDispatchedAt": "2026-11-22T09:14:03.000Z",
+                  "ready": false,
+                  "reason": "the station did not answer a readiness probe within 5000ms"
+                },
+                {
+                  "key": "reviewer",
+                  "stationId": "station_0d6e2f7c-1b90-4a14-82de-9c3f4b178a55",
+                  "principalId": null,
+                  "enabled": false,
+                  "busy": false,
+                  "lastDispatchedAt": null,
+                  "ready": false,
+                  "reason": "the roster entry is disabled"
+                }
+              ]
+            },
+            "a board with no bridge rows": {
+              "boardId": "brd_9c1d4e5f6a7b8c9d",
+              "agents": []
+            }
+          },
+          "invalid": [
+            {
+              "why": "no busy: an unknown load is not an idle agent",
+              "body": {
+                "boardId": "brd_9c1d4e5f6a7b8c9d",
+                "agents": [
+                  {
+                    "key": "coder-kai",
+                    "stationId": "station_4a1482de-9c3f-4b17-8a55-0d6e2f7c1b90",
+                    "principalId": "prn_0123456789abcdef0123",
+                    "enabled": true,
+                    "lastDispatchedAt": "2026-11-22T09:14:03.000Z",
+                    "ready": true,
+                    "reason": null
+                  }
+                ]
+              }
+            },
+            {
+              "why": "ready as a word",
+              "body": {
+                "boardId": "brd_9c1d4e5f6a7b8c9d",
+                "agents": [
+                  {
+                    "key": "coder-kai",
+                    "stationId": "station_4a1482de-9c3f-4b17-8a55-0d6e2f7c1b90",
+                    "principalId": "prn_0123456789abcdef0123",
+                    "enabled": true,
+                    "busy": false,
+                    "lastDispatchedAt": "2026-11-22T09:14:03.000Z",
+                    "ready": "yes",
+                    "reason": null
+                  }
+                ]
+              }
+            },
+            {
+              "why": "a last dispatch that is not a time",
+              "body": {
+                "boardId": "brd_9c1d4e5f6a7b8c9d",
+                "agents": [
+                  {
+                    "key": "coder-kai",
+                    "stationId": "station_4a1482de-9c3f-4b17-8a55-0d6e2f7c1b90",
+                    "principalId": "prn_0123456789abcdef0123",
+                    "enabled": true,
+                    "busy": false,
+                    "lastDispatchedAt": "yesterday",
+                    "ready": true,
+                    "reason": null
+                  }
+                ]
+              }
+            },
+            {
+              "why": "no board id",
+              "body": {
+                "agents": [
+                  {
+                    "key": "coder-kai",
+                    "stationId": "station_4a1482de-9c3f-4b17-8a55-0d6e2f7c1b90",
+                    "principalId": "prn_0123456789abcdef0123",
+                    "enabled": true,
+                    "busy": false,
+                    "lastDispatchedAt": "2026-11-22T09:14:03.000Z",
+                    "ready": true,
+                    "reason": null
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
