@@ -1,0 +1,557 @@
+{
+  "operations": {
+    "readCardEligibility": {
+      "responses": {
+        "200": {
+          "valid": {
+            "one agent eligible, one not, inside the placement window": {
+              "cardId": "card_1a2b3c4d5e6f7a8b",
+              "stageKey": "build",
+              "reasons": [],
+              "placementWindowUntil": "2026-11-23T09:00:10.000Z",
+              "agents": [
+                {
+                  "agentId": "agt_3f9a1c0b7e24d5a6",
+                  "name": "Builder",
+                  "principalId": "prn_0123456789abcdef0a01",
+                  "eligible": true,
+                  "reasons": []
+                },
+                {
+                  "agentId": "agt_7b1e2d3c4a5f6e70",
+                  "name": "Writer",
+                  "principalId": null,
+                  "eligible": false,
+                  "reasons": [
+                    "capability_mismatch",
+                    "card_reserved"
+                  ]
+                }
+              ]
+            },
+            "a card nobody may claim": {
+              "cardId": "card_2b3c4d5e6f7a8b9c",
+              "stageKey": "review",
+              "reasons": [
+                "card_not_ready",
+                "stage_not_agent_claimable"
+              ],
+              "placementWindowUntil": null,
+              "agents": [
+                {
+                  "agentId": "agt_3f9a1c0b7e24d5a6",
+                  "name": "Builder",
+                  "principalId": "prn_0123456789abcdef0a01",
+                  "eligible": false,
+                  "reasons": []
+                }
+              ]
+            },
+            "a workspace with no agents": {
+              "cardId": "card_1a2b3c4d5e6f7a8b",
+              "stageKey": "build",
+              "reasons": [],
+              "placementWindowUntil": null,
+              "agents": []
+            }
+          },
+          "invalid": [
+            {
+              "why": "stageKey is required",
+              "body": {
+                "cardId": "card_1a2b3c4d5e6f7a8b",
+                "reasons": [],
+                "placementWindowUntil": "2026-11-23T09:00:10.000Z",
+                "agents": [
+                  {
+                    "agentId": "agt_3f9a1c0b7e24d5a6",
+                    "name": "Builder",
+                    "principalId": "prn_0123456789abcdef0a01",
+                    "eligible": true,
+                    "reasons": []
+                  },
+                  {
+                    "agentId": "agt_7b1e2d3c4a5f6e70",
+                    "name": "Writer",
+                    "principalId": null,
+                    "eligible": false,
+                    "reasons": [
+                      "capability_mismatch",
+                      "card_reserved"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "why": "agents is a list",
+              "body": {
+                "cardId": "card_1a2b3c4d5e6f7a8b",
+                "stageKey": "build",
+                "reasons": [],
+                "placementWindowUntil": "2026-11-23T09:00:10.000Z",
+                "agents": {}
+              }
+            },
+            {
+              "why": "eligible is a boolean",
+              "body": {
+                "cardId": "card_1a2b3c4d5e6f7a8b",
+                "stageKey": "build",
+                "reasons": [],
+                "placementWindowUntil": "2026-11-23T09:00:10.000Z",
+                "agents": [
+                  {
+                    "agentId": "agt_3f9a1c0b7e24d5a6",
+                    "name": "Builder",
+                    "principalId": "prn_0123456789abcdef0a01",
+                    "eligible": "yes",
+                    "reasons": []
+                  }
+                ]
+              }
+            },
+            {
+              "why": "placementWindowUntil is present, null outside a window",
+              "body": {
+                "cardId": "card_1a2b3c4d5e6f7a8b",
+                "stageKey": "build",
+                "reasons": [],
+                "agents": [
+                  {
+                    "agentId": "agt_3f9a1c0b7e24d5a6",
+                    "name": "Builder",
+                    "principalId": "prn_0123456789abcdef0a01",
+                    "eligible": true,
+                    "reasons": []
+                  },
+                  {
+                    "agentId": "agt_7b1e2d3c4a5f6e70",
+                    "name": "Writer",
+                    "principalId": null,
+                    "eligible": false,
+                    "reasons": [
+                      "capability_mismatch",
+                      "card_reserved"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "why": "a reason is a snake_case code",
+              "body": {
+                "cardId": "card_1a2b3c4d5e6f7a8b",
+                "stageKey": "build",
+                "reasons": [
+                  "Card not ready"
+                ],
+                "placementWindowUntil": "2026-11-23T09:00:10.000Z",
+                "agents": [
+                  {
+                    "agentId": "agt_3f9a1c0b7e24d5a6",
+                    "name": "Builder",
+                    "principalId": "prn_0123456789abcdef0a01",
+                    "eligible": true,
+                    "reasons": []
+                  },
+                  {
+                    "agentId": "agt_7b1e2d3c4a5f6e70",
+                    "name": "Writer",
+                    "principalId": null,
+                    "eligible": false,
+                    "reasons": [
+                      "capability_mismatch",
+                      "card_reserved"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "reserveCard": {
+      "request": {
+        "valid": {
+          "a hold for a minute": {
+            "agentId": "agt_3f9a1c0b7e24d5a6",
+            "ttlSeconds": 60,
+            "decisionId": "dec_01JDX4Q7Z8"
+          },
+          "the default length": {
+            "agentId": "agt_3f9a1c0b7e24d5a6",
+            "decisionId": "dec_01JDX4Q7Z8"
+          },
+          "the longest hold": {
+            "agentId": "agt_3f9a1c0b7e24d5a6",
+            "ttlSeconds": 300,
+            "decisionId": "dec_01JDX4Q7Z8"
+          }
+        },
+        "invalid": [
+          {
+            "why": "agentId is required",
+            "body": {
+              "ttlSeconds": 60,
+              "decisionId": "dec_01JDX4Q7Z8"
+            }
+          },
+          {
+            "why": "agentId is not empty",
+            "body": {
+              "agentId": "",
+              "ttlSeconds": 60,
+              "decisionId": "dec_01JDX4Q7Z8"
+            }
+          },
+          {
+            "why": "decisionId is required",
+            "body": {
+              "agentId": "agt_3f9a1c0b7e24d5a6",
+              "ttlSeconds": 60
+            }
+          },
+          {
+            "why": "a decision id has no spaces",
+            "body": {
+              "agentId": "agt_3f9a1c0b7e24d5a6",
+              "ttlSeconds": 60,
+              "decisionId": "dec 01"
+            }
+          },
+          {
+            "why": "a decision id is at most 128 characters",
+            "body": {
+              "agentId": "agt_3f9a1c0b7e24d5a6",
+              "ttlSeconds": 60,
+              "decisionId": "ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+            }
+          },
+          {
+            "why": "a hold lasts at least 10 seconds",
+            "body": {
+              "agentId": "agt_3f9a1c0b7e24d5a6",
+              "ttlSeconds": 9,
+              "decisionId": "dec_01JDX4Q7Z8"
+            }
+          },
+          {
+            "why": "a hold lasts at most 300 seconds",
+            "body": {
+              "agentId": "agt_3f9a1c0b7e24d5a6",
+              "ttlSeconds": 301,
+              "decisionId": "dec_01JDX4Q7Z8"
+            }
+          },
+          {
+            "why": "ttlSeconds is a whole number",
+            "body": {
+              "agentId": "agt_3f9a1c0b7e24d5a6",
+              "ttlSeconds": 30.5,
+              "decisionId": "dec_01JDX4Q7Z8"
+            }
+          },
+          {
+            "why": "the body is an object",
+            "body": [
+              {
+                "agentId": "agt_3f9a1c0b7e24d5a6",
+                "ttlSeconds": 60,
+                "decisionId": "dec_01JDX4Q7Z8"
+              }
+            ]
+          }
+        ]
+      },
+      "responses": {
+        "200": {
+          "valid": {
+            "held": {
+              "reservation": {
+                "agentId": "agt_3f9a1c0b7e24d5a6",
+                "reservedUntil": "2026-11-23T09:01:00.000Z",
+                "decisionId": "dec_01JDX4Q7Z8",
+                "reservedBy": "prn_0123456789abcdef0c01"
+              }
+            }
+          },
+          "invalid": [
+            {
+              "why": "the hold is under reservation",
+              "body": {
+                "agentId": "agt_3f9a1c0b7e24d5a6",
+                "reservedUntil": "2026-11-23T09:01:00.000Z",
+                "decisionId": "dec_01JDX4Q7Z8",
+                "reservedBy": "prn_0123456789abcdef0c01"
+              }
+            },
+            {
+              "why": "a hold says until when",
+              "body": {
+                "reservation": {
+                  "agentId": "agt_3f9a1c0b7e24d5a6",
+                  "decisionId": "dec_01JDX4Q7Z8",
+                  "reservedBy": "prn_0123456789abcdef0c01"
+                }
+              }
+            },
+            {
+              "why": "a hold names who made it",
+              "body": {
+                "reservation": {
+                  "agentId": "agt_3f9a1c0b7e24d5a6",
+                  "reservedUntil": "2026-11-23T09:01:00.000Z",
+                  "decisionId": "dec_01JDX4Q7Z8"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "readScheduling": {
+      "responses": {
+        "200": {
+          "valid": {
+            "opted in": {
+              "scheduling": {
+                "placementWindowSeconds": 10
+              }
+            },
+            "never opted in": {
+              "scheduling": {
+                "placementWindowSeconds": 0
+              }
+            }
+          },
+          "invalid": [
+            {
+              "why": "the settings are under scheduling",
+              "body": {
+                "placementWindowSeconds": 10
+              }
+            },
+            {
+              "why": "the window is at most 30 seconds",
+              "body": {
+                "scheduling": {
+                  "placementWindowSeconds": 31
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "setScheduling": {
+      "request": {
+        "valid": {
+          "opt in": {
+            "placementWindowSeconds": 10
+          },
+          "opt out": {
+            "placementWindowSeconds": 0
+          },
+          "the longest window": {
+            "placementWindowSeconds": 30
+          }
+        },
+        "invalid": [
+          {
+            "why": "placementWindowSeconds is required",
+            "body": {}
+          },
+          {
+            "why": "the window is at most 30 seconds",
+            "body": {
+              "placementWindowSeconds": 31
+            }
+          },
+          {
+            "why": "the window is not negative",
+            "body": {
+              "placementWindowSeconds": -1
+            }
+          },
+          {
+            "why": "the window is a whole number",
+            "body": {
+              "placementWindowSeconds": 2.5
+            }
+          },
+          {
+            "why": "the window is a number",
+            "body": {
+              "placementWindowSeconds": "10"
+            }
+          }
+        ]
+      },
+      "responses": {
+        "200": {
+          "valid": {
+            "opted in": {
+              "scheduling": {
+                "placementWindowSeconds": 10
+              }
+            }
+          },
+          "invalid": [
+            {
+              "why": "the settings are under scheduling",
+              "body": {
+                "placementWindowSeconds": 10
+              }
+            }
+          ]
+        }
+      }
+    },
+    "readAgentLoad": {
+      "responses": {
+        "200": {
+          "valid": {
+            "a busy agent, a full one, one that never ran and one that takes nothing": {
+              "agents": [
+                {
+                  "agentId": "agt_3f9a1c0b7e24d5a6",
+                  "principalId": "prn_0123456789abcdef0a01",
+                  "inFlight": 1,
+                  "capacity": 2,
+                  "lastHeartbeatAt": "2026-11-23T10:04:30.000Z"
+                },
+                {
+                  "agentId": "agt_7b1e2d3c4a5f6e70",
+                  "principalId": null,
+                  "inFlight": 3,
+                  "capacity": 3,
+                  "lastHeartbeatAt": "2026-11-23T10:04:55.000Z"
+                },
+                {
+                  "agentId": "agt_0c1d2e3f4a5b6c7d",
+                  "principalId": "prn_0123456789abcdef0a02",
+                  "inFlight": 0,
+                  "capacity": 1,
+                  "lastHeartbeatAt": null
+                },
+                {
+                  "agentId": "agt_1d2e3f4a5b6c7d8e",
+                  "principalId": "prn_0123456789abcdef0a03",
+                  "inFlight": 0,
+                  "capacity": 0,
+                  "lastHeartbeatAt": null
+                }
+              ]
+            },
+            "a workspace with no agents": {
+              "agents": []
+            }
+          },
+          "invalid": [
+            {
+              "why": "agents is required",
+              "body": {}
+            },
+            {
+              "why": "an agent has an id",
+              "body": {
+                "agents": [
+                  {
+                    "principalId": null,
+                    "inFlight": 0,
+                    "capacity": 1,
+                    "lastHeartbeatAt": null
+                  }
+                ]
+              }
+            },
+            {
+              "why": "inFlight is required",
+              "body": {
+                "agents": [
+                  {
+                    "agentId": "agt_3f9a1c0b7e24d5a6",
+                    "principalId": null,
+                    "capacity": 1,
+                    "lastHeartbeatAt": null
+                  }
+                ]
+              }
+            },
+            {
+              "why": "inFlight is not negative",
+              "body": {
+                "agents": [
+                  {
+                    "agentId": "agt_3f9a1c0b7e24d5a6",
+                    "principalId": null,
+                    "inFlight": -1,
+                    "capacity": 1,
+                    "lastHeartbeatAt": null
+                  }
+                ]
+              }
+            },
+            {
+              "why": "inFlight is a whole number",
+              "body": {
+                "agents": [
+                  {
+                    "agentId": "agt_3f9a1c0b7e24d5a6",
+                    "principalId": null,
+                    "inFlight": 0.5,
+                    "capacity": 1,
+                    "lastHeartbeatAt": null
+                  }
+                ]
+              }
+            },
+            {
+              "why": "capacity is a whole number, never null",
+              "body": {
+                "agents": [
+                  {
+                    "agentId": "agt_3f9a1c0b7e24d5a6",
+                    "principalId": null,
+                    "inFlight": 0,
+                    "capacity": null,
+                    "lastHeartbeatAt": null
+                  }
+                ]
+              }
+            },
+            {
+              "why": "lastHeartbeatAt is present, null when it never ran",
+              "body": {
+                "agents": [
+                  {
+                    "agentId": "agt_3f9a1c0b7e24d5a6",
+                    "principalId": null,
+                    "inFlight": 0,
+                    "capacity": 1
+                  }
+                ]
+              }
+            },
+            {
+              "why": "lastHeartbeatAt is a timestamp",
+              "body": {
+                "agents": [
+                  {
+                    "agentId": "agt_3f9a1c0b7e24d5a6",
+                    "principalId": null,
+                    "inFlight": 0,
+                    "capacity": 1,
+                    "lastHeartbeatAt": "yesterday"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -5,6 +5,12 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- **SuperPipeline's board reads and placement are contracts.**
+  - `schemas/http/superpipeline/board-read.v1.openapi.json` (`cards:read`): the board list, the board snapshot, one card, and a card's attempts, comments, links and activities. The run evidence routes `…/runs/{runId}/evidence` and `…/evidence-v1` are in it too, on `evidence:read`. The evidence shapes are closed: C4 is frozen, and `superpipeline-run-evidence/v1` is read strictly.
+  - `schemas/http/superpipeline/placement.v1.openapi.json`: card eligibility (`dispatch:read`), reservation `PUT`/`DELETE` (`dispatch:reserve`), scheduling `GET`/`PUT`, and `GET /v1/agents/load` (`dispatch:read`). The load route is proposed: SuperPipeline builds it to this shape, `{agents: [{agentId, principalId, inFlight, capacity, lastHeartbeatAt}]}`.
+  - Cases for both in `fixtures/http/superpipeline/`. SuperPipeline's `run-evidence-v1.json` fixture and its recorded C4 examples are now cases of the evidence routes.
+  - `superpipeline.board-read` and `superpipeline.placement` are contracted. Coverage is 60%: 18 of 30 crossings contracted.
+
 ## v0.0.18 — 2026-11-23
 
 - **A cancelled gate has a receipt.** `dev.superpipeline.gate.outcome.v1` gains the decision `cancelled`, for a gate the board ended without a decision (its card was moved by hand or archived while the review was pending). `GATE_CANCELLED_DECISION` names it, and `gateOutcomeBody` says it as a whole sentence that names nobody. The schema now lists the decisions it carries in `x-treaty-known-values`; the field stays an open string, and a reader that does not know a value still closes the card.

@@ -1,0 +1,623 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SuperPipeline placement",
+    "version": "1",
+    "description": "What a placement service (SuperDispatch) reads and writes to place cards: a card's eligibility, a reservation that holds a card for the chosen agent, a board's placement window, and every agent's load. Written from SuperPipeline's apps/api/src/service-routes.ts, card-eligibility.ts, card-reservation.ts, board/claims.ts (cardEligibility), board/reservations.ts and board/placement-window.ts; `GET /v1/agents/load` is contracted before it is built (ruling 1 of the phase 3 plan). The tenant comes from the service token, so a board in another tenant is 404 BOARD_NOT_FOUND. Every refusal is error.v1 with the status its code carries in contracts/error-codes.json. Bodies are open: a reader ignores properties it does not know."
+  },
+  "x-treaty-error-envelope": "error.v1",
+  "tags": [
+    {
+      "name": "proposed",
+      "description": "Contracted before the producer serves it."
+    }
+  ],
+  "paths": {
+    "/v1/boards/{boardId}/cards/{cardId}/eligibility": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/boardId"
+        },
+        {
+          "$ref": "#/components/parameters/cardId"
+        }
+      ],
+      "get": {
+        "operationId": "readCardEligibility",
+        "summary": "Who could claim a card now, and why not",
+        "description": "The filter a placement service ranks candidates after. A person's route answers the same body.",
+        "security": [
+          {
+            "serviceToken": ["dispatch:read"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "BOARD_NOT_FOUND",
+          "CARD_NOT_FOUND",
+          "NOT_INITIALIZED",
+          "UNEXPECTED"
+        ],
+        "responses": {
+          "200": {
+            "description": "Every agent of the workspace, judged",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CardEligibility"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/cards/{cardId}/reservation": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/boardId"
+        },
+        {
+          "$ref": "#/components/parameters/cardId"
+        }
+      ],
+      "put": {
+        "operationId": "reserveCard",
+        "summary": "Hold a card for the agent a placement service chose",
+        "description": "The agent is judged as the eligibility read judges it. Refused when no agent may claim the card now (409 CARD_NOT_CLAIMABLE, `detail.reasons`), when this agent may not (409 AGENT_NOT_ELIGIBLE, `detail.reasons`), or when a live hold for another agent from another decision is in place (409 CARD_RESERVED, `detail.reservation`). The same decision may move its own hold to another agent, and a hold for the same agent is replaced (a renewal). The hold applies only at the stage it was made for and lapses on its own; the agent it is held for is pinged with `work.available`.",
+        "security": [
+          {
+            "serviceToken": ["dispatch:reserve"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "INVALID_JSON",
+          "INVALID_RESERVATION",
+          "BOARD_NOT_FOUND",
+          "AGENT_NOT_FOUND",
+          "CARD_NOT_FOUND",
+          "NOT_INITIALIZED",
+          "CARD_NOT_CLAIMABLE",
+          "AGENT_NOT_ELIGIBLE",
+          "CARD_RESERVED",
+          "UNEXPECTED"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReservationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The hold, under `reservation`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["reservation"],
+                  "properties": {
+                    "reservation": {
+                      "$ref": "#/components/schemas/CardReservation"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "clearCardReservation",
+        "summary": "Clear a card's hold",
+        "description": "Idempotent: 204 whether or not the card had a hold, live or lapsed. Clearing a live hold pings the agents that could claim the card.",
+        "security": [
+          {
+            "serviceToken": ["dispatch:reserve"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "BOARD_NOT_FOUND",
+          "CARD_NOT_FOUND",
+          "NOT_INITIALIZED",
+          "UNEXPECTED"
+        ],
+        "responses": {
+          "204": {
+            "description": "Cleared, or there was nothing to clear"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/v1/boards/{boardId}/scheduling": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/boardId"
+        }
+      ],
+      "get": {
+        "operationId": "readScheduling",
+        "summary": "A board's scheduling settings",
+        "security": [
+          {
+            "serviceToken": ["dispatch:read"]
+          },
+          {
+            "serviceToken": ["dispatch:reserve"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "BOARD_NOT_FOUND",
+          "UNEXPECTED"
+        ],
+        "responses": {
+          "200": {
+            "description": "The settings, under `scheduling`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["scheduling"],
+                  "properties": {
+                    "scheduling": {
+                      "$ref": "#/components/schemas/SchedulingSettings"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      },
+      "put": {
+        "operationId": "setScheduling",
+        "summary": "Set a board's placement window",
+        "description": "A placement service sets a window of 1 to 30 seconds when it opts the board in, and 0 when it opts out; 0 also releases every card held back by the old window. A window out of range, or no body, is 400 INVALID_SCHEDULING.",
+        "security": [
+          {
+            "serviceToken": ["dispatch:reserve"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "UNAUTHORIZED",
+          "FORBIDDEN",
+          "INVALID_JSON",
+          "INVALID_SCHEDULING",
+          "BOARD_NOT_FOUND",
+          "NOT_INITIALIZED",
+          "UNEXPECTED"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SchedulingSettings"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The settings now, under `scheduling`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["scheduling"],
+                  "properties": {
+                    "scheduling": {
+                      "$ref": "#/components/schemas/SchedulingSettings"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/v1/agents/load": {
+      "get": {
+        "operationId": "readAgentLoad",
+        "summary": "Every agent's load over the workspace",
+        "tags": ["proposed"],
+        "description": "Proposed: SuperPipeline builds it after this contract (phase 3, ruling 1). Every agent of the token's workspace, whether or not it is on any board's roster, with the cards it holds over every board, its capacity and its latest run heartbeat: what a placement service reads once a pass when it places work across every agent. An agent with capacity 0, or with no heartbeat, is still listed. Until a deployment serves it, the route answers 404 and a reader treats that as no load known.",
+        "security": [
+          {
+            "serviceToken": ["dispatch:read"]
+          }
+        ],
+        "x-treaty-error-codes": ["UNAUTHORIZED", "FORBIDDEN", "UNEXPECTED"],
+        "responses": {
+          "200": {
+            "description": "Every agent of the workspace",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["agents"],
+                  "properties": {
+                    "agents": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AgentLoad"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "serviceToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "An Organization-plane access token for a service principal (`principalKind: service`) of a workspace mapped to a SuperPipeline tenant: `dispatch:read` to read eligibility, scheduling and load, `dispatch:reserve` to hold and release cards and set the window (it also reads scheduling). The hold records this principal as `reservedBy`. No valid service token is 401 UNAUTHORIZED; a scope it lacks is 403 FORBIDDEN."
+      }
+    },
+    "parameters": {
+      "boardId": {
+        "name": "boardId",
+        "in": "path",
+        "required": true,
+        "description": "The board. The service routes match only brd_ and 16 lowercase hex digits.",
+        "schema": {
+          "type": "string",
+          "pattern": "^brd_[0-9a-f]{16}$"
+        }
+      },
+      "cardId": {
+        "name": "cardId",
+        "in": "path",
+        "required": true,
+        "description": "The card. The service routes match only card_ and 16 lowercase hex digits.",
+        "schema": {
+          "type": "string",
+          "pattern": "^card_[0-9a-f]{16}$"
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Malformed JSON (INVALID_JSON), or a body out of shape (INVALID_RESERVATION, INVALID_SCHEDULING)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "No valid service token for a mapped workspace (UNAUTHORIZED)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "The token lacks the scope (FORBIDDEN)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "No such board in this tenant (BOARD_NOT_FOUND), card (CARD_NOT_FOUND), agent (AGENT_NOT_FOUND), or a board that is not initialised (NOT_INITIALIZED)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "The card or agent cannot take the hold now (CARD_NOT_CLAIMABLE, AGENT_NOT_ELIGIBLE), or it is held for another (CARD_RESERVED)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Unexpected": {
+        "description": "A failure nobody planned for (UNEXPECTED)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Timestamp": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "NullableTimestamp": {
+        "type": ["string", "null"],
+        "format": "date-time"
+      },
+      "ClaimReason": {
+        "type": "string",
+        "description": "Why a card may not be claimed now, or why one agent may not claim it (ClaimReason, packages/contract claims.ts). Open: the board adds reasons, and a reader treats one it does not know as \"may not claim now\". The reasons on 2026-11-24 are in x-treaty-known-values.",
+        "pattern": "^[a-z][a-z0-9_]*$",
+        "x-treaty-known-values": [
+          "board_not_initialized",
+          "board_over_budget",
+          "concurrency_reached",
+          "capability_mismatch",
+          "no_matching_card",
+          "grant_denied",
+          "card_not_ready",
+          "card_held_back",
+          "stage_not_agent_claimable",
+          "card_reserved",
+          "placement_window"
+        ]
+      },
+      "CardEligibility": {
+        "type": "object",
+        "description": "Who could claim a card now, and why not (CardEligibility, board/claims.ts): every agent of the workspace judged against the card's current stage by the claim's own filter, capabilities expanded through the workspace's implication edges and `concurrency` as each agent's ceiling. An agent is eligible exactly when the card has no reasons and the agent has none. Reads only: nothing is reserved or claimed.",
+        "required": [
+          "cardId",
+          "stageKey",
+          "reasons",
+          "placementWindowUntil",
+          "agents"
+        ],
+        "properties": {
+          "cardId": {
+            "type": "string"
+          },
+          "stageKey": {
+            "type": "string",
+            "description": "The card's current stage, which every agent was judged against."
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClaimReason"
+            },
+            "description": "Why no agent may claim the card now (the board's and the card's own); empty when it is claimable."
+          },
+          "placementWindowUntil": {
+            "$ref": "#/components/schemas/NullableTimestamp",
+            "description": "When the card's placement window ends, while it is inside one; null otherwise. Not a reason: a hold made inside the window is claimable at once."
+          },
+          "agents": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "agentId",
+                "name",
+                "principalId",
+                "eligible",
+                "reasons"
+              ],
+              "properties": {
+                "agentId": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "principalId": {
+                  "type": ["string", "null"],
+                  "description": "The suite principal the agent is linked to, or null."
+                },
+                "eligible": {
+                  "type": "boolean"
+                },
+                "reasons": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ClaimReason"
+                  },
+                  "description": "Why this agent may not claim it; `card_reserved` when the card is held for another."
+                }
+              }
+            }
+          }
+        }
+      },
+      "ReservationRequest": {
+        "type": "object",
+        "description": "Hold the card for one agent of this workspace. A body that is not this shape, or no body, is 400 INVALID_RESERVATION.",
+        "required": ["agentId", "decisionId"],
+        "properties": {
+          "agentId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The agent to hold the card for (`agt_\u2026`). One the workspace does not have is 404 AGENT_NOT_FOUND."
+          },
+          "ttlSeconds": {
+            "type": "integer",
+            "minimum": 10,
+            "maximum": 300,
+            "description": "How long the hold lasts. Defaults to 60."
+          },
+          "decisionId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$",
+            "description": "The placement decision asking for the hold: up to 128 letters, digits and `_.:-`."
+          }
+        }
+      },
+      "CardReservation": {
+        "type": "object",
+        "description": "The hold as written (CardReservation, packages/contract claims.ts). `reservedBy` is the service principal that made it.",
+        "required": ["agentId", "reservedUntil", "decisionId", "reservedBy"],
+        "properties": {
+          "agentId": {
+            "type": "string"
+          },
+          "reservedUntil": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "decisionId": {
+            "type": "string"
+          },
+          "reservedBy": {
+            "type": "string"
+          }
+        }
+      },
+      "SchedulingSettings": {
+        "type": "object",
+        "description": "A board's scheduling settings (board/placement-window.ts).",
+        "required": ["placementWindowSeconds"],
+        "properties": {
+          "placementWindowSeconds": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 30,
+            "description": "How long a card that just became ready is held back from pull, so a placement service can reserve it first. 0 is none: the board behaves as one never opted in."
+          }
+        }
+      },
+      "AgentLoad": {
+        "type": "object",
+        "description": "One agent's load over the workspace.",
+        "required": [
+          "agentId",
+          "principalId",
+          "inFlight",
+          "capacity",
+          "lastHeartbeatAt"
+        ],
+        "properties": {
+          "agentId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "principalId": {
+            "type": ["string", "null"],
+            "description": "The suite principal the agent is linked to, or null."
+          },
+          "inFlight": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "The cards it holds now (its runs still working) over every board of the workspace."
+          },
+          "capacity": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "The most cards it may hold at once: the ceiling a claim is held to (`agents.concurrency`). 0 takes nothing."
+          },
+          "lastHeartbeatAt": {
+            "$ref": "#/components/schemas/NullableTimestamp",
+            "description": "Its latest run heartbeat on any board; null when it never ran."
+          }
+        }
+      }
+    }
+  }
+}

@@ -513,19 +513,20 @@
     },
     {
       "id": "superpipeline.board-read",
-      "title": "Service reads of boards, cards, attempts, comments, links and activities",
+      "title": "Service reads of boards, cards, attempts, comments, links and activities, and a run's evidence",
       "owner": "superpipeline",
       "consumers": ["superlibrary", "superdispatch", "superwitness"],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "Each consumer types the reads by hand; SuperLibrary types spec and handoff as unknown.",
-      "phase": 3,
+      "status": "contracted",
+      "contract": ["schemas/http/superpipeline/board-read.v1.openapi.json"],
       "evidence": [
         "superpipeline:apps/api/src/service-routes.ts",
+        "superpipeline:apps/api/src/routes/boards/evidence.ts",
+        "superpipeline:apps/api/test/fixtures/run-evidence-v1.json",
         "superlibrary:apps/api/src/sources/superpipeline.ts",
         "superdispatch:apps/dispatch/src/sources/superpipeline.ts",
-        "superwitness:internal/source/superpipeline/adapter.go"
+        "superwitness:internal/source/superpipeline/adapter.go",
+        "superwitness:internal/source/work_evidence.go"
       ]
     },
     {
@@ -534,13 +535,14 @@
       "owner": "superpipeline",
       "consumers": ["superdispatch"],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "SuperDispatch calls GET /v1/agents/load, which SuperPipeline does not serve, and falls back silently.",
-      "phase": 3,
+      "status": "contracted",
+      "contract": ["schemas/http/superpipeline/placement.v1.openapi.json"],
       "evidence": [
         "superdispatch:apps/dispatch/src/sources/superpipeline.ts",
-        "superpipeline:apps/api/src/service-routes.ts"
+        "superpipeline:apps/api/src/service-routes.ts",
+        "superpipeline:apps/api/src/card-eligibility.ts",
+        "superpipeline:apps/api/src/card-reservation.ts",
+        "superpipeline:apps/api/src/board/placement-window.ts"
       ]
     },
     {
