@@ -549,12 +549,15 @@
       "owner": "superpipeline",
       "consumers": ["agentpod"],
       "kind": "mcp",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "MCP is the transport; the tool names and their inputs are named in AgentPod's prompt text with no contract.",
-      "phase": 3,
+      "status": "contracted",
+      "contract": [
+        "schemas/mcp/superpipeline.v1.json",
+        "fixtures/mcp/superpipeline.v1.cases.json"
+      ],
       "evidence": [
         "superpipeline:apps/api/src/mcp/tools.ts",
+        "superpipeline:apps/api/src/mcp/server.ts",
+        "agentpod:packages/contract/src/card-prompt.ts",
         "agentpod:apps/hub/src/services/bridge/dispatch-prompt.ts"
       ]
     },

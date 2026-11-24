@@ -6,6 +6,7 @@ deploys the event relay to production.
 ## Unreleased
 
 - **A new contract form: the MCP tool catalog** (`schemas/treaty/mcp-catalog.v1.json`). A catalog at `schemas/mcp/<server>.v<N>.json` lists each tool's name, the scope a caller needs to be offered it (or null), its description, its input JSON Schema as `tools/list` sends it and the shape of what it returns; `error` names what a result with `isError: true` carries. Cases live at `fixtures/mcp/<server>.v<N>.cases.json`, per tool. `@superjackfruitlabs/treaty-contracts` reads it: `mcpCatalog(bundle, "<server>.v1")`, `validateToolArguments`, `validateToolResult` (a whole `tools/call` result), `validateToolPayload`, `unknownTools` and `checkMcpCatalog`. `treaty cases <path> --at <JSON pointer>` prints any cases a contract's cases file holds. `bun run compat` compares catalogs tool by tool: a tool added is no finding, a tool removed, a scope changed or an input narrowed is. A `$ref` inside a schema reached through an array (an OpenAPI parameter, a catalog's tool) now resolves against its document.
+- **SuperPipeline's MCP tools are contracted** (`schemas/mcp/superpipeline.v1.json`): the 15 tools of `apps/api/src/mcp/tools.ts` with their `TOOL_SCOPE` scopes, the input schemas the server sends in `tools/list`, the result each returns and the `{error: {code, message}}` a refusal carries, with valid and invalid arguments for every tool in `fixtures/mcp/superpipeline.v1.cases.json`. `superpipeline.mcp` is contracted; coverage 57%, 17 of 30 crossings.
 
 ## v0.0.18 — 2026-11-23
 

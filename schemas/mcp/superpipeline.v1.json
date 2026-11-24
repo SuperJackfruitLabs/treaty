@@ -1,0 +1,958 @@
+{
+  "$schema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/treaty/mcp-catalog.v1.json",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/mcp/superpipeline.v1.json",
+  "catalog": "treaty mcp catalog",
+  "version": 1,
+  "description": "SuperPipeline's MCP tools (apps/api/src/mcp/tools.ts), the agent's side of the board: discover, claim, read and report on work. Scopes are TOOL_SCOPE; a tool whose scope the token lacks is never offered. A `claim`-only token predating scopes is still offered the `run` tools, except superpipeline_split_card, which creates work. Agent identity comes from the token, never from arguments. Each input schema is what `tools/list` sends (zod through the MCP SDK 1.32.1), read as draft 2020-12; arguments a schema does not name are stripped, not refused.",
+  "server": {
+    "name": "superpipeline",
+    "path": "/mcp"
+  },
+  "error": {
+    "carrier": "text-json",
+    "schema": {
+      "description": "A business failure (isError: true): the board's refusal code and message.",
+      "type": "object",
+      "required": ["error"],
+      "properties": {
+        "error": {
+          "type": "object",
+          "required": ["code", "message"],
+          "properties": {
+            "code": {
+              "type": "string",
+              "minLength": 1
+            },
+            "message": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "superpipeline_list_work",
+      "scope": null,
+      "description": "Discover where there is work for you: lists the boards in your workspace with how many cards are ready for your capabilities right now. Start here to find a boardId, then call superpipeline_claim_card. Returns { capabilities, boards: [{ boardId, name, readyForYou }] }.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "result": {
+        "carrier": "text-json",
+        "schema": {
+          "type": "object",
+          "required": ["capabilities", "boards"],
+          "properties": {
+            "capabilities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "boards": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["boardId", "name", "readyForYou"],
+                "properties": {
+                  "boardId": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "readyForYou": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true
+      }
+    },
+    {
+      "name": "superpipeline_claim_card",
+      "scope": "claim",
+      "description": "Claim the next ready card you are eligible to work, using your token's capabilities. Returns a run + lease + the upstream handoff, or {claimed:false, reason} when no work is available for you (reason is a stable code such as no_matching_card, capability_mismatch or concurrency_reached). When a previous attempt at this stage failed, `lastFailure` carries its reason — READ IT before repeating the same approach, because the wall it hit is probably still there.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string"
+          },
+          "maxConcurrency": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": ["boardId"]
+      },
+      "result": {
+        "carrier": "text-json",
+        "schema": {
+          "$ref": "#/$defs/claim"
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false
+      }
+    },
+    {
+      "name": "superpipeline_get_card",
+      "scope": null,
+      "description": "Read a card by id (title, current stage, state).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string"
+          },
+          "cardId": {
+            "type": "string"
+          }
+        },
+        "required": ["boardId", "cardId"]
+      },
+      "result": {
+        "carrier": "text-json",
+        "schema": {
+          "$ref": "#/$defs/card"
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true
+      }
+    },
+    {
+      "name": "superpipeline_get_run",
+      "scope": null,
+      "description": "Read the run you hold — its lease epoch, its card, its stage and the prior stage's handoff.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string"
+          },
+          "runId": {
+            "type": "string"
+          }
+        },
+        "required": ["boardId", "runId"]
+      },
+      "result": {
+        "carrier": "text-json",
+        "schema": {
+          "$ref": "#/$defs/runContext"
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true
+      }
+    },
+    {
+      "name": "superpipeline_add_reference",
+      "scope": "run",
+      "description": "Attach a first-class external reference (GitHub PR/issue, repo, doc, or any url) to a card. Idempotent on (card, url); a bare GitHub url is auto-recognized into provider/sourceType/externalId. Attribution is automatic: a reference you attach while working a card is recorded against YOUR run, so the card can show what each stage produced. There is no url for a local file — SuperPipeline stores no content, so publish the document first and reference where it landed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string"
+          },
+          "cardId": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provider": {
+            "type": "string"
+          },
+          "sourceType": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": ["boardId", "cardId", "url"]
+      },
+      "result": {
+        "carrier": "text-json",
+        "schema": {
+          "$ref": "#/$defs/reference"
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true
+      }
+    },
+    {
+      "name": "superpipeline_split_card",
+      "scope": "run",
+      "description": "Split the card you are working on into sub-cards, one per line, when the work has independent parts that different capabilities should pick up. Each becomes a real card that can be claimed separately. Your card will not advance until all of them are resolved.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string"
+          },
+          "cardId": {
+            "type": "string"
+          },
+          "titles": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": ["boardId", "cardId", "titles"]
+      },
+      "result": {
+        "carrier": "text-json",
+        "schema": {
+          "type": "object",
+          "required": ["children"],
+          "properties": {
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/card"
+              }
+            }
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false
+      }
+    },
+    {
+      "name": "superpipeline_list_comments",
+      "scope": null,
+      "description": "Read the comment thread on the card your run holds — remarks from people (and agents) about the work, oldest first. People can comment while you work: check before you finish a stage, and act on what they asked. Deleted comments come back with an empty body and `deletedAt` set.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string"
+          },
+          "runId": {
+            "type": "string"
+          }
+        },
+        "required": ["boardId", "runId"]
+      },
+      "result": {
+        "carrier": "text-json",
+        "schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/comment"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true
+      }
+    },
+    {
+      "name": "superpipeline_post_comment",
+      "scope": "run",
+      "description": "Add a comment to the card your run holds, as yourself — to answer a question a person left there or to say something they should read on the card. Markdown text, at most 8 KB. Only while your run is live. Not a substitute for superpipeline_post_activity (progress) or a question that must block (elicitation).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string"
+          },
+          "runId": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": ["boardId", "runId", "body"]
+      },
+      "result": {
+        "carrier": "text-json",
+        "schema": {
+          "$ref": "#/$defs/comment"
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false
+      }
+    },
+    {
+      "name": "superpipeline_heartbeat",
+      "scope": "run",
+      "description": "Renew your lease on an active run so it is not reclaimed (docs/08).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string"
+          },
+          "runId": {
+            "type": "string"
+          },
+          "leaseEpoch": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": ["boardId", "runId", "leaseEpoch"]
+      },
+      "result": {
+        "carrier": "text-json",
+        "schema": {
+          "type": "object",
+          "required": ["acknowledged"],
+          "properties": {
+            "acknowledged": {
+              "const": true
+            }
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true
+      }
+    },
+    {
+      "name": "superpipeline_post_activity",
+      "scope": "run",
+      "description": "Stream a typed activity (thought/action/response/elicitation/error) onto the run.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string"
+          },
+          "runId": {
+            "type": "string"
+          },
+          "leaseEpoch": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "type": {
+            "type": "string",
+            "enum": ["thought", "action", "response", "elicitation", "error"]
+          },
+          "strictDecision": {
+            "type": "object",
+            "properties": {
+              "version": {
+                "type": "number",
+                "const": 1
+              },
+              "request_id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "decision_digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "expires_at": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "version",
+              "request_id",
+              "decision_digest",
+              "expires_at"
+            ],
+            "additionalProperties": false
+          },
+          "ephemeral": {
+            "type": "boolean"
+          },
+          "body": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "parameter": {},
+          "result": {},
+          "signal": {
+            "type": "string"
+          },
+          "usage": {
+            "type": "object",
+            "properties": {
+              "model": {
+                "type": "string"
+              },
+              "inputTokens": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "outputTokens": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "costUsd": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "required": ["boardId", "runId", "leaseEpoch", "type"]
+      },
+      "result": {
+        "carrier": "text-json",
+        "schema": {
+          "type": "object",
+          "required": ["accepted", "cardState"],
+          "properties": {
+            "accepted": {
+              "const": true
+            },
+            "cardState": {
+              "type": "string"
+            },
+            "elicitationId": {
+              "type": "string"
+            },
+            "strictDecision": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false
+      }
+    },
+    {
+      "name": "superpipeline_submit_for_review",
+      "scope": "run",
+      "description": "Submit your work at a gated stage for human review (opens an approval gate).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string"
+          },
+          "runId": {
+            "type": "string"
+          },
+          "leaseEpoch": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "output": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": ["boardId", "runId", "leaseEpoch"]
+      },
+      "result": {
+        "carrier": "text-json",
+        "schema": {
+          "$ref": "#/$defs/card"
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false
+      }
+    },
+    {
+      "name": "superpipeline_complete",
+      "scope": "run",
+      "description": "End your turn on this card and say how it went with `outcome`. `pass` (the default on most stages): your work is done and good — the card advances carrying your handoff. `changes-needed`: you judged the work and it is NOT good enough — give `findings` (what must change); the card goes back to the stage that fixes it, with your findings, instead of moving on. Use this rather than writing \"unsafe\" or \"do not ship\" in a handoff that then advances. A stage that judges work requires you to say `pass` or `changes-needed`. `needs-person`: you cannot go on without a person (approve a sign-in, make a decision, grant access) — give `question` (what they must do) and `url` if there is a link; the card waits on them in Needs you and the board's chat room, and when they answer the card comes back to this stage with their answer and your handoff as the work so far. Never end your turn with \"do X, then reply\" in a handoff — use needs-person.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string"
+          },
+          "runId": {
+            "type": "string"
+          },
+          "leaseEpoch": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "handoff": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "outcome": {
+            "type": "string",
+            "enum": ["pass", "changes-needed", "needs-person"]
+          },
+          "findings": {
+            "type": "string"
+          },
+          "question": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "options": {
+            "type": "array",
+            "items": {}
+          }
+        },
+        "required": ["boardId", "runId", "leaseEpoch"]
+      },
+      "result": {
+        "carrier": "text-json",
+        "schema": {
+          "$ref": "#/$defs/card"
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false
+      }
+    },
+    {
+      "name": "superpipeline_block",
+      "scope": "run",
+      "description": "Mark the run blocked on something you cannot fix and a person must look into; releases the lease and ends the work. To ask a person something and carry on once they answer, use superpipeline_complete with outcome \"needs-person\" instead.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string"
+          },
+          "runId": {
+            "type": "string"
+          },
+          "leaseEpoch": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "summary": {
+            "description": "One line a person can read at a glance; the reason stays the full account.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        },
+        "required": ["boardId", "runId", "leaseEpoch", "reason"]
+      },
+      "result": {
+        "carrier": "text-json",
+        "schema": {
+          "$ref": "#/$defs/card"
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false
+      }
+    },
+    {
+      "name": "superpipeline_release",
+      "scope": "run",
+      "description": "Voluntarily give the card back to the queue without failing it.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string"
+          },
+          "runId": {
+            "type": "string"
+          },
+          "leaseEpoch": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": ["boardId", "runId", "leaseEpoch"]
+      },
+      "result": {
+        "carrier": "text-json",
+        "schema": {
+          "$ref": "#/$defs/card"
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false
+      }
+    },
+    {
+      "name": "superpipeline_fail",
+      "scope": "run",
+      "description": "Fail the run (counts toward the circuit breaker); the card returns to the queue or trips.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "type": "string"
+          },
+          "runId": {
+            "type": "string"
+          },
+          "leaseEpoch": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": ["boardId", "runId", "leaseEpoch", "reason"]
+      },
+      "result": {
+        "carrier": "text-json",
+        "schema": {
+          "$ref": "#/$defs/card"
+        }
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false
+      }
+    }
+  ],
+  "$defs": {
+    "card": {
+      "description": "A card as the board shows it (CardView in apps/api/src/board/model.ts). Only the fields every reader relies on are named; the rest pass.",
+      "type": "object",
+      "required": ["id", "title", "currentStageKey", "state"],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "currentStageKey": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "currentRunId": {
+          "type": ["string", "null"]
+        },
+        "delegateAgentId": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "claim": {
+      "description": "ClaimResult (apps/api/src/board/model.ts): work handed out, or why none was. `reason` is a stable code a client must tolerate not knowing.",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "claimed",
+            "runId",
+            "leaseEpoch",
+            "card",
+            "stage",
+            "handoff",
+            "lastFailure"
+          ],
+          "properties": {
+            "claimed": {
+              "const": true
+            },
+            "runId": {
+              "type": "string"
+            },
+            "leaseEpoch": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "card": {
+              "$ref": "#/$defs/card"
+            },
+            "stage": {
+              "type": "object"
+            },
+            "handoff": true,
+            "lastFailure": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "required": ["reason", "agentId", "stageKey", "endedAt"],
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    },
+                    "agentId": {
+                      "type": "string"
+                    },
+                    "stageKey": {
+                      "type": "string"
+                    },
+                    "endedAt": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            },
+            "checkpointClaim": {
+              "type": "object"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["claimed", "reason"],
+          "properties": {
+            "claimed": {
+              "const": false
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "runContext": {
+      "description": "RunContext (apps/api/src/board/views.ts): the run the caller holds, lease epoch included.",
+      "type": "object",
+      "required": [
+        "run",
+        "card",
+        "stage",
+        "handoff",
+        "references",
+        "elicitations"
+      ],
+      "properties": {
+        "run": {
+          "type": "object",
+          "required": [
+            "runId",
+            "cardId",
+            "stageKey",
+            "leaseEpoch",
+            "status",
+            "startedAt"
+          ],
+          "properties": {
+            "runId": {
+              "type": "string"
+            },
+            "cardId": {
+              "type": "string"
+            },
+            "stageKey": {
+              "type": "string"
+            },
+            "leaseEpoch": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "status": {
+              "type": "string"
+            },
+            "outcome": {
+              "type": ["string", "null"]
+            },
+            "startedAt": {
+              "type": "string"
+            },
+            "endedAt": {
+              "type": ["string", "null"]
+            }
+          }
+        },
+        "card": {
+          "$ref": "#/$defs/card"
+        },
+        "stage": {
+          "type": ["object", "null"]
+        },
+        "handoff": true,
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/reference"
+          }
+        },
+        "elicitations": {
+          "type": "array"
+        }
+      }
+    },
+    "reference": {
+      "description": "ReferenceView (apps/api/src/board/views.ts).",
+      "type": "object",
+      "required": [
+        "id",
+        "cardId",
+        "url",
+        "provider",
+        "sourceType",
+        "addedBy",
+        "runId"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "cardId": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "title": {
+          "type": ["string", "null"]
+        },
+        "subtitle": {
+          "type": ["string", "null"]
+        },
+        "provider": {
+          "type": "string"
+        },
+        "sourceType": {
+          "type": "string"
+        },
+        "externalId": {
+          "type": ["string", "null"]
+        },
+        "syncState": {
+          "enum": ["synced", "stale", "error"]
+        },
+        "addedBy": {
+          "enum": ["agent", "user"]
+        },
+        "runId": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "comment": {
+      "description": "CommentView (apps/api/src/board/views.ts). `body` is Markdown source, never HTML; empty once deleted.",
+      "type": "object",
+      "required": ["id", "cardId", "author", "body", "createdAt", "deletedAt"],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "cardId": {
+          "type": "string"
+        },
+        "author": {
+          "type": "object",
+          "required": ["kind", "id", "name"],
+          "properties": {
+            "kind": {
+              "enum": ["human", "agent"]
+            },
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": ["string", "null"]
+            }
+          }
+        },
+        "body": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "deletedAt": {
+          "type": ["string", "null"]
+        }
+      }
+    }
+  }
+}
