@@ -703,7 +703,7 @@
           "executions",
           "as_of"
         ],
-        "description": "AgentPodExecutionEvidenceResponse. SuperWitness reads `external_run_id`, `board_id`, `card_id` and each execution's task.",
+        "description": "AgentPodExecutionEvidenceResponse. SuperWitness reads `external_run_id`, `board_id`, `card_id` and each execution's task. Executions within one envelope have distinct sessions (`task.session_id`): SuperWitness refuses two executions of one session as a conflicting join. AgentPod's hub answers at most one, the run's latest snapshot (apps/hub/src/services/evidence/execution.ts, readExecutionEvidence).",
         "properties": {
           "schema_version": {
             "const": "agentpod-execution-evidence/v1"
@@ -724,6 +724,7 @@
           },
           "executions": {
             "type": "array",
+            "description": "No two with the same `task.session_id`. AgentPod's hub sends at most one. Stated here, not enforced: JSON Schema cannot say it, and treaty's `x-uniqueBy` is checked only for Matrix content.",
             "maxItems": 256,
             "items": {
               "$ref": "../../agentpod/execution-evidence.v1.json"

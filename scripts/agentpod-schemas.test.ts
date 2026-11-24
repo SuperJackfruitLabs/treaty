@@ -113,3 +113,39 @@ describe("fixtures/agentpod-live-activity", () => {
     });
   });
 });
+
+/** Each execution's `task.session_id`, in order. */
+const sessions = (body: unknown): unknown[] => {
+  const executions: unknown =
+    body !== null && typeof body === "object"
+      ? Reflect.get(body, "executions")
+      : undefined;
+  return (Array.isArray(executions) ? executions : []).map((e: unknown) => {
+    const task: unknown =
+      e !== null && typeof e === "object" ? Reflect.get(e, "task") : undefined;
+    return task !== null && typeof task === "object"
+      ? Reflect.get(task, "session_id")
+      : undefined;
+  });
+};
+
+describe("AgentPod's execution evidence envelope", () => {
+  const cases = casesAt(
+    "fixtures/http/agentpod/evidence.v1.cases.json#/operations/readExecutionEvidence/responses/200",
+  );
+  test("has valid cases", () => {
+    expect(Object.keys(cases?.valid ?? {}).length).toBeGreaterThan(0);
+  });
+
+  // The schema cannot say it (ExecutionEvidenceResponse's description does), so the cases keep it:
+  // AgentPod's hub answers at most one execution, and SuperWitness refuses two of one session.
+  for (const [label, body] of Object.entries(cases?.valid ?? {})) {
+    test(`${label}: at most one execution, as the hub answers`, () => {
+      expect(sessions(body).length).toBeLessThanOrEqual(1);
+    });
+    test(`${label}: no two executions of one session`, () => {
+      const seen = sessions(body);
+      expect(new Set(seen).size).toBe(seen.length);
+    });
+  }
+});
