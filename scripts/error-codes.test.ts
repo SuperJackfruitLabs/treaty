@@ -111,8 +111,10 @@ describe("contracts/error-codes.json", () => {
     expect(codesSchema.validate(codesFile).errors).toEqual([]);
   });
 
-  test("codes are unique", () => {
-    const names = codes.map((c) => c.code);
+  test("a code is unique within its owner", () => {
+    // Codes are an owner's own words: an HTTP contract names only its owner's codes
+    // (packages/contracts/src/openapi-check.ts), so two products may each answer `not_permitted`.
+    const names = codes.map((c) => `${c.owner} ${c.code}`);
     expect(names.length).toBe(new Set(names).size);
   });
 
