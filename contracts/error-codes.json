@@ -1187,6 +1187,49 @@
       "envelope": "flat-error.v1",
       "status": 404,
       "meaning": "No such thing in the caller's workspace: a station, run, attempt, export, session or transcript item, or a principal neither id form names. Another workspace's is not_found too, never forbidden, which would confirm it exists."
+    },
+    {
+      "code": "unsupported_evidence_version",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "A versioned evidence read's `schema_version` is not the one version the route answers, is repeated, or has another query key beside it. A reader is refused, never answered in another version."
+    },
+    {
+      "code": "artifact_export_unconfirmed",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 409,
+      "alsoStatus": [502],
+      "meaning": "An execution export is recorded but not committed and verified, so it has no receipt: 409 on the receipt read. The agent-only export route, not contracted, answers it 502 with `request_id` when the commit could not be confirmed."
+    },
+    {
+      "code": "execution_evidence_unavailable",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 502,
+      "meaning": "The hub could not read a run's executions."
+    },
+    {
+      "code": "identity_unavailable",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 503,
+      "meaning": "The Organization plane did not answer a principal lookup. Down is not nobody: a reader must not record the principal as unknown."
+    },
+    {
+      "code": "bad_range",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "A transcript read's seq_from or seq_to is not digits, lies outside the session or is reversed, or its cursor does not decode or points outside the range."
+    },
+    {
+      "code": "item_too_large",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 413,
+      "meaning": "A transcript item asked for whole (`full=1`) is over 1 MiB serialised."
     }
   ]
 }
