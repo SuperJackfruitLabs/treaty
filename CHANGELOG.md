@@ -5,6 +5,13 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- **SuperLibrary's API** (`schemas/http/superlibrary/api.v1.openapi.json`, flat-error.v1): every route another product calls. The uploads (`createUpload`, `putUploadFile`, `commitUpload`, `verifyUpload`) for the AgentPod hub and console, `relatedWork`, `invalidateRoster`, and SuperPipeline's `me`, `getItem`, `embedItem` and `widenItemScope`, with cases.
+  - SuperLibrary's refusals carry fields beside `error`. Each error response pins them with an if/then on the envelope, for example `path`, `reason` and `rule` beside path_refused, `missing` beside incomplete, `findings` beside secret_found.
+  - Its 32 codes join `contracts/error-codes.json`. A code is now unique within its owner, not across products: SuperLibrary and Accounts both answer `not_permitted`.
+- **Error cases are checked.** When an HTTP contract gives cases for a 4xx or 5xx response, `checkOpenApi` validates them as labelled.
+- **Artifact records** (`contracts/artifacts/`, `schemas/treaty/artifact.v1.json`): code one product ships to another as built files, recorded by version, commit and SHA-256. The first is SuperLibrary's embed 0.0.1, which SuperPipeline vendors. `superlibrary.api` lists it.
+- Coverage 57%: 17 of 30 crossings contracted.
+
 ## v0.0.18 — 2026-11-23
 
 - **A cancelled gate has a receipt.** `dev.superpipeline.gate.outcome.v1` gains the decision `cancelled`, for a gate the board ended without a decision (its card was moved by hand or archived while the review was pending). `GATE_CANCELLED_DECISION` names it, and `gateOutcomeBody` says it as a whole sentence that names nobody. The schema now lists the decisions it carries in `x-treaty-known-values`; the field stays an open string, and a reader that does not know a value still closes the card.
