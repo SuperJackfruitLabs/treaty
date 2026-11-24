@@ -657,15 +657,25 @@
       "id": "superwitness.telemetry",
       "title": "Telemetry conventions: span attributes and trace continuation over ACP",
       "owner": "superwitness",
-      "consumers": ["agentpod", "salaam"],
+      "consumers": ["agentpod", "salaam", "superpipeline"],
       "kind": "telemetry",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "OTLP is the transport; the attribute names and the ACP _meta.traceparent convention are local to each side.",
-      "phase": 3,
+      "status": "contracted",
+      "contract": [
+        "schemas/telemetry/suite.v1.json",
+        "fixtures/telemetry/suite.v1.cases.json"
+      ],
       "evidence": [
         "agentpod:apps/hub/src/telemetry/agent-spans.ts",
-        "agentpod:apps/node-agent/internal/acptrace/rewrite.go"
+        "agentpod:apps/hub/src/telemetry/dispatch-span.ts",
+        "agentpod:apps/hub/src/telemetry/propagation.ts",
+        "agentpod:apps/node-agent/internal/acptrace/rewrite.go",
+        "salaam:src/execution/trace.ts",
+        "superpipeline:apps/api/wrangler.jsonc",
+        "superpipeline:apps/api/src/telemetry/run-telemetry.ts",
+        "superpipeline:apps/api/src/board/run-reports.ts",
+        "superwitness:internal/source/traces/adapter.go",
+        "superwitness:internal/source/logs/logsql.go",
+        "superwitness:internal/join/join.go"
       ]
     },
     {
