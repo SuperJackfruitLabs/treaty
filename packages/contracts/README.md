@@ -14,6 +14,13 @@ npx -y @superjackfruitlabs/treaty-contracts@<version> verify
 - `treaty sync`: rewrites the vendored copies from the release.
 - `treaty cases <schema path>`: prints a schema's valid and invalid cases as JSON, for test
   harnesses in any language.
+- `treaty cases <contract path> --at <JSON pointer>`: prints the cases at a pointer in a
+  contract's cases file (an MCP catalog's tool, a telemetry span, a URL shape).
+- MCP tool catalogs (`schemas/mcp/`): `mcpCatalog`, `validateToolArguments`,
+  `validateToolResult`.
+- Telemetry conventions (`schemas/telemetry/`): `telemetryConventions`,
+  `validateSpanAttributes`, `validateLogRecord`, `validatePropagation`.
+- URL shapes (`schemas/urls/`): `urlShape`, `validateUrl`.
 - The main entry validates bodies against schemas and OpenAPI 3.1 documents offline, and runs in
   Workers. `./node` adds loading from disk, `verify` and `sync`.
 

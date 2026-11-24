@@ -1,0 +1,1167 @@
+{
+  "description": "Cases for schemas/mcp/superpipeline.v1.json. Per tool: `arguments` (tools/call arguments) and `result` (the JSON document a successful result's text content carries). `error` is what a result with isError: true carries.",
+  "tools": {
+    "superpipeline_list_work": {
+      "arguments": {
+        "valid": {
+          "no arguments": {},
+          "an argument it does not name is stripped": {
+            "boardId": "brd_5f2b8c1a9d3e4076"
+          }
+        },
+        "invalid": [
+          {
+            "why": "arguments that are not an object",
+            "body": [
+              "brd_5f2b8c1a9d3e4076"
+            ]
+          }
+        ]
+      },
+      "result": {
+        "valid": {
+          "two boards": {
+            "capabilities": [
+              "writing"
+            ],
+            "boards": [
+              {
+                "boardId": "brd_5f2b8c1a9d3e4076",
+                "name": "Marketing",
+                "readyForYou": 2
+              },
+              {
+                "boardId": "brd_0000aaaa1111bbbb",
+                "name": "Ops",
+                "readyForYou": 0
+              }
+            ]
+          }
+        },
+        "invalid": [
+          {
+            "why": "no boards list",
+            "body": {
+              "capabilities": []
+            }
+          },
+          {
+            "why": "a negative count",
+            "body": {
+              "capabilities": [],
+              "boards": [
+                {
+                  "boardId": "brd_5f2b8c1a9d3e4076",
+                  "name": "M",
+                  "readyForYou": -1
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "superpipeline_claim_card": {
+      "arguments": {
+        "valid": {
+          "a board": {
+            "boardId": "brd_5f2b8c1a9d3e4076"
+          },
+          "with a concurrency cap": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "maxConcurrency": 2
+          }
+        },
+        "invalid": [
+          {
+            "why": "no boardId",
+            "body": {}
+          },
+          {
+            "why": "a zero cap",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "maxConcurrency": 0
+            }
+          },
+          {
+            "why": "a fractional cap",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "maxConcurrency": 1.5
+            }
+          },
+          {
+            "why": "a numeric boardId",
+            "body": {
+              "boardId": 7
+            }
+          }
+        ]
+      },
+      "result": {
+        "valid": {
+          "work handed out": {
+            "claimed": true,
+            "runId": "run_9f8e7d6c5b4a3921",
+            "leaseEpoch": 1,
+            "card": {
+              "id": "card_1a2b3c4d5e6f7081",
+              "title": "Write the launch note",
+              "currentStageKey": "draft",
+              "state": "in_progress",
+              "currentRunId": "run_9f8e7d6c5b4a3921",
+              "delegateAgentId": "agt_7c1d2e3f4a5b6c7d"
+            },
+            "stage": {
+              "key": "draft",
+              "name": "Draft"
+            },
+            "handoff": null,
+            "lastFailure": null
+          },
+          "after a failed attempt": {
+            "claimed": true,
+            "runId": "run_9f8e7d6c5b4a3921",
+            "leaseEpoch": 2,
+            "card": {
+              "id": "card_1a2b3c4d5e6f7081",
+              "title": "Write the launch note",
+              "currentStageKey": "draft",
+              "state": "in_progress",
+              "currentRunId": "run_9f8e7d6c5b4a3921",
+              "delegateAgentId": "agt_7c1d2e3f4a5b6c7d"
+            },
+            "stage": {
+              "key": "draft"
+            },
+            "handoff": {
+              "notes": "x"
+            },
+            "lastFailure": {
+              "reason": "browser did not start",
+              "agentId": "agt_7c1d2e3f4a5b6c7d",
+              "stageKey": "draft",
+              "endedAt": "2026-11-23T09:00:00.000Z"
+            }
+          },
+          "nothing for you": {
+            "claimed": false,
+            "reason": "no_matching_card"
+          },
+          "a reason this reader does not know": {
+            "claimed": false,
+            "reason": "some_future_reason"
+          }
+        },
+        "invalid": [
+          {
+            "why": "claimed without a run",
+            "body": {
+              "claimed": true,
+              "leaseEpoch": 1,
+              "card": {
+                "id": "card_1a2b3c4d5e6f7081",
+                "title": "Write the launch note",
+                "currentStageKey": "draft",
+                "state": "in_progress",
+                "currentRunId": "run_9f8e7d6c5b4a3921",
+                "delegateAgentId": "agt_7c1d2e3f4a5b6c7d"
+              },
+              "stage": {},
+              "handoff": null,
+              "lastFailure": null
+            }
+          },
+          {
+            "why": "unclaimed without a reason",
+            "body": {
+              "claimed": false
+            }
+          }
+        ]
+      }
+    },
+    "superpipeline_get_card": {
+      "arguments": {
+        "valid": {
+          "a card": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "cardId": "card_1a2b3c4d5e6f7081"
+          }
+        },
+        "invalid": [
+          {
+            "why": "no cardId",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076"
+            }
+          },
+          {
+            "why": "no boardId",
+            "body": {
+              "cardId": "card_1a2b3c4d5e6f7081"
+            }
+          }
+        ]
+      },
+      "result": {
+        "valid": {
+          "a card": {
+            "id": "card_1a2b3c4d5e6f7081",
+            "title": "Write the launch note",
+            "currentStageKey": "draft",
+            "state": "in_progress",
+            "currentRunId": "run_9f8e7d6c5b4a3921",
+            "delegateAgentId": "agt_7c1d2e3f4a5b6c7d"
+          }
+        },
+        "invalid": [
+          {
+            "why": "no id",
+            "body": {
+              "title": "x",
+              "currentStageKey": "draft",
+              "state": "ready"
+            }
+          }
+        ]
+      }
+    },
+    "superpipeline_get_run": {
+      "arguments": {
+        "valid": {
+          "a run": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "runId": "run_9f8e7d6c5b4a3921"
+          }
+        },
+        "invalid": [
+          {
+            "why": "no runId",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076"
+            }
+          },
+          {
+            "why": "a numeric runId",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": 1
+            }
+          }
+        ]
+      },
+      "result": {
+        "valid": {
+          "a live run": {
+            "run": {
+              "runId": "run_9f8e7d6c5b4a3921",
+              "cardId": "card_1a2b3c4d5e6f7081",
+              "stageKey": "draft",
+              "leaseEpoch": 3,
+              "status": "active",
+              "outcome": null,
+              "startedAt": "2026-11-23T09:30:00.000Z",
+              "endedAt": null,
+              "handoff": null,
+              "completion": null
+            },
+            "card": {
+              "id": "card_1a2b3c4d5e6f7081",
+              "title": "Write the launch note",
+              "currentStageKey": "draft",
+              "state": "in_progress",
+              "currentRunId": "run_9f8e7d6c5b4a3921",
+              "delegateAgentId": "agt_7c1d2e3f4a5b6c7d"
+            },
+            "stage": {
+              "key": "draft"
+            },
+            "handoff": null,
+            "references": [
+              {
+                "id": "ref_2b3c4d5e6f708192",
+                "cardId": "card_1a2b3c4d5e6f7081",
+                "url": "https://github.com/acme/site/pull/12",
+                "title": "Launch note",
+                "subtitle": null,
+                "provider": "github",
+                "sourceType": "pull_request",
+                "externalId": "acme/site#12",
+                "metadata": null,
+                "syncState": "synced",
+                "lastSyncedAt": null,
+                "addedBy": "agent",
+                "runId": "run_9f8e7d6c5b4a3921",
+                "createdAt": "2026-11-23T10:00:00.000Z",
+                "updatedAt": null
+              }
+            ],
+            "elicitations": []
+          }
+        },
+        "invalid": [
+          {
+            "why": "no lease epoch",
+            "body": {
+              "run": {
+                "runId": "run_9f8e7d6c5b4a3921",
+                "cardId": "card_1a2b3c4d5e6f7081",
+                "stageKey": "draft",
+                "status": "active",
+                "startedAt": "2026-11-23T09:30:00.000Z"
+              },
+              "card": {
+                "id": "card_1a2b3c4d5e6f7081",
+                "title": "Write the launch note",
+                "currentStageKey": "draft",
+                "state": "in_progress",
+                "currentRunId": "run_9f8e7d6c5b4a3921",
+                "delegateAgentId": "agt_7c1d2e3f4a5b6c7d"
+              },
+              "stage": null,
+              "handoff": null,
+              "references": [],
+              "elicitations": []
+            }
+          }
+        ]
+      }
+    },
+    "superpipeline_add_reference": {
+      "arguments": {
+        "valid": {
+          "a bare url": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "cardId": "card_1a2b3c4d5e6f7081",
+            "url": "https://github.com/acme/site/pull/12"
+          },
+          "every field": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "cardId": "card_1a2b3c4d5e6f7081",
+            "url": "https://docs.example.com/plan",
+            "provider": "web",
+            "sourceType": "doc",
+            "title": "Plan",
+            "subtitle": "v2",
+            "externalId": "plan-2",
+            "metadata": {
+              "pages": 4
+            }
+          }
+        },
+        "invalid": [
+          {
+            "why": "an empty url",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "cardId": "card_1a2b3c4d5e6f7081",
+              "url": ""
+            }
+          },
+          {
+            "why": "no url",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "cardId": "card_1a2b3c4d5e6f7081"
+            }
+          },
+          {
+            "why": "metadata that is not an object",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "cardId": "card_1a2b3c4d5e6f7081",
+              "url": "https://x.example",
+              "metadata": [
+                "a"
+              ]
+            }
+          }
+        ]
+      },
+      "result": {
+        "valid": {
+          "a reference": {
+            "id": "ref_2b3c4d5e6f708192",
+            "cardId": "card_1a2b3c4d5e6f7081",
+            "url": "https://github.com/acme/site/pull/12",
+            "title": "Launch note",
+            "subtitle": null,
+            "provider": "github",
+            "sourceType": "pull_request",
+            "externalId": "acme/site#12",
+            "metadata": null,
+            "syncState": "synced",
+            "lastSyncedAt": null,
+            "addedBy": "agent",
+            "runId": "run_9f8e7d6c5b4a3921",
+            "createdAt": "2026-11-23T10:00:00.000Z",
+            "updatedAt": null
+          }
+        },
+        "invalid": [
+          {
+            "why": "addedBy out of range",
+            "body": {
+              "id": "ref_2b3c4d5e6f708192",
+              "cardId": "card_1a2b3c4d5e6f7081",
+              "url": "https://github.com/acme/site/pull/12",
+              "title": "Launch note",
+              "subtitle": null,
+              "provider": "github",
+              "sourceType": "pull_request",
+              "externalId": "acme/site#12",
+              "metadata": null,
+              "syncState": "synced",
+              "lastSyncedAt": null,
+              "addedBy": "robot",
+              "runId": "run_9f8e7d6c5b4a3921",
+              "createdAt": "2026-11-23T10:00:00.000Z",
+              "updatedAt": null
+            }
+          }
+        ]
+      }
+    },
+    "superpipeline_split_card": {
+      "arguments": {
+        "valid": {
+          "two parts": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "cardId": "card_1a2b3c4d5e6f7081",
+            "titles": [
+              "Draft",
+              "Edit"
+            ]
+          }
+        },
+        "invalid": [
+          {
+            "why": "no titles",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "cardId": "card_1a2b3c4d5e6f7081",
+              "titles": []
+            }
+          },
+          {
+            "why": "a title that is not text",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "cardId": "card_1a2b3c4d5e6f7081",
+              "titles": [
+                1
+              ]
+            }
+          }
+        ]
+      },
+      "result": {
+        "valid": {
+          "two children": {
+            "children": [
+              {
+                "id": "card_1a2b3c4d5e6f7081",
+                "title": "Write the launch note",
+                "currentStageKey": "draft",
+                "state": "in_progress",
+                "currentRunId": "run_9f8e7d6c5b4a3921",
+                "delegateAgentId": "agt_7c1d2e3f4a5b6c7d"
+              },
+              {
+                "id": "card_2b3c4d5e6f708192",
+                "title": "Write the launch note",
+                "currentStageKey": "draft",
+                "state": "in_progress",
+                "currentRunId": "run_9f8e7d6c5b4a3921",
+                "delegateAgentId": "agt_7c1d2e3f4a5b6c7d"
+              }
+            ]
+          }
+        },
+        "invalid": [
+          {
+            "why": "no children list",
+            "body": {}
+          }
+        ]
+      }
+    },
+    "superpipeline_list_comments": {
+      "arguments": {
+        "valid": {
+          "a run": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "runId": "run_9f8e7d6c5b4a3921"
+          }
+        },
+        "invalid": [
+          {
+            "why": "no runId",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076"
+            }
+          }
+        ]
+      },
+      "result": {
+        "valid": {
+          "one comment": [
+            {
+              "id": "cmt_0a1b2c3d4e5f6071",
+              "cardId": "card_1a2b3c4d5e6f7081",
+              "author": {
+                "kind": "human",
+                "id": "usr_1f2e3d4c5b6a7980",
+                "name": "Asha"
+              },
+              "body": "Please cite the source.",
+              "createdAt": "2026-11-23T10:00:00.000Z",
+              "deletedAt": null
+            }
+          ],
+          "a deleted comment": [
+            {
+              "id": "cmt_0a1b2c3d4e5f6071",
+              "cardId": "card_1a2b3c4d5e6f7081",
+              "author": {
+                "kind": "human",
+                "id": "usr_1f2e3d4c5b6a7980",
+                "name": "Asha"
+              },
+              "body": "",
+              "createdAt": "2026-11-23T10:00:00.000Z",
+              "deletedAt": "2026-11-23T11:00:00.000Z"
+            }
+          ],
+          "none": []
+        },
+        "invalid": [
+          {
+            "why": "not a list",
+            "body": {
+              "id": "cmt_0a1b2c3d4e5f6071",
+              "cardId": "card_1a2b3c4d5e6f7081",
+              "author": {
+                "kind": "human",
+                "id": "usr_1f2e3d4c5b6a7980",
+                "name": "Asha"
+              },
+              "body": "Please cite the source.",
+              "createdAt": "2026-11-23T10:00:00.000Z",
+              "deletedAt": null
+            }
+          },
+          {
+            "why": "an author of no kind",
+            "body": [
+              {
+                "id": "cmt_0a1b2c3d4e5f6071",
+                "cardId": "card_1a2b3c4d5e6f7081",
+                "author": {
+                  "kind": "bot",
+                  "id": "x",
+                  "name": null
+                },
+                "body": "Please cite the source.",
+                "createdAt": "2026-11-23T10:00:00.000Z",
+                "deletedAt": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "superpipeline_post_comment": {
+      "arguments": {
+        "valid": {
+          "a remark": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "runId": "run_9f8e7d6c5b4a3921",
+            "body": "Cited, see the second paragraph."
+          }
+        },
+        "invalid": [
+          {
+            "why": "an empty body",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921",
+              "body": ""
+            }
+          },
+          {
+            "why": "no body",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921"
+            }
+          }
+        ]
+      },
+      "result": {
+        "valid": {
+          "posted": {
+            "id": "cmt_0a1b2c3d4e5f6071",
+            "cardId": "card_1a2b3c4d5e6f7081",
+            "author": {
+              "kind": "agent",
+              "id": "agt_7c1d2e3f4a5b6c7d",
+              "name": "Writer"
+            },
+            "body": "Please cite the source.",
+            "createdAt": "2026-11-23T10:00:00.000Z",
+            "deletedAt": null
+          }
+        },
+        "invalid": [
+          {
+            "why": "no createdAt",
+            "body": {
+              "id": "cmt_0a1b2c3d4e5f6071",
+              "cardId": "card_1a2b3c4d5e6f7081",
+              "author": {
+                "kind": "human",
+                "id": "usr_1f2e3d4c5b6a7980",
+                "name": "Asha"
+              },
+              "body": "Please cite the source.",
+              "deletedAt": null
+            }
+          }
+        ]
+      }
+    },
+    "superpipeline_heartbeat": {
+      "arguments": {
+        "valid": {
+          "a lease": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "runId": "run_9f8e7d6c5b4a3921",
+            "leaseEpoch": 3
+          },
+          "epoch zero": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "runId": "run_9f8e7d6c5b4a3921",
+            "leaseEpoch": 0
+          }
+        },
+        "invalid": [
+          {
+            "why": "no lease epoch",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921"
+            }
+          },
+          {
+            "why": "a negative epoch",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921",
+              "leaseEpoch": -1
+            }
+          },
+          {
+            "why": "an epoch as text",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921",
+              "leaseEpoch": "3"
+            }
+          }
+        ]
+      },
+      "result": {
+        "valid": {
+          "acknowledged": {
+            "acknowledged": true
+          }
+        },
+        "invalid": [
+          {
+            "why": "acknowledged false",
+            "body": {
+              "acknowledged": false
+            }
+          }
+        ]
+      }
+    },
+    "superpipeline_post_activity": {
+      "arguments": {
+        "valid": {
+          "a thought": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "runId": "run_9f8e7d6c5b4a3921",
+            "leaseEpoch": 3,
+            "type": "thought",
+            "body": "Reading the brief."
+          },
+          "an action with usage": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "runId": "run_9f8e7d6c5b4a3921",
+            "leaseEpoch": 3,
+            "type": "action",
+            "action": "fetch",
+            "parameter": {
+              "url": "https://x.example"
+            },
+            "result": "ok",
+            "usage": {
+              "model": "m",
+              "inputTokens": 10,
+              "outputTokens": 5,
+              "costUsd": 0.01
+            }
+          },
+          "a strict elicitation": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "runId": "run_9f8e7d6c5b4a3921",
+            "leaseEpoch": 3,
+            "type": "elicitation",
+            "body": "May I delete the draft?",
+            "strictDecision": {
+              "version": 1,
+              "request_id": "3f2b8c1a-9d3e-4076-8a1b-2c3d4e5f6071",
+              "decision_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "expires_at": 1795000000
+            }
+          }
+        },
+        "invalid": [
+          {
+            "why": "a type it does not know",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921",
+              "leaseEpoch": 3,
+              "type": "note"
+            }
+          },
+          {
+            "why": "no type",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921",
+              "leaseEpoch": 3
+            }
+          },
+          {
+            "why": "negative tokens",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921",
+              "leaseEpoch": 3,
+              "type": "response",
+              "usage": {
+                "inputTokens": -1
+              }
+            }
+          },
+          {
+            "why": "a strict decision with an extra field",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921",
+              "leaseEpoch": 3,
+              "type": "elicitation",
+              "strictDecision": {
+                "version": 1,
+                "request_id": "3f2b8c1a-9d3e-4076-8a1b-2c3d4e5f6071",
+                "decision_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "expires_at": 1795000000,
+                "extra": 1
+              }
+            }
+          },
+          {
+            "why": "a digest that is not sha256 hex",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921",
+              "leaseEpoch": 3,
+              "type": "elicitation",
+              "strictDecision": {
+                "version": 1,
+                "request_id": "3f2b8c1a-9d3e-4076-8a1b-2c3d4e5f6071",
+                "decision_digest": "xyz",
+                "expires_at": 1795000000
+              }
+            }
+          }
+        ]
+      },
+      "result": {
+        "valid": {
+          "accepted": {
+            "accepted": true,
+            "cardState": "in_progress"
+          },
+          "an elicitation opened": {
+            "accepted": true,
+            "cardState": "blocked",
+            "elicitationId": "eli_1a2b3c4d5e6f7081"
+          }
+        },
+        "invalid": [
+          {
+            "why": "no card state",
+            "body": {
+              "accepted": true
+            }
+          }
+        ]
+      }
+    },
+    "superpipeline_submit_for_review": {
+      "arguments": {
+        "valid": {
+          "no output": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "runId": "run_9f8e7d6c5b4a3921",
+            "leaseEpoch": 3
+          },
+          "with output": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "runId": "run_9f8e7d6c5b4a3921",
+            "leaseEpoch": 3,
+            "output": {
+              "summary": "done"
+            }
+          }
+        },
+        "invalid": [
+          {
+            "why": "output that is not an object",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921",
+              "leaseEpoch": 3,
+              "output": "done"
+            }
+          }
+        ]
+      },
+      "result": {
+        "valid": {
+          "the card": {
+            "id": "card_1a2b3c4d5e6f7081",
+            "title": "Write the launch note",
+            "currentStageKey": "draft",
+            "state": "in_progress",
+            "currentRunId": "run_9f8e7d6c5b4a3921",
+            "delegateAgentId": "agt_7c1d2e3f4a5b6c7d"
+          }
+        },
+        "invalid": [
+          {
+            "why": "not a card",
+            "body": {
+              "ok": true
+            }
+          }
+        ]
+      }
+    },
+    "superpipeline_complete": {
+      "arguments": {
+        "valid": {
+          "a pass": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "runId": "run_9f8e7d6c5b4a3921",
+            "leaseEpoch": 3,
+            "outcome": "pass",
+            "handoff": {
+              "summary": "Draft written."
+            }
+          },
+          "changes needed": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "runId": "run_9f8e7d6c5b4a3921",
+            "leaseEpoch": 3,
+            "outcome": "changes-needed",
+            "findings": "The figures are unsourced."
+          },
+          "a person needed": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "runId": "run_9f8e7d6c5b4a3921",
+            "leaseEpoch": 3,
+            "outcome": "needs-person",
+            "question": "Approve the sign-in.",
+            "url": "https://example.com/approve",
+            "options": [
+              "approve",
+              "deny"
+            ]
+          },
+          "no outcome": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "runId": "run_9f8e7d6c5b4a3921",
+            "leaseEpoch": 3
+          }
+        },
+        "invalid": [
+          {
+            "why": "an outcome it does not know",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921",
+              "leaseEpoch": 3,
+              "outcome": "done"
+            }
+          },
+          {
+            "why": "a handoff that is text",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921",
+              "leaseEpoch": 3,
+              "handoff": "done"
+            }
+          },
+          {
+            "why": "no lease epoch",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921"
+            }
+          }
+        ]
+      },
+      "result": {
+        "valid": {
+          "the card": {
+            "id": "card_1a2b3c4d5e6f7081",
+            "title": "Write the launch note",
+            "currentStageKey": "draft",
+            "state": "in_progress",
+            "currentRunId": "run_9f8e7d6c5b4a3921",
+            "delegateAgentId": "agt_7c1d2e3f4a5b6c7d"
+          }
+        },
+        "invalid": [
+          {
+            "why": "not a card",
+            "body": []
+          }
+        ]
+      }
+    },
+    "superpipeline_block": {
+      "arguments": {
+        "valid": {
+          "a reason": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "runId": "run_9f8e7d6c5b4a3921",
+            "leaseEpoch": 3,
+            "reason": "The repository is archived."
+          },
+          "with a summary": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "runId": "run_9f8e7d6c5b4a3921",
+            "leaseEpoch": 3,
+            "reason": "The repository is archived and needs an owner.",
+            "summary": "Repository archived"
+          }
+        },
+        "invalid": [
+          {
+            "why": "no reason",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921",
+              "leaseEpoch": 3
+            }
+          },
+          {
+            "why": "an empty reason",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921",
+              "leaseEpoch": 3,
+              "reason": ""
+            }
+          },
+          {
+            "why": "a summary over 120 characters",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921",
+              "leaseEpoch": 3,
+              "reason": "r",
+              "summary": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            }
+          }
+        ]
+      },
+      "result": {
+        "valid": {
+          "the card": {
+            "id": "card_1a2b3c4d5e6f7081",
+            "title": "Write the launch note",
+            "currentStageKey": "draft",
+            "state": "blocked",
+            "currentRunId": "run_9f8e7d6c5b4a3921",
+            "delegateAgentId": "agt_7c1d2e3f4a5b6c7d"
+          }
+        },
+        "invalid": [
+          {
+            "why": "no state",
+            "body": {
+              "id": "card_1a2b3c4d5e6f7081",
+              "title": "Write the launch note",
+              "currentStageKey": "draft",
+              "currentRunId": "run_9f8e7d6c5b4a3921",
+              "delegateAgentId": "agt_7c1d2e3f4a5b6c7d"
+            }
+          }
+        ]
+      }
+    },
+    "superpipeline_release": {
+      "arguments": {
+        "valid": {
+          "no reason": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "runId": "run_9f8e7d6c5b4a3921",
+            "leaseEpoch": 3
+          },
+          "a reason": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "runId": "run_9f8e7d6c5b4a3921",
+            "leaseEpoch": 3,
+            "reason": "Out of my depth."
+          }
+        },
+        "invalid": [
+          {
+            "why": "a reason that is not text",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921",
+              "leaseEpoch": 3,
+              "reason": 1
+            }
+          }
+        ]
+      },
+      "result": {
+        "valid": {
+          "the card": {
+            "id": "card_1a2b3c4d5e6f7081",
+            "title": "Write the launch note",
+            "currentStageKey": "draft",
+            "state": "in_progress",
+            "currentRunId": "run_9f8e7d6c5b4a3921",
+            "delegateAgentId": "agt_7c1d2e3f4a5b6c7d"
+          }
+        },
+        "invalid": [
+          {
+            "why": "no title",
+            "body": {
+              "id": "card_1a2b3c4d5e6f7081",
+              "currentStageKey": "draft",
+              "state": "in_progress",
+              "currentRunId": "run_9f8e7d6c5b4a3921",
+              "delegateAgentId": "agt_7c1d2e3f4a5b6c7d"
+            }
+          }
+        ]
+      }
+    },
+    "superpipeline_fail": {
+      "arguments": {
+        "valid": {
+          "a reason": {
+            "boardId": "brd_5f2b8c1a9d3e4076",
+            "runId": "run_9f8e7d6c5b4a3921",
+            "leaseEpoch": 3,
+            "reason": "The build broke."
+          }
+        },
+        "invalid": [
+          {
+            "why": "no reason",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921",
+              "leaseEpoch": 3
+            }
+          },
+          {
+            "why": "an empty reason",
+            "body": {
+              "boardId": "brd_5f2b8c1a9d3e4076",
+              "runId": "run_9f8e7d6c5b4a3921",
+              "leaseEpoch": 3,
+              "reason": ""
+            }
+          }
+        ]
+      },
+      "result": {
+        "valid": {
+          "the card": {
+            "id": "card_1a2b3c4d5e6f7081",
+            "title": "Write the launch note",
+            "currentStageKey": "draft",
+            "state": "in_progress",
+            "currentRunId": "run_9f8e7d6c5b4a3921",
+            "delegateAgentId": "agt_7c1d2e3f4a5b6c7d"
+          }
+        },
+        "invalid": [
+          {
+            "why": "not a card",
+            "body": null
+          }
+        ]
+      }
+    }
+  },
+  "error": {
+    "valid": {
+      "a refusal": {
+        "error": {
+          "code": "CARD_NOT_FOUND",
+          "message": "card card_1a2b3c4d5e6f7081 not found"
+        }
+      },
+      "a stale lease": {
+        "error": {
+          "code": "STALE_LEASE",
+          "message": "lease epoch 2 is not current"
+        }
+      }
+    },
+    "invalid": [
+      {
+        "why": "a bare message",
+        "body": {
+          "message": "not found"
+        }
+      },
+      {
+        "why": "no code",
+        "body": {
+          "error": {
+            "message": "x"
+          }
+        }
+      },
+      {
+        "why": "an empty code",
+        "body": {
+          "error": {
+            "code": "",
+            "message": "x"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -14,13 +14,17 @@ import { join } from "node:path";
 import {
   casesFor,
   isCases,
+  resolvePointer,
   type Cases,
 } from "../packages/contracts/src/cases.ts";
 import {
   compareOpenApi,
   compareSchemas,
 } from "../packages/contracts/src/compat.ts";
+import { compareForms } from "../packages/contracts/src/forms-compat.ts";
 import { operations } from "../packages/contracts/src/http.ts";
+import { mcpCasesPath } from "../packages/contracts/src/mcp.ts";
+import { urlShape, validateUrl } from "../packages/contracts/src/urls.ts";
 import { loadBundle } from "../packages/contracts/src/node.ts";
 import { casesPathFor } from "../packages/contracts/src/openapi-check.ts";
 import {
@@ -151,6 +155,97 @@ function apiCases(
   return isCases(node) ? node : undefined;
 }
 
+/** The corpus rule for a URL shape: each side's valid URLs fit the other side's shape. */
+function urlCorpus(
+  base: Bundle,
+  head: Bundle,
+  path: string,
+  out: Finding[],
+): void {
+  const sides: [Bundle, Bundle, string][] = [
+    [base, head, "old-case-refused"],
+    [head, base, "new-case-refused-by-old"],
+  ];
+  for (const [from, under, rule] of sides) {
+    let shape: ReturnType<typeof urlShape>;
+    try {
+      shape = urlShape(under, path);
+    } catch {
+      continue; // compareForms already reports a shape that is not one
+    }
+    corpus(
+      path,
+      "",
+      casesFor(from, registryOf(from), path),
+      (url) =>
+        typeof url === "string"
+          ? validateUrl(under, shape, url)
+          : { valid: false },
+      rule,
+      out,
+    );
+  }
+}
+
+/** Each tool's index in a catalog, by name. */
+function toolIndex(doc: unknown): Map<string, number> {
+  const tools = isObject(doc) && Array.isArray(doc.tools) ? doc.tools : [];
+  const byName = new Map<string, number>();
+  for (const [i, t] of tools.entries())
+    if (isObject(t) && typeof t.name === "string") byName.set(t.name, i);
+  return byName;
+}
+
+/**
+ * The corpus rule for an MCP catalog: each side's valid argument and result cases, tool by
+ * tool, validate under the other side's schemas.
+ */
+function formCorpus(
+  base: Bundle,
+  head: Bundle,
+  path: string,
+  out: Finding[],
+): void {
+  if (path.startsWith("schemas/urls/")) {
+    urlCorpus(base, head, path, out);
+    return;
+  }
+  const baseTools = toolIndex(base.files.get(path));
+  const headTools = toolIndex(head.files.get(path));
+  const casesAt = (bundle: Bundle, tool: string, part: string) => {
+    const node = resolvePointer(
+      bundle.files.get(mcpCasesPath(path)),
+      `/tools/${tool}/${part}`,
+    );
+    return isCases(node) ? node : undefined;
+  };
+  for (const [tool, b] of baseTools) {
+    const h = headTools.get(tool);
+    if (h === undefined) continue;
+    for (const [part, ptr] of [
+      ["arguments", "inputSchema"],
+      ["result", "result/schema"],
+    ] as const) {
+      corpus(
+        path,
+        `/tools/${h}/${ptr}`,
+        casesAt(base, tool, part),
+        validatorFor(head, `${path}#/tools/${h}/${ptr}`),
+        `old-case-refused ${tool} ${part}`,
+        out,
+      );
+      corpus(
+        path,
+        `/tools/${h}/${ptr}`,
+        casesAt(head, tool, part),
+        validatorFor(base, `${path}#/tools/${b}/${ptr}`),
+        `new-case-refused-by-old ${tool} ${part}`,
+        out,
+      );
+    }
+  }
+}
+
 /** Breaking changes from `base` to `head`. */
 export function compare(base: Bundle, head: Bundle): Finding[] {
   const out: Finding[] = [];
@@ -174,6 +269,12 @@ export function compare(base: Bundle, head: Bundle): Finding[] {
     // Every other file under schemas/ is a schema, whether or not it says so with $schema.
     if (after === undefined) {
       out.push({ path, pointer: "", rule: "schema-removed" });
+      continue;
+    }
+    const forms = compareForms(before, after);
+    if (forms) {
+      for (const b of forms) out.push({ path, ...b });
+      formCorpus(base, head, path, out);
       continue;
     }
     if (isOpenApi(before)) {

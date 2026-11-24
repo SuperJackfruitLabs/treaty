@@ -1,0 +1,69 @@
+{
+  "operations": {
+    "listDispatchableAgents": {
+      "responses": {
+        "200": {
+          "valid": {
+            "two agents, one without a display name": {
+              "agents": [
+                {
+                  "id": "prn_abcdefabcdefabcdef01",
+                  "handle": "press-writer",
+                  "displayName": "Press Writer"
+                },
+                {
+                  "id": "prn_0123456789abcdef0123",
+                  "handle": "coder-kai",
+                  "displayName": null
+                }
+              ]
+            },
+            "a person with no grant": {
+              "agents": []
+            }
+          },
+          "invalid": [
+            {
+              "why": "no agents key",
+              "body": {}
+            },
+            {
+              "why": "an agent without its handle",
+              "body": {
+                "agents": [
+                  {
+                    "id": "prn_abcdefabcdefabcdef01",
+                    "displayName": null
+                  }
+                ]
+              }
+            },
+            {
+              "why": "no displayName: null is sent when the agent has none",
+              "body": {
+                "agents": [
+                  {
+                    "id": "prn_abcdefabcdefabcdef01",
+                    "handle": "press-writer"
+                  }
+                ]
+              }
+            },
+            {
+              "why": "an id that is not a principal id",
+              "body": {
+                "agents": [
+                  {
+                    "id": "press-writer",
+                    "handle": "press-writer",
+                    "displayName": "Press Writer"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

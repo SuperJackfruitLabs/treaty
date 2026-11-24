@@ -5,6 +5,7 @@
  *   treaty verify [--manifest treaty.json] [--latest <version>] [--max-behind <n>]
  *   treaty sync   [--manifest treaty.json]
  *   treaty cases  <schema path> [--operation <id> --part request|<status>]
+ *   treaty cases  <contract path> --at <JSON pointer>   (MCP catalogs, telemetry, URL shapes)
  *
  * Every command takes --data <dir> to read a release other than the installed one.
  */
@@ -18,6 +19,7 @@ const USAGE = `usage:
   treaty verify [--manifest treaty.json] [--latest <version>] [--max-behind <n>]
   treaty sync   [--manifest treaty.json]
   treaty cases  <schema path> [--operation <id> --part request|<status>]
+  treaty cases  <contract path> --at <JSON pointer>
 `;
 
 /** Bad input: printed with the usage, and the command exits 2. */
@@ -72,8 +74,17 @@ function cases(args: string[]): number {
   const data = flag(args, "--data");
   const bundle = loadInstalledBundle(data);
   const operation = flag(args, "--operation");
+  const at = flag(args, "--at");
   let found: unknown;
-  if (operation) {
+  if (at !== undefined) {
+    // The cases file beside a contract, by convention: schemas/x/y.v1.json → fixtures/x/y.v1.cases.json.
+    const file = path.endsWith(".openapi.json")
+      ? casesPathFor(path)
+      : path
+          .replace(/^schemas\//, "fixtures/")
+          .replace(/\.json$/, ".cases.json");
+    found = resolvePointer(bundle.files.get(file), at);
+  } else if (operation) {
     const part = flag(args, "--part") ?? "request";
     const pointer =
       part === "request"

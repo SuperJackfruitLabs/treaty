@@ -15,7 +15,10 @@ releases page](https://github.com/SuperJackfruitLabs/treaty/releases).
   [`treaty-event-schemas`](/packages/event-schemas/), [`treaty-matrix-events`](/packages/matrix-events/),
   [`treaty-ecosystem-identity`](/packages/ecosystem-identity/) and [`treaty-outbox`](/packages/outbox/).
 - **HTTP contracts** as OpenAPI 3.1, with cases: SuperPipeline's agent work loop, decisions,
-  approvals and push registration; the Accounts API; AgentPod's Live Activity tokens.
+  approvals, push registration, board reads and placement; the Accounts API; AgentPod's Live
+  Activity tokens, capability catalog, fleet list and run evidence; SuperLibrary's API.
+- **SuperPipeline's MCP tools** as a tool catalog, **the suite's telemetry conventions**, and
+  **the account-link URLs** as URL shapes: three forms, each plain data any language can read.
 - **The event schemas** for what SuperPipeline sends; the newest, `work.available` and
   `cards.stale` v1, arrived in v0.0.17. The [event catalogue](/events/) lists every type.
 - **The board-room Matrix contract**: a schema per event type, its corpus, and the builders and
@@ -45,7 +48,9 @@ These contracts are planned, but you cannot depend on them yet:
 - **An audit event schema**, with the shared audit trail. The relay already keeps an `AUDIT`
   stream for `audit.>` subjects.
 - **A policy schema**, with governance policy.
-- **Record events through the relay.** SuperPipeline's record events (`card.*`, `gate.resolved`,
-  links) have a schema, but go only by its direct push until SuperPipeline relays them too.
+- **Salaam's station protocol** with AgentPod, and **SuperToolkit's managed protocols**, which
+  are not enabled anywhere yet.
+- **Packages for other languages.** Go, Rust and Swift readers vendor Treaty's data with
+  `treaty sync` and check it with `treaty verify`; generated packages come later.
 
 Run reports are the exception, not a missing Treaty contract: SuperWitness owns and publishes their schema.

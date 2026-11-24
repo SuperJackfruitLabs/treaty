@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/treaty/artifact.v1.json",
+  "title": "A product artifact treaty records by version and hash",
+  "description": "Code one product ships to another as a built file, such as a JavaScript embed, which treaty does not describe by shape. Treaty records where it is built, the version and commit, and each file's SHA-256, so a consumer's pin can be compared with it. The record lives at contracts/artifacts/<name>.json and the crossing it belongs to lists it in `contract`.",
+  "type": "object",
+  "required": [
+    "artifact",
+    "crossing",
+    "owner",
+    "source",
+    "version",
+    "commit",
+    "files",
+    "vendoredBy"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "artifact": {
+      "description": "The record's own name: its file is contracts/artifacts/<artifact>.json.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "crossing": {
+      "description": "The registry crossing the artifact belongs to.",
+      "type": "string",
+      "pattern": "^[a-z]+(\\.[a-z0-9-]+)+$"
+    },
+    "owner": {
+      "description": "The product that builds it: the crossing's owner.",
+      "type": "string"
+    },
+    "source": {
+      "description": "Where it is built, as <repo>:<path>.",
+      "type": "string",
+      "pattern": "^[a-z]+:[^\\s]+$"
+    },
+    "version": {
+      "description": "The artifact's own version where it is built (its package.json), as major.minor.patch.",
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
+    },
+    "commit": {
+      "description": "The owner's commit the files were built from.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "files": {
+      "description": "Each built file's name and SHA-256 (64 lowercase hex).",
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "pattern": "^[A-Za-z0-9._-]+$" },
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
+    "vendoredBy": {
+      "description": "Each consumer's pin of these files, as <repo>:<path>.",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z]+:[^\\s]+$" }
+    }
+  }
+}

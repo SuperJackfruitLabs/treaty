@@ -150,19 +150,77 @@ describe("contracts/registry.json", () => {
     expect(orphans).toEqual([]);
   });
 
+  describe("contracts/artifacts/", () => {
+    const artifactSchema = new Validator(
+      JSON.parse(
+        readFileSync(join(root, "schemas/treaty/artifact.v1.json"), "utf8"),
+      ),
+      "2020-12",
+      false,
+    );
+    const records = walk("contracts/artifacts").filter((p) =>
+      p.endsWith(".json"),
+    );
+
+    test("SuperLibrary's embed is recorded by version and hash (phase 3, ruling 7)", () => {
+      const api = registry.crossings.find((c) => c.id === "superlibrary.api");
+      expect(api?.contract).toContain(
+        "contracts/artifacts/superlibrary-embed.json",
+      );
+    });
+
+    /** The fields a record must have to be matched with its crossing. */
+    function isRecord(
+      value: unknown,
+    ): value is { artifact: string; crossing: string; owner: string } {
+      return (
+        artifactSchema.validate(value).valid &&
+        value !== null &&
+        typeof value === "object" &&
+        "artifact" in value &&
+        "crossing" in value &&
+        "owner" in value
+      );
+    }
+
+    for (const path of records) {
+      test(`${path} is an artifact record its crossing lists`, () => {
+        const record = read(path);
+        expect(artifactSchema.validate(record).errors).toEqual([]);
+        if (!isRecord(record)) throw new Error(`${path} is not a record`);
+        expect(path).toBe(`contracts/artifacts/${record.artifact}.json`);
+        const crossing = registry.crossings.find(
+          (c) => c.id === record.crossing,
+        );
+        expect(String(crossing?.owner)).toBe(record.owner);
+        expect(crossing?.contract).toContain(path);
+      });
+    }
+
+    test("a record whose hash is not a SHA-256 is refused", () => {
+      const record = read("contracts/artifacts/superlibrary-embed.json");
+      const broken = {
+        ...Object(record),
+        files: { "superlibrary-embed.js": "a5ae922b" },
+      };
+      expect(artifactSchema.validate(record).valid).toBe(true);
+      expect(artifactSchema.validate(broken).valid).toBe(false);
+    });
+  });
+
   test("the coverage of the registry is recorded here, so a change to it is a visible diff", () => {
     expect(coverage(registry)).toEqual({
       applicable: 30,
       byStatus: {
-        contracted: 16,
+        contracted: 25,
         partial: 1,
-        uncontracted: 11,
+        uncontracted: 2,
         proposed: 1,
         external: 1,
         standard: 2,
         deprecated: 2,
       },
-      percent: 53,
+      percent: 83,
     });
   });
 });

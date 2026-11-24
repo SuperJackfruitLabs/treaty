@@ -513,19 +513,20 @@
     },
     {
       "id": "superpipeline.board-read",
-      "title": "Service reads of boards, cards, attempts, comments, links and activities",
+      "title": "Service reads of boards, cards, attempts, comments, links and activities, and a run's evidence",
       "owner": "superpipeline",
       "consumers": ["superlibrary", "superdispatch", "superwitness"],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "Each consumer types the reads by hand; SuperLibrary types spec and handoff as unknown.",
-      "phase": 3,
+      "status": "contracted",
+      "contract": ["schemas/http/superpipeline/board-read.v1.openapi.json"],
       "evidence": [
         "superpipeline:apps/api/src/service-routes.ts",
+        "superpipeline:apps/api/src/routes/boards/evidence.ts",
+        "superpipeline:apps/api/test/fixtures/run-evidence-v1.json",
         "superlibrary:apps/api/src/sources/superpipeline.ts",
         "superdispatch:apps/dispatch/src/sources/superpipeline.ts",
-        "superwitness:internal/source/superpipeline/adapter.go"
+        "superwitness:internal/source/superpipeline/adapter.go",
+        "superwitness:internal/source/work_evidence.go"
       ]
     },
     {
@@ -534,13 +535,14 @@
       "owner": "superpipeline",
       "consumers": ["superdispatch"],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "SuperDispatch calls GET /v1/agents/load, which SuperPipeline does not serve, and falls back silently.",
-      "phase": 3,
+      "status": "contracted",
+      "contract": ["schemas/http/superpipeline/placement.v1.openapi.json"],
       "evidence": [
         "superdispatch:apps/dispatch/src/sources/superpipeline.ts",
-        "superpipeline:apps/api/src/service-routes.ts"
+        "superpipeline:apps/api/src/service-routes.ts",
+        "superpipeline:apps/api/src/card-eligibility.ts",
+        "superpipeline:apps/api/src/card-reservation.ts",
+        "superpipeline:apps/api/src/board/placement-window.ts"
       ]
     },
     {
@@ -549,12 +551,15 @@
       "owner": "superpipeline",
       "consumers": ["agentpod"],
       "kind": "mcp",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "MCP is the transport; the tool names and their inputs are named in AgentPod's prompt text with no contract.",
-      "phase": 3,
+      "status": "contracted",
+      "contract": [
+        "schemas/mcp/superpipeline.v1.json",
+        "fixtures/mcp/superpipeline.v1.cases.json"
+      ],
       "evidence": [
         "superpipeline:apps/api/src/mcp/tools.ts",
+        "superpipeline:apps/api/src/mcp/server.ts",
+        "agentpod:packages/contract/src/card-prompt.ts",
         "agentpod:apps/hub/src/services/bridge/dispatch-prompt.ts"
       ]
     },
@@ -562,16 +567,32 @@
       "id": "agentpod.evidence",
       "title": "Run evidence, attempts, transcripts and execution export",
       "owner": "agentpod",
-      "consumers": ["superwitness", "superpipeline"],
+      "consumers": ["superwitness", "superpipeline", "salaam"],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "Held together by byte-identical files copied into Salaam and SuperWitness; transcripts pass through untyped; SuperPipeline builds the export URL from a string.",
+      "status": "contracted",
+      "contract": [
+        "schemas/http/agentpod/evidence.v1.openapi.json",
+        "schemas/agentpod/execution-artifacts.v1.json",
+        "schemas/agentpod/execution-evidence.v1.json",
+        "schemas/agentpod/execution-export.v1.json",
+        "fixtures/agentpod-evidence/examples.json"
+      ],
+      "cases": {
+        "schemas/agentpod/execution-artifacts.v1.json": "fixtures/agentpod-evidence/examples.json#/schemas/execution-artifacts.v1",
+        "schemas/agentpod/execution-evidence.v1.json": "fixtures/agentpod-evidence/examples.json#/schemas/execution-evidence.v1",
+        "schemas/agentpod/execution-export.v1.json": "fixtures/agentpod-evidence/examples.json#/schemas/execution-export.v1"
+      },
       "phase": 3,
       "evidence": [
         "agentpod:apps/hub/src/routes/evidence.ts",
+        "agentpod:packages/contract/src/evidence.ts",
+        "agentpod:packages/contract/src/execution-evidence.ts",
+        "agentpod:apps/hub/src/services/evidence/transcript.ts",
         "superwitness:internal/source/agentpod/adapter.go",
-        "superpipeline:apps/api/src/routes/boards/runs.ts"
+        "superwitness:internal/source/agentpod/transcript.go",
+        "superpipeline:apps/api/src/routes/boards/runs.ts",
+        "superpipeline:apps/api/src/board/run-history.ts",
+        "salaam:test/fixtures/execution-evidence-v1.schema.json"
       ]
     },
     {
@@ -580,15 +601,15 @@
       "owner": "agentpod",
       "consumers": ["superdispatch", "superlibrary"],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "AgentPod's own contract package types it; each consumer reimplements.",
-      "phase": 3,
+      "status": "contracted",
+      "contract": ["schemas/http/agentpod/capability-catalog.v1.openapi.json"],
       "evidence": [
         "agentpod:apps/hub/src/routes/capability-catalog.ts",
         "agentpod:apps/hub/src/routes/bridge-roster.ts",
+        "agentpod:packages/contract/src/capability-catalog.ts",
         "superdispatch:apps/dispatch/src/sources/agentpod.ts",
-        "superlibrary:apps/api/src/clients/roster.ts"
+        "superlibrary:apps/api/src/clients/roster.ts",
+        "superlibrary:apps/api/src/clients/stations.ts"
       ]
     },
     {
@@ -597,11 +618,13 @@
       "owner": "agentpod",
       "consumers": ["superpipeline"],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "Read in the browser with an unchecked cast.",
-      "phase": 3,
-      "evidence": ["superpipeline:apps/web/src/lib/api/agents.ts"]
+      "status": "contracted",
+      "contract": ["schemas/http/agentpod/fleet.v1.openapi.json"],
+      "evidence": [
+        "agentpod:apps/hub/src/routes/fleet-dispatchable.ts",
+        "agentpod:apps/hub/src/auth/hub-token.ts",
+        "superpipeline:apps/web/src/lib/api/agents.ts"
+      ]
     },
     {
       "id": "agentpod.salaam-station",
@@ -654,31 +677,54 @@
       "id": "superwitness.telemetry",
       "title": "Telemetry conventions: span attributes and trace continuation over ACP",
       "owner": "superwitness",
-      "consumers": ["agentpod", "salaam"],
+      "consumers": ["agentpod", "salaam", "superpipeline"],
       "kind": "telemetry",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "OTLP is the transport; the attribute names and the ACP _meta.traceparent convention are local to each side.",
-      "phase": 3,
+      "status": "contracted",
+      "contract": [
+        "schemas/telemetry/suite.v1.json",
+        "fixtures/telemetry/suite.v1.cases.json"
+      ],
       "evidence": [
         "agentpod:apps/hub/src/telemetry/agent-spans.ts",
-        "agentpod:apps/node-agent/internal/acptrace/rewrite.go"
+        "agentpod:apps/hub/src/telemetry/dispatch-span.ts",
+        "agentpod:apps/hub/src/telemetry/propagation.ts",
+        "agentpod:apps/node-agent/internal/acptrace/rewrite.go",
+        "salaam:src/execution/trace.ts",
+        "superpipeline:apps/api/wrangler.jsonc",
+        "superpipeline:apps/api/src/telemetry/run-telemetry.ts",
+        "superpipeline:apps/api/src/board/run-reports.ts",
+        "superwitness:internal/source/traces/adapter.go",
+        "superwitness:internal/source/logs/logsql.go",
+        "superwitness:internal/join/join.go"
       ]
     },
     {
       "id": "superlibrary.api",
-      "title": "SuperLibrary uploads, links, search, related items and the embed",
+      "title": "SuperLibrary uploads, related work, roster invalidation, the person and items, and the embed",
       "owner": "superlibrary",
       "consumers": ["agentpod", "superpipeline"],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "Each consumer has its own client; the embed is copied into SuperPipeline as vendored JavaScript.",
-      "phase": 3,
+      "status": "contracted",
+      "contract": [
+        "schemas/http/superlibrary/api.v1.openapi.json",
+        "contracts/artifacts/superlibrary-embed.json"
+      ],
       "evidence": [
         "superlibrary:apps/api/src/index.ts",
+        "superlibrary:apps/api/src/uploads/routes.ts",
+        "superlibrary:apps/api/src/items/routes.ts",
+        "superlibrary:apps/api/src/search/routes.ts",
+        "superlibrary:apps/api/src/auth/caller.ts",
+        "superlibrary:apps/api/src/http.ts",
+        "superlibrary:packages/contract/src/refusals.ts",
+        "superlibrary:packages/embed/package.json",
+        "agentpod:apps/hub/src/services/superlibrary/client.ts",
         "agentpod:apps/hub/src/services/superlibrary/link.ts",
-        "superpipeline:apps/web/src/lib/superlibrary.ts"
+        "agentpod:apps/hub/src/services/superlibrary/execution-export.ts",
+        "agentpod:apps/hub/src/services/superlibrary/related.ts",
+        "agentpod:apps/console/src/lib/api/superlibrary.ts",
+        "superpipeline:apps/web/src/lib/superlibrary.ts",
+        "superpipeline:apps/web/src/lib/vendor/superlibrary-embed/VENDORED.json"
       ]
     },
     {
@@ -687,11 +733,20 @@
       "owner": "accounts",
       "consumers": ["supermessage"],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "Matrix OpenID is the standard; the link page's parameters are local.",
-      "phase": 3,
+      "status": "contracted",
+      "contract": [
+        "schemas/urls/accounts-matrix-link.v1.json",
+        "schemas/urls/supermessage-linked.v1.json",
+        "fixtures/urls/accounts-matrix-link.v1.cases.json",
+        "fixtures/urls/supermessage-linked.v1.cases.json"
+      ],
+      "cases": {
+        "schemas/urls/accounts-matrix-link.v1.json": "fixtures/urls/accounts-matrix-link.v1.cases.json",
+        "schemas/urls/supermessage-linked.v1.json": "fixtures/urls/supermessage-linked.v1.cases.json"
+      },
       "evidence": [
+        "accounts:src/client/link-matrix.page.ts",
+        "accounts:src/pages/link-matrix.tsx",
         "accounts:src/me/identities-routes.ts",
         "supermessage:crates/supermessage-core/src/account_link.rs"
       ]

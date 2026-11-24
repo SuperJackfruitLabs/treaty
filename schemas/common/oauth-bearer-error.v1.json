@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/common/oauth-bearer-error.v1.json",
+  "title": "A bearer-token refusal in the OAuth 2.0 error shape",
+  "description": "A standard envelope, not one of the suite's own: the error body of RFC 6750 §3 (with RFC 6749 §5.2's fields), `{ \"error\": \"<code>\", \"error_description\": \"<words>\" }`. Routes that take an OAuth bearer token and answer in this shape declare it, such as AgentPod's fleet list. `error` is one of RFC 6750's codes, listed in `$defs/standardCode`, or an extension code its owner records in contracts/error-codes.json as a flat-error.v1 code. `error_description` and `error_uri` are for people and carry no meaning a program may read. Other fields may sit beside them.",
+  "type": "object",
+  "required": ["error"],
+  "properties": {
+    "error": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)*$"
+    },
+    "error_description": {
+      "type": "string"
+    },
+    "error_uri": {
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "standardCode": {
+      "description": "The codes RFC 6750 §3.1 defines. An HTTP contract in this envelope may name them in x-treaty-error-codes without recording them in contracts/error-codes.json, because no product owns them.",
+      "enum": ["invalid_request", "invalid_token", "insufficient_scope"]
+    }
+  }
+}

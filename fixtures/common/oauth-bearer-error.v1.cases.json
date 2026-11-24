@@ -1,0 +1,41 @@
+{
+  "valid": {
+    "an invalid token, described": {
+      "error": "invalid_token",
+      "error_description": "That token is not one this hub will accept: it is unknown, expired, signed by somebody else, or was not issued for this hub."
+    },
+    "a bare code": { "error": "invalid_request" },
+    "a missing scope, with a link": {
+      "error": "insufficient_scope",
+      "error_description": "needs fleet:read",
+      "error_uri": "https://example.test/docs/scopes"
+    },
+    "an extension code with a field beside it": {
+      "error": "product_not_enabled",
+      "org": "org_0123456789abcdef0123"
+    }
+  },
+  "invalid": [
+    {
+      "why": "no error",
+      "body": { "error_description": "missing token" }
+    },
+    {
+      "why": "an error that is an object, as error.v1 has it",
+      "body": { "error": { "code": "INVALID_TOKEN", "message": "no" } }
+    },
+    {
+      "why": "a code that is not snake_case",
+      "body": { "error": "INVALID_TOKEN" }
+    },
+    { "why": "an empty code", "body": { "error": "" } },
+    {
+      "why": "a description that is not a string",
+      "body": { "error": "invalid_token", "error_description": 401 }
+    },
+    {
+      "why": "a Matrix body",
+      "body": { "errcode": "M_UNKNOWN_TOKEN", "error": "unknown access token" }
+    }
+  ]
+}

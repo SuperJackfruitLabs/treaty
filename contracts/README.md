@@ -42,3 +42,11 @@ other schemas reference.
 **Coverage** is the share of crossings that are `contracted`, counting out `standard` and
 `deprecated`. `scripts/registry.test.ts` records the current figure, so every change to it shows
 up as a diff in review.
+
+## `artifacts/`
+
+Code one product ships to another as built files, such as SuperLibrary's JavaScript embed, which
+treaty records by version and hash rather than by shape (phase 3, ruling 7). Each record, checked
+by `schemas/treaty/artifact.v1.json`, names its crossing, where it is built, the version and
+commit, each file's SHA-256, and each consumer's pin. Its crossing lists the record in `contract`;
+the consumer's own pin stays where it is.

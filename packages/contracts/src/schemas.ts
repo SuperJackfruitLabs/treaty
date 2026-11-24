@@ -89,10 +89,34 @@ function registerAt(
   // Only a pointer through an array needs this; the walk already indexes every other subschema.
   if (!throughArray || !isObject(node)) return;
   try {
-    validator.addSchema(node, `${base}#${fragment(pointer)}`);
+    validator.addSchema(anchored(node, base), `${base}#${fragment(pointer)}`);
   } catch {
     // Already indexed by the walk: nothing to add.
   }
+}
+
+/**
+ * A copy of a node with every fragment-only `$ref` (`#/$defs/x`) made absolute against its
+ * document. Registered under an address with a fragment, the node has no base of its own, so a
+ * relative `$ref` inside it would resolve against nothing. (A nested `$id` is not followed: no
+ * contract here uses one.)
+ */
+function anchoredValue(value: unknown, base: string): unknown {
+  if (Array.isArray(value)) return value.map((v) => anchoredValue(v, base));
+  return isObject(value) ? anchored(value, base) : value;
+}
+
+function anchored(
+  node: Record<string, unknown>,
+  base: string,
+): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(node))
+    out[key] =
+      key === "$ref" && typeof value === "string" && value.startsWith("#")
+        ? `${base}${value}`
+        : anchoredValue(value, base);
+  return out;
 }
 
 /** Schemas whose `$id` is not the address of their own path: each is a copy or a move gone wrong. */

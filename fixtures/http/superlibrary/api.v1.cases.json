@@ -1,0 +1,1257 @@
+{
+  "operations": {
+    "createUpload": {
+      "request": {
+        "valid": {
+          "the hub, linking an agent's file": {
+            "title": "report.md",
+            "scope": "board:brd_0435b5ea3d4d4e44",
+            "files": [
+              {
+                "path": "report.md",
+                "bytes": 1204,
+                "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
+              }
+            ],
+            "source": {
+              "station": "stn_42",
+              "stationName": "builder",
+              "path": "out/report.md",
+              "board": "brd_0435b5ea3d4d4e44",
+              "card": "card_00000000000000c1",
+              "run": "run_00000000000000a1"
+            }
+          },
+          "the hub, an execution export's folder with an entry": {
+            "title": "Execution evidence",
+            "scope": "board:brd_0435b5ea3d4d4e44",
+            "entry": "evidence.json",
+            "files": [
+              {
+                "path": "evidence.json",
+                "bytes": 900,
+                "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
+              },
+              {
+                "path": "artifacts/a.txt",
+                "bytes": 3,
+                "sha256": "60303ae22b998861bce3b28f33eec1be758a213c86c93c076dbe9f558c11c752"
+              }
+            ],
+            "source": {
+              "station": "stn_42",
+              "stationName": "builder",
+              "path": "runs/run_00000000000000a1/evidence.json",
+              "board": "brd_0435b5ea3d4d4e44",
+              "card": "card_00000000000000c1",
+              "run": "run_00000000000000a1"
+            }
+          },
+          "the console, a person's station file": {
+            "title": "notes.txt",
+            "files": [
+              {
+                "path": "notes.txt",
+                "bytes": 12,
+                "sha256": "60303ae22b998861bce3b28f33eec1be758a213c86c93c076dbe9f558c11c752"
+              }
+            ],
+            "stationFile": {
+              "station": "stn_42",
+              "path": "notes/notes.txt"
+            }
+          },
+          "a person's new version with an expiry": {
+            "title": "Diagram",
+            "item": "itm_2b3c4d5e6f708192",
+            "expiresAt": "2026-12-31T00:00:00Z",
+            "files": [
+              {
+                "path": "diagram.svg",
+                "bytes": 400,
+                "sha256": "3a7bd3e2360a3d29eea436fcfb7e44c735d117c42d1c1835420b6b9942dd4f1b"
+              }
+            ]
+          }
+        },
+        "invalid": [
+          {
+            "why": "no files",
+            "body": {
+              "title": "notes.txt",
+              "stationFile": {
+                "station": "stn_42",
+                "path": "notes/notes.txt"
+              }
+            }
+          },
+          {
+            "why": "an empty file list",
+            "body": {
+              "title": "notes.txt",
+              "files": [],
+              "stationFile": {
+                "station": "stn_42",
+                "path": "notes/notes.txt"
+              }
+            }
+          },
+          {
+            "why": "a title of only spaces",
+            "body": {
+              "title": "   ",
+              "files": [
+                {
+                  "path": "notes.txt",
+                  "bytes": 12,
+                  "sha256": "60303ae22b998861bce3b28f33eec1be758a213c86c93c076dbe9f558c11c752"
+                }
+              ],
+              "stationFile": {
+                "station": "stn_42",
+                "path": "notes/notes.txt"
+              }
+            }
+          },
+          {
+            "why": "a SHA-256 in upper case",
+            "body": {
+              "title": "notes.txt",
+              "files": [
+                {
+                  "path": "notes.txt",
+                  "bytes": 12,
+                  "sha256": "60303AE22B998861BCE3B28F33EEC1BE758A213C86C93C076DBE9F558C11C752"
+                }
+              ],
+              "stationFile": {
+                "station": "stn_42",
+                "path": "notes/notes.txt"
+              }
+            }
+          },
+          {
+            "why": "a scope that is a bare board id",
+            "body": {
+              "title": "report.md",
+              "scope": "brd_0435b5ea3d4d4e44",
+              "files": [
+                {
+                  "path": "report.md",
+                  "bytes": 1204,
+                  "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
+                }
+              ],
+              "source": {
+                "station": "stn_42",
+                "stationName": "builder",
+                "path": "out/report.md",
+                "board": "brd_0435b5ea3d4d4e44",
+                "card": "card_00000000000000c1",
+                "run": "run_00000000000000a1"
+              }
+            }
+          },
+          {
+            "why": "a link source with a key SuperLibrary does not model",
+            "body": {
+              "title": "report.md",
+              "scope": "board:brd_0435b5ea3d4d4e44",
+              "files": [
+                {
+                  "path": "report.md",
+                  "bytes": 1204,
+                  "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
+                }
+              ],
+              "source": {
+                "station": "stn_42",
+                "stationName": "builder",
+                "path": "out/report.md",
+                "board": "brd_0435b5ea3d4d4e44",
+                "card": "card_00000000000000c1",
+                "run": "run_00000000000000a1",
+                "stage": "review"
+              }
+            }
+          },
+          {
+            "why": "a link source without its board",
+            "body": {
+              "title": "report.md",
+              "scope": "board:brd_0435b5ea3d4d4e44",
+              "files": [
+                {
+                  "path": "report.md",
+                  "bytes": 1204,
+                  "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
+                }
+              ],
+              "source": {
+                "station": "stn_42",
+                "stationName": "builder",
+                "path": "out/report.md",
+                "card": "card_00000000000000c1",
+                "run": "run_00000000000000a1"
+              }
+            }
+          },
+          {
+            "why": "a station file with a key it does not model",
+            "body": {
+              "title": "notes.txt",
+              "files": [
+                {
+                  "path": "notes.txt",
+                  "bytes": 12,
+                  "sha256": "60303ae22b998861bce3b28f33eec1be758a213c86c93c076dbe9f558c11c752"
+                }
+              ],
+              "stationFile": {
+                "station": "stn_42",
+                "path": "notes.txt",
+                "stationName": "builder"
+              }
+            }
+          },
+          {
+            "why": "a negative size",
+            "body": {
+              "title": "notes.txt",
+              "files": [
+                {
+                  "path": "notes.txt",
+                  "bytes": -1,
+                  "sha256": "60303ae22b998861bce3b28f33eec1be758a213c86c93c076dbe9f558c11c752"
+                }
+              ],
+              "stationFile": {
+                "station": "stn_42",
+                "path": "notes/notes.txt"
+              }
+            }
+          }
+        ]
+      },
+      "responses": {
+        "201": {
+          "valid": {
+            "declared": {
+              "uploadId": "upl_0a1b2c3d4e5f6071",
+              "expiresAt": "2026-11-24T10:15:00.000Z",
+              "entry": "report.md",
+              "held": []
+            },
+            "declared, one file already held": {
+              "uploadId": "upl_0a1b2c3d4e5f6071",
+              "expiresAt": "2026-11-24T10:15:00.000Z",
+              "entry": "report.md",
+              "held": [
+                "report.md"
+              ]
+            }
+          },
+          "invalid": [
+            {
+              "why": "no uploadId",
+              "body": {
+                "expiresAt": "2026-11-24T10:15:00.000Z",
+                "entry": "report.md",
+                "held": []
+              }
+            },
+            {
+              "why": "an uploadId of another shape",
+              "body": {
+                "uploadId": "upl_1",
+                "expiresAt": "2026-11-24T10:15:00.000Z",
+                "entry": "report.md",
+                "held": []
+              }
+            }
+          ]
+        },
+        "400": {
+          "valid": {
+            "a path refused by a rule": {
+              "error": "path_refused",
+              "path": ".env",
+              "reason": "denied",
+              "rule": "dotenv"
+            },
+            "a path refused as absolute": {
+              "error": "path_refused",
+              "path": "/etc/passwd",
+              "reason": "absolute"
+            },
+            "two paths alike": {
+              "error": "duplicate_path",
+              "path": "a/b.txt"
+            },
+            "the entry is not declared": {
+              "error": "entry_not_found",
+              "entry": "index.html"
+            },
+            "zod's issues": {
+              "error": "invalid",
+              "issues": [
+                {
+                  "path": "files",
+                  "message": "Too small"
+                }
+              ]
+            },
+            "a sentence": {
+              "error": "invalid",
+              "detail": "expiresAt must be in the future"
+            },
+            "a scope that is not the run's board": {
+              "error": "scope_mismatch",
+              "detail": "a linked file belongs to the board of its run"
+            }
+          },
+          "invalid": [
+            {
+              "why": "path_refused without its reason",
+              "body": {
+                "error": "path_refused",
+                "path": ".env"
+              }
+            },
+            {
+              "why": "duplicate_path without the path",
+              "body": {
+                "error": "duplicate_path"
+              }
+            },
+            {
+              "why": "entry_not_found without the entry",
+              "body": {
+                "error": "entry_not_found"
+              }
+            },
+            {
+              "why": "issues that are not a list",
+              "body": {
+                "error": "invalid",
+                "issues": "files: too small"
+              }
+            }
+          ]
+        },
+        "403": {
+          "valid": {
+            "a workspace not entitled": {
+              "error": "product_not_enabled",
+              "org": "org_9e8d7c6b5a4f3e2d1c0b"
+            },
+            "an agent uploading directly": {
+              "error": "principal_not_supported",
+              "detail": "agents link files through AgentPod, never directly"
+            },
+            "a source from someone other than the hub": {
+              "error": "source_not_trusted",
+              "detail": "only the AgentPod hub may say where a file came from"
+            },
+            "someone else's station": {
+              "error": "station_not_yours",
+              "detail": "Superlibrary records a station only for the person it belongs to"
+            }
+          },
+          "invalid": [
+            {
+              "why": "product_not_enabled without the org",
+              "body": {
+                "error": "product_not_enabled"
+              }
+            },
+            {
+              "why": "station_not_yours without its sentence",
+              "body": {
+                "error": "station_not_yours"
+              }
+            }
+          ]
+        },
+        "413": {
+          "valid": {
+            "a file too large": {
+              "error": "file_too_large",
+              "path": "video.mp4",
+              "limit": 26214400
+            },
+            "too many files": {
+              "error": "too_many_files",
+              "limit": 500
+            },
+            "the quota": {
+              "error": "quota_exceeded",
+              "limit": 1073741824,
+              "used": 1073000000
+            }
+          },
+          "invalid": [
+            {
+              "why": "quota_exceeded without what is used",
+              "body": {
+                "error": "quota_exceeded",
+                "limit": 1073741824
+              }
+            },
+            {
+              "why": "file_too_large without the path",
+              "body": {
+                "error": "file_too_large",
+                "limit": 26214400
+              }
+            }
+          ]
+        },
+        "502": {
+          "valid": {
+            "the hub did not answer": {
+              "error": "hub_unreachable",
+              "detail": "AgentPod could not confirm the station; try again shortly"
+            }
+          },
+          "invalid": [
+            {
+              "why": "hub_unreachable without its sentence",
+              "body": {
+                "error": "hub_unreachable"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "putUploadFile": {
+      "responses": {
+        "200": {
+          "valid": {
+            "a clean file": {
+              "path": "report.md",
+              "mediaType": "text/markdown; charset=utf-8",
+              "view": "markdown",
+              "findings": []
+            },
+            "a file held for a secret": {
+              "path": "config.yaml",
+              "mediaType": "application/yaml; charset=utf-8",
+              "view": "yaml",
+              "findings": [
+                {
+                  "line": 3,
+                  "rule": "aws-access-key"
+                }
+              ]
+            }
+          },
+          "invalid": [
+            {
+              "why": "no findings list",
+              "body": {
+                "path": "report.md",
+                "mediaType": "text/markdown",
+                "view": "markdown"
+              }
+            },
+            {
+              "why": "a finding at line 0",
+              "body": {
+                "path": "a",
+                "mediaType": "text/plain",
+                "view": "text",
+                "findings": [
+                  {
+                    "line": 0,
+                    "rule": "x"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "404": {
+          "valid": {
+            "a path never declared": {
+              "error": "not_declared",
+              "path": "extra.txt"
+            },
+            "someone else's upload": {
+              "error": "not_found"
+            }
+          },
+          "invalid": [
+            {
+              "why": "not_declared without the path",
+              "body": {
+                "error": "not_declared"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "commitUpload": {
+      "responses": {
+        "200": {
+          "valid": {
+            "committed before": {
+              "itemId": "itm_1f2e3d4c5b6a7980",
+              "version": 1,
+              "url": "https://app.superlibrary.dev/a/itm_1f2e3d4c5b6a7980",
+              "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+              "mediaType": "text/markdown; charset=utf-8",
+              "bytes": 1204
+            }
+          },
+          "invalid": [
+            {
+              "why": "a version of 0",
+              "body": {
+                "itemId": "itm_1f2e3d4c5b6a7980",
+                "version": 0,
+                "url": "https://app.superlibrary.dev/a/itm_1f2e3d4c5b6a7980",
+                "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+                "mediaType": "text/markdown; charset=utf-8",
+                "bytes": 1204
+              }
+            }
+          ]
+        },
+        "201": {
+          "valid": {
+            "a new item": {
+              "itemId": "itm_1f2e3d4c5b6a7980",
+              "version": 1,
+              "url": "https://app.superlibrary.dev/a/itm_1f2e3d4c5b6a7980",
+              "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+              "mediaType": "text/markdown; charset=utf-8",
+              "bytes": 1204
+            },
+            "a folder's next version": {
+              "itemId": "itm_1f2e3d4c5b6a7980",
+              "version": 3,
+              "url": "https://app.superlibrary.dev/a/itm_1f2e3d4c5b6a7980",
+              "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+              "mediaType": "text/html; charset=utf-8",
+              "bytes": 52000
+            }
+          },
+          "invalid": [
+            {
+              "why": "no sha256",
+              "body": {
+                "itemId": "itm_1f2e3d4c5b6a7980",
+                "version": 1,
+                "url": "https://app.superlibrary.dev/a/itm_1f2e3d4c5b6a7980",
+                "mediaType": "text/markdown; charset=utf-8",
+                "bytes": 1204
+              }
+            }
+          ]
+        },
+        "409": {
+          "valid": {
+            "files still to send": {
+              "error": "incomplete",
+              "missing": [
+                "a.txt",
+                "b/c.txt"
+              ]
+            },
+            "a version race": {
+              "error": "version_conflict"
+            }
+          },
+          "invalid": [
+            {
+              "why": "incomplete without what is missing",
+              "body": {
+                "error": "incomplete"
+              }
+            },
+            {
+              "why": "incomplete with nothing missing",
+              "body": {
+                "error": "incomplete",
+                "missing": []
+              }
+            }
+          ]
+        },
+        "422": {
+          "valid": {
+            "a secret": {
+              "error": "secret_found",
+              "findings": [
+                {
+                  "path": "config.yaml",
+                  "line": 3,
+                  "rule": "aws-access-key"
+                }
+              ]
+            }
+          },
+          "invalid": [
+            {
+              "why": "no findings",
+              "body": {
+                "error": "secret_found"
+              }
+            },
+            {
+              "why": "a finding without its path",
+              "body": {
+                "error": "secret_found",
+                "findings": [
+                  {
+                    "line": 3,
+                    "rule": "aws-access-key"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "500": {
+          "valid": {
+            "broken sign-in settings": {
+              "error": "misconfigured",
+              "setting": "ORG_PLANE_ISSUER"
+            },
+            "anything else": {
+              "error": "unexpected"
+            }
+          },
+          "invalid": [
+            {
+              "why": "misconfigured without the setting",
+              "body": {
+                "error": "misconfigured"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "verifyUpload": {
+      "request": {
+        "valid": {
+          "the only form": {
+            "schemaVersion": "superlibrary-upload-verification/v1"
+          }
+        },
+        "invalid": [
+          {
+            "why": "another schema version",
+            "body": {
+              "schemaVersion": "superlibrary-upload-verification/v2"
+            }
+          },
+          {
+            "why": "an item chosen",
+            "body": {
+              "schemaVersion": "superlibrary-upload-verification/v1",
+              "itemId": "itm_1f2e3d4c5b6a7980"
+            }
+          },
+          {
+            "why": "no schemaVersion",
+            "body": {}
+          }
+        ]
+      },
+      "responses": {
+        "200": {
+          "valid": {
+            "one file": {
+              "schemaVersion": "superlibrary-upload-verification/v1",
+              "uploadId": "upl_0a1b2c3d4e5f6071",
+              "itemId": "itm_1f2e3d4c5b6a7980",
+              "version": 1,
+              "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+              "bytes": 1204,
+              "entry": "evidence.json",
+              "expiresAt": "2026-11-23T10:16:00.000Z",
+              "url": "https://itm-1f2e3d4c5b6a7980.superlibrary.dev/_view?sig=abc.def",
+              "downloadUrl": "https://itm-1f2e3d4c5b6a7980.superlibrary.dev/s/abc.def/evidence.json?download=1",
+              "files": [
+                {
+                  "path": "evidence.json",
+                  "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+                  "bytes": 1204
+                }
+              ]
+            },
+            "a folder": {
+              "schemaVersion": "superlibrary-upload-verification/v1",
+              "uploadId": "upl_0a1b2c3d4e5f6071",
+              "itemId": "itm_1f2e3d4c5b6a7980",
+              "version": 2,
+              "sha256": "3a7bd3e2360a3d29eea436fcfb7e44c735d117c42d1c1835420b6b9942dd4f1b",
+              "bytes": 903,
+              "entry": "evidence.json",
+              "expiresAt": "2026-11-23T10:16:00.000Z",
+              "url": "https://itm-1f2e3d4c5b6a7980.superlibrary.dev/_view?sig=abc.def",
+              "downloadUrl": null,
+              "files": [
+                {
+                  "path": "artifacts/a.txt",
+                  "sha256": "60303ae22b998861bce3b28f33eec1be758a213c86c93c076dbe9f558c11c752",
+                  "bytes": 3
+                },
+                {
+                  "path": "evidence.json",
+                  "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+                  "bytes": 900
+                }
+              ]
+            }
+          },
+          "invalid": [
+            {
+              "why": "no files",
+              "body": {
+                "schemaVersion": "superlibrary-upload-verification/v1",
+                "uploadId": "upl_0a1b2c3d4e5f6071",
+                "itemId": "itm_1f2e3d4c5b6a7980",
+                "version": 1,
+                "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+                "bytes": 1,
+                "entry": "a",
+                "expiresAt": "2026-11-23T10:16:00.000Z",
+                "url": "https://itm-1f2e3d4c5b6a7980.superlibrary.dev/_view?sig=a",
+                "downloadUrl": null,
+                "files": []
+              }
+            },
+            {
+              "why": "no downloadUrl key",
+              "body": {
+                "schemaVersion": "superlibrary-upload-verification/v1",
+                "uploadId": "upl_0a1b2c3d4e5f6071",
+                "itemId": "itm_1f2e3d4c5b6a7980",
+                "version": 1,
+                "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+                "bytes": 1,
+                "entry": "a",
+                "expiresAt": "2026-11-23T10:16:00.000Z",
+                "url": "https://itm-1f2e3d4c5b6a7980.superlibrary.dev/_view?sig=a",
+                "files": [
+                  {
+                    "path": "a",
+                    "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+                    "bytes": 1
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "relatedWork": {
+      "request": {
+        "valid": {
+          "the hub, a card with its text": {
+            "cardId": "card_00000000000000c1",
+            "text": "Write the release notes for v0.0.19"
+          },
+          "the card drawer": {
+            "cardId": "card_00000000000000c1",
+            "limit": 5
+          },
+          "an item": {
+            "itemId": "itm_1f2e3d4c5b6a7980",
+            "maxTokens": 800
+          }
+        },
+        "invalid": [
+          {
+            "why": "neither a card nor an item",
+            "body": {
+              "limit": 5
+            }
+          },
+          {
+            "why": "both a card and an item",
+            "body": {
+              "cardId": "card_00000000000000c1",
+              "itemId": "itm_1f2e3d4c5b6a7980"
+            }
+          },
+          {
+            "why": "a limit over 10",
+            "body": {
+              "cardId": "card_00000000000000c1",
+              "limit": 11
+            }
+          },
+          {
+            "why": "text beside an item",
+            "body": {
+              "itemId": "itm_1f2e3d4c5b6a7980",
+              "text": "x"
+            }
+          },
+          {
+            "why": "a card id of another shape",
+            "body": {
+              "cardId": "crd_1"
+            }
+          }
+        ]
+      },
+      "responses": {
+        "200": {
+          "valid": {
+            "none": {
+              "items": []
+            },
+            "one": {
+              "items": [
+                {
+                  "itemId": "itm_1f2e3d4c5b6a7980",
+                  "kind": "work-record",
+                  "title": "Ship the release notes",
+                  "outcome": "approved",
+                  "scope": "board:brd_0435b5ea3d4d4e44",
+                  "provenance": {
+                    "sourceKind": "superpipeline",
+                    "board": "brd_0435b5ea3d4d4e44",
+                    "card": "card_00000000000000c1"
+                  },
+                  "snippet": "Shipped the notes for v0.0.18.",
+                  "url": "https://app.superlibrary.dev/a/itm_1f2e3d4c5b6a7980",
+                  "score": 0.031,
+                  "supersededBy": null,
+                  "wrapped": "<library-item id=\"itm_1f2e3d4c5b6a7980\" kind=\"work-record\" outcome=\"approved\">\ntitle: Ship the release notes\nShipped.\n</library-item>",
+                  "tokens": 31
+                }
+              ]
+            }
+          },
+          "invalid": [
+            {
+              "why": "no items list",
+              "body": {}
+            },
+            {
+              "why": "an item without its wrapped block",
+              "body": {
+                "items": [
+                  {
+                    "itemId": "itm_1f2e3d4c5b6a7980",
+                    "kind": "work-record",
+                    "title": "Ship the release notes",
+                    "outcome": "approved",
+                    "scope": "board:brd_0435b5ea3d4d4e44",
+                    "provenance": {
+                      "sourceKind": "superpipeline",
+                      "board": "brd_0435b5ea3d4d4e44",
+                      "card": "card_00000000000000c1"
+                    },
+                    "snippet": "Shipped the notes for v0.0.18.",
+                    "url": "https://app.superlibrary.dev/a/itm_1f2e3d4c5b6a7980",
+                    "score": 0.031,
+                    "supersededBy": null,
+                    "tokens": 31
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "invalidateRoster": {
+      "request": {
+        "valid": {
+          "an agent": {
+            "principal": "prn_7a6b5c4d3e2f1a0b9c8d"
+          }
+        },
+        "invalid": [
+          {
+            "why": "no principal",
+            "body": {}
+          },
+          {
+            "why": "a principal of another shape",
+            "body": {
+              "principal": "agent-7"
+            }
+          }
+        ]
+      }
+    },
+    "me": {
+      "responses": {
+        "200": {
+          "valid": {
+            "an owner": {
+              "kind": "human",
+              "principalId": "prn_4f1c2a9e8b7d6c5a4e3f",
+              "org": "org_9e8d7c6b5a4f3e2d1c0b",
+              "workspaceId": "wsp_5a4b3c2d1e0f9a8b",
+              "role": "owner"
+            },
+            "a member": {
+              "kind": "human",
+              "principalId": "prn_4f1c2a9e8b7d6c5a4e3f",
+              "org": "org_9e8d7c6b5a4f3e2d1c0b",
+              "workspaceId": "wsp_5a4b3c2d1e0f9a8b",
+              "role": "member"
+            }
+          },
+          "invalid": [
+            {
+              "why": "an agent",
+              "body": {
+                "kind": "agent",
+                "principalId": "prn_7a6b5c4d3e2f1a0b9c8d",
+                "org": "org_9e8d7c6b5a4f3e2d1c0b",
+                "workspaceId": "wsp_5a4b3c2d1e0f9a8b",
+                "role": "member"
+              }
+            },
+            {
+              "why": "the Accounts org as the workspace",
+              "body": {
+                "kind": "human",
+                "principalId": "prn_4f1c2a9e8b7d6c5a4e3f",
+                "org": "org_9e8d7c6b5a4f3e2d1c0b",
+                "workspaceId": "org_9e8d7c6b5a4f3e2d1c0b",
+                "role": "owner"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "getItem": {
+      "responses": {
+        "200": {
+          "valid": {
+            "an agent's linked file": {
+              "item": {
+                "id": "itm_1f2e3d4c5b6a7980",
+                "kind": "artifact",
+                "title": "Release notes",
+                "scope": "board:brd_0435b5ea3d4d4e44",
+                "outcome": "in-progress",
+                "createdBy": "prn_7a6b5c4d3e2f1a0b9c8d",
+                "createdAt": "2026-11-23T10:15:00Z",
+                "latestVersion": 2,
+                "expiresAt": null,
+                "revokedAt": null,
+                "source": {
+                  "sourceKind": "agentpod",
+                  "agent": true,
+                  "stationRemoved": false,
+                  "agentPrincipal": "prn_7a6b5c4d3e2f1a0b9c8d",
+                  "station": "stn_42",
+                  "stationName": "builder",
+                  "path": "out/report.md",
+                  "board": "brd_0435b5ea3d4d4e44",
+                  "card": "card_00000000000000c1",
+                  "run": "run_00000000000000a1"
+                },
+                "audience": "board"
+              },
+              "versions": [
+                {
+                  "version": 2,
+                  "entry": "report.md",
+                  "view": "markdown",
+                  "mediaType": "text/markdown; charset=utf-8",
+                  "totalBytes": 1204,
+                  "fileCount": 1,
+                  "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+                  "createdAt": "2026-11-23T10:15:00Z",
+                  "revokedAt": null,
+                  "scanOverride": false,
+                  "files": [
+                    {
+                      "path": "report.md",
+                      "mediaType": "text/markdown; charset=utf-8",
+                      "view": "markdown",
+                      "bytes": 1204
+                    }
+                  ]
+                },
+                {
+                  "version": 1,
+                  "entry": "report.md",
+                  "view": "markdown",
+                  "mediaType": "text/markdown; charset=utf-8",
+                  "totalBytes": 1204,
+                  "fileCount": 1,
+                  "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+                  "createdAt": "2026-11-23T10:15:00Z",
+                  "revokedAt": "2026-11-23T10:15:00Z",
+                  "scanOverride": false,
+                  "files": [
+                    {
+                      "path": "report.md",
+                      "mediaType": "text/markdown; charset=utf-8",
+                      "view": "markdown",
+                      "bytes": 1204
+                    }
+                  ]
+                }
+              ]
+            },
+            "a person's upload": {
+              "item": {
+                "id": "itm_2b3c4d5e6f708192",
+                "kind": "artifact",
+                "title": "Diagram",
+                "scope": "workspace",
+                "outcome": "completed",
+                "createdBy": "prn_4f1c2a9e8b7d6c5a4e3f",
+                "createdAt": "2026-11-23T10:15:00Z",
+                "latestVersion": 1,
+                "expiresAt": "2026-12-31T00:00:00Z",
+                "revokedAt": null,
+                "audience": "workspace",
+                "caption": null
+              },
+              "versions": [
+                {
+                  "version": 1,
+                  "entry": "diagram.svg",
+                  "view": "svg",
+                  "mediaType": "image/svg+xml",
+                  "totalBytes": 400,
+                  "fileCount": 1,
+                  "sha256": "3a7bd3e2360a3d29eea436fcfb7e44c735d117c42d1c1835420b6b9942dd4f1b",
+                  "createdAt": "2026-11-23T10:15:00Z",
+                  "revokedAt": null,
+                  "scanOverride": false,
+                  "files": [
+                    {
+                      "path": "diagram.svg",
+                      "mediaType": "image/svg+xml",
+                      "view": "svg",
+                      "bytes": 400
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "invalid": [
+            {
+              "why": "no versions",
+              "body": {
+                "item": {
+                  "id": "itm_1f2e3d4c5b6a7980",
+                  "kind": "artifact",
+                  "title": "Release notes",
+                  "scope": "board:brd_0435b5ea3d4d4e44",
+                  "outcome": "in-progress",
+                  "createdBy": "prn_7a6b5c4d3e2f1a0b9c8d",
+                  "createdAt": "2026-11-23T10:15:00Z",
+                  "latestVersion": 2,
+                  "expiresAt": null,
+                  "revokedAt": null,
+                  "source": {
+                    "sourceKind": "agentpod",
+                    "agent": true,
+                    "stationRemoved": false,
+                    "agentPrincipal": "prn_7a6b5c4d3e2f1a0b9c8d",
+                    "station": "stn_42",
+                    "stationName": "builder",
+                    "path": "out/report.md",
+                    "board": "brd_0435b5ea3d4d4e44",
+                    "card": "card_00000000000000c1",
+                    "run": "run_00000000000000a1"
+                  },
+                  "audience": "board"
+                }
+              }
+            },
+            {
+              "why": "an item without its scope",
+              "body": {
+                "item": {
+                  "id": "itm_1f2e3d4c5b6a7980",
+                  "kind": "artifact",
+                  "title": "Release notes",
+                  "outcome": "in-progress",
+                  "createdBy": "prn_7a6b5c4d3e2f1a0b9c8d",
+                  "createdAt": "2026-11-23T10:15:00Z",
+                  "latestVersion": 2,
+                  "expiresAt": null,
+                  "revokedAt": null,
+                  "source": {
+                    "sourceKind": "agentpod",
+                    "agent": true,
+                    "stationRemoved": false,
+                    "agentPrincipal": "prn_7a6b5c4d3e2f1a0b9c8d",
+                    "station": "stn_42",
+                    "stationName": "builder",
+                    "path": "out/report.md",
+                    "board": "brd_0435b5ea3d4d4e44",
+                    "card": "card_00000000000000c1",
+                    "run": "run_00000000000000a1"
+                  },
+                  "audience": "board"
+                },
+                "versions": []
+              }
+            }
+          ]
+        }
+      }
+    },
+    "embedItem": {
+      "request": {
+        "valid": {
+          "the latest version": {},
+          "one version": {
+            "version": 2
+          }
+        },
+        "invalid": [
+          {
+            "why": "version 0",
+            "body": {
+              "version": 0
+            }
+          },
+          {
+            "why": "a version as text",
+            "body": {
+              "version": "2"
+            }
+          }
+        ]
+      },
+      "responses": {
+        "200": {
+          "valid": {
+            "one file": {
+              "url": "https://itm-1f2e3d4c5b6a7980.superlibrary.dev/_view?sig=abc.def",
+              "downloadUrl": "https://itm-1f2e3d4c5b6a7980.superlibrary.dev/s/abc.def/report.md?download=1",
+              "expiresAt": "2026-11-23T10:20:00.000Z",
+              "version": 2,
+              "itemUrl": "https://app.superlibrary.dev/a/itm_1f2e3d4c5b6a7980/v/2",
+              "entry": "report.md",
+              "files": [
+                {
+                  "path": "report.md",
+                  "mediaType": "text/markdown; charset=utf-8",
+                  "view": "markdown",
+                  "bytes": 1204
+                }
+              ]
+            }
+          },
+          "invalid": [
+            {
+              "why": "no itemUrl",
+              "body": {
+                "url": "https://itm-1f2e3d4c5b6a7980.superlibrary.dev/_view?sig=abc.def",
+                "downloadUrl": null,
+                "expiresAt": "2026-11-23T10:20:00.000Z",
+                "version": 2,
+                "entry": "report.md",
+                "files": [
+                  {
+                    "path": "report.md",
+                    "mediaType": "text/markdown; charset=utf-8",
+                    "view": "markdown",
+                    "bytes": 1204
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "widenItemScope": {
+      "request": {
+        "valid": {
+          "to the workspace": {
+            "scope": "workspace"
+          }
+        },
+        "invalid": [
+          {
+            "why": "no scope",
+            "body": {}
+          },
+          {
+            "why": "a scope of another shape",
+            "body": {
+              "scope": "everyone"
+            }
+          }
+        ]
+      },
+      "responses": {
+        "200": {
+          "valid": {
+            "widened": {
+              "item": {
+                "id": "itm_1f2e3d4c5b6a7980",
+                "kind": "artifact",
+                "title": "Release notes",
+                "scope": "workspace",
+                "outcome": "in-progress",
+                "createdBy": "prn_7a6b5c4d3e2f1a0b9c8d",
+                "createdAt": "2026-11-23T10:15:00Z",
+                "latestVersion": 2,
+                "expiresAt": null,
+                "revokedAt": null,
+                "source": {
+                  "sourceKind": "agentpod",
+                  "agent": true,
+                  "stationRemoved": false,
+                  "agentPrincipal": "prn_7a6b5c4d3e2f1a0b9c8d",
+                  "station": "stn_42",
+                  "stationName": "builder",
+                  "path": "out/report.md",
+                  "board": "brd_0435b5ea3d4d4e44",
+                  "card": "card_00000000000000c1",
+                  "run": "run_00000000000000a1"
+                },
+                "audience": "workspace"
+              }
+            }
+          },
+          "invalid": [
+            {
+              "why": "no item",
+              "body": {}
+            }
+          ]
+        },
+        "403": {
+          "valid": {
+            "not the uploader nor an owner": {
+              "error": "not_permitted"
+            },
+            "an agent": {
+              "error": "principal_not_supported",
+              "detail": "only a person may use Superlibrary in this release"
+            }
+          },
+          "invalid": [
+            {
+              "why": "principal_not_supported without its sentence",
+              "body": {
+                "error": "principal_not_supported"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

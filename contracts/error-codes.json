@@ -1,7 +1,7 @@
 {
   "registry": "treaty error codes",
   "version": 2,
-  "description": "Every error code a suite product's API returns, with the status it carries and the envelope it travels in. SuperPipeline's codes are its statusForCode table and its route-level codes; Accounts' are its flat codes; AgentPod's are the Matrix errcodes of its Live Activity token routes. Seeded 2026-11-22.",
+  "description": "Every error code a suite product's API returns, with the status it carries and the envelope it travels in. SuperPipeline's codes are its statusForCode table and its route-level codes; Accounts' are its flat codes; SuperLibrary's are the flat codes of the routes other products call; AgentPod's are the Matrix errcodes of its Live Activity token routes and the flat codes of its service reads. Seeded 2026-11-22.",
   "codes": [
     {
       "code": "AGENT_NOT_ELIGIBLE",
@@ -1098,6 +1098,13 @@
       "meaning": "A board holds as many queued cards as it allows."
     },
     {
+      "code": "REPOSITORY_CHOICE_REFUSED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "A card's choice of repositories is refused: it is not an ordered subset of the stage's allow-list, or the card's bench already exists so its choice is fixed. `detail.reason` says which (`frozen` for a bench that exists)."
+    },
+    {
       "code": "M_BAD_JSON",
       "owner": "agentpod",
       "envelope": "matrix-error.v1",
@@ -1138,6 +1145,322 @@
       "envelope": "matrix-error.v1",
       "status": 503,
       "meaning": "The hub's push gateway is not configured, so there is nothing to push a Live Activity token to."
+    },
+    {
+      "code": "invalid",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "The body, a query value or an X-On-Behalf-Of header does not match the route. A declare may say why in `detail`, or list zod's `issues` as `[{path, message}]`."
+    },
+    {
+      "code": "path_refused",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "A file path, a link source's path or a station file's path is refused by the path rules: `path`, `reason` (empty, too_long, control_character, backslash, absolute, parent or denied) and, for denied, the `rule` it matched."
+    },
+    {
+      "code": "duplicate_path",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "Two declared files normalise to the same `path`."
+    },
+    {
+      "code": "entry_not_found",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "The declared `entry` is not among the declared files."
+    },
+    {
+      "code": "source_required",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "An agent's upload, made through the AgentPod hub, carries no link `source`."
+    },
+    {
+      "code": "scope_mismatch",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "A link source's scope is not `board:` plus its own board."
+    },
+    {
+      "code": "size_mismatch",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "The bytes sent for `path` are not the declared size."
+    },
+    {
+      "code": "sha256_mismatch",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "The bytes sent for `path` do not have the declared SHA-256."
+    },
+    {
+      "code": "sign_in_required",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 401,
+      "meaning": "No bearer token, or one that does not verify. The answer carries `WWW-Authenticate` naming the protected-resource metadata."
+    },
+    {
+      "code": "product_not_enabled",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 403,
+      "meaning": "The caller's workspace (`org`) is not entitled to SuperLibrary."
+    },
+    {
+      "code": "principal_not_supported",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 403,
+      "meaning": "This kind of caller may not use the route: a service other than the AgentPod hub, the hub naming no agent or a person, a token a service minted for a person, an agent calling a person's route or uploading directly. `detail` says which."
+    },
+    {
+      "code": "source_not_trusted",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 403,
+      "meaning": "An upload carries a link `source` but does not come from the AgentPod hub acting for an agent."
+    },
+    {
+      "code": "station_not_yours",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 403,
+      "meaning": "The AgentPod hub does not confirm the station file's station belongs to the person, or does not know it."
+    },
+    {
+      "code": "not_permitted",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 403,
+      "meaning": "The caller can see the item but may not manage it: only its uploader or a workspace owner widens it."
+    },
+    {
+      "code": "not_found",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 404,
+      "meaning": "No such upload session of the caller's, or no such item visible to the caller. Invisible is not found, never forbidden."
+    },
+    {
+      "code": "not_declared",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 404,
+      "meaning": "The `path` sent was not declared in the upload."
+    },
+    {
+      "code": "already_committed",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 409,
+      "meaning": "The upload session is committed; it takes no more files."
+    },
+    {
+      "code": "incomplete",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 409,
+      "meaning": "Declared files have not arrived, or their stored bytes have gone: `missing` lists their paths. Nothing was committed."
+    },
+    {
+      "code": "version_conflict",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 409,
+      "meaning": "Another upload made the same item's next version at the same moment. Nothing was committed; the client retries."
+    },
+    {
+      "code": "not_committed",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 409,
+      "meaning": "Verification asked for an upload that is not committed."
+    },
+    {
+      "code": "upload_expired",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 410,
+      "meaning": "The open upload session passed its expiry."
+    },
+    {
+      "code": "revoked",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 410,
+      "meaning": "The item, or the version asked for, is revoked."
+    },
+    {
+      "code": "expired",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 410,
+      "meaning": "The item has expired."
+    },
+    {
+      "code": "gone",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 410,
+      "meaning": "The upload was committed, but its item or version has since been deleted."
+    },
+    {
+      "code": "too_many_files",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 413,
+      "meaning": "More files than one upload takes; `limit` is the most."
+    },
+    {
+      "code": "file_too_large",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 413,
+      "meaning": "A declared file is over the per-file limit: `path` and `limit` (bytes)."
+    },
+    {
+      "code": "folder_too_large",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 413,
+      "meaning": "The declared files together are over the folder limit; `limit` is in bytes."
+    },
+    {
+      "code": "quota_exceeded",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 413,
+      "meaning": "The upload would take the workspace over its storage quota: `limit` and `used`, in bytes."
+    },
+    {
+      "code": "secret_found",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 422,
+      "meaning": "Commit refused: a file looks like it holds a secret. `findings` lists each `{path, line, rule}`; the flagged bytes wait in the upload's quarantine and nothing was added."
+    },
+    {
+      "code": "misconfigured",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 500,
+      "meaning": "SuperLibrary's own sign-in settings are invalid; `setting` names which."
+    },
+    {
+      "code": "unexpected",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 500,
+      "meaning": "An unexpected failure inside SuperLibrary."
+    },
+    {
+      "code": "hub_unreachable",
+      "owner": "superlibrary",
+      "envelope": "flat-error.v1",
+      "status": 502,
+      "meaning": "SuperLibrary could not ask the AgentPod hub whose the station file's station is."
+    },
+    {
+      "code": "unauthorized",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 401,
+      "meaning": "No bearer token, or one the hub's Organization-plane verifier does not accept: unknown key, foreign signature, expired, wrong issuer or audience. One word for all of them, on the hub's service reads (catalog, roster, evidence)."
+    },
+    {
+      "code": "forbidden",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 403,
+      "meaning": "The token is valid but does not admit the read: a service the route's allowlist (CATALOG_READERS, ROSTER_READERS) does not name, or, on the evidence routes, a human token or one whose grant scopes lack the route's scope."
+    },
+    {
+      "code": "product_not_enabled",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 403,
+      "meaning": "The token's organization has not enabled AgentPod. `org` names the organization beside the code. On the fleet list it is an extension code of oauth-bearer-error.v1."
+    },
+    {
+      "code": "invalid_station",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "The station id in the path is not `[A-Za-z0-9_-]{1,100}`."
+    },
+    {
+      "code": "invalid_principal",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "The principal id in the path is not a `prn_` id."
+    },
+    {
+      "code": "invalid_board",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "The board id in the path is not a `brd_` id."
+    },
+    {
+      "code": "not_found",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 404,
+      "meaning": "No such thing in the caller's workspace: a station, run, attempt, export, session or transcript item, or a principal neither id form names. Another workspace's is not_found too, never forbidden, which would confirm it exists."
+    },
+    {
+      "code": "unsupported_evidence_version",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "A versioned evidence read's `schema_version` is not the one version the route answers, is repeated, or has another query key beside it. A reader is refused, never answered in another version."
+    },
+    {
+      "code": "artifact_export_unconfirmed",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 409,
+      "alsoStatus": [502],
+      "meaning": "An execution export is recorded but not committed and verified, so it has no receipt: 409 on the receipt read. The agent-only export route, not contracted, answers it 502 with `request_id` when the commit could not be confirmed."
+    },
+    {
+      "code": "execution_evidence_unavailable",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 502,
+      "meaning": "The hub could not read a run's executions."
+    },
+    {
+      "code": "identity_unavailable",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 503,
+      "meaning": "The Organization plane did not answer a principal lookup. Down is not nobody: a reader must not record the principal as unknown."
+    },
+    {
+      "code": "bad_range",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 400,
+      "meaning": "A transcript read's seq_from or seq_to is not digits, lies outside the session or is reversed, or its cursor does not decode or points outside the range."
+    },
+    {
+      "code": "item_too_large",
+      "owner": "agentpod",
+      "envelope": "flat-error.v1",
+      "status": 413,
+      "meaning": "A transcript item asked for whole (`full=1`) is over 1 MiB serialised."
     }
   ]
 }

@@ -1,0 +1,115 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AgentPod fleet list",
+    "version": "1",
+    "description": "The agents a person may dispatch, for SuperPipeline's agent picker on another registrable domain. Written from AgentPod's route on main (apps/hub/src/routes/fleet-dispatchable.ts, mounted ahead of authMiddleware). The answer is read from the verified token's `mayDispatch` claim and from nothing the request carries: each granted principal that resolves to an agent that is not suspended, once each, in the grant's order. Refusals keep RFC 6750's bearer-token shape (ruling 2 of the phase 3 plan), so this document's envelope is the standard oauth-bearer-error.v1: a missing, unaccepted or non-human token is 401 `invalid_token` with an `error_description`, and an organization that has not enabled AgentPod is 403 `product_not_enabled` with `org`, the hub's one plane verifier's answer."
+  },
+  "x-treaty-error-envelope": "oauth-bearer-error.v1",
+  "servers": [
+    {
+      "url": "https://hub.agentpod.dev",
+      "description": "An AgentPod hub. SuperPipeline's web app reads PUBLIC_HUB_URL."
+    }
+  ],
+  "paths": {
+    "/api/fleet/dispatchable": {
+      "get": {
+        "operationId": "listDispatchableAgents",
+        "summary": "The agents the caller may dispatch",
+        "description": "An empty list is an ordinary answer: a person with no grant sees an empty picker. A granted id that names nothing, a human, a service or a suspended agent is skipped silently, and the answer carries no field that says so.",
+        "security": [
+          {
+            "humanPlaneToken": []
+          }
+        ],
+        "x-treaty-error-codes": ["invalid_token", "product_not_enabled"],
+        "responses": {
+          "200": {
+            "description": "The agents",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DispatchableAgents"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "invalid_token: no `Authorization: Bearer`, a token the hub does not accept (unknown, expired, signed by somebody else, or not issued for this hub), or a principal that is not human. One code for all; `error_description` says which in words.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/oauth-bearer-error.v1.json",
+                  "properties": {
+                    "error": {
+                      "enum": ["invalid_token"]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "product_not_enabled: the token's organization has not enabled AgentPod; `org` names it",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/oauth-bearer-error.v1.json",
+                  "properties": {
+                    "error": {
+                      "enum": ["product_not_enabled"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "humanPlaneToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "An Organization-plane access token for a human principal, audience the hub: SuperPipeline's web app asks for a hub-audience token for its picker (the issuer contract §3.1). A session cookie is never read. An agent's or a service's token is refused: the authority to ask an agent to work is not the authority to list the fleet."
+      }
+    },
+    "schemas": {
+      "DispatchableAgent": {
+        "type": "object",
+        "required": ["id", "handle", "displayName"],
+        "description": "SuperPipeline's picker reads all three. There is no `kind` (every one is an agent) and no suspension (a suspended agent is not listed).",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^prn_[0-9a-f]{20}$",
+            "description": "The agent's principal id."
+          },
+          "handle": {
+            "type": "string",
+            "minLength": 1
+          },
+          "displayName": {
+            "type": ["string", "null"]
+          }
+        }
+      },
+      "DispatchableAgents": {
+        "type": "object",
+        "required": ["agents"],
+        "properties": {
+          "agents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DispatchableAgent"
+            },
+            "description": "Each agent once."
+          }
+        }
+      }
+    }
+  }
+}
