@@ -183,6 +183,37 @@ describe("checkOpenApi", () => {
       },
       'invalid case "fine really" passes',
     ],
+    [
+      "an error case the envelope refuses",
+      {
+        in: "cases",
+        path: ["operations", "getCard", "responses", "403"],
+        to: {
+          valid: { "a bare string": { error: "NOT_RUN_OWNER" } },
+          invalid: [],
+        },
+      },
+      'getCard 403: valid case "a bare string" fails',
+    ],
+    [
+      "an invalid error case the envelope accepts",
+      {
+        in: "cases",
+        path: ["operations", "getCard", "responses", "403"],
+        to: {
+          valid: {
+            refused: { error: { code: "NOT_RUN_OWNER", message: "No." } },
+          },
+          invalid: [
+            {
+              why: "fine really",
+              body: { error: { code: "NOT_RUN_OWNER", message: "No." } },
+            },
+          ],
+        },
+      },
+      'getCard 403: invalid case "fine really" passes',
+    ],
   ];
   for (const [what, edit, expected] of broken) {
     test(`refuses ${what}`, () => {

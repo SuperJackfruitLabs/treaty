@@ -26,8 +26,9 @@ Every document keeps these rules, checked by `scripts/openapi.test.ts`:
 - Every 4xx and 5xx response is `schemas/common/error.v1.json`. An operation names the codes it
   may return in `x-treaty-error-codes`, and each code is the owner's in
   `contracts/error-codes.json`.
-- Every request has valid and invalid cases, and every success response has valid cases. Each
-  case validates as it is labelled.
+- Every request has valid and invalid cases, and every success response has valid cases. An
+  error response may have cases too, for the fields a document pins beside a code. Each case
+  validates as it is labelled.
 - An `http` crossing in `contracts/registry.json` names the document.
 
 Within a version, a document may only add: new operations, new optional properties, new response

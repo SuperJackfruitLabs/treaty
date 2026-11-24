@@ -10,6 +10,12 @@ deploys the event relay to production.
   - `schemas/http/superpipeline/placement.v1.openapi.json`: card eligibility (`dispatch:read`), reservation `PUT`/`DELETE` (`dispatch:reserve`), scheduling `GET`/`PUT`, and `GET /v1/agents/load` (`dispatch:read`). The load route is proposed: SuperPipeline builds it to this shape, `{agents: [{agentId, principalId, inFlight, capacity, lastHeartbeatAt}]}`.
   - Cases for both in `fixtures/http/superpipeline/`. SuperPipeline's `run-evidence-v1.json` fixture and its recorded C4 examples are now cases of the evidence routes.
   - `superpipeline.board-read` and `superpipeline.placement` are contracted. Coverage is 60%: 18 of 30 crossings contracted.
+- **SuperLibrary's API** (`schemas/http/superlibrary/api.v1.openapi.json`, flat-error.v1): every route another product calls. The uploads (`createUpload`, `putUploadFile`, `commitUpload`, `verifyUpload`) for the AgentPod hub and console, `relatedWork`, `invalidateRoster`, and SuperPipeline's `me`, `getItem`, `embedItem` and `widenItemScope`, with cases.
+  - SuperLibrary's refusals carry fields beside `error`. Each error response pins them with an if/then on the envelope, for example `path`, `reason` and `rule` beside path_refused, `missing` beside incomplete, `findings` beside secret_found.
+  - Its 32 codes join `contracts/error-codes.json`. A code is now unique within its owner, not across products: SuperLibrary and Accounts both answer `not_permitted`.
+- **Error cases are checked.** When an HTTP contract gives cases for a 4xx or 5xx response, `checkOpenApi` validates them as labelled.
+- **Artifact records** (`contracts/artifacts/`, `schemas/treaty/artifact.v1.json`): code one product ships to another as built files, recorded by version, commit and SHA-256. The first is SuperLibrary's embed 0.0.1, which SuperPipeline vendors. `superlibrary.api` lists it.
+- Coverage 57%: 17 of 30 crossings contracted.
 
 ## v0.0.18 — 2026-11-23
 

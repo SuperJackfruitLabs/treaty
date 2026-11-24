@@ -195,6 +195,20 @@ export function checkOpenApi(
           problems.push(
             `${op.id} ${status}: an error response must be ${errorSchema}`,
           );
+        // Error cases are optional; when a document pins the fields beside a code, its cases are
+        // checked as they are labelled, like a success response's.
+        const errorCases = opCases?.responses?.[status];
+        if (errorCases)
+          problems.push(
+            ...checkCases(
+              bundle,
+              path,
+              pointer,
+              errorCases,
+              `${op.id} ${status}`,
+              false,
+            ),
+          );
         continue;
       }
       problems.push(

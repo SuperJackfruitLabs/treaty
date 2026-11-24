@@ -16,6 +16,7 @@ describe("schemas/http", () => {
     expect(documents).toEqual([
       "schemas/http/accounts/plane.v1.openapi.json",
       "schemas/http/agentpod/live-activity.v1.openapi.json",
+      "schemas/http/superlibrary/api.v1.openapi.json",
       "schemas/http/superpipeline/agent-work.v1.openapi.json",
       "schemas/http/superpipeline/approvals.v1.openapi.json",
       "schemas/http/superpipeline/board-read.v1.openapi.json",
