@@ -1098,6 +1098,13 @@
       "meaning": "A board holds as many queued cards as it allows."
     },
     {
+      "code": "REPOSITORY_CHOICE_REFUSED",
+      "owner": "superpipeline",
+      "envelope": "error.v1",
+      "status": 409,
+      "meaning": "A card's choice of repositories is refused: it is not an ordered subset of the stage's allow-list, or the card's bench already exists so its choice is fixed. `detail.reason` says which (`frozen` for a bench that exists)."
+    },
+    {
       "code": "M_BAD_JSON",
       "owner": "agentpod",
       "envelope": "matrix-error.v1",
