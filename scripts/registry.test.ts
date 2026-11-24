@@ -155,8 +155,8 @@ describe("contracts/registry.json", () => {
       applicable: 30,
       byStatus: {
         contracted: 18,
-        partial: 1,
-        uncontracted: 9,
+        partial: 2,
+        uncontracted: 8,
         proposed: 1,
         external: 1,
         standard: 2,

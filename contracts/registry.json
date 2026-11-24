@@ -562,16 +562,28 @@
       "id": "agentpod.evidence",
       "title": "Run evidence, attempts, transcripts and execution export",
       "owner": "agentpod",
-      "consumers": ["superwitness", "superpipeline"],
+      "consumers": ["superwitness", "superpipeline", "salaam"],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "Held together by byte-identical files copied into Salaam and SuperWitness; transcripts pass through untyped; SuperPipeline builds the export URL from a string.",
+      "status": "partial",
+      "contract": [
+        "schemas/agentpod/execution-artifacts.v1.json",
+        "schemas/agentpod/execution-evidence.v1.json",
+        "schemas/agentpod/execution-export.v1.json",
+        "fixtures/agentpod-evidence/examples.json"
+      ],
+      "cases": {
+        "schemas/agentpod/execution-artifacts.v1.json": "fixtures/agentpod-evidence/examples.json#/schemas/execution-artifacts.v1",
+        "schemas/agentpod/execution-evidence.v1.json": "fixtures/agentpod-evidence/examples.json#/schemas/execution-evidence.v1",
+        "schemas/agentpod/execution-export.v1.json": "fixtures/agentpod-evidence/examples.json#/schemas/execution-export.v1"
+      },
+      "gaps": "The routes have no OpenAPI document yet; transcripts pass through untyped; SuperPipeline builds the export URL from a string. The execution schemas and corpora are in treaty, so the copies in Salaam and SuperWitness can become vendored data.",
       "phase": 3,
       "evidence": [
         "agentpod:apps/hub/src/routes/evidence.ts",
+        "agentpod:packages/contract/src/execution-evidence.ts",
         "superwitness:internal/source/agentpod/adapter.go",
-        "superpipeline:apps/api/src/routes/boards/runs.ts"
+        "superpipeline:apps/api/src/routes/boards/runs.ts",
+        "salaam:test/fixtures/execution-evidence-v1.schema.json"
       ]
     },
     {
