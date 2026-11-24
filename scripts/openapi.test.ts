@@ -20,6 +20,7 @@ describe("schemas/http", () => {
       "schemas/http/superpipeline/approvals.v1.openapi.json",
       "schemas/http/superpipeline/board-read.v1.openapi.json",
       "schemas/http/superpipeline/decisions.v1.openapi.json",
+      "schemas/http/superpipeline/placement.v1.openapi.json",
       "schemas/http/superpipeline/push.v1.openapi.json",
     ]);
   });

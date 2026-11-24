@@ -154,15 +154,15 @@ describe("contracts/registry.json", () => {
     expect(coverage(registry)).toEqual({
       applicable: 30,
       byStatus: {
-        contracted: 17,
+        contracted: 18,
         partial: 1,
-        uncontracted: 10,
+        uncontracted: 9,
         proposed: 1,
         external: 1,
         standard: 2,
         deprecated: 2,
       },
-      percent: 57,
+      percent: 60,
     });
   });
 });
