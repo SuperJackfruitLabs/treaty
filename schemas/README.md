@@ -4,10 +4,18 @@ Every contract treaty holds, as JSON Schema draft 2020-12. Each schema's `$id` i
 the public repository, and every schema belongs to a crossing in
 [`contracts/registry.json`](../contracts/registry.json).
 
-- `common/`: pieces other contracts reference, such as `error.v1.json`, the one error envelope.
+- `common/`: pieces other contracts reference, such as the error envelopes (`error.v1`,
+  `flat-error.v1`, `matrix-error.v1`, and RFC 6750's `oauth-bearer-error.v1`).
 - `http/`: HTTP APIs as OpenAPI 3.1 documents ([conventions](http/README.md)).
+- `mcp/`: MCP tool catalogs: each tool's name, scope, input schema and result, with cases in
+  `fixtures/mcp/`. Their form is `treaty/mcp-catalog.v1.json`.
+- `telemetry/`: telemetry conventions: span names, attribute keys and their types, and trace
+  propagation, with cases in `fixtures/telemetry/`. Their form is
+  `treaty/telemetry-conventions.v1.json`.
+- `urls/`: URL shapes: a URL's origins, path and parameters, with cases in `fixtures/urls/`.
+  Their form is `treaty/url-shape.v1.json`.
 - `treaty/`: the shape of treaty's own files: the registry, the error codes, a product's
-  `treaty.json` and an artifact record (`contracts/artifacts/`).
+  `treaty.json`, an artifact record (`contracts/artifacts/`) and the three forms above.
 
 The sections below describe the event and Matrix schemas.
 
