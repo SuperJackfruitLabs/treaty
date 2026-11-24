@@ -38,7 +38,7 @@ export default defineConfig({
               'fixture corpus; a transactional outbox and deduplicating inbox; and the relay that carries ' +
               'events from Cloudflare Workers to NATS JetStream and back over signed HTTP. It defines; the ' +
               "products carry. It holds no product's data. Packages are on npm as " +
-              '@superjackfruitlabs/treaty-*, MIT, current version v0.0.20.',
+              '@superjackfruitlabs/treaty-*, MIT, current version v0.0.21.',
             optionalLinks: [
               { label: 'Source', url: REPO, description: 'The treaty repository on GitHub.' },
               {
