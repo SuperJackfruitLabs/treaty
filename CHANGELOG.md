@@ -5,6 +5,8 @@ deploys the event relay to production.
 
 ## Unreleased
 
+## v0.0.20 — 2026-11-24
+
 - **Registry evidence:** `agentpod.evidence` cited Salaam's copied `test/fixtures/execution-evidence-v1.schema.json`, which Salaam deleted when it began vendoring treaty's data; it now cites `salaam:treaty.json` and `salaam:test/unit/agentpod-work.test.ts`. Every other evidence path for Salaam, SuperWitness and SuperMessage exists on their main.
 - **AgentPod's execution evidence cases match the hub.** `readExecutionEvidence`'s corpus case put three executions in one envelope, two of them of the same task and session; AgentPod's hub answers at most one (the run's latest snapshot), and SuperWitness refuses two of one session as a conflicting join. Each corpus execution is now its own envelope, `ExecutionEvidenceResponse` states that executions in an envelope have distinct sessions, and a test holds the cases to it. The schema is unchanged: JSON Schema cannot say it, and `x-uniqueBy` is checked only for Matrix content.
 - **SuperLibrary's `ItemSummary` describes ingested work records** (`schemas/http/superlibrary/api.v1.openapi.json`). `createdBy` is a `prn_` principal or `source:superpipeline`, the one source SuperLibrary's ingest writes items as; `latestVersion` may be 0, which only an ingested work record with no uploaded version has. A source creates only work records, and version 0 is only theirs. SuperLibrary has always sent these; the contract now says so, and SuperLibrary can drop its two `ALLOWED_MISMATCHES`. This widens a v1 response in place, so `bun run compat` reports it: the six findings are recorded in `contracts/compat-exceptions.json` against v0.0.19 and stop applying once v0.0.20 is out.
