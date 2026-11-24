@@ -268,3 +268,70 @@ describe("an exception scoped to a release", () => {
     expect(later.stdout).toContain("expired");
   });
 });
+
+/** One tool of a sample catalog. */
+const tool = (name: string, input: Record<string, unknown> = {}) => ({
+  name,
+  scope: "run",
+  description: name,
+  inputSchema: {
+    type: "object",
+    properties: { id: { type: "string" } },
+    ...input,
+  },
+  result: { carrier: "text-json", schema: { type: "object" } },
+});
+
+describe("an MCP catalog", () => {
+  const PATH = "schemas/mcp/sample.v1.json";
+  const RAW =
+    "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/";
+  const catalog = (tools: unknown[]) => ({
+    $schema: `${RAW}schemas/treaty/mcp-catalog.v1.json`,
+    $id: `${RAW}${PATH}`,
+    catalog: "treaty mcp catalog",
+    version: 1,
+    server: { name: "sample" },
+    tools,
+  });
+  const cases = {
+    tools: {
+      a: { arguments: { valid: { "an id": { id: "x" } }, invalid: [] } },
+    },
+  };
+  const bundle = (tools: unknown[]) =>
+    createBundle({
+      [PATH]: catalog(tools),
+      "fixtures/mcp/sample.v1.cases.json": cases,
+    });
+
+  test("a tool added is no finding", () => {
+    expect(
+      compare(bundle([tool("a")]), bundle([tool("a"), tool("b")])),
+    ).toEqual([]);
+  });
+
+  test("a tool removed, a scope changed and a required argument added are breaking, named by tool", () => {
+    const head = bundle([
+      { ...tool("a", { required: ["id"] }), scope: "claim" },
+    ]);
+    expect(compare(bundle([tool("a"), tool("b")]), head)).toEqual([
+      { path: PATH, pointer: "/tools/a/scope", rule: "scope-changed" },
+      {
+        path: PATH,
+        pointer: "/tools/a/inputSchema/required/id",
+        rule: "required-added",
+      },
+      { path: PATH, pointer: "/tools/b", rule: "tool-removed" },
+    ]);
+  });
+
+  test("an old argument case the new input schema refuses is breaking", () => {
+    const head = bundle([
+      tool("a", { properties: { id: { type: "string", maxLength: 0 } } }),
+    ]);
+    expect(compare(bundle([tool("a")]), head).map((f) => f.rule)).toContain(
+      "old-case-refused a arguments: an id",
+    );
+  });
+});
