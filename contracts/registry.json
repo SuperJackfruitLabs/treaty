@@ -700,11 +700,20 @@
       "owner": "accounts",
       "consumers": ["supermessage"],
       "kind": "http",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "Matrix OpenID is the standard; the link page's parameters are local.",
-      "phase": 3,
+      "status": "contracted",
+      "contract": [
+        "schemas/urls/accounts-matrix-link.v1.json",
+        "schemas/urls/supermessage-linked.v1.json",
+        "fixtures/urls/accounts-matrix-link.v1.cases.json",
+        "fixtures/urls/supermessage-linked.v1.cases.json"
+      ],
+      "cases": {
+        "schemas/urls/accounts-matrix-link.v1.json": "fixtures/urls/accounts-matrix-link.v1.cases.json",
+        "schemas/urls/supermessage-linked.v1.json": "fixtures/urls/supermessage-linked.v1.cases.json"
+      },
       "evidence": [
+        "accounts:src/client/link-matrix.page.ts",
+        "accounts:src/pages/link-matrix.tsx",
         "accounts:src/me/identities-routes.ts",
         "supermessage:crates/supermessage-core/src/account_link.rs"
       ]
