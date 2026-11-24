@@ -5,6 +5,8 @@ deploys the event relay to production.
 
 ## Unreleased
 
+- **A standard error envelope, `schemas/common/oauth-bearer-error.v1.json`:** RFC 6750's `{ "error", "error_description" }`, for routes that refuse an OAuth bearer token in that shape. Its three codes are RFC 6750's, listed in the schema's `$defs/standardCode`, and need no entry in `contracts/error-codes.json`; an owner's extension codes are its `flat-error.v1` codes. `checkOpenApi` now also refuses a code recorded in another envelope than the document's, so one product may answer in more than one envelope (AgentPod: Matrix for Live Activity, flat for its service reads).
+
 ## v0.0.18 — 2026-11-23
 
 - **A cancelled gate has a receipt.** `dev.superpipeline.gate.outcome.v1` gains the decision `cancelled`, for a gate the board ended without a decision (its card was moved by hand or archived while the review was pending). `GATE_CANCELLED_DECISION` names it, and `gateOutcomeBody` says it as a whole sentence that names nobody. The schema now lists the decisions it carries in `x-treaty-known-values`; the field stays an open string, and a reader that does not know a value still closes the card.

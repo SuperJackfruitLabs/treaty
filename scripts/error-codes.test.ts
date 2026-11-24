@@ -1,7 +1,11 @@
 import { describe, expect, test } from "bun:test";
 import { Validator } from "@cfworker/json-schema";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import {
+  STANDARD_ENVELOPES,
+  envelopeOf,
+} from "../packages/contracts/src/openapi-check.ts";
 import { PRODUCTS } from "../packages/contracts/src/registry.ts";
 
 const root = join(import.meta.dir, "..");
@@ -99,6 +103,62 @@ describe("schemas/common/matrix-error.v1.json", () => {
   }
 });
 
+describe("schemas/common/oauth-bearer-error.v1.json", () => {
+  const schema = readJson("schemas/common/oauth-bearer-error.v1.json");
+  const validator = new Validator(schema, "2020-12", false);
+  const cases: {
+    valid: Record<string, unknown>;
+    invalid: { why: string; body: unknown }[];
+  } = readJson("fixtures/common/oauth-bearer-error.v1.cases.json");
+
+  test("its $id is where it is published", () => {
+    expect(schema.$id).toBe(`${RAW}schemas/common/oauth-bearer-error.v1.json`);
+  });
+
+  test("its standard codes are RFC 6750's three", () => {
+    expect(schema.$defs.standardCode.enum).toEqual([
+      "invalid_request",
+      "invalid_token",
+      "insufficient_scope",
+    ]);
+  });
+
+  for (const [label, body] of Object.entries(cases.valid)) {
+    test(`accepts ${label}`, () => {
+      expect(validator.validate(body).errors).toEqual([]);
+    });
+  }
+  for (const { why, body } of cases.invalid) {
+    test(`refuses: ${why}`, () => {
+      expect(validator.validate(body).valid).toBe(false);
+    });
+  }
+});
+
+/** The envelopes each owner's HTTP contracts declare, a standard one counted as its extension codes' envelope. */
+function declaredEnvelopes(): Map<string, Set<string>> {
+  const out = new Map<string, Set<string>>();
+  for (const owner of readdirSync(join(root, "schemas/http"), {
+    withFileTypes: true,
+  })) {
+    if (!owner.isDirectory()) continue;
+    for (const file of readdirSync(join(root, "schemas/http", owner.name))) {
+      if (!file.endsWith(".openapi.json")) continue;
+      const envelope = envelopeOf(
+        readJson(`schemas/http/${owner.name}/${file}`),
+      );
+      if (!envelope) continue;
+      out.set(
+        owner.name,
+        (out.get(owner.name) ?? new Set()).add(
+          STANDARD_ENVELOPES[envelope] ?? envelope,
+        ),
+      );
+    }
+  }
+  return out;
+}
+
 /** The form a code takes in each envelope. */
 const CODE_FORM: Record<ErrorCode["envelope"], RegExp> = {
   "error.v1": /^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$/,
@@ -129,14 +189,13 @@ describe("contracts/error-codes.json", () => {
     expect(CODE_FORM["flat-error.v1"].test("M_UNKNOWN_TOKEN")).toBe(false);
   });
 
-  test("a product's codes all travel in one envelope", () => {
-    const envelopes = new Map<string, Set<string>>();
-    for (const c of codes)
-      envelopes.set(
-        c.owner,
-        (envelopes.get(c.owner) ?? new Set()).add(c.envelope),
-      );
-    expect([...envelopes].filter(([, e]) => e.size > 1)).toEqual([]);
+  test("a product's codes travel only in envelopes its HTTP contracts declare", () => {
+    const declared = declaredEnvelopes();
+    expect(
+      codes
+        .filter((c) => !declared.get(c.owner)?.has(c.envelope))
+        .map((c) => `${c.owner} ${c.code} ${c.envelope}`),
+    ).toEqual([]);
   });
 
   test("every code is owned by a known product", () => {

@@ -112,6 +112,30 @@ const matrixDoc = (envelope: string) => ({
   },
 });
 
+/** One GET in `envelope`, naming `errorCodes`. */
+const docFor = (envelope: string, errorCodes: string[]) => ({
+  openapi: "3.1.0",
+  "x-treaty-error-envelope": envelope,
+  paths: {
+    "/api/sample": {
+      get: {
+        operationId: "readSample",
+        "x-treaty-error-codes": errorCodes,
+        responses: {
+          "401": {
+            description: "refused",
+            content: {
+              "application/json": {
+                schema: { $ref: `../../common/${envelope}.json` },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+});
+
 describe("checkOpenApi", () => {
   test("the sample keeps every rule", () => {
     expect(checkOpenApi(bundleWith(), DOC, registry)).toEqual([]);
@@ -279,6 +303,87 @@ describe("checkOpenApi", () => {
       expect(
         checkOpenApi(bundleFor("error.v1"), agentpodDoc, reg).join("\n"),
       ).toContain("an error response must be schemas/common/error.v1.json");
+    });
+  });
+
+  describe("a code's envelope", () => {
+    const agentpodDoc = "schemas/http/agentpod/sample.v1.openapi.json";
+    const codes = {
+      registry: "treaty error codes",
+      version: 2,
+      codes: [
+        {
+          code: "M_UNKNOWN_TOKEN",
+          owner: "agentpod",
+          envelope: "matrix-error.v1",
+          status: 401,
+          meaning: "unknown token",
+        },
+        {
+          code: "not_found",
+          owner: "agentpod",
+          envelope: "flat-error.v1",
+          status: 404,
+          meaning: "no such thing",
+        },
+      ],
+    };
+    const check = (envelope: string, errorCodes: string[]) => {
+      const [first] = registry.crossings;
+      if (!first) throw new Error("the sample registry is empty");
+      return checkOpenApi(
+        createBundle({
+          [`schemas/common/${envelope}.json`]: json(
+            join(root, `schemas/common/${envelope}.json`),
+          ),
+          "contracts/error-codes.json": codes,
+          [agentpodDoc]: docFor(envelope, errorCodes),
+          ["fixtures/http/agentpod/sample.v1.cases.json"]: { operations: {} },
+        }),
+        agentpodDoc,
+        {
+          ...registry,
+          crossings: [
+            {
+              ...first,
+              id: "agentpod.sample",
+              owner: "agentpod",
+              consumers: ["superpipeline"],
+              contract: [agentpodDoc],
+            },
+          ],
+        },
+      );
+    };
+
+    test("an owner's code must be recorded in the document's envelope", () => {
+      expect(check("matrix-error.v1", ["not_found"]).join("\n")).toContain(
+        "error code not_found travels in flat-error.v1, not matrix-error.v1",
+      );
+      expect(check("flat-error.v1", ["not_found"])).toEqual([]);
+    });
+
+    test("an oauth-bearer-error.v1 API names RFC 6750's codes and its owner's flat extension codes", () => {
+      expect(
+        check("oauth-bearer-error.v1", ["invalid_token", "not_found"]),
+      ).toEqual([]);
+    });
+
+    test("an oauth-bearer-error.v1 API refuses a code that is neither RFC 6750's nor its owner's flat code", () => {
+      expect(
+        check("oauth-bearer-error.v1", ["invalid_grant"]).join("\n"),
+      ).toContain("error code invalid_grant is not agentpod's");
+      expect(
+        check("oauth-bearer-error.v1", ["M_UNKNOWN_TOKEN"]).join("\n"),
+      ).toContain(
+        "error code M_UNKNOWN_TOKEN travels in matrix-error.v1, not flat-error.v1",
+      );
+    });
+
+    test("RFC 6750's codes are not free in a suite envelope", () => {
+      expect(check("flat-error.v1", ["invalid_token"]).join("\n")).toContain(
+        "error code invalid_token is not agentpod's",
+      );
     });
   });
 
