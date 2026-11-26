@@ -5,6 +5,12 @@ deploys the event relay to production.
 
 ## Unreleased
 
+## v0.0.22 — 2026-11-26
+
+### Added
+
+- **SuperBench's remote credential request and reply are contracts, proposed** (`schemas/superbench/remote-credential-request.v1.json`, `schemas/superbench/remote-credential-response.v1.json`). `POST /v2/remote/credentials` on SuperBench's local socket asks for a writer certificate for a public key on the lease its token owns. The request is closed: `version`, `operation`, `key`, a 32-hex `lease_token` and a `public_key`. The reply is a closed envelope: `ok` with a `result` of the nine credential fields, including the absolute `working_directory` every session starts in, or `ok: false` with an error code. Certificates for ecdsa client keys (`ecdsa-sha2-nistp256-cert-v01`) are accepted as well as ed25519. Cases are in `fixtures/superbench-api/remote-credentials.json`, registered on `superbench.local-api` (the crossing stays partial; SuperBench produces it on its remote-access branch and no consumer is deployed against it). Described in `docs/2026-11-14-superbench-local-api.md`.
+
 ## v0.0.21 — 2026-11-24
 
 ### Fixed
