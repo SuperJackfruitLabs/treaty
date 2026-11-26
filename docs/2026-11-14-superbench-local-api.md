@@ -111,3 +111,19 @@ operation, at most 10,000 receipts and 64 MiB of encoded receipts. Exhaustion
 refuses new growth; reconciliation remains available. Automatic receipt deletion
 is not part of this version. Cached lease replies can contain a historic token;
 replaying them never restores the lease, and status is the current authority.
+
+## Remote credentials (proposed)
+
+`POST /v2/remote/credentials` on the same socket asks for a writer certificate for
+a public key, on the lease its token owns. It is proposed: SuperBench produces it on
+its remote-access branch, and no consumer is deployed against it. The request is
+`schemas/superbench/remote-credential-request.v1.json`: exactly `version`
+(`superbench.remote.v1`), `operation` (`writer_certificate`), `key`, a 32-hex
+`lease_token` and a `public_key`; any other field is refused. The reply is
+`schemas/superbench/remote-credential-response.v1.json`: `ok` with a `result`
+(certificate, user, address, host key and fingerprint, lease id, generation, an RFC
+3339 UTC `valid_before` and the absolute `working_directory` every session starts
+in), or `ok: false` with an `error` code of `invalid_request`, `forbidden`,
+`not_found`, `conflict` or `unavailable`. The reply schema is closed, as every other
+SuperBench reply schema is. `fixtures/superbench-api/remote-credentials.json` holds
+the valid and invalid cases. The lease token is never echoed in a reply.

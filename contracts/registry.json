@@ -235,14 +235,23 @@
         "schemas/superbench/receipt-lookup-response.v2.json",
         "schemas/superbench/registration-observe-operation.v2.json",
         "schemas/superbench/registration-observe-response.v2.json",
+        "schemas/superbench/remote-credential-request.v1.json",
+        "schemas/superbench/remote-credential-response.v1.json",
         "schemas/superbench/response.v2.json",
-        "fixtures/superbench-api/operations.json"
+        "fixtures/superbench-api/operations.json",
+        "fixtures/superbench-api/remote-credentials.json"
       ],
-      "gaps": "registrations/observe is called by agentpod with no reference to its schema; receipt lookup is checked by fixture only; pins sit at five treaty revisions and are compared by hash, not against a release.",
+      "cases": {
+        "schemas/superbench/remote-credential-request.v1.json": "fixtures/superbench-api/remote-credentials.json#/request",
+        "schemas/superbench/remote-credential-response.v1.json": "fixtures/superbench-api/remote-credentials.json#/response"
+      },
+      "gaps": "registrations/observe is called by agentpod with no reference to its schema; receipt lookup is checked by fixture only; pins sit at five treaty revisions and are compared by hash, not against a release; remote credential: proposed; produced on SuperBench's M1 branch.",
       "phase": 3,
       "evidence": [
         "superbench:internal/service/server_v2.go",
-        "agentpod:apps/node-agent/internal/benchworkspace/client.go"
+        "superbench:internal/remoteproto/proto.go",
+        "agentpod:apps/node-agent/internal/benchworkspace/client.go",
+        "agentpod:apps/node-agent/internal/benchworkspace/remote.go"
       ]
     },
     {
