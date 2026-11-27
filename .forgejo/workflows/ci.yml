@@ -76,6 +76,14 @@ jobs:
         run: bun run test
       - name: Build the packages
         run: bun run build
+      # The Go module (go.mod at the root) embeds the same files the npm package carries. Its
+      # tests compare the two, so they run after the build.
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: The Go module (vet, test, and the same files as the npm package)
+        run: bun run go
       # Product repositories in Go, Rust and Swift run the built CLI under Node, not Bun.
       - name: The built treaty CLI runs under Node
         run: |
