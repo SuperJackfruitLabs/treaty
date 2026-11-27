@@ -1,0 +1,2199 @@
+{
+  "operations": {
+    "reportRuns": {
+      "request": {
+        "valid": {
+          "SuperPipeline's batch, as its client test records it": {
+            "runs": [
+              {
+                "source": "superpipeline",
+                "external_ref": "brd_x/run_1",
+                "scope": {
+                  "id": "brd_x",
+                  "name": "B"
+                },
+                "title": "T",
+                "executor": {
+                  "name": "w"
+                },
+                "status": "running",
+                "source_status": "working",
+                "started_at": "2026-10-06T10:00:00.000Z",
+                "ended_at": null,
+                "reported_at": "2026-10-06T10:00:00.001Z"
+              },
+              {
+                "source": "superpipeline",
+                "external_ref": "brd_x/run_2",
+                "scope": {
+                  "id": "brd_x",
+                  "name": "B"
+                },
+                "title": "T",
+                "executor": {
+                  "name": "w"
+                },
+                "status": "running",
+                "source_status": "working",
+                "started_at": "2026-10-06T10:00:00.000Z",
+                "ended_at": null,
+                "reported_at": "2026-10-06T10:00:00.001Z"
+              },
+              {
+                "source": "superpipeline",
+                "external_ref": "brd_x/run_3",
+                "scope": {
+                  "id": "brd_x",
+                  "name": "B"
+                },
+                "title": "T",
+                "executor": {
+                  "name": "w"
+                },
+                "status": "running",
+                "source_status": "working",
+                "started_at": "2026-10-06T10:00:00.000Z",
+                "ended_at": null,
+                "reported_at": "2026-10-06T10:00:00.001Z"
+              }
+            ]
+          },
+          "a batch with stage reporting on": {
+            "runs": [
+              {
+                "source": "superpipeline",
+                "external_ref": "brd_x/run_4",
+                "scope": {
+                  "id": "brd_x"
+                },
+                "stage_key": "build",
+                "card_id": "card_0123456789abcdef",
+                "executor": {
+                  "id": "prn_0123456789abcdef0a01",
+                  "name": "Builder"
+                },
+                "status": "succeeded",
+                "source_status": "completed",
+                "started_at": "2026-10-06T10:00:00.000Z",
+                "ended_at": "2026-10-06T10:20:00.000Z",
+                "reported_at": "2026-10-06T10:20:00.001Z"
+              }
+            ]
+          },
+          "one report, as SuperWitness's handler test sends it": {
+            "source": "superpipeline",
+            "external_ref": "brd_01/run_01",
+            "scope": {
+              "id": "brd_01",
+              "name": "Press"
+            },
+            "title": "Draft the release note",
+            "status": "running",
+            "source_status": "in_progress",
+            "started_at": "2026-10-06T09:00:00Z",
+            "reported_at": "2026-10-06T09:00:01Z"
+          }
+        },
+        "invalid": [
+          {
+            "why": "a batch holds at least one report",
+            "body": {
+              "runs": []
+            }
+          },
+          {
+            "why": "a batch holds at most 100 reports",
+            "body": {
+              "runs": [
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_000",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_001",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_002",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_003",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_004",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_005",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_006",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_007",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_008",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_009",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_010",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_011",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_012",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_013",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_014",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_015",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_016",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_017",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_018",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_019",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_020",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_021",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_022",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_023",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_024",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_025",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_026",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_027",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_028",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_029",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_030",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_031",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_032",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_033",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_034",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_035",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_036",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_037",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_038",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_039",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_040",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_041",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_042",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_043",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_044",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_045",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_046",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_047",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_048",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_049",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_050",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_051",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_052",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_053",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_054",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_055",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_056",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_057",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_058",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_059",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_060",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_061",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_062",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_063",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_064",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_065",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_066",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_067",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_068",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_069",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_070",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_071",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_072",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_073",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_074",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_075",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_076",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_077",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_078",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_079",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_080",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_081",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_082",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_083",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_084",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_085",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_086",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_087",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_088",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_089",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_090",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_091",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_092",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_093",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_094",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_095",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_096",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_097",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_098",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_099",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_100",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                }
+              ]
+            }
+          },
+          {
+            "why": "a batch has no key beside runs",
+            "body": {
+              "runs": [
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_01",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                }
+              ],
+              "board": "brd_01"
+            }
+          },
+          {
+            "why": "a top-level array is neither form",
+            "body": [
+              {
+                "source": "superpipeline",
+                "external_ref": "brd_01/run_01",
+                "scope": {
+                  "id": "brd_01",
+                  "name": "Press"
+                },
+                "title": "Draft the release note",
+                "status": "running",
+                "source_status": "in_progress",
+                "started_at": "2026-10-06T09:00:00Z",
+                "reported_at": "2026-10-06T09:00:01Z"
+              }
+            ]
+          },
+          {
+            "why": "an unknown field is refused",
+            "body": {
+              "runs": [
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_01",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z",
+                  "Source": "superpipeline"
+                }
+              ]
+            }
+          },
+          {
+            "why": "reported_at is required",
+            "body": {
+              "runs": [
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_01",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z"
+                }
+              ]
+            }
+          },
+          {
+            "why": "status is one of the six",
+            "body": {
+              "runs": [
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_01",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "done",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                }
+              ]
+            }
+          },
+          {
+            "why": "source is lowercase letters, digits and -",
+            "body": {
+              "runs": [
+                {
+                  "source": "Superpipeline",
+                  "external_ref": "brd_01/run_01",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                }
+              ]
+            }
+          },
+          {
+            "why": "executor.id is a hub principal",
+            "body": {
+              "runs": [
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_x/run_1",
+                  "scope": {
+                    "id": "brd_x",
+                    "name": "B"
+                  },
+                  "title": "T",
+                  "executor": {
+                    "id": "agt_w",
+                    "name": "w"
+                  },
+                  "status": "running",
+                  "source_status": "working",
+                  "started_at": "2026-10-06T10:00:00.000Z",
+                  "ended_at": null,
+                  "reported_at": "2026-10-06T10:00:00.001Z"
+                }
+              ]
+            }
+          },
+          {
+            "why": "null is never a string: leave title out",
+            "body": {
+              "runs": [
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_01",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": null,
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": "2026-10-06T09:00:00Z",
+                  "reported_at": "2026-10-06T09:00:01Z"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "responses": {
+        "200": {
+          "valid": {
+            "a new report": {
+              "results": [
+                {
+                  "external_ref": "brd_01/run_01",
+                  "applied": true
+                }
+              ]
+            },
+            "a replay and a new report, in request order": {
+              "results": [
+                {
+                  "external_ref": "brd_01/run_01",
+                  "applied": false
+                },
+                {
+                  "external_ref": "brd_01/run_02",
+                  "applied": true
+                }
+              ]
+            }
+          },
+          "invalid": [
+            {
+              "why": "applied is a boolean",
+              "body": {
+                "results": [
+                  {
+                    "external_ref": "brd_01/run_01",
+                    "applied": "yes"
+                  }
+                ]
+              }
+            },
+            {
+              "why": "results is required",
+              "body": {}
+            }
+          ]
+        },
+        "422": {
+          "valid": {
+            "the second report of a batch is invalid": {
+              "error": {
+                "code": "INVALID_REPORT",
+                "message": "runs[1].status: one of queued, running, waiting, succeeded, failed, cancelled; got \"done\"",
+                "index": 1
+              }
+            },
+            "a single report carries no index": {
+              "error": {
+                "code": "INVALID_REPORT",
+                "message": "reported_at: required"
+              }
+            }
+          },
+          "invalid": [
+            {
+              "why": "production's lower-case code, until SuperWitness switches (phase 4, ruling 2)",
+              "body": {
+                "error": {
+                  "code": "invalid_report",
+                  "message": "runs[1].title: 1 to 200 characters, got 0",
+                  "index": 1
+                }
+              }
+            }
+          ]
+        },
+        "403": {
+          "valid": {
+            "a report for another source": {
+              "error": {
+                "code": "SOURCE_NOT_ALLOWED",
+                "message": "prn_0123456789abcdef0a01 may report only for source \"superpipeline\", not \"canary\"",
+                "index": 0
+              }
+            },
+            "a token without runs:write": {
+              "error": {
+                "code": "INSUFFICIENT_SCOPE",
+                "message": "the token does not carry the runs:write scope"
+              }
+            }
+          },
+          "invalid": []
+        },
+        "503": {
+          "valid": {
+            "the registry is down": {
+              "error": {
+                "code": "STORE_UNAVAILABLE",
+                "message": "the run registry is unavailable; retry",
+                "retryable": true
+              }
+            }
+          },
+          "invalid": []
+        }
+      }
+    },
+    "listRuns": {
+      "responses": {
+        "200": {
+          "valid": {
+            "a page of finished runs with a next page": {
+              "runs": [
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_03",
+                  "ref": "superpipeline:brd_01/run_03",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "stage_key": "review",
+                  "card_id": "card_0123456789abcdef",
+                  "executor": {
+                    "id": "prn_0123456789abcdef0a01",
+                    "name": "Builder"
+                  },
+                  "status": "succeeded",
+                  "source_status": "completed",
+                  "started_at": "2026-10-06T09:02:00Z",
+                  "ended_at": "2026-10-06T09:30:00Z",
+                  "reported_at": "2026-10-06T09:30:01Z",
+                  "first_seen_at": "2026-10-06T09:02:01Z",
+                  "updated_at": "2026-10-06T09:30:01Z",
+                  "latest_verdict": {
+                    "id": "vrd_0123456789abcdef0123456789abcdef",
+                    "judge": "prn_0123456789abcdef0b02",
+                    "judge_kind": "human",
+                    "standard": "stage:review",
+                    "value": {
+                      "decision": "pass"
+                    },
+                    "created_at": "2026-10-06T09:40:00Z"
+                  }
+                },
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_02",
+                  "ref": "superpipeline:brd_01/run_02",
+                  "scope": {
+                    "id": "brd_01",
+                    "name": "Press"
+                  },
+                  "title": "Draft the release note",
+                  "stage_key": "review",
+                  "card_id": "card_0123456789abcdef",
+                  "executor": {
+                    "id": null,
+                    "name": "Writer"
+                  },
+                  "status": "failed",
+                  "source_status": "crashed",
+                  "started_at": "2026-10-06T09:02:00Z",
+                  "ended_at": "2026-10-06T09:30:00Z",
+                  "reported_at": "2026-10-06T09:30:01Z",
+                  "first_seen_at": "2026-10-06T09:02:01Z",
+                  "updated_at": "2026-10-06T09:30:01Z",
+                  "latest_verdict": null
+                }
+              ],
+              "next_cursor": "MjAyNi0xMC0wNlQwOTowMjowMFp8YnJkXzAxL3J1bl8wMg",
+              "counts": {
+                "queued": 0,
+                "running": 1,
+                "waiting": 0,
+                "succeeded": 1,
+                "failed": 1,
+                "cancelled": 0
+              }
+            },
+            "the last page, a run reported with nothing optional": {
+              "runs": [
+                {
+                  "source": "superpipeline",
+                  "external_ref": "brd_01/run_01",
+                  "ref": "superpipeline:brd_01/run_01",
+                  "scope": null,
+                  "title": null,
+                  "stage_key": null,
+                  "card_id": null,
+                  "executor": null,
+                  "status": "running",
+                  "source_status": "in_progress",
+                  "started_at": null,
+                  "ended_at": null,
+                  "reported_at": "2026-10-06T09:00:01Z",
+                  "first_seen_at": "2026-10-06T09:00:01.123456Z",
+                  "updated_at": "2026-10-06T09:00:01.123456Z",
+                  "latest_verdict": null
+                }
+              ],
+              "next_cursor": null,
+              "counts": {
+                "queued": 0,
+                "running": 1,
+                "waiting": 0,
+                "succeeded": 1,
+                "failed": 1,
+                "cancelled": 0
+              }
+            },
+            "no runs": {
+              "runs": [],
+              "next_cursor": null,
+              "counts": {
+                "queued": 0,
+                "running": 0,
+                "waiting": 0,
+                "succeeded": 0,
+                "failed": 0,
+                "cancelled": 0
+              }
+            }
+          },
+          "invalid": [
+            {
+              "why": "next_cursor is always present, null on the last page",
+              "body": {
+                "runs": [],
+                "counts": {
+                  "queued": 0,
+                  "running": 1,
+                  "waiting": 0,
+                  "succeeded": 1,
+                  "failed": 1,
+                  "cancelled": 0
+                }
+              }
+            },
+            {
+              "why": "a run's status is one of the six",
+              "body": {
+                "runs": [
+                  {
+                    "source": "superpipeline",
+                    "external_ref": "brd_01/run_03",
+                    "ref": "superpipeline:brd_01/run_03",
+                    "scope": {
+                      "id": "brd_01",
+                      "name": "Press"
+                    },
+                    "title": "Draft the release note",
+                    "stage_key": "review",
+                    "card_id": "card_0123456789abcdef",
+                    "executor": {
+                      "id": "prn_0123456789abcdef0a01",
+                      "name": "Builder"
+                    },
+                    "status": "done",
+                    "source_status": "completed",
+                    "started_at": "2026-10-06T09:02:00Z",
+                    "ended_at": "2026-10-06T09:30:00Z",
+                    "reported_at": "2026-10-06T09:30:01Z",
+                    "first_seen_at": "2026-10-06T09:02:01Z",
+                    "updated_at": "2026-10-06T09:30:01Z",
+                    "latest_verdict": {
+                      "id": "vrd_0123456789abcdef0123456789abcdef",
+                      "judge": "prn_0123456789abcdef0b02",
+                      "judge_kind": "human",
+                      "standard": "stage:review",
+                      "value": {
+                        "decision": "pass"
+                      },
+                      "created_at": "2026-10-06T09:40:00Z"
+                    }
+                  }
+                ],
+                "next_cursor": null,
+                "counts": {
+                  "queued": 0,
+                  "running": 1,
+                  "waiting": 0,
+                  "succeeded": 1,
+                  "failed": 1,
+                  "cancelled": 0
+                }
+              }
+            },
+            {
+              "why": "a run carries every field, null when unknown",
+              "body": {
+                "runs": [
+                  {
+                    "source": "superpipeline",
+                    "external_ref": "brd_01/run_03",
+                    "ref": "superpipeline:brd_01/run_03",
+                    "scope": {
+                      "id": "brd_01",
+                      "name": "Press"
+                    },
+                    "title": "Draft the release note",
+                    "card_id": "card_0123456789abcdef",
+                    "executor": {
+                      "id": "prn_0123456789abcdef0a01",
+                      "name": "Builder"
+                    },
+                    "status": "succeeded",
+                    "source_status": "completed",
+                    "started_at": "2026-10-06T09:02:00Z",
+                    "ended_at": "2026-10-06T09:30:00Z",
+                    "reported_at": "2026-10-06T09:30:01Z",
+                    "first_seen_at": "2026-10-06T09:02:01Z",
+                    "updated_at": "2026-10-06T09:30:01Z",
+                    "latest_verdict": {
+                      "id": "vrd_0123456789abcdef0123456789abcdef",
+                      "judge": "prn_0123456789abcdef0b02",
+                      "judge_kind": "human",
+                      "standard": "stage:review",
+                      "value": {
+                        "decision": "pass"
+                      },
+                      "created_at": "2026-10-06T09:40:00Z"
+                    }
+                  }
+                ],
+                "next_cursor": null,
+                "counts": {
+                  "queued": 0,
+                  "running": 1,
+                  "waiting": 0,
+                  "succeeded": 1,
+                  "failed": 1,
+                  "cancelled": 0
+                }
+              }
+            },
+            {
+              "why": "a scope has an id",
+              "body": {
+                "runs": [
+                  {
+                    "source": "superpipeline",
+                    "external_ref": "brd_01/run_03",
+                    "ref": "superpipeline:brd_01/run_03",
+                    "scope": {
+                      "id": null,
+                      "name": "Press"
+                    },
+                    "title": "Draft the release note",
+                    "stage_key": "review",
+                    "card_id": "card_0123456789abcdef",
+                    "executor": {
+                      "id": "prn_0123456789abcdef0a01",
+                      "name": "Builder"
+                    },
+                    "status": "succeeded",
+                    "source_status": "completed",
+                    "started_at": "2026-10-06T09:02:00Z",
+                    "ended_at": "2026-10-06T09:30:00Z",
+                    "reported_at": "2026-10-06T09:30:01Z",
+                    "first_seen_at": "2026-10-06T09:02:01Z",
+                    "updated_at": "2026-10-06T09:30:01Z",
+                    "latest_verdict": {
+                      "id": "vrd_0123456789abcdef0123456789abcdef",
+                      "judge": "prn_0123456789abcdef0b02",
+                      "judge_kind": "human",
+                      "standard": "stage:review",
+                      "value": {
+                        "decision": "pass"
+                      },
+                      "created_at": "2026-10-06T09:40:00Z"
+                    }
+                  }
+                ],
+                "next_cursor": null,
+                "counts": {
+                  "queued": 0,
+                  "running": 1,
+                  "waiting": 0,
+                  "succeeded": 1,
+                  "failed": 1,
+                  "cancelled": 0
+                }
+              }
+            },
+            {
+              "why": "an executor id is a hub principal",
+              "body": {
+                "runs": [
+                  {
+                    "source": "superpipeline",
+                    "external_ref": "brd_01/run_03",
+                    "ref": "superpipeline:brd_01/run_03",
+                    "scope": {
+                      "id": "brd_01",
+                      "name": "Press"
+                    },
+                    "title": "Draft the release note",
+                    "stage_key": "review",
+                    "card_id": "card_0123456789abcdef",
+                    "executor": {
+                      "id": "agt_7b1e2d3c",
+                      "name": "Builder"
+                    },
+                    "status": "succeeded",
+                    "source_status": "completed",
+                    "started_at": "2026-10-06T09:02:00Z",
+                    "ended_at": "2026-10-06T09:30:00Z",
+                    "reported_at": "2026-10-06T09:30:01Z",
+                    "first_seen_at": "2026-10-06T09:02:01Z",
+                    "updated_at": "2026-10-06T09:30:01Z",
+                    "latest_verdict": {
+                      "id": "vrd_0123456789abcdef0123456789abcdef",
+                      "judge": "prn_0123456789abcdef0b02",
+                      "judge_kind": "human",
+                      "standard": "stage:review",
+                      "value": {
+                        "decision": "pass"
+                      },
+                      "created_at": "2026-10-06T09:40:00Z"
+                    }
+                  }
+                ],
+                "next_cursor": null,
+                "counts": {
+                  "queued": 0,
+                  "running": 1,
+                  "waiting": 0,
+                  "succeeded": 1,
+                  "failed": 1,
+                  "cancelled": 0
+                }
+              }
+            },
+            {
+              "why": "counts are integers",
+              "body": {
+                "runs": [],
+                "next_cursor": null,
+                "counts": {
+                  "running": "1"
+                }
+              }
+            }
+          ]
+        },
+        "400": {
+          "valid": {
+            "an unknown status": {
+              "error": {
+                "code": "INVALID_STATUS",
+                "message": "status is one of queued, running, waiting, succeeded, failed, cancelled"
+              }
+            }
+          },
+          "invalid": []
+        }
+      }
+    },
+    "listSubjectVerdicts": {
+      "responses": {
+        "200": {
+          "valid": {
+            "a verdict and the one that superseded it": {
+              "verdicts": [
+                {
+                  "id": "vrd_0123456789abcdef0123456789abcdef",
+                  "idempotency_key": "k-list",
+                  "kind": "review",
+                  "subject_kind": "run",
+                  "subject_ref": "superpipeline:brd_01/run_01",
+                  "judge": "prn_0123456789abcdef0b02",
+                  "judge_kind": "human",
+                  "standard": "stage:review",
+                  "value": {
+                    "decision": "pass"
+                  },
+                  "comment": "",
+                  "evidence_refs": [],
+                  "supersedes": null,
+                  "created_at": "2026-10-06T09:40:00Z",
+                  "superseded_by": "vrd_1123456789abcdef0123456789abcdef"
+                },
+                {
+                  "id": "vrd_1123456789abcdef0123456789abcdef",
+                  "idempotency_key": "k-redo",
+                  "kind": "grader",
+                  "subject_kind": "run",
+                  "subject_ref": "superpipeline:brd_01/run_01",
+                  "judge": "prn_0123456789abcdef0c03",
+                  "judge_kind": "agent",
+                  "standard": "rubric:release-note@2",
+                  "value": {
+                    "score": 0.4
+                  },
+                  "comment": "Missing the upgrade steps.",
+                  "evidence_refs": [],
+                  "supersedes": "vrd_0123456789abcdef0123456789abcdef",
+                  "created_at": "2026-10-06T10:00:00Z",
+                  "superseded_by": null
+                }
+              ]
+            },
+            "a run nobody judged": {
+              "verdicts": []
+            }
+          },
+          "invalid": [
+            {
+              "why": "verdicts is required",
+              "body": {}
+            },
+            {
+              "why": "superseded_by is always present",
+              "body": {
+                "verdicts": [
+                  {
+                    "id": "vrd_0123456789abcdef0123456789abcdef",
+                    "idempotency_key": "k-list",
+                    "kind": "review",
+                    "subject_kind": "run",
+                    "subject_ref": "superpipeline:brd_01/run_01",
+                    "judge": "prn_0123456789abcdef0b02",
+                    "judge_kind": "human",
+                    "standard": "stage:review",
+                    "value": {
+                      "decision": "pass"
+                    },
+                    "comment": "",
+                    "evidence_refs": [],
+                    "supersedes": null,
+                    "created_at": "2026-10-06T09:40:00Z"
+                  }
+                ]
+              }
+            },
+            {
+              "why": "a verdict id is vrd_",
+              "body": {
+                "verdicts": [
+                  {
+                    "id": "v_1",
+                    "idempotency_key": "k-list",
+                    "kind": "review",
+                    "subject_kind": "run",
+                    "subject_ref": "superpipeline:brd_01/run_01",
+                    "judge": "prn_0123456789abcdef0b02",
+                    "judge_kind": "human",
+                    "standard": "stage:review",
+                    "value": {
+                      "decision": "pass"
+                    },
+                    "comment": "",
+                    "evidence_refs": [],
+                    "supersedes": null,
+                    "created_at": "2026-10-06T09:40:00Z",
+                    "superseded_by": "vrd_1123456789abcdef0123456789abcdef"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "400": {
+          "valid": {
+            "a run reference that is not superpipeline:<board>/<run>": {
+              "error": {
+                "code": "INVALID_SUBJECT",
+                "message": "invalid run ref: want superpipeline:<board>/<run>, got \"brd_01/run_01\""
+              }
+            }
+          },
+          "invalid": []
+        }
+      }
+    }
+  },
+  "gateRefusals": {
+    "403": {
+      "valid": {
+        "the token's workspace has not enabled SuperWitness": {
+          "error": "product_not_enabled",
+          "org": "org_0123456789abcdef0123"
+        }
+      },
+      "invalid": [
+        {
+          "why": "the plane's refusal always names the workspace",
+          "body": {
+            "error": "product_not_enabled"
+          }
+        },
+        {
+          "why": "the gate answers in flat-error.v1, not error.v1",
+          "body": {
+            "error": {
+              "code": "PRODUCT_NOT_ENABLED",
+              "message": "Not enabled."
+            },
+            "org": "org_0123456789abcdef0123"
+          }
+        },
+        {
+          "why": "org is an Organization-plane id",
+          "body": {
+            "error": "product_not_enabled",
+            "org": "tnt_0123456789abcdef0123"
+          }
+        }
+      ]
+    }
+  }
+}

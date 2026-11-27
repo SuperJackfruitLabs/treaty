@@ -1,7 +1,7 @@
 {
   "registry": "treaty error codes",
   "version": 2,
-  "description": "Every error code a suite product's API returns, with the status it carries and the envelope it travels in. SuperPipeline's codes are its statusForCode table, its route-level codes and its entitlement gate's flat product_not_enabled; Accounts' are its flat codes; SuperLibrary's are the flat codes of the routes other products call; AgentPod's are the Matrix errcodes of its Live Activity token routes and the flat codes of its service reads. Seeded 2026-11-22.",
+  "description": "Every error code a suite product's API returns, with the status it carries and the envelope it travels in. SuperPipeline's codes are its statusForCode table, its route-level codes and its entitlement gate's flat product_not_enabled; Accounts' are its flat codes; SuperLibrary's are the flat codes of the routes other products call; AgentPod's are the Matrix errcodes of its Live Activity token routes and the flat codes of its service reads. Seeded 2026-11-22. SuperWitness's are its error.v1 codes in UPPER_SNAKE (phase 4, ruling 2: production sends them in lower case until SuperWitness switches) and its gate's flat product_not_enabled.",
   "codes": [
     {
       "code": "AGENT_NOT_ELIGIBLE",
@@ -1468,6 +1468,153 @@
       "envelope": "flat-error.v1",
       "status": 413,
       "meaning": "A transcript item asked for whole (`full=1`) is over 1 MiB serialised."
+    },
+    {
+      "code": "BEARER_REQUIRED",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "Runs are reported with a service token, never a browser session."
+    },
+    {
+      "code": "BODY_TOO_LARGE",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 413,
+      "meaning": "The body is larger than 256 KiB."
+    },
+    {
+      "code": "INSUFFICIENT_SCOPE",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "The token does not carry the scope the route needs, such as `runs:write`."
+    },
+    {
+      "code": "INTERNAL",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 500,
+      "meaning": "A failure nobody planned for."
+    },
+    {
+      "code": "INVALID_CURSOR",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "`cursor` is not a cursor SuperWitness gave out."
+    },
+    {
+      "code": "INVALID_JSON",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "The body is not JSON, or not one report or `{ \"runs\": [...] }` of 1 to 100."
+    },
+    {
+      "code": "INVALID_LIMIT",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "`limit` is not a positive integer."
+    },
+    {
+      "code": "INVALID_NEEDS_VERDICT",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "`needs_verdict` is not true or false."
+    },
+    {
+      "code": "INVALID_REPORT",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 422,
+      "meaning": "A run report the schema refuses, or one more than 5 minutes ahead of SuperWitness's clock; in a batch, `index` is its position."
+    },
+    {
+      "code": "INVALID_SOURCE",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "`source` is not lowercase letters, digits and -, starting with a letter."
+    },
+    {
+      "code": "INVALID_STATUS",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A `status` that is not one of queued, running, waiting, succeeded, failed, cancelled."
+    },
+    {
+      "code": "INVALID_SUBJECT",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "A subject reference that is not one of its kind, such as a run that is not `superpipeline:<board>/<run>`."
+    },
+    {
+      "code": "INVALID_SUBJECT_KIND",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "`subject_kind` is not run, attempt or eval_case_run."
+    },
+    {
+      "code": "INVALID_TIME",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 400,
+      "meaning": "`since` or `until` is not an RFC 3339 timestamp."
+    },
+    {
+      "code": "PRINCIPAL_UNRESOLVED",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 503,
+      "meaning": "The hub could not say which principal the token names; retryable."
+    },
+    {
+      "code": "RATE_LIMITED",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 429,
+      "meaning": "Too many requests from this caller; retryable after Retry-After seconds."
+    },
+    {
+      "code": "SERVICE_PRINCIPAL_REQUIRED",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "Runs are reported by service principals only."
+    },
+    {
+      "code": "SOURCE_NOT_ALLOWED",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 403,
+      "meaning": "The caller is not bound to the report's source (SW_RUN_SOURCES); in a batch, `index` names the first such report."
+    },
+    {
+      "code": "STORE_UNAVAILABLE",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 503,
+      "meaning": "The run registry or the verdict store is unavailable; retryable."
+    },
+    {
+      "code": "UNAUTHENTICATED",
+      "owner": "superwitness",
+      "envelope": "error.v1",
+      "status": 401,
+      "meaning": "No bearer token, or one SuperWitness does not accept."
+    },
+    {
+      "code": "product_not_enabled",
+      "owner": "superwitness",
+      "envelope": "flat-error.v1",
+      "status": 403,
+      "meaning": "The token's workspace (`org`, named beside the code) has not enabled SuperWitness. Sent by the authentication gate in front of every route, in the Organization plane's flat shape rather than error.v1; the runs contract declares it in `x-treaty-gate-refusals`."
     }
   ]
 }

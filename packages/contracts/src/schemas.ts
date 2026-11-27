@@ -119,13 +119,44 @@ function anchored(
   return out;
 }
 
-/** Schemas whose `$id` is not the address of their own path: each is a copy or a move gone wrong. */
+/**
+ * The schemas treaty holds under the `$id` their owner publishes them at, as path → `$id`
+ * (`contracts/published-ids.json`), such as SuperWitness's run report (phase 4, ruling 3).
+ */
+export function publishedIds(bundle: Bundle): Map<string, string> {
+  const out = new Map<string, string>();
+  const file = bundle.files.get("contracts/published-ids.json");
+  const entries =
+    isObject(file) && Array.isArray(file.schemas) ? file.schemas : [];
+  for (const entry of entries)
+    if (
+      isObject(entry) &&
+      typeof entry.path === "string" &&
+      typeof entry.id === "string"
+    )
+      out.set(entry.path, entry.id);
+  return out;
+}
+
+/**
+ * Schemas whose `$id` is not the address of their own path: each is a copy or a move gone wrong,
+ * unless `contracts/published-ids.json` lists it with that `$id`. An exception whose file has another
+ * `$id`, or no file, is reported too, so a stale one cannot stay.
+ */
 export function misplacedIds(bundle: Bundle): string[] {
   const wrong: string[] = [];
+  const allowed = publishedIds(bundle);
   for (const [path, doc] of bundle.files) {
     if (!path.startsWith("schemas/") || !isObject(doc)) continue;
-    if (typeof doc.$id === "string" && doc.$id !== idOf(path))
-      wrong.push(`${path} has $id ${doc.$id}`);
+    if (typeof doc.$id !== "string" || doc.$id === idOf(path)) continue;
+    if (allowed.get(path) !== doc.$id) wrong.push(`${path} has $id ${doc.$id}`);
+  }
+  for (const [path, id] of allowed) {
+    const doc = bundle.files.get(path);
+    if (!isObject(doc) || doc.$id !== id)
+      wrong.push(
+        `${path} is listed in contracts/published-ids.json with $id ${id}, not its own`,
+      );
   }
   return wrong;
 }

@@ -673,14 +673,29 @@
       "owner": "superwitness",
       "consumers": ["superpipeline", "superdispatch"],
       "kind": "http",
-      "status": "external",
-      "contract": [],
-      "gaps": "SuperWitness publishes the run report schema itself; SuperPipeline copies it; verdicts and run reads have no schema.",
-      "phase": 3,
+      "status": "contracted",
+      "contract": [
+        "schemas/http/superwitness/runs.v1.openapi.json",
+        "schemas/superwitness/run-report.v1.json",
+        "contracts/published-ids.json"
+      ],
+      "cases": {
+        "schemas/superwitness/run-report.v1.json": "fixtures/http/superwitness/runs.v1.cases.json#/operations/reportRuns/request"
+      },
+      "gaps": "Production sends SuperWitness's error codes in lower case (invalid_report) until SuperWitness switches to the UPPER_SNAKE codes recorded here (phase 4, ruling 2), after SuperPipeline and SuperDispatch read either case. The run report keeps the $id SuperWitness publishes it at (contracts/published-ids.json), an exception to a schema's $id being its treaty address (phase 4, ruling 3).",
       "evidence": [
         "superwitness:internal/api/server.go",
         "superpipeline:apps/api/src/superwitness/client.ts",
-        "superdispatch:apps/dispatch/src/sources/superwitness.ts"
+        "superdispatch:apps/dispatch/src/sources/superwitness.ts",
+        "superwitness:internal/api/runs.go",
+        "superwitness:internal/api/ops_runs.go",
+        "superwitness:internal/api/app_routes.go",
+        "superwitness:internal/api/errors.go",
+        "superwitness:internal/auth/middleware.go",
+        "superwitness:internal/runs/report.go",
+        "superwitness:internal/contracts/run-report.schema.json",
+        "superpipeline:apps/api/src/superwitness/report.ts",
+        "superpipeline:apps/api/src/board/check-verdicts.ts"
       ]
     },
     {

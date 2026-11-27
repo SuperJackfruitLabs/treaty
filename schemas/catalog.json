@@ -184,7 +184,7 @@
       "what": "run reports, POST /v1/runs on SuperWitness",
       "schema": "https://docs.superwitness.dev/schemas/run-report.schema.json",
       "owner": "superwitness",
-      "note": "Not a CloudEvent. SuperWitness owns and publishes the schema; treaty does not copy it."
+      "note": "Not a CloudEvent. SuperWitness owns and publishes the schema; treaty holds the same file, $id unchanged, at schemas/superwitness/run-report.v1.json, the request body of schemas/http/superwitness/runs.v1.openapi.json."
     }
   ]
 }

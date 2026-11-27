@@ -111,6 +111,38 @@ describe("contracts/registry.json", () => {
     expect(problems).toEqual([]);
   });
 
+  test("contracts/published-ids.json is valid, and each schema it lists is in its crossing's contract", () => {
+    const schema = new Validator(
+      JSON.parse(
+        readFileSync(
+          join(root, "schemas/treaty/published-ids.v1.json"),
+          "utf8",
+        ),
+      ),
+      "2020-12",
+      false,
+    );
+    const file = read("contracts/published-ids.json");
+    expect(schema.validate(file).errors).toEqual([]);
+    const entries =
+      file !== null && typeof file === "object" && "schemas" in file
+        ? file.schemas
+        : [];
+    const wrong = (Array.isArray(entries) ? entries : []).flatMap(
+      (e: unknown) => {
+        if (e === null || typeof e !== "object") return ["not an object"];
+        const path = "path" in e ? String(e.path) : "";
+        const id = "crossing" in e ? String(e.crossing) : "";
+        const c = registry.crossings.find((x) => x.id === id);
+        return c?.contract.includes(path) &&
+          c.contract.includes("contracts/published-ids.json")
+          ? []
+          : [`${id}: ${path}`];
+      },
+    );
+    expect(wrong).toEqual([]);
+  });
+
   test("every schema file is named by a crossing", () => {
     // schemas/treaty/ describes treaty's own files, and schemas/common/ holds pieces other
     // schemas reference; neither is a crossing of its own.
@@ -212,15 +244,15 @@ describe("contracts/registry.json", () => {
     expect(coverage(registry)).toEqual({
       applicable: 30,
       byStatus: {
-        contracted: 25,
+        contracted: 26,
         partial: 1,
         uncontracted: 2,
         proposed: 1,
-        external: 1,
+        external: 0,
         standard: 2,
         deprecated: 2,
       },
-      percent: 83,
+      percent: 87,
     });
   });
 });

@@ -26,6 +26,7 @@ describe("schemas/http", () => {
       "schemas/http/superpipeline/decisions.v1.openapi.json",
       "schemas/http/superpipeline/placement.v1.openapi.json",
       "schemas/http/superpipeline/push.v1.openapi.json",
+      "schemas/http/superwitness/runs.v1.openapi.json",
     ]);
   });
 

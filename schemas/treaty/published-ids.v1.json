@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/treaty/published-ids.v1.json",
+  "title": "Schemas treaty holds under their owner's $id",
+  "description": "The exceptions to a schema's `$id` being its address on treaty's repository: a schema its owner publishes at its own URL, which treaty holds byte for byte with that `$id` (phase 4, ruling 3). `misplacedIds` accepts a foreign `$id` only when it is listed here, and its crossing lists the schema and this file in `contract`.",
+  "type": "object",
+  "required": ["registry", "version", "schemas"],
+  "additionalProperties": false,
+  "properties": {
+    "registry": {
+      "const": "treaty published ids"
+    },
+    "version": {
+      "const": 1
+    },
+    "description": {
+      "type": "string"
+    },
+    "schemas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "id", "crossing", "why"],
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^schemas/[A-Za-z0-9._/-]+\\.json$"
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^https://"
+          },
+          "crossing": {
+            "type": "string",
+            "pattern": "^[a-z]+(\\.[a-z0-9-]+)+$"
+          },
+          "why": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

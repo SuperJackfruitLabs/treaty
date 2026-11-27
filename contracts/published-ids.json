@@ -1,0 +1,13 @@
+{
+  "registry": "treaty published ids",
+  "version": 1,
+  "description": "Schemas treaty holds under the $id their owner publishes them at, not their treaty address. Checked by schemas/treaty/published-ids.v1.json and scripts/schema-ids.test.ts.",
+  "schemas": [
+    {
+      "path": "schemas/superwitness/run-report.v1.json",
+      "id": "https://docs.superwitness.dev/schemas/run-report.schema.json",
+      "crossing": "superwitness.runs",
+      "why": "SuperWitness publishes the run-report schema at its docs site and embeds it in its server; sources vendor it by that address. Treaty holds the same bytes (sha256 b2444841…) so the runs contract can name it as POST /v1/runs's body (phase 4, ruling 3)."
+    }
+  ]
+}

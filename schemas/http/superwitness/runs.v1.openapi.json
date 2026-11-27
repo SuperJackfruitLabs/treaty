@@ -1,0 +1,753 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SuperWitness runs",
+    "version": "1",
+    "description": "The run registry as other products use it: a source reports its runs (SuperPipeline), a placement service reads what became of them (SuperDispatch), and a source reads the verdicts on one of its runs (SuperPipeline's verdict checks). Written from SuperWitness's internal/api/server.go (the routes, behind the authentication gate), runs.go, ops_runs.go, app_routes.go, errors.go, limits.go, internal/runs/report.go and store.go, internal/verdicts/model.go and service.go, and internal/auth/middleware.go; and from the callers, SuperPipeline's apps/api/src/superwitness/client.ts and SuperDispatch's apps/dispatch/src/sources/superwitness.ts. The request body of `POST /v1/runs` is the run-report schema SuperWitness publishes at its own URL; treaty holds the same file at schemas/superwitness/run-report.v1.json with that `$id` (phase 4, ruling 3). Every refusal is error.v1, `{ \"error\": { \"code\", \"message\", \"retryable\"?, \"index\"? } }`, with the status its code carries in contracts/error-codes.json. The codes are recorded in UPPER_SNAKE (phase 4, ruling 2); until SuperWitness switches, production sends the same codes in lower case (`invalid_report` for INVALID_REPORT), so a reader compares codes without regard to case. `retryable: true` marks a refusal worth sending again; a 429 and a retryable 503 carry `Retry-After` in seconds. A browser session reaches the same routes and has refusals of its own (NOT_AUTHORISED, ORIGIN_MISMATCH), which no product meets: products call with a bearer token. Bodies are open: a reader ignores properties it does not know."
+  },
+  "x-treaty-error-envelope": "error.v1",
+  "x-treaty-gate-refusals": {
+    "403": {
+      "description": "SuperWitness's authentication gate, in front of every route (internal/auth/middleware.go, `WriteNotEnabled`). A verified Organization-plane token whose workspace has not enabled SuperWitness is refused with the plane's own refusal, `{ \"error\": \"product_not_enabled\", \"org\" }` (fixtures/ecosystem-identity/token_claims.json, case product-not-enabled), not error.v1. It may answer any operation in this document.",
+      "envelope": "flat-error.v1",
+      "codes": ["product_not_enabled"],
+      "schema": {
+        "$ref": "../../common/flat-error.v1.json",
+        "required": ["error", "org"],
+        "properties": {
+          "error": {
+            "const": "product_not_enabled"
+          },
+          "org": {
+            "type": "string",
+            "pattern": "^org_[0-9a-f]{20}$",
+            "description": "The token's workspace, which has not enabled SuperWitness."
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://app.superwitness.dev",
+      "description": "A SuperWitness deployment. SuperPipeline reads SUPERWITNESS_URL; SuperDispatch its configured SuperWitness base URL."
+    }
+  ],
+  "paths": {
+    "/v1/runs": {
+      "post": {
+        "operationId": "reportRuns",
+        "summary": "Report runs to the registry",
+        "description": "One report, or `{ \"runs\": [...] }` with 1 to 100 (SuperPipeline always sends a batch). The body is at most 256 KiB. Each report must be for the one source SuperWitness binds the caller to (SW_RUN_SOURCES); the first that is not refuses the whole batch with 403 SOURCE_NOT_ALLOWED and `index`. The first invalid report refuses the whole batch with 422 INVALID_REPORT and, in a batch, its position as `error.index`. A report whose `reported_at` is not newer than the one held is a no-op: `applied: false`. `reported_at` may be at most 5 minutes ahead of SuperWitness's clock. Reports from one caller are rate limited (429 RATE_LIMITED with Retry-After).",
+        "security": [
+          {
+            "serviceToken": ["runs:write"]
+          }
+        ],
+        "x-treaty-error-codes": [
+          "INVALID_JSON",
+          "UNAUTHENTICATED",
+          "BEARER_REQUIRED",
+          "SERVICE_PRINCIPAL_REQUIRED",
+          "INSUFFICIENT_SCOPE",
+          "SOURCE_NOT_ALLOWED",
+          "BODY_TOO_LARGE",
+          "INVALID_REPORT",
+          "RATE_LIMITED",
+          "INTERNAL",
+          "PRINCIPAL_UNRESOLVED",
+          "STORE_UNAVAILABLE"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "https://docs.superwitness.dev/schemas/run-report.schema.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "One result per report, in request order",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportResults"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The body is not one report or `{ \"runs\": [...] }` of 1 to 100, or not JSON (INVALID_JSON)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/error.v1.json"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "description": "A browser session (BEARER_REQUIRED), a caller that is not a service principal (SERVICE_PRINCIPAL_REQUIRED), a token without `runs:write` (INSUFFICIENT_SCOPE), or a report for a source the caller is not bound to (SOURCE_NOT_ALLOWED, with `index` in a batch)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is larger than 256 KiB (BODY_TOO_LARGE)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/error.v1.json"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "A report the schema refuses, or one more than 5 minutes ahead (INVALID_REPORT); in a batch, `error.index` is its position",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/error.v1.json"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many reports from this caller (RATE_LIMITED, `retryable: true`, Retry-After)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Internal"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      },
+      "get": {
+        "operationId": "listRuns",
+        "summary": "List runs, newest first",
+        "description": "Any principal whose token carries SuperWitness's audience may list; no scope is asked for. Runs sort by `started_at`, or by when SuperWitness first heard of them, newest first. Filters combine; `status` repeats (`status=succeeded&status=failed`). `counts` holds every status's count under the other filters, ignoring `status`. A `limit` above 200 is clamped to 200, not refused; none is 50.",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/source"
+          },
+          {
+            "$ref": "#/components/parameters/scope"
+          },
+          {
+            "$ref": "#/components/parameters/stage_key"
+          },
+          {
+            "$ref": "#/components/parameters/status"
+          },
+          {
+            "$ref": "#/components/parameters/executor"
+          },
+          {
+            "$ref": "#/components/parameters/since"
+          },
+          {
+            "$ref": "#/components/parameters/until"
+          },
+          {
+            "$ref": "#/components/parameters/needs_verdict"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "x-treaty-error-codes": [
+          "INVALID_SOURCE",
+          "INVALID_STATUS",
+          "INVALID_TIME",
+          "INVALID_CURSOR",
+          "INVALID_LIMIT",
+          "INVALID_NEEDS_VERDICT",
+          "UNAUTHENTICATED",
+          "INTERNAL",
+          "PRINCIPAL_UNRESOLVED",
+          "STORE_UNAVAILABLE"
+        ],
+        "responses": {
+          "200": {
+            "description": "One page",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A filter SuperWitness cannot read (INVALID_SOURCE, INVALID_STATUS, INVALID_TIME, INVALID_CURSOR, INVALID_LIMIT, INVALID_NEEDS_VERDICT)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/error.v1.json"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "500": {
+            "$ref": "#/components/responses/Internal"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/v1/verdicts": {
+      "get": {
+        "operationId": "listSubjectVerdicts",
+        "summary": "Every verdict on one subject, oldest first",
+        "description": "Superseded verdicts included, each with the id of the verdict that superseded it. Any principal whose token carries SuperWitness's audience may read. A run is `subject_kind=run` and `subject_ref=superpipeline:<board>/<run>`, the run's `ref` in a listing. A subject nobody judged is an empty list.",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/subject_kind"
+          },
+          {
+            "$ref": "#/components/parameters/subject_ref"
+          }
+        ],
+        "x-treaty-error-codes": [
+          "INVALID_SUBJECT_KIND",
+          "INVALID_SUBJECT",
+          "UNAUTHENTICATED",
+          "INTERNAL",
+          "PRINCIPAL_UNRESOLVED",
+          "STORE_UNAVAILABLE"
+        ],
+        "responses": {
+          "200": {
+            "description": "The verdicts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerdictHistory"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A subject kind that is not run, attempt or eval_case_run (INVALID_SUBJECT_KIND), or a reference that is not one of that kind (INVALID_SUBJECT)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/error.v1.json"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "500": {
+            "$ref": "#/components/responses/Internal"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "serviceToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "A token for a service principal with SuperWitness's audience carrying the `runs:write` scope: SuperPipeline's reporter token, from the Organization plane or the hub. No token, or one SuperWitness does not accept, is 401 UNAUTHENTICATED."
+      },
+      "bearerToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Any principal's token with SuperWitness's audience: the audience is the grant. No token, or one SuperWitness does not accept, is 401 UNAUTHENTICATED; a token whose principal the hub cannot resolve now is 503 PRINCIPAL_UNRESOLVED."
+      }
+    },
+    "parameters": {
+      "source": {
+        "name": "source",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,31}$"
+        },
+        "description": "The reporting source, such as `superpipeline`."
+      },
+      "scope": {
+        "name": "scope",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": "A scope id, such as a board's id."
+      },
+      "stage_key": {
+        "name": "stage_key",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": "The source's stage, such as a board stage's key."
+      },
+      "status": {
+        "name": "status",
+        "in": "query",
+        "style": "form",
+        "explode": true,
+        "schema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/RunStatus"
+          }
+        },
+        "description": "Any of these statuses; repeat the parameter for more than one."
+      },
+      "executor": {
+        "name": "executor",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": "The executor's hub principal id."
+      },
+      "since": {
+        "name": "since",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": "RFC 3339; runs at or after it."
+      },
+      "until": {
+        "name": "until",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": "RFC 3339; runs before it."
+      },
+      "needs_verdict": {
+        "name": "needs_verdict",
+        "in": "query",
+        "schema": {
+          "type": "boolean"
+        },
+        "description": "Only finished runs nobody has judged yet."
+      },
+      "cursor": {
+        "name": "cursor",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": "The previous page's `next_cursor`, as it came."
+      },
+      "limit": {
+        "name": "limit",
+        "in": "query",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "description": "Runs per page: 50 when absent, at most 200 (a larger one is clamped)."
+      },
+      "subject_kind": {
+        "name": "subject_kind",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": ["run", "attempt", "eval_case_run"]
+        }
+      },
+      "subject_ref": {
+        "name": "subject_ref",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": "For a run, `<source>:<external_ref>`: `superpipeline:<board>/<run>`."
+      }
+    },
+    "responses": {
+      "Unauthenticated": {
+        "description": "No bearer token, or one SuperWitness does not accept (UNAUTHENTICATED), with `WWW-Authenticate: Bearer`",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Internal": {
+        "description": "A failure nobody planned for (INTERNAL)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      },
+      "Unavailable": {
+        "description": "The registry or verdict store is down (STORE_UNAVAILABLE), or the hub could not say which principal the token names (PRINCIPAL_UNRESOLVED); `retryable: true`, Retry-After",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../common/error.v1.json"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "RunStatus": {
+        "type": "string",
+        "enum": [
+          "queued",
+          "running",
+          "waiting",
+          "succeeded",
+          "failed",
+          "cancelled"
+        ]
+      },
+      "ReportResults": {
+        "type": "object",
+        "required": ["results"],
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["external_ref", "applied"],
+              "properties": {
+                "external_ref": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "applied": {
+                  "type": "boolean",
+                  "description": "false when SuperWitness already held a report as new or newer: a replay."
+                }
+              }
+            }
+          }
+        }
+      },
+      "Named": {
+        "type": "object",
+        "required": ["id", "name"],
+        "properties": {
+          "id": {
+            "type": ["string", "null"]
+          },
+          "name": {
+            "type": ["string", "null"]
+          }
+        }
+      },
+      "VerdictSummary": {
+        "type": "object",
+        "required": [
+          "id",
+          "judge",
+          "judge_kind",
+          "standard",
+          "value",
+          "created_at"
+        ],
+        "description": "A run's newest verdict that no other supersedes.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^vrd_[A-Za-z0-9]{1,64}$"
+          },
+          "judge": {
+            "type": "string"
+          },
+          "judge_kind": {
+            "type": "string",
+            "description": "human, agent, grader or rule today."
+          },
+          "standard": {
+            "type": "string"
+          },
+          "value": {
+            "description": "The judgement as the judge recorded it, such as `{ \"decision\": \"pass\" }` or `{ \"score\": 0.8 }`."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Run": {
+        "type": "object",
+        "required": [
+          "source",
+          "external_ref",
+          "ref",
+          "scope",
+          "title",
+          "stage_key",
+          "card_id",
+          "executor",
+          "status",
+          "source_status",
+          "started_at",
+          "ended_at",
+          "reported_at",
+          "first_seen_at",
+          "updated_at",
+          "latest_verdict"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,31}$"
+          },
+          "external_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ref": {
+            "type": "string",
+            "description": "`<source>:<external_ref>`, the run as a verdict names it."
+          },
+          "scope": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Named",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": {
+            "type": ["string", "null"]
+          },
+          "stage_key": {
+            "type": ["string", "null"]
+          },
+          "card_id": {
+            "type": ["string", "null"]
+          },
+          "executor": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Named",
+                "properties": {
+                  "id": {
+                    "type": ["string", "null"],
+                    "pattern": "^prn_[0-9a-f]{20}$"
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Who executed the run; `id` is a hub principal when the source knew it."
+          },
+          "status": {
+            "$ref": "#/components/schemas/RunStatus"
+          },
+          "source_status": {
+            "type": "string"
+          },
+          "started_at": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          },
+          "ended_at": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          },
+          "reported_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "first_seen_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "latest_verdict": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/VerdictSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "RunPage": {
+        "type": "object",
+        "required": ["runs", "next_cursor", "counts"],
+        "properties": {
+          "runs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Run"
+            }
+          },
+          "next_cursor": {
+            "type": ["string", "null"],
+            "description": "null on the last page."
+          },
+          "counts": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Every status's count, keyed by status."
+          }
+        }
+      },
+      "Verdict": {
+        "type": "object",
+        "required": [
+          "id",
+          "idempotency_key",
+          "kind",
+          "subject_kind",
+          "subject_ref",
+          "judge",
+          "judge_kind",
+          "standard",
+          "value",
+          "comment",
+          "evidence_refs",
+          "supersedes",
+          "created_at",
+          "superseded_by"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^vrd_[A-Za-z0-9]{1,64}$"
+          },
+          "idempotency_key": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "description": "grader, review, eval or calibration today."
+          },
+          "subject_kind": {
+            "type": "string",
+            "description": "run, attempt or eval_case_run today."
+          },
+          "subject_ref": {
+            "type": "string"
+          },
+          "judge": {
+            "type": "string",
+            "description": "The judge's principal id."
+          },
+          "judge_kind": {
+            "type": "string",
+            "description": "human, agent, grader or rule today."
+          },
+          "standard": {
+            "type": "string",
+            "description": "`rubric:<id>@<version>`, `stage:<key>` or `case:<id>`."
+          },
+          "value": {
+            "description": "The judgement as the judge recorded it."
+          },
+          "comment": {
+            "type": "string"
+          },
+          "evidence_refs": {
+            "type": "array"
+          },
+          "supersedes": {
+            "type": ["string", "null"]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "superseded_by": {
+            "type": ["string", "null"],
+            "description": "The verdict that replaced this one, if any."
+          }
+        }
+      },
+      "VerdictHistory": {
+        "type": "object",
+        "required": ["verdicts"],
+        "properties": {
+          "verdicts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Verdict"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -50,3 +50,10 @@ treaty records by version and hash rather than by shape (phase 3, ruling 7). Eac
 by `schemas/treaty/artifact.v1.json`, names its crossing, where it is built, the version and
 commit, each file's SHA-256, and each consumer's pin. Its crossing lists the record in `contract`;
 the consumer's own pin stays where it is.
+
+## `published-ids.json`
+
+Schemas treaty holds under the `$id` their owner publishes them at rather than their treaty
+address, each with its crossing and why (phase 4, ruling 3). The file is the owner's byte for byte.
+`scripts/schema-ids.test.ts` accepts a foreign `$id` only when it is listed here, and reports an
+entry whose file has another `$id` or none. Checked by `schemas/treaty/published-ids.v1.json`.

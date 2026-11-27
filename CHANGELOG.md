@@ -5,6 +5,11 @@ deploys the event relay to production.
 
 ## Unreleased
 
+### Added
+
+- **SuperWitness's runs are a contract** (`schemas/http/superwitness/runs.v1.openapi.json`, cases in `fixtures/http/superwitness/runs.v1.cases.json`): `POST /v1/runs` (`runs:write`, a service principal), `GET /v1/runs` and `GET /v1/verdicts`, the three routes SuperPipeline and SuperDispatch call, with SuperWitness's authentication gate declared as an `x-treaty-gate-refusals` 403 in flat-error.v1. The envelope is error.v1, and SuperWitness's 20 codes join `contracts/error-codes.json` in UPPER_SNAKE, with its gate's `product_not_enabled` in flat-error.v1 (phase 4, ruling 2). Production still sends the codes in lower case until SuperWitness switches, after its consumers read either case; the registry entry records it. `superwitness.runs` moves from external to contracted (coverage 87%, 26 of 30).
+- **The run-report schema is in treaty** (`schemas/superwitness/run-report.v1.json`), byte for byte the file SuperWitness publishes (sha256 `b2444841…`), with its `$id` `https://docs.superwitness.dev/schemas/run-report.schema.json` unchanged (phase 4, ruling 3). It is the request body of `reportRuns`. Such a schema is listed in `contracts/published-ids.json` (path, `$id`, crossing and why; `schemas/treaty/published-ids.v1.json`); `misplacedIds` accepts a foreign `$id` only when it is listed there, and reports an exception whose file has another `$id` or none. The file is kept out of formatting so its bytes stay SuperWitness's.
+
 ## v0.0.22 — 2026-11-26
 
 ### Added
