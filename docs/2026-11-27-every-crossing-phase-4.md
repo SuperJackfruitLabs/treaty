@@ -154,7 +154,7 @@ enables it.
 
 ## Release order
 
-1. **treaty `v0.0.23`** carries tasks 1–5 and the Go module's first tag (`go/v0.0.23`).
+1. **treaty `v0.0.23`** carries tasks 1–5; the same tag versions the Go module.
 2. **Producers, in any order:**
    - **Salaam:** vendors the station corpora and checks its routes against the socket document;
      deletes its copies.
@@ -235,18 +235,19 @@ builtin-services.json`, the names a forge grant may not take.
 
 ## Task 5 (treaty): the Go module
 
-- Create `go/` with `go.mod` (`module github.com/SuperJackfruitLabs/treaty/go`), the data files
-  embedded at their treaty paths, `Manifest()`, `Validate(path string, value any) error` and
-  `RunCases(path string, parse func([]byte) error) []Mismatch`.
-- The release workflow tags `go/vX.Y.Z` beside `vX.Y.Z` and checks that the embedded data's
-  sha256s equal `manifest.json`.
+- Create `go.mod` at the repository root (`module github.com/SuperJackfruitLabs/treaty`) and a
+  root package `treaty` that embeds the data files at their treaty paths, with `Manifest()`,
+  `Validate(path string, value any) error` and
+  `RunCases(path string, parse func([]byte) error) []Mismatch`. At the root, `//go:embed` reaches
+  the data, and the module is versioned by the release's own `vX.Y.Z` tag: no second tag.
+- The release checks that the embedded data's sha256s equal `manifest.json`.
 - `treaty verify` accepts a pinned Go module version in `treaty.json` in place of a vendored copy.
 - Docs: a Go page beside the TypeScript packages page.
 
 ## Task 6 (treaty): integrate and release
 
 Merge tasks 1–5 into one pull request. Coverage tests move to 97% (30 of 31). `bun run check`,
-`go test ./go/...` and the docs build pass. Then the operator tags `v0.0.23`.
+`go test ./...` and the docs build pass. Then the operator tags `v0.0.23`.
 
 ## Product tasks
 
