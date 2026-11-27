@@ -56,16 +56,17 @@ Details that shape the tasks:
   `salaam-work-decision-preview-truncated-v1.json` exists only in AgentPod. AgentPod's
   `salaam-conformance.yml` runs Salaam at c05b9d1 (2026-10-21), 354 commits behind Salaam's main.
 - **stk as AgentPod uses it.** The node-agent runs ten stk subcommands (`internal/stkclient/
-stkclient.go`). Nine print JSON: `version`, `handover key`, `handover open`, `verify`,
-  `reload`, `env`, `doctor`, `doctor --probe`, plus `install`. A failure is an exit code and a
-  `stk: …` line on stderr. AgentPod writes `/etc/stk/supertoolkit.yaml` (YAML, 0640) from its own
+stkclient.go`). Seven print JSON with `--json`: `handover key`, `handover open`, `verify`,
+  `reload`, `env`, `doctor` and `doctor --probe`; `version`, `revoke --local` and `install`
+  print text. A failure is an exit code and a `stk: …` line on stderr. AgentPod writes `/etc/stk/supertoolkit.yaml` (YAML, 0640) from its own
   struct (`forgeapi/stkpolicy/policy.go:263-285`); stk's parser refuses an unknown key
-  (`internal/policy/config.go:378`).
+  inside a forge rule and in `labels` (`internal/policy/config.go:378`) and ignores one
+  elsewhere.
 - **stk drift, live.**
   - stk's built-in services include `superpipeline-approvals-read` and `-write` (since
     2026-11-08), but AgentPod's `BuiltinServices` list (pinned to stk 9fc1c19) lacks them. A
-    forge grant with either name passes AgentPod's collision check and is then silently resolved
-    as the built-in.
+    forge grant with either name passes AgentPod's collision check, and stk then refuses the
+    policy file: both are native-only, so the station's reload fails.
   - stk accepts `api_prefix` on a forge service; AgentPod cannot write it and refuses any
     instance that needs one.
 - **The managed protocols are off.** stk serves `managed-mcp-v1`, `managed-evidence-v1` and
@@ -110,7 +111,7 @@ These are defaults. Each is a line in a contract, so changing one later is a ver
    "`$id` is the treaty address" that the registry entry records. SuperWitness vendors it back and
    its docs-claims test compares the published copy with the vendored one.
 4. **`supertoolkit.managed` is split by what runs.**
-   - `supertoolkit.cli` (new): the nine `--json` outputs and the policy file AgentPod writes,
+   - `supertoolkit.cli` (new): the seven `--json` outputs and the policy file AgentPod writes,
      with stk's built-in service names as data. Contracted this phase.
    - `supertoolkit.handover` (new): the sealed-envelope corpus between AgentPod's hub and stk.
      Contracted this phase.
@@ -202,7 +203,7 @@ code-error.v1`, server: the Unix socket `<state>/operator.sock`): the 24 `POST
 
 ## Task 2 (treaty): SuperToolkit's CLI, policy and handover
 
-- Create `schemas/supertoolkit/cli/<command>.v1.json` for the nine `--json` outputs, with stk's
+- Create `schemas/supertoolkit/cli/<command>.v1.json` for the seven `--json` outputs, with stk's
   goldens as valid cases.
 - Create `schemas/supertoolkit/policy.v1.json`: the policy file's forge services as AgentPod
   writes them, including `api_prefix` (stk accepts it), and `contracts/supertoolkit/
