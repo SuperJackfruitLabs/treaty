@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/supertoolkit/cli/reload.v1.json",
+  "title": "stk reload --json",
+  "description": "What `stk reload --json` prints on stdout, on success and on failure alike: stk's own verdict on re-reading the policy file into the running `stk serve`. Written from supertoolkit internal/livepolicy/reload.go (`Result.MarshalJSON`): success always carries the three lists, empty rather than absent; failure carries only `ok` and `error`, and the previous policy stays in force. AgentPod's node-agent treats `{\"ok\": false}` as a result, not an error, and refuses a non-zero exit that claims `ok: true` (stkclient.go, Reload). On failure stk exits non-zero and writes `stk: <message>` to stderr; that text and the exit code are not part of this contract (phase 4, ruling 4).",
+  "oneOf": [
+    {
+      "title": "reloaded",
+      "type": "object",
+      "required": ["ok", "removed", "added", "changed"],
+      "additionalProperties": false,
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "removed": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "added": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "changed": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "credentials_kept": {
+          "description": "Removed services whose credential is still stored: a reload deletes none. Omitted when empty.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "title": "refused",
+      "type": "object",
+      "required": ["ok", "error"],
+      "additionalProperties": false,
+      "properties": {
+        "ok": {
+          "const": false
+        },
+        "error": {
+          "description": "Why the reload did not happen, as text.",
+          "type": "string"
+        }
+      }
+    }
+  ]
+}

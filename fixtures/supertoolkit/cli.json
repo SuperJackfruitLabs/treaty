@@ -1,0 +1,383 @@
+{
+  "corpus": "supertoolkit-cli",
+  "version": 1,
+  "howToRead": {
+    "source": "Valid cases are the JSON stk prints in its characterization goldens (supertoolkit:cmd/stk/testdata/cli-*.golden.txt), unchanged, placeholders such as $ROOT included; each label names the golden and the command. Cases labelled `from code` are written from stk's code where no golden prints that shape.",
+    "schemas": "schemas.<name> holds the cases of schemas/supertoolkit/cli/<name>.json.",
+    "errors": "Only stdout's JSON is contracted. A failure's exit code and `stk: …` stderr line are not (phase 4, ruling 4)."
+  },
+  "schemas": {
+    "handover-key.v1": {
+      "valid": {
+        "cli-commands.golden.txt: stk handover key --json": {
+          "public_key": "$HANDOVER_KEY"
+        },
+        "from code: the key in fixtures/supertoolkit/handover-v1.json": {
+          "public_key": "stk-handover-v1:B6N8vBQgk8i3VdwbEOhstCY3StFqqFPtC9_AsrhtHHw"
+        }
+      },
+      "invalid": [
+        {
+          "why": "no public_key",
+          "body": {}
+        },
+        {
+          "why": "an empty key, which AgentPod refuses",
+          "body": {
+            "public_key": ""
+          }
+        },
+        {
+          "why": "the key as a bare string, the text form's stdout",
+          "body": "stk-handover-v1:B6N8vBQgk8i3VdwbEOhstCY3StFqqFPtC9_AsrhtHHw"
+        }
+      ]
+    },
+    "handover-open.v1": {
+      "valid": {
+        "from code: internal/setup/headless.go": {
+          "service": "forge-forgejo-aaa111",
+          "stored": true
+        }
+      },
+      "invalid": [
+        {
+          "why": "stored false: a failure prints no JSON",
+          "body": {
+            "service": "forge-forgejo-aaa111",
+            "stored": false
+          }
+        },
+        {
+          "why": "no stored",
+          "body": {
+            "service": "forge-forgejo-aaa111"
+          }
+        },
+        {
+          "why": "no service",
+          "body": {
+            "stored": true
+          }
+        }
+      ]
+    },
+    "verify.v1": {
+      "valid": {
+        "cli-commands.golden.txt: stk verify slack --json": {
+          "ok": false,
+          "reason": "unsupported"
+        },
+        "from code: verified": {
+          "ok": true,
+          "login": "agent-bot"
+        },
+        "from code: acting as someone else": {
+          "ok": false,
+          "login": "someone-else",
+          "reason": "wrong-identity"
+        },
+        "from code: a reason stk adds later is still read": {
+          "ok": false,
+          "reason": "rate-limited"
+        }
+      },
+      "invalid": [
+        {
+          "why": "no ok",
+          "body": {
+            "login": "agent-bot"
+          }
+        },
+        {
+          "why": "a failure with no reason",
+          "body": {
+            "ok": false
+          }
+        },
+        {
+          "why": "a success with a reason",
+          "body": {
+            "ok": true,
+            "login": "agent-bot",
+            "reason": "unauthorized"
+          }
+        },
+        {
+          "why": "ok as a string",
+          "body": {
+            "ok": "true"
+          }
+        }
+      ]
+    },
+    "reload.v1": {
+      "valid": {
+        "cli-serve.golden.txt: stk reload --json": {
+          "ok": true,
+          "removed": [],
+          "added": [],
+          "changed": []
+        },
+        "cli-commands.golden.txt: stk reload --json, no daemon": {
+          "ok": false,
+          "error": "no daemon is running: start `stk serve` first ($ROOT/state/stk.sock: dial unix $ROOT/state/stk.sock: connect: no such file or directory — is `stk serve` running?)"
+        },
+        "from code: a forge grant added, a removed service's credential kept": {
+          "ok": true,
+          "removed": [
+            "forge-gitea-bbb222"
+          ],
+          "added": [
+            "forge-forgejo-aaa111"
+          ],
+          "changed": [],
+          "credentials_kept": [
+            "forge-gitea-bbb222"
+          ]
+        }
+      },
+      "invalid": [
+        {
+          "why": "a success without its lists",
+          "body": {
+            "ok": true
+          }
+        },
+        {
+          "why": "a failure carrying lists",
+          "body": {
+            "ok": false,
+            "error": "x",
+            "added": []
+          }
+        },
+        {
+          "why": "a failure without its error",
+          "body": {
+            "ok": false
+          }
+        },
+        {
+          "why": "a list as null",
+          "body": {
+            "ok": true,
+            "removed": null,
+            "added": [],
+            "changed": []
+          }
+        }
+      ]
+    },
+    "env.v1": {
+      "valid": {
+        "cli-serve.golden.txt: stk env --json": {
+          "ca_path": "$ROOT/state/ca.pem",
+          "env": {
+            "CURL_CA_BUNDLE": "$ROOT/state/ca.pem",
+            "GH_TOKEN": "stk:ref:github:v1",
+            "HTTPS_PROXY": "http://stk:$PROXY_KEY@$PROXY_ADDR",
+            "HTTP_PROXY": "http://stk:$PROXY_KEY@$PROXY_ADDR",
+            "NODE_EXTRA_CA_CERTS": "$ROOT/state/ca.pem",
+            "NODE_USE_ENV_PROXY": "1",
+            "REQUESTS_CA_BUNDLE": "$ROOT/state/ca.pem",
+            "SSL_CERT_FILE": "$ROOT/state/ca.pem",
+            "STK_BROKERED": "1",
+            "http_proxy": "http://stk:$PROXY_KEY@$PROXY_ADDR",
+            "https_proxy": "http://stk:$PROXY_KEY@$PROXY_ADDR"
+          },
+          "proxy_url": "http://stk:$PROXY_KEY@$PROXY_ADDR"
+        }
+      },
+      "invalid": [
+        {
+          "why": "no proxy_url",
+          "body": {
+            "ca_path": "/var/lib/stk/ca.pem",
+            "env": {}
+          }
+        },
+        {
+          "why": "an empty ca_path, which AgentPod refuses",
+          "body": {
+            "proxy_url": "http://stk:k@127.0.0.1:8899",
+            "ca_path": "",
+            "env": {}
+          }
+        },
+        {
+          "why": "a variable that is not a string",
+          "body": {
+            "proxy_url": "http://stk:k@127.0.0.1:8899",
+            "ca_path": "/var/lib/stk/ca.pem",
+            "env": {
+              "STK_BROKERED": 1
+            }
+          }
+        }
+      ]
+    },
+    "doctor.v1": {
+      "valid": {
+        "cli-commands.golden.txt: stk doctor --json, a failed check": {
+          "checks": [
+            {
+              "name": "local state directory",
+              "ok": true,
+              "detail": "$ROOT/state mode 700"
+            },
+            {
+              "name": "policy file",
+              "ok": false,
+              "detail": "open $ROOT/work/supertoolkit.yaml: no such file or directory — run `stk init` first"
+            }
+          ],
+          "isolation": {
+            "level": "unknown",
+            "reasons": [
+              "no agent uids configured"
+            ]
+          }
+        },
+        "from code: a warning, and a separate user found by access": {
+          "checks": [
+            {
+              "name": "daemon socket",
+              "ok": true,
+              "warn": true,
+              "detail": "not running; `stk run` works without it"
+            }
+          ],
+          "isolation": {
+            "level": "separate-user",
+            "method": "mode-bits+access",
+            "reasons": []
+          }
+        }
+      },
+      "invalid": [
+        {
+          "why": "no isolation",
+          "body": {
+            "checks": []
+          }
+        },
+        {
+          "why": "an isolation without a level",
+          "body": {
+            "checks": [],
+            "isolation": {
+              "reasons": []
+            }
+          }
+        },
+        {
+          "why": "an empty level, which AgentPod refuses",
+          "body": {
+            "checks": [],
+            "isolation": {
+              "level": "",
+              "reasons": []
+            }
+          }
+        },
+        {
+          "why": "a check without ok",
+          "body": {
+            "checks": [
+              {
+                "name": "CA trust",
+                "detail": ""
+              }
+            ],
+            "isolation": {
+              "level": "unknown",
+              "reasons": []
+            }
+          }
+        }
+      ]
+    },
+    "doctor-probe.v1": {
+      "valid": {
+        "cli-probe.golden.txt: stk doctor --probe --json, a bypass": [
+          {
+            "client": "curl",
+            "outcome": "honoured",
+            "detail": "the provider received the substituted credential"
+          },
+          {
+            "client": "python3 urllib",
+            "outcome": "bypassed",
+            "detail": "it resolved the host itself, so it never asked the broker"
+          },
+          {
+            "client": "node fetch",
+            "outcome": "refused-ca",
+            "detail": "it would not trust the broker's certificate — fails loudly, so safe"
+          },
+          {
+            "client": "go net/http",
+            "outcome": "missing",
+            "detail": "no toolchain here"
+          }
+        ],
+        "cli-probe.golden.txt: stk doctor --probe --with-proxy-key --json, a failed client": [
+          {
+            "client": "curl",
+            "outcome": "failed",
+            "detail": "proxy credential not honoured"
+          },
+          {
+            "client": "python3 urllib",
+            "outcome": "honoured",
+            "detail": "the provider received the substituted credential"
+          },
+          {
+            "client": "node fetch",
+            "outcome": "honoured",
+            "detail": "the provider received the substituted credential"
+          },
+          {
+            "client": "go net/http",
+            "outcome": "missing",
+            "detail": "no toolchain here"
+          }
+        ]
+      },
+      "invalid": [
+        {
+          "why": "a row without an outcome, which AgentPod refuses",
+          "body": [
+            {
+              "client": "curl",
+              "detail": ""
+            }
+          ]
+        },
+        {
+          "why": "an empty client",
+          "body": [
+            {
+              "client": "",
+              "outcome": "honoured",
+              "detail": ""
+            }
+          ]
+        },
+        {
+          "why": "an object, not a list",
+          "body": {
+            "client": "curl",
+            "outcome": "honoured",
+            "detail": ""
+          }
+        },
+        {
+          "why": "null, which AgentPod refuses",
+          "body": null
+        }
+      ]
+    }
+  }
+}

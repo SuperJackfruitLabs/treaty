@@ -5,6 +5,17 @@ deploys the event relay to production.
 
 ## Unreleased
 
+### Added
+
+- **SuperToolkit's CLI is a contract** (`supertoolkit.cli`, phase 4 ruling 4). `schemas/supertoolkit/cli/` holds the stdout of the seven `stk … --json` commands AgentPod's node-agent reads (`handover key`, `handover open`, `verify`, `reload`, `env`, `doctor`, `doctor --probe`), written from stk's code, with stk's characterization goldens as valid cases (`fixtures/supertoolkit/cli.json`). A failure's exit code and stderr text are not contracted.
+- **The stk policy file is a contract** (`schemas/supertoolkit/policy.v1.json`): `supertoolkit.yaml`'s forge services as AgentPod writes them, plus `api_prefix`, which stk accepts, as JSON Schema over the YAML's data model. Cases in `fixtures/supertoolkit/policy.json`.
+- **stk's built-in service names are data** (`contracts/supertoolkit/builtin-services.json`, form `schemas/treaty/builtin-services.v1.json`): thirteen names, including `superpipeline-approvals-read` and `-write`, which AgentPod's own list lacks. The policy schema refuses a forge service under any of them.
+- **The hand-over envelope corpus is a contract** (`supertoolkit.handover`, `fixtures/supertoolkit/handover-v1.json`), byte for byte the copy AgentPod and SuperToolkit each hold today.
+
+### Changed
+
+- **`supertoolkit.managed` is `proposed`**: the managed MCP and control corpora move into treaty as data (`fixtures/supertoolkit/managed-mcp-v1.json`, `managed-control-v1.json`, byte for byte stk's); no host enables the managed protocols yet. Coverage is 84% (27 of 32).
+
 ## v0.0.22 — 2026-11-26
 
 ### Added

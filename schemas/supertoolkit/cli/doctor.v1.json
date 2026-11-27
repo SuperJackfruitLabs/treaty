@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/supertoolkit/cli/doctor.v1.json",
+  "title": "stk doctor --json",
+  "description": "What `stk doctor --json` prints on stdout: each setup check and the isolation verdict. stk exits 1 when a check failed and still prints this. Written from supertoolkit internal/doctor/doctor_isolation.go (`jsonCheck`) and internal/isolation/isolation.go (`Report`). AgentPod's node-agent requires `isolation.level` (stkclient.go, Doctor). On failure stk exits non-zero and writes `stk: <message>` to stderr; that text and the exit code are not part of this contract (phase 4, ruling 4).",
+  "type": "object",
+  "required": ["checks", "isolation"],
+  "properties": {
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "ok", "detail"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ok": {
+            "description": "Not failed: a warning is ok.",
+            "type": "boolean"
+          },
+          "warn": {
+            "description": "Present, and true, only for a warning.",
+            "type": "boolean"
+          },
+          "detail": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "isolation": {
+      "type": "object",
+      "required": ["level", "reasons"],
+      "properties": {
+        "level": {
+          "type": "string",
+          "minLength": 1,
+          "x-treaty-known-values": ["separate-user", "same-user", "unknown"]
+        },
+        "method": {
+          "description": "How the level was found; omitted when it is unknown.",
+          "type": "string",
+          "x-treaty-known-values": ["mode-bits", "mode-bits+access"]
+        },
+        "reasons": {
+          "description": "Empty rather than absent.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

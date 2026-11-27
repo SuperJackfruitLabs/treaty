@@ -1,0 +1,619 @@
+{
+  "corpus": "supertoolkit-policy",
+  "version": 1,
+  "howToRead": {
+    "source": "Policy files as AgentPod's node-agent renders them (apps/node-agent/internal/forgeapi/stkpolicy/policy.go, MergePolicy; its tests' baseEntry), parsed from YAML into JSON. Each invalid case is one stk refuses on load, or one AgentPod refuses to write.",
+    "schemas": "schemas.policy.v1 holds the cases of schemas/supertoolkit/policy.v1.json."
+  },
+  "schemas": {
+    "policy.v1": {
+      "valid": {
+        "a minted Forgejo grant, as AgentPod renders it": {
+          "services": {
+            "forge-forgejo-aaa111": {
+              "kind": "forge",
+              "provider": "forgejo",
+              "host": "forge.example.com",
+              "auth": "token",
+              "scheme": "token",
+              "env_var": "FORGEJO_TOKEN",
+              "repositories": [
+                "acme/widgets"
+              ],
+              "preset": "read",
+              "allow_graphql": false,
+              "labels": {
+                "station": "stn_1",
+                "grant": "fag_aaa111"
+              }
+            }
+          }
+        },
+        "a GitHub App grant with rules, graphql and a principal": {
+          "services": {
+            "forge-github-ccc333": {
+              "kind": "forge",
+              "provider": "github",
+              "host": "api.github.com",
+              "auth": "app",
+              "scheme": "bearer",
+              "env_var": "GH_TOKEN",
+              "repositories": [
+                "acme/widgets",
+                "acme/gears"
+              ],
+              "preset": "pull-requests",
+              "rules": [
+                {
+                  "allow": "POST /repos/{owner}/{repo}/issues",
+                  "when": {
+                    "title": "x"
+                  }
+                },
+                {
+                  "deny": "DELETE /x"
+                }
+              ],
+              "allow_graphql": true,
+              "labels": {
+                "station": "stn_1",
+                "principal": "prn_1",
+                "grant": "fag_ccc333"
+              }
+            }
+          }
+        },
+        "a forge on a sub-path API, with api_prefix (stk accepts it; AgentPod cannot write it yet)": {
+          "services": {
+            "forge-forgejo-aaa111": {
+              "kind": "forge",
+              "provider": "forgejo",
+              "host": "forge.example.com",
+              "auth": "token",
+              "scheme": "token",
+              "env_var": "FORGEJO_TOKEN",
+              "repositories": [
+                "acme/widgets"
+              ],
+              "preset": "read",
+              "allow_graphql": false,
+              "labels": {
+                "station": "stn_1",
+                "grant": "fag_aaa111"
+              },
+              "api_prefix": "/forge/api/v1"
+            }
+          }
+        },
+        "an operator's file: built-ins and other top-level keys pass through": {
+          "workspace": "default",
+          "agent_uids": [
+            1000
+          ],
+          "services": {
+            "github": {
+              "scopes": [
+                "repo"
+              ],
+              "capabilities": {
+                "create_issue": "agent"
+              }
+            },
+            "forge-forgejo-aaa111": {
+              "kind": "forge",
+              "provider": "forgejo",
+              "host": "forge.example.com",
+              "auth": "token",
+              "scheme": "token",
+              "env_var": "FORGEJO_TOKEN",
+              "repositories": [
+                "acme/widgets"
+              ],
+              "preset": "read",
+              "allow_graphql": false,
+              "labels": {
+                "station": "stn_1",
+                "grant": "fag_aaa111"
+              }
+            },
+            "shared-docs": {
+              "kind": "forge",
+              "provider": "gitea",
+              "host": "git.example.org",
+              "repositories": [
+                "docs/site"
+              ],
+              "labels": {
+                "grant": "shared:docs"
+              }
+            }
+          },
+          "profiles": {
+            "reviewer": {
+              "github": [
+                "list_issues"
+              ]
+            }
+          }
+        },
+        "a file with no services": {
+          "workspace": "default"
+        }
+      },
+      "invalid": [
+        {
+          "why": "an unknown provider",
+          "body": {
+            "services": {
+              "forge-forgejo-aaa111": {
+                "kind": "forge",
+                "provider": "gitlab",
+                "host": "forge.example.com",
+                "auth": "token",
+                "scheme": "token",
+                "env_var": "FORGEJO_TOKEN",
+                "repositories": [
+                  "acme/widgets"
+                ],
+                "preset": "read",
+                "allow_graphql": false,
+                "labels": {
+                  "station": "stn_1",
+                  "grant": "fag_aaa111"
+                }
+              }
+            }
+          }
+        },
+        {
+          "why": "a host with a scheme",
+          "body": {
+            "services": {
+              "forge-forgejo-aaa111": {
+                "kind": "forge",
+                "provider": "forgejo",
+                "host": "https://forge.example.com",
+                "auth": "token",
+                "scheme": "token",
+                "env_var": "FORGEJO_TOKEN",
+                "repositories": [
+                  "acme/widgets"
+                ],
+                "preset": "read",
+                "allow_graphql": false,
+                "labels": {
+                  "station": "stn_1",
+                  "grant": "fag_aaa111"
+                }
+              }
+            }
+          }
+        },
+        {
+          "why": "a host with a port",
+          "body": {
+            "services": {
+              "forge-forgejo-aaa111": {
+                "kind": "forge",
+                "provider": "forgejo",
+                "host": "forge.example.com:3000",
+                "auth": "token",
+                "scheme": "token",
+                "env_var": "FORGEJO_TOKEN",
+                "repositories": [
+                  "acme/widgets"
+                ],
+                "preset": "read",
+                "allow_graphql": false,
+                "labels": {
+                  "station": "stn_1",
+                  "grant": "fag_aaa111"
+                }
+              }
+            }
+          }
+        },
+        {
+          "why": "no repositories",
+          "body": {
+            "services": {
+              "forge-forgejo-aaa111": {
+                "kind": "forge",
+                "provider": "forgejo",
+                "host": "forge.example.com",
+                "auth": "token",
+                "scheme": "token",
+                "env_var": "FORGEJO_TOKEN",
+                "repositories": [],
+                "preset": "read",
+                "allow_graphql": false,
+                "labels": {
+                  "station": "stn_1",
+                  "grant": "fag_aaa111"
+                }
+              }
+            }
+          }
+        },
+        {
+          "why": "a repository that is not owner/name",
+          "body": {
+            "services": {
+              "forge-forgejo-aaa111": {
+                "kind": "forge",
+                "provider": "forgejo",
+                "host": "forge.example.com",
+                "auth": "token",
+                "scheme": "token",
+                "env_var": "FORGEJO_TOKEN",
+                "repositories": [
+                  "acme"
+                ],
+                "preset": "read",
+                "allow_graphql": false,
+                "labels": {
+                  "station": "stn_1",
+                  "grant": "fag_aaa111"
+                }
+              }
+            }
+          }
+        },
+        {
+          "why": "an unknown preset",
+          "body": {
+            "services": {
+              "forge-forgejo-aaa111": {
+                "kind": "forge",
+                "provider": "forgejo",
+                "host": "forge.example.com",
+                "auth": "token",
+                "scheme": "token",
+                "env_var": "FORGEJO_TOKEN",
+                "repositories": [
+                  "acme/widgets"
+                ],
+                "preset": "admin",
+                "allow_graphql": false,
+                "labels": {
+                  "station": "stn_1",
+                  "grant": "fag_aaa111"
+                }
+              }
+            }
+          }
+        },
+        {
+          "why": "an unknown scheme",
+          "body": {
+            "services": {
+              "forge-forgejo-aaa111": {
+                "kind": "forge",
+                "provider": "forgejo",
+                "host": "forge.example.com",
+                "auth": "token",
+                "scheme": "basic",
+                "env_var": "FORGEJO_TOKEN",
+                "repositories": [
+                  "acme/widgets"
+                ],
+                "preset": "read",
+                "allow_graphql": false,
+                "labels": {
+                  "station": "stn_1",
+                  "grant": "fag_aaa111"
+                }
+              }
+            }
+          }
+        },
+        {
+          "why": "auth app on a provider other than GitHub",
+          "body": {
+            "services": {
+              "forge-forgejo-aaa111": {
+                "kind": "forge",
+                "provider": "forgejo",
+                "host": "forge.example.com",
+                "auth": "app",
+                "scheme": "token",
+                "env_var": "FORGEJO_TOKEN",
+                "repositories": [
+                  "acme/widgets"
+                ],
+                "preset": "read",
+                "allow_graphql": false,
+                "labels": {
+                  "station": "stn_1",
+                  "grant": "fag_aaa111"
+                }
+              }
+            }
+          }
+        },
+        {
+          "why": "auth none with a scheme",
+          "body": {
+            "services": {
+              "forge-forgejo-aaa111": {
+                "kind": "forge",
+                "provider": "forgejo",
+                "host": "forge.example.com",
+                "auth": "none",
+                "scheme": "token",
+                "env_var": "FORGEJO_TOKEN",
+                "repositories": [
+                  "acme/widgets"
+                ],
+                "preset": "read",
+                "allow_graphql": false,
+                "labels": {
+                  "station": "stn_1",
+                  "grant": "fag_aaa111"
+                }
+              }
+            }
+          }
+        },
+        {
+          "why": "a rule with both allow and deny",
+          "body": {
+            "services": {
+              "forge-forgejo-aaa111": {
+                "kind": "forge",
+                "provider": "forgejo",
+                "host": "forge.example.com",
+                "auth": "token",
+                "scheme": "token",
+                "env_var": "FORGEJO_TOKEN",
+                "repositories": [
+                  "acme/widgets"
+                ],
+                "preset": "read",
+                "allow_graphql": false,
+                "labels": {
+                  "station": "stn_1",
+                  "grant": "fag_aaa111"
+                },
+                "rules": [
+                  {
+                    "allow": "GET /x",
+                    "deny": "GET /y"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "why": "a rule with a misspelt key, which stk refuses",
+          "body": {
+            "services": {
+              "forge-forgejo-aaa111": {
+                "kind": "forge",
+                "provider": "forgejo",
+                "host": "forge.example.com",
+                "auth": "token",
+                "scheme": "token",
+                "env_var": "FORGEJO_TOKEN",
+                "repositories": [
+                  "acme/widgets"
+                ],
+                "preset": "read",
+                "allow_graphql": false,
+                "labels": {
+                  "station": "stn_1",
+                  "grant": "fag_aaa111"
+                },
+                "rules": [
+                  {
+                    "allow": "GET /x",
+                    "whn": {
+                      "a": "b"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "why": "a label stk does not know",
+          "body": {
+            "services": {
+              "forge-forgejo-aaa111": {
+                "kind": "forge",
+                "provider": "forgejo",
+                "host": "forge.example.com",
+                "auth": "token",
+                "scheme": "token",
+                "env_var": "FORGEJO_TOKEN",
+                "repositories": [
+                  "acme/widgets"
+                ],
+                "preset": "read",
+                "allow_graphql": false,
+                "labels": {
+                  "station": "stn_1",
+                  "grant": "fag_aaa111",
+                  "team": "x"
+                }
+              }
+            }
+          }
+        },
+        {
+          "why": "a label with a control character",
+          "body": {
+            "services": {
+              "forge-forgejo-aaa111": {
+                "kind": "forge",
+                "provider": "forgejo",
+                "host": "forge.example.com",
+                "auth": "token",
+                "scheme": "token",
+                "env_var": "FORGEJO_TOKEN",
+                "repositories": [
+                  "acme/widgets"
+                ],
+                "preset": "read",
+                "allow_graphql": false,
+                "labels": {
+                  "station": "stn\n1",
+                  "grant": "fag_aaa111"
+                }
+              }
+            }
+          }
+        },
+        {
+          "why": "a label over 128 characters",
+          "body": {
+            "services": {
+              "forge-forgejo-aaa111": {
+                "kind": "forge",
+                "provider": "forgejo",
+                "host": "forge.example.com",
+                "auth": "token",
+                "scheme": "token",
+                "env_var": "FORGEJO_TOKEN",
+                "repositories": [
+                  "acme/widgets"
+                ],
+                "preset": "read",
+                "allow_graphql": false,
+                "labels": {
+                  "station": "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+                  "grant": "fag_aaa111"
+                }
+              }
+            }
+          }
+        },
+        {
+          "why": "a key outside the contract on a forge service",
+          "body": {
+            "services": {
+              "forge-forgejo-aaa111": {
+                "kind": "forge",
+                "provider": "forgejo",
+                "host": "forge.example.com",
+                "auth": "token",
+                "scheme": "token",
+                "env_var": "FORGEJO_TOKEN",
+                "repositories": [
+                  "acme/widgets"
+                ],
+                "preset": "read",
+                "allow_graphql": false,
+                "labels": {
+                  "station": "stn_1",
+                  "grant": "fag_aaa111"
+                },
+                "capabilities": {
+                  "create_issue": "agent"
+                }
+              }
+            }
+          }
+        },
+        {
+          "why": "a forge service taking a built-in name",
+          "body": {
+            "services": {
+              "github": {
+                "kind": "forge",
+                "provider": "forgejo",
+                "host": "forge.example.com",
+                "auth": "token",
+                "scheme": "token",
+                "env_var": "FORGEJO_TOKEN",
+                "repositories": [
+                  "acme/widgets"
+                ],
+                "preset": "read",
+                "allow_graphql": false,
+                "labels": {
+                  "station": "stn_1",
+                  "grant": "fag_aaa111"
+                }
+              }
+            }
+          }
+        },
+        {
+          "why": "a forge service taking a native-only built-in name",
+          "body": {
+            "services": {
+              "superpipeline-approvals-read": {
+                "kind": "forge",
+                "provider": "forgejo",
+                "host": "forge.example.com",
+                "auth": "token",
+                "scheme": "token",
+                "env_var": "FORGEJO_TOKEN",
+                "repositories": [
+                  "acme/widgets"
+                ],
+                "preset": "read",
+                "allow_graphql": false,
+                "labels": {
+                  "station": "stn_1",
+                  "grant": "fag_aaa111"
+                }
+              }
+            }
+          }
+        },
+        {
+          "why": "a service name with .scope-",
+          "body": {
+            "services": {
+              "forge.scope-x": {
+                "kind": "forge",
+                "provider": "forgejo",
+                "host": "forge.example.com",
+                "auth": "token",
+                "scheme": "token",
+                "env_var": "FORGEJO_TOKEN",
+                "repositories": [
+                  "acme/widgets"
+                ],
+                "preset": "read",
+                "allow_graphql": false,
+                "labels": {
+                  "station": "stn_1",
+                  "grant": "fag_aaa111"
+                }
+              }
+            }
+          }
+        },
+        {
+          "why": "an env_var that is not a variable name",
+          "body": {
+            "services": {
+              "forge-forgejo-aaa111": {
+                "kind": "forge",
+                "provider": "forgejo",
+                "host": "forge.example.com",
+                "auth": "token",
+                "scheme": "token",
+                "env_var": "forge-token",
+                "repositories": [
+                  "acme/widgets"
+                ],
+                "preset": "read",
+                "allow_graphql": false,
+                "labels": {
+                  "station": "stn_1",
+                  "grant": "fag_aaa111"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

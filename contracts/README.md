@@ -50,3 +50,10 @@ treaty records by version and hash rather than by shape (phase 3, ruling 7). Eac
 by `schemas/treaty/artifact.v1.json`, names its crossing, where it is built, the version and
 commit, each file's SHA-256, and each consumer's pin. Its crossing lists the record in `contract`;
 the consumer's own pin stays where it is.
+
+## `supertoolkit/`
+
+`builtin-services.json`: the services stk compiles in (supertoolkit `internal/catalog`), checked by
+`schemas/treaty/builtin-services.v1.json`. A forge service in the policy file may not take one of
+these names; `schemas/supertoolkit/policy.v1.json` refuses it, and a test holds the schema's list
+to this file.

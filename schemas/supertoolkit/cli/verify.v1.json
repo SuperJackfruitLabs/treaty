@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/supertoolkit/cli/verify.v1.json",
+  "title": "stk verify <service> [--expect-login <login>] --json",
+  "description": "What `stk verify <service> --json` prints on stdout. stk exits non-zero on a failed verification and still prints this. Written from supertoolkit internal/verify/verify.go (`Result`) and internal/credcmd/verify.go. AgentPod's node-agent reads `ok`, `login` and `reason`, and accepts `ok: true` only with a zero exit and the login it expected (stkclient.go, Verify). A refusal before verification (no credential, an unknown service, `auth: none`) prints no JSON. On failure stk exits non-zero and writes `stk: <message>` to stderr; that text and the exit code are not part of this contract (phase 4, ruling 4).",
+  "type": "object",
+  "required": ["ok"],
+  "properties": {
+    "ok": {
+      "type": "boolean"
+    },
+    "login": {
+      "description": "The account the credential acts as; omitted when stk did not learn one.",
+      "type": "string"
+    },
+    "reason": {
+      "description": "Why the verification failed; omitted on success. Stable strings: AgentPod records them.",
+      "type": "string",
+      "x-treaty-known-values": [
+        "unauthorized",
+        "forbidden",
+        "unreachable",
+        "unexpected-response",
+        "server-error",
+        "redirect",
+        "wrong-identity",
+        "unsupported",
+        "repository-missing"
+      ]
+    }
+  },
+  "if": {
+    "properties": {
+      "ok": {
+        "const": false
+      }
+    }
+  },
+  "then": {
+    "required": ["reason"]
+  },
+  "else": {
+    "not": {
+      "required": ["reason"]
+    }
+  }
+}

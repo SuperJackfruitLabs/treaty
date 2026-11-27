@@ -1,0 +1,49 @@
+{
+  "$schema": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/treaty/builtin-services.v1.json",
+  "owner": "supertoolkit",
+  "description": "stk's compiled-in services (supertoolkit internal/catalog/catalog.go, `builtin`). A forge service in the policy file may not take one of these names: stk resolves a name without `kind: forge` against this table, and refuses a native-only name whatever its kind.",
+  "source": "supertoolkit:internal/catalog/catalog.go",
+  "services": [
+    {
+      "name": "aws-sts"
+    },
+    {
+      "name": "cloudflare"
+    },
+    {
+      "name": "github"
+    },
+    {
+      "name": "github-app"
+    },
+    {
+      "name": "google"
+    },
+    {
+      "name": "notion"
+    },
+    {
+      "name": "openai"
+    },
+    {
+      "name": "resend"
+    },
+    {
+      "name": "slack"
+    },
+    {
+      "name": "stripe"
+    },
+    {
+      "name": "superpipeline-approvals-read",
+      "native_only": true
+    },
+    {
+      "name": "superpipeline-approvals-write",
+      "native_only": true
+    },
+    {
+      "name": "x"
+    }
+  ]
+}

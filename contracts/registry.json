@@ -652,19 +652,75 @@
       ]
     },
     {
+      "id": "supertoolkit.cli",
+      "title": "SuperToolkit's CLI as AgentPod runs it: the --json outputs, the policy file and the built-in service names (a failure's exit code and stderr text are not contracted)",
+      "owner": "supertoolkit",
+      "consumers": ["agentpod"],
+      "kind": "cli",
+      "status": "contracted",
+      "contract": [
+        "schemas/supertoolkit/cli/doctor-probe.v1.json",
+        "schemas/supertoolkit/cli/doctor.v1.json",
+        "schemas/supertoolkit/cli/env.v1.json",
+        "schemas/supertoolkit/cli/handover-key.v1.json",
+        "schemas/supertoolkit/cli/handover-open.v1.json",
+        "schemas/supertoolkit/cli/reload.v1.json",
+        "schemas/supertoolkit/cli/verify.v1.json",
+        "schemas/supertoolkit/policy.v1.json",
+        "contracts/supertoolkit/builtin-services.json",
+        "fixtures/supertoolkit/cli.json",
+        "fixtures/supertoolkit/policy.json"
+      ],
+      "cases": {
+        "schemas/supertoolkit/cli/doctor-probe.v1.json": "fixtures/supertoolkit/cli.json#/schemas/doctor-probe.v1",
+        "schemas/supertoolkit/cli/doctor.v1.json": "fixtures/supertoolkit/cli.json#/schemas/doctor.v1",
+        "schemas/supertoolkit/cli/env.v1.json": "fixtures/supertoolkit/cli.json#/schemas/env.v1",
+        "schemas/supertoolkit/cli/handover-key.v1.json": "fixtures/supertoolkit/cli.json#/schemas/handover-key.v1",
+        "schemas/supertoolkit/cli/handover-open.v1.json": "fixtures/supertoolkit/cli.json#/schemas/handover-open.v1",
+        "schemas/supertoolkit/cli/reload.v1.json": "fixtures/supertoolkit/cli.json#/schemas/reload.v1",
+        "schemas/supertoolkit/cli/verify.v1.json": "fixtures/supertoolkit/cli.json#/schemas/verify.v1",
+        "schemas/supertoolkit/policy.v1.json": "fixtures/supertoolkit/policy.json#/schemas/policy.v1"
+      },
+      "evidence": [
+        "supertoolkit:cmd/stk/testdata/cli-commands.golden.txt",
+        "supertoolkit:internal/policy/config.go",
+        "supertoolkit:internal/catalog/catalog.go",
+        "agentpod:apps/node-agent/internal/stkclient/stkclient.go",
+        "agentpod:apps/node-agent/internal/forgeapi/stkpolicy/policy.go"
+      ]
+    },
+    {
+      "id": "supertoolkit.handover",
+      "title": "The sealed hand-over envelope: AgentPod's hub seals a credential, stk opens it",
+      "owner": "supertoolkit",
+      "consumers": ["agentpod"],
+      "kind": "file",
+      "status": "contracted",
+      "contract": ["fixtures/supertoolkit/handover-v1.json"],
+      "evidence": [
+        "supertoolkit:internal/handover/handover_test.go",
+        "agentpod:apps/hub/src/services/forge-api/handover-seal.ts",
+        "agentpod:apps/node-agent/internal/handoverseal/seal_test.go"
+      ]
+    },
+    {
       "id": "supertoolkit.managed",
       "title": "SuperToolkit's managed MCP, control, evidence and local-commands protocols",
       "owner": "supertoolkit",
       "consumers": ["salaam", "agentpod"],
       "kind": "ipc",
-      "status": "uncontracted",
-      "contract": [],
-      "gaps": "Byte-identical corpora copied into Salaam with no check; AgentPod parses stk's JSON output and writes its policy file by hand.",
-      "phase": 3,
+      "status": "proposed",
+      "contract": [
+        "fixtures/supertoolkit/managed-mcp-v1.json",
+        "fixtures/supertoolkit/managed-control-v1.json"
+      ],
+      "gaps": "Enabled on no host: Salaam calls the managed protocols only through the host manifest's managed_toolkit key, which AgentPod never writes, and the local-commands socket needs a flag nothing passes. The two corpora are data with no schema; managed-evidence-v1 has no corpus.",
+      "phase": 4,
       "evidence": [
         "supertoolkit:internal/managedmcp/README.md",
+        "supertoolkit:internal/managedmcp/corpus_test.go",
         "salaam:src/toolkit/mcp.ts",
-        "agentpod:apps/node-agent/internal/stkclient/stkclient.go"
+        "salaam:test/unit/toolkit-protocol.test.ts"
       ]
     },
     {

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/treaty/builtin-services.v1.json",
+  "title": "a product's list of built-in service names",
+  "description": "The form of contracts/supertoolkit/builtin-services.json: the service names stk compiles in, sorted, each once.",
+  "type": "object",
+  "required": ["owner", "description", "source", "services"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "owner": {
+      "const": "supertoolkit"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "type": "string",
+      "pattern": "^[a-z]+:[^\\s]+$"
+    },
+    "services": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "native_only": {
+            "description": "Reserved for an internal stk workflow: stk refuses the name with any `kind`.",
+            "const": true
+          }
+        }
+      }
+    }
+  }
+}
