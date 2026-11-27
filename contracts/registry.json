@@ -292,22 +292,6 @@
       "evidence": ["superbench:internal/checkpointset/testdata/source.json"]
     },
     {
-      "id": "superbench.consumer-bindings",
-      "title": "How a consumer binds a bench to a card: binding, lifecycle, locality",
-      "owner": "superbench",
-      "consumers": ["agentpod"],
-      "kind": "ipc",
-      "status": "proposed",
-      "contract": [
-        "schemas/superbench-consumers/card-binding.v1.json",
-        "schemas/superbench-consumers/lifecycle.v1.json",
-        "schemas/superbench-consumers/locality.v1.json",
-        "fixtures/superbench-consumers/cases.json"
-      ],
-      "phase": 3,
-      "evidence": ["superbench:AGENTS.md"]
-    },
-    {
       "id": "superpipeline.run-checkpoint",
       "title": "Run checkpoints and their settlement",
       "owner": "superpipeline",

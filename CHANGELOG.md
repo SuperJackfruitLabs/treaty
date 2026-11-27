@@ -11,6 +11,7 @@ deploys the event relay to production.
 
 ### Changed
 
+- **`superbench.consumer-bindings` leaves the registry** (phase 4, ruling 5). No product's code implements it; the registry lists crossings found in code. Its schemas (`schemas/superbench-consumers/`), fixtures and `docs/2026-11-16-superbench-consumer-bindings.md` stay, and it returns to the registry when code implements it. Coverage is 25 of 29 (86%). AgentPod's `treaty.json` still declares it as consumed, so `treaty verify` reports `unknown-contract` once AgentPod moves to the next release; AgentPod drops the line then.
 - **`superbench.local-api` says what is still outside treaty** (`contracts/registry.json`). It stays `partial`, now for what the code shows: `POST /v2/remote/status` (`remote_status`), which SuperBench serves and AgentPod's remote coordinator calls after every writer certificate, has no schema; the reader observations have no route in SuperBench's service and no AgentPod reader. The remote credential is no longer called a branch: SuperBench serves it on main, behind remote activation, and AgentPod calls it. The pins are counted as they are: seven SuperBench source files at six treaty revisions, two of them behind treaty's main. Evidence names the parsers on both sides.
 
 ## v0.0.22 — 2026-11-26
