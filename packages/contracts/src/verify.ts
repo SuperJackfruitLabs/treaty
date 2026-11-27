@@ -12,6 +12,7 @@ import {
   realpathSync,
 } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
+import { GO_MODULE, goModRequirement } from "./gomod.ts";
 import { installedDataDir, loadInstalledBundle, readManifest } from "./node.ts";
 import { findCrossing, readRegistry } from "./registry.ts";
 import { validatorFor } from "./schemas.ts";
@@ -29,7 +30,10 @@ export interface Problem {
     | "vendored-missing"
     | "vendored-drift"
     | "vendored-not-a-file"
-    | "vendored-unknown-source";
+    | "vendored-unknown-source"
+    | "go-module-missing"
+    | "go-module-unpinned"
+    | "go-module-replaced";
   message: string;
 }
 
@@ -39,6 +43,8 @@ export interface ProductManifest {
   produces: string[];
   consumes: string[];
   vendored?: { path: string; source: string }[];
+  /** go.mod files that require the treaty Go module at the pinned release, in place of copies. */
+  goModules?: string[];
 }
 
 export interface VerifyOptions {
@@ -53,7 +59,8 @@ export interface VerifyOptions {
   maxBehind?: number;
 }
 
-const MANIFEST_SCHEMA = "schemas/treaty/product-manifest.v1.json";
+/** v2 adds `goModules`; every v1 treaty.json is a v2 one. */
+const MANIFEST_SCHEMA = "schemas/treaty/product-manifest.v2.json";
 
 function isManifest(value: unknown): value is ProductManifest {
   return (
@@ -236,6 +243,46 @@ export function verify(opts: VerifyOptions): Problem[] {
       problems.push({
         code: "vendored-drift",
         message: `${path} differs from ${source} in treaty ${release.treaty}: run treaty sync`,
+      });
+  }
+  problems.push(...goModuleProblems(opts.repoRoot, manifest));
+  return problems;
+}
+
+/** Each declared go.mod must require the treaty module at exactly the pinned release. */
+function goModuleProblems(root: string, manifest: ProductManifest): Problem[] {
+  const want = `v${manifest.treaty}`;
+  const problems: Problem[] = [];
+  for (const path of manifest.goModules ?? []) {
+    const target = inside(root, path);
+    if (target === undefined) {
+      problems.push({
+        code: "manifest-invalid",
+        message: `${path} is outside the repository`,
+      });
+      continue;
+    }
+    if (!existsSync(target) || !lstatSync(target).isFile()) {
+      problems.push({
+        code: "go-module-missing",
+        message: `${path} is missing: treaty.json says it requires ${GO_MODULE} ${want}`,
+      });
+      continue;
+    }
+    const { version, replacedBy } = goModRequirement(
+      readFileSync(target, "utf8"),
+    );
+    if (version !== want)
+      problems.push({
+        code: "go-module-unpinned",
+        message: version
+          ? `${path} requires ${GO_MODULE} ${version}, but treaty.json pins ${manifest.treaty}: run go get ${GO_MODULE}@${want}`
+          : `${path} does not require ${GO_MODULE}: run go get ${GO_MODULE}@${want}`,
+      });
+    if (replacedBy !== undefined)
+      problems.push({
+        code: "go-module-replaced",
+        message: `${path} replaces ${GO_MODULE} with ${replacedBy}, so it does not read the pinned release`,
       });
   }
   return problems;
