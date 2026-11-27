@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/supertoolkit/cli/doctor-probe.v1.json",
+  "title": "stk doctor --probe --json",
+  "description": "What `stk doctor --probe --json` prints on stdout: one row per client probed through a real broker, in order. stk exits 1 on a bypass or a failed client and still prints this; the human report goes to stderr. Written from supertoolkit internal/doctor/probe.go (`row`). AgentPod's node-agent requires `client` and `outcome` on every row and refuses a non-zero exit when every row is `honoured` (stkclient.go, Probe). On failure stk exits non-zero and writes `stk: <message>` to stderr; that text and the exit code are not part of this contract (phase 4, ruling 4).",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["client", "outcome", "detail"],
+    "properties": {
+      "client": {
+        "type": "string",
+        "minLength": 1
+      },
+      "outcome": {
+        "type": "string",
+        "minLength": 1,
+        "x-treaty-known-values": [
+          "honoured",
+          "bypassed",
+          "refused-ca",
+          "missing",
+          "failed"
+        ]
+      },
+      "detail": {
+        "type": "string"
+      }
+    }
+  }
+}

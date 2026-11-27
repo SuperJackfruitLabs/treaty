@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/supertoolkit/cli/handover-open.v1.json",
+  "title": "stk handover open <service> --json",
+  "description": "What `stk handover open <service> --json` prints on stdout once the envelope read from stdin is opened and stored. Written from supertoolkit internal/setup/headless.go (`map[string]any{\"service\": name, \"stored\": true}`). AgentPod's node-agent reads only `stored` and requires it true (stkclient.go, HandoverOpen). On failure stk exits non-zero and writes `stk: <message>` to stderr; that text and the exit code are not part of this contract (phase 4, ruling 4).",
+  "type": "object",
+  "required": ["service", "stored"],
+  "properties": {
+    "service": {
+      "description": "The service the credential was stored for.",
+      "type": "string",
+      "minLength": 1
+    },
+    "stored": {
+      "description": "Always true: a failure prints no JSON.",
+      "const": true
+    }
+  }
+}

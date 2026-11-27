@@ -210,17 +210,17 @@ describe("contracts/registry.json", () => {
 
   test("the coverage of the registry is recorded here, so a change to it is a visible diff", () => {
     expect(coverage(registry)).toEqual({
-      applicable: 30,
+      applicable: 32,
       byStatus: {
-        contracted: 25,
+        contracted: 27,
         partial: 1,
-        uncontracted: 2,
-        proposed: 1,
+        uncontracted: 1,
+        proposed: 2,
         external: 1,
         standard: 2,
         deprecated: 2,
       },
-      percent: 83,
+      percent: 84,
     });
   });
 });

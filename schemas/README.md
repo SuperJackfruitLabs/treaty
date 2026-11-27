@@ -14,8 +14,11 @@ the public repository, and every schema belongs to a crossing in
   `treaty/telemetry-conventions.v1.json`.
 - `urls/`: URL shapes: a URL's origins, path and parameters, with cases in `fixtures/urls/`.
   Their form is `treaty/url-shape.v1.json`.
+- `supertoolkit/`: SuperToolkit's CLI as AgentPod runs it: each `stk … --json` output under
+  `cli/`, and the policy file (`policy.v1.json`), with cases in `fixtures/supertoolkit/`.
 - `treaty/`: the shape of treaty's own files: the registry, the error codes, a product's
-  `treaty.json`, an artifact record (`contracts/artifacts/`) and the three forms above.
+  `treaty.json`, an artifact record (`contracts/artifacts/`), a built-in service list
+  (`contracts/supertoolkit/`) and the three forms above.
 
 The sections below describe the event and Matrix schemas.
 
@@ -137,3 +140,20 @@ TypeScript that builds and reads them.
 Its corpus is `fixtures/superbench-api/operations.json`; the transport/authority
 contract is [the local API proposal](../docs/2026-11-14-superbench-local-api.md).
 No CloudEvents catalogue entry or remote token audience is implied.
+
+## SuperToolkit's CLI (`supertoolkit/`)
+
+AgentPod's node-agent runs `stk` and reads what it prints. Each schema under `cli/` is one
+command's stdout with `--json`: `handover key`, `handover open`, `verify`, `reload`, `env`,
+`doctor` and `doctor --probe`. Their valid cases are the JSON in stk's characterization goldens
+(`cmd/stk/testdata/cli-*.golden.txt`), unchanged. `version`, `revoke --local` and `install`
+print text and are not contracted. A failure is an exit code and a `stk: …` line on stderr,
+which is not contracted either: contracting it would be a CLI change, not a record of what ships
+(phase 4, ruling 4).
+
+`policy.v1.json` is `supertoolkit.yaml` as AgentPod writes it, as JSON Schema over the YAML's
+data model: parse the YAML, then validate the value. Only `services` is contracted; a
+`kind: forge` service holds to the keys AgentPod writes plus `api_prefix`, and may not take a
+name in `contracts/supertoolkit/builtin-services.json`, stk's compiled-in services.
+`fixtures/supertoolkit/` also holds the hand-over corpus and the two managed-protocol corpora,
+byte for byte stk's.

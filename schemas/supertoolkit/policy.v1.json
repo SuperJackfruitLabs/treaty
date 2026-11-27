@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/supertoolkit/policy.v1.json",
+  "title": "supertoolkit.yaml: the forge services AgentPod writes",
+  "description": "The stk policy file (`/etc/stk/supertoolkit.yaml` on a station, YAML, mode 0640) as AgentPod's node-agent edits it, written as JSON Schema over the YAML's data model: a reader parses the YAML, then validates the value. stk parses it with supertoolkit internal/policy/config.go (`file`, Parse) and refuses the whole file on any bad entry, so `stk reload` leaves the previous policy in force. Only `services` is contracted: other top-level keys (`workspace`, `profiles`, `servers`, `egress` and the rest) are the operator's and pass through untouched, as do built-in services. A service with `kind: forge` must match the forge shape below, and may not take a built-in name (contracts/supertoolkit/builtin-services.json). What a schema cannot say, stk checks on load: a host used by two services, a forge rule pattern, and one owner across an app grant's repositories.",
+  "type": "object",
+  "properties": {
+    "services": {
+      "type": "object",
+      "propertyNames": {
+        "description": "AgentPod's service-name rule (stkpolicy.CheckServiceName); stk refuses `.scope-` in a forge name.",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+        "not": {
+          "pattern": "\\.scope-"
+        }
+      },
+      "patternProperties": {
+        "^(aws-sts|cloudflare|github|github-app|google|notion|openai|resend|slack|stripe|superpipeline-approvals-read|superpipeline-approvals-write|x)$": {
+          "description": "A built-in service: never `kind: forge`.",
+          "not": {
+            "type": "object",
+            "required": ["kind"]
+          }
+        }
+      },
+      "additionalProperties": {
+        "if": {
+          "type": "object",
+          "required": ["kind"]
+        },
+        "then": {
+          "$ref": "#/$defs/forge"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "forge": {
+      "description": "A `kind: forge` service: the keys AgentPod's node-agent writes (apps/node-agent/internal/forgeapi/stkpolicy/policy.go, `serviceOut`), plus `api_prefix`, which stk accepts and AgentPod cannot yet write. stk's own decoding of a service ignores unknown keys and also reads `scopes`, `capabilities`, `device` and `oauth2`; this contract holds a forge service to the set both sides agree on.",
+      "type": "object",
+      "required": ["kind", "provider", "host", "repositories"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "forge"
+        },
+        "provider": {
+          "enum": ["forgejo", "gitea", "github", "bitbucket"]
+        },
+        "host": {
+          "description": "A bare hostname: no scheme, port, path or spaces (stk catalog/forge.go, checkHost).",
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[^/:\\s?#@]+$"
+        },
+        "api_prefix": {
+          "description": "The forge's API path prefix; empty or absent means the provider's default (`/api/v1` for Forgejo and Gitea, `/2.0` for Bitbucket, none for github.com and `/api/v3` for GitHub Enterprise). stk does not check it further.",
+          "type": "string"
+        },
+        "auth": {
+          "description": "Empty means token. `app` is a GitHub App grant.",
+          "enum": ["", "token", "app", "none"]
+        },
+        "scheme": {
+          "description": "Empty means bearer. Forgejo and Gitea take `token`.",
+          "enum": ["", "bearer", "token"]
+        },
+        "env_var": {
+          "description": "The variable a brokered child reads the placeholder from.",
+          "type": "string",
+          "pattern": "^([A-Z_][A-Z0-9_]{0,63})?$"
+        },
+        "repositories": {
+          "description": "The `owner/name` pairs the grant covers. With `auth: app` they share one owner, which a schema cannot say; stk refuses otherwise.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[^/\\s]+/[^/\\s]+$"
+          }
+        },
+        "preset": {
+          "description": "Empty means read.",
+          "enum": ["", "read", "issues", "pull-requests", "maintain", "none"]
+        },
+        "rules": {
+          "description": "Request rules after the preset's. stk refuses any key but allow, deny and when, and parses the patterns itself.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "allow": {
+                "type": "string",
+                "minLength": 1
+              },
+              "deny": {
+                "type": "string",
+                "minLength": 1
+              },
+              "when": {
+                "type": "object"
+              }
+            },
+            "oneOf": [
+              {
+                "required": ["allow"]
+              },
+              {
+                "required": ["deny"]
+              }
+            ]
+          }
+        },
+        "allow_graphql": {
+          "type": "boolean"
+        },
+        "labels": {
+          "description": "Audit labels copied onto every row stk writes. stk refuses any other key; AgentPod marks its own entries by `grant`, and a copied shared entry by a `grant` starting `shared:`.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "station": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f]*$"
+            },
+            "principal": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f]*$"
+            },
+            "grant": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f]*$"
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["auth"],
+            "properties": {
+              "auth": {
+                "const": "app"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "provider": {
+                "const": "github"
+              },
+              "scheme": {
+                "enum": ["", "bearer"]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["auth"],
+            "properties": {
+              "auth": {
+                "const": "none"
+              }
+            }
+          },
+          "then": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": ["scheme"]
+                },
+                {
+                  "required": ["env_var"]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

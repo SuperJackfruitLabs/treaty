@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/supertoolkit/cli/handover-key.v1.json",
+  "title": "stk handover key --json",
+  "description": "What `stk handover key --json` prints on stdout: this broker's public hand-over key, which can only seal. Written from supertoolkit internal/setup/headless.go (`map[string]string{\"public_key\": …}`). AgentPod's node-agent reads `public_key` and refuses an empty one (apps/node-agent/internal/stkclient/stkclient.go, HandoverKey). On failure stk exits non-zero and writes `stk: <message>` to stderr; that text and the exit code are not part of this contract (phase 4, ruling 4).",
+  "type": "object",
+  "required": ["public_key"],
+  "properties": {
+    "public_key": {
+      "description": "The hand-over key, `stk-handover-v1:` and the X25519 public key in unpadded base64url (fixtures/supertoolkit/handover-v1.json).",
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
