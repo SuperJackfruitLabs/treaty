@@ -9,6 +9,10 @@ deploys the event relay to production.
 
 - **Every schema of SuperBench's local API has cases** (`fixtures/superbench-api/cases.json`). The 14 schemas under `schemas/superbench/` that had none (the v1 and v2 operations and replies, cancellation, receipt lookup, reader observations, the finite IO run, reply and receipt, and the grouped registration observation) each have valid and invalid cases the schema alone decides, registered on `superbench.local-api`: 167 valid and 202 invalid. Most are entries of the shared corpora, which SuperBench and AgentPod already pin, and `scripts/superbench-local-api-cases.test.ts` fails if a case drifts from its corpus entry. The finite IO and registration cases the corpora lack are written from SuperBench's Go parsers. SuperBench's parsers (`internal/protocol`, `internal/protocolv2`) and AgentPod's bench client (`internal/benchworkspace`) accept every valid case and refuse every invalid one they parse; the reader observations have no Go parser on either side. The request and reply of `POST /v2/registrations/observe` are named in `docs/2026-11-16-superbench-private-execution-io.md`, and their valid cases are that corpus's `observation_request` and `observation_response`.
 
+### Changed
+
+- **`superbench.local-api` says what is still outside treaty** (`contracts/registry.json`). It stays `partial`, now for what the code shows: `POST /v2/remote/status` (`remote_status`), which SuperBench serves and AgentPod's remote coordinator calls after every writer certificate, has no schema; the reader observations have no route in SuperBench's service and no AgentPod reader. The remote credential is no longer called a branch: SuperBench serves it on main, behind remote activation, and AgentPod calls it. The pins are counted as they are: seven SuperBench source files at six treaty revisions, two of them behind treaty's main. Evidence names the parsers on both sides.
+
 ## v0.0.22 — 2026-11-26
 
 ### Added

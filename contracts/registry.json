@@ -260,13 +260,22 @@
         "schemas/superbench/remote-credential-request.v1.json": "fixtures/superbench-api/remote-credentials.json#/request",
         "schemas/superbench/remote-credential-response.v1.json": "fixtures/superbench-api/remote-credentials.json#/response"
       },
-      "gaps": "pins sit at five treaty revisions and are compared by hash, not against a release; remote credential: proposed; produced on SuperBench's M1 branch.",
-      "phase": 3,
+      "gaps": "POST /v2/remote/status (operation remote_status, superbench.remote.v1) has no schema: SuperBench serves it (internal/remoteapi/handler.go, internal/remoteproto/proto.go) and AgentPod's remote coordinator calls it after every writer certificate (benchworkspace/remote.go RemoteExecutionID). The reader observations (observation-request.v1, observation-response.v1) have no route in SuperBench's Go service and no AgentPod reader; SuperBench's only reader is the web codec in web/contract, fixture-only. Pins: SuperBench vendors this crossing in seven source files at six treaty revisions (internal/protocol/testdata/source.json, internal/protocolv2/testdata/{source,response-source,cancellation-source,private-execution-io.source,receipt-lookup/source}.json, web/contract/source.json), compared by hash, not against a release; two are behind treaty main (receipt-lookup-lifecycle.json and observation-response.v1.json). AgentPod pins its own copies in internal/benchworkspace and internal/superbench. Every route but /v2/operations is off unless the host enables it (the proposed* switches and remote activation in internal/service).",
+      "phase": 4,
       "evidence": [
         "superbench:internal/service/server_v2.go",
+        "superbench:internal/protocol/request.go",
+        "superbench:internal/protocolv2/request.go",
+        "superbench:internal/protocolv2/cancel.go",
+        "superbench:internal/protocolv2/receipt_lookup.go",
+        "superbench:internal/protocolv2/registration_observe.go",
+        "superbench:internal/protocolv2/finite_io.go",
         "superbench:internal/remoteproto/proto.go",
+        "superbench:web/contract/source.json",
         "agentpod:apps/node-agent/internal/benchworkspace/client.go",
-        "agentpod:apps/node-agent/internal/benchworkspace/remote.go"
+        "agentpod:apps/node-agent/internal/benchworkspace/registration_observe.go",
+        "agentpod:apps/node-agent/internal/benchworkspace/remote.go",
+        "agentpod:apps/node-agent/internal/superbench/client.go"
       ]
     },
     {
