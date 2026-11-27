@@ -2,7 +2,9 @@
 
 Every contract treaty holds, as JSON Schema draft 2020-12. Each schema's `$id` is its address on
 the public repository, and every schema belongs to a crossing in
-[`contracts/registry.json`](../contracts/registry.json).
+[`contracts/registry.json`](../contracts/registry.json). The one exception is a schema its owner
+publishes at its own URL, held here byte for byte with that `$id`; `contracts/published-ids.json`
+lists it (`superwitness/run-report.v1.json`).
 
 - `common/`: pieces other contracts reference, such as the error envelopes (`error.v1`,
   `flat-error.v1`, `matrix-error.v1`, and RFC 6750's `oauth-bearer-error.v1`).
@@ -92,7 +94,9 @@ once, so a receiver handles each event id once (`handleOnce` from
 ## Not here
 
 - **Run reports** go to SuperWitness (`POST /v1/runs`), which owns and publishes their schema at
-  `https://docs.superwitness.dev/schemas/run-report.schema.json`. The catalogue points at it.
+  `https://docs.superwitness.dev/schemas/run-report.schema.json`. They are not events: the
+  catalogue points at the schema, and treaty holds the same file, `$id` unchanged, at
+  `superwitness/run-report.v1.json`, the request body of `http/superwitness/runs.v1.openapi.json`.
 
 ## Matrix (`matrix/`)
 

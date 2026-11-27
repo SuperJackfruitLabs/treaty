@@ -57,3 +57,10 @@ the consumer's own pin stays where it is.
 `schemas/treaty/builtin-services.v1.json`. A forge service in the policy file may not take one of
 these names; `schemas/supertoolkit/policy.v1.json` refuses it, and a test holds the schema's list
 to this file.
+
+## `published-ids.json`
+
+Schemas treaty holds under the `$id` their owner publishes them at rather than their treaty
+address, each with its crossing and why (phase 4, ruling 3). The file is the owner's byte for byte.
+`scripts/schema-ids.test.ts` accepts a foreign `$id` only when it is listed here, and reports an
+entry whose file has another `$id` or none. Checked by `schemas/treaty/published-ids.v1.json`.

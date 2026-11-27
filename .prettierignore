@@ -9,3 +9,4 @@ packages/*/schemas/
 .github/release/
 .github/workflows/release.yml
 docs-site/
+schemas/superwitness/run-report.v1.json
