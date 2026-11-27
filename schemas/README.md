@@ -137,3 +137,8 @@ TypeScript that builds and reads them.
 Its corpus is `fixtures/superbench-api/operations.json`; the transport/authority
 contract is [the local API proposal](../docs/2026-11-14-superbench-local-api.md).
 No CloudEvents catalogue entry or remote token audience is implied.
+
+Every schema of `superbench.local-api` has valid and invalid cases in
+`fixtures/superbench-api/cases.json`, decided by the schema alone; the remote credential's are in
+`fixtures/superbench-api/remote-credentials.json`. A case labelled as an entry of a shared corpus is
+that entry; `scripts/superbench-local-api-cases.test.ts` fails if the two drift.

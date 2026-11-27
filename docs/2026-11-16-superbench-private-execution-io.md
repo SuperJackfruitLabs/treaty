@@ -127,6 +127,11 @@ request ID or effects. Both request and complete response are at most 64 KiB.
 Only an actual authorized Unix operator with the exact currently held owner may
 observe; reader-only peers and wrong/missing capabilities refuse before disclosure.
 
+The request is `schemas/superbench/registration-observe-operation.v2.json` and the reply
+`schemas/superbench/registration-observe-response.v2.json`. Their cases are in
+`fixtures/superbench-api/cases.json`; the valid request and reply there are this corpus's
+`observation_request` and `observation_response`.
+
 The private success result contains exact `key`, `bench_id`, derived `root_path`,
 `layout_version: superbench.payload-layout.v1`, `policy_sha256`, physical `root`,
 `root_home`, `root_tmp`, the complete name-sorted `members` vector, and the original
