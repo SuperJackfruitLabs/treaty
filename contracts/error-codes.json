@@ -1,6 +1,6 @@
 {
   "registry": "treaty error codes",
-  "version": 2,
+  "version": 3,
   "description": "Every error code a suite product's API returns, with the status it carries and the envelope it travels in. SuperPipeline's codes are its statusForCode table, its route-level codes and its entitlement gate's flat product_not_enabled; Accounts' are its flat codes; SuperLibrary's are the flat codes of the routes other products call; AgentPod's are the Matrix errcodes of its Live Activity token routes and the flat codes of its service reads. Seeded 2026-11-22.",
   "codes": [
     {

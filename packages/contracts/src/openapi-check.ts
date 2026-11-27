@@ -16,6 +16,7 @@ export const ERROR_ENVELOPES = [
   "flat-error.v1",
   "matrix-error.v1",
   "oauth-bearer-error.v1",
+  "code-error.v1",
 ] as const;
 export type ErrorEnvelope = (typeof ERROR_ENVELOPES)[number];
 
@@ -26,6 +27,12 @@ export type ErrorEnvelope = (typeof ERROR_ENVELOPES)[number];
  */
 export const STANDARD_ENVELOPES: Partial<Record<ErrorEnvelope, ErrorEnvelope>> =
   { "oauth-bearer-error.v1": "flat-error.v1" };
+
+/**
+ * Envelopes for local IPC only: a socket or helper on one host, never an HTTP API between
+ * products (phase 4, ruling 1). A document in one is named by an `ipc` crossing, not an `http` one.
+ */
+export const LOCAL_ENVELOPES: readonly ErrorEnvelope[] = ["code-error.v1"];
 
 /** The envelope a document declares, error.v1 when it declares none, or undefined when unknown. */
 export function envelopeOf(doc: unknown): ErrorEnvelope | undefined {
@@ -150,6 +157,7 @@ function checkCases(
 function codeOf(envelope: ErrorEnvelope, body: unknown): unknown {
   if (!isObject(body)) return undefined;
   if (envelope === "matrix-error.v1") return body.errcode;
+  if (envelope === "code-error.v1") return body.code;
   if (envelope === "error.v1")
     return isObject(body.error) ? body.error.code : undefined;
   return body.error;
@@ -357,10 +365,16 @@ export function checkOpenApi(
 
   problems.push(...checkGateRefusals(bundle, path, doc, apiCases));
 
+  // A local envelope travels on one host, so its document belongs to an ipc crossing.
+  const kind = envelope && LOCAL_ENVELOPES.includes(envelope) ? "ipc" : "http";
   const named = registry.crossings.some(
-    (c) => c.kind === "http" && c.contract.includes(path),
+    (c) => c.kind === kind && c.contract.includes(path),
   );
   if (!named)
-    problems.push(`${path} is not named by an http crossing in the registry`);
+    problems.push(
+      kind === "ipc"
+        ? `${path} answers in ${envelope ?? ""}, which is for local IPC only: it must be named by an ipc crossing in the registry`
+        : `${path} is not named by an http crossing in the registry`,
+    );
   return problems;
 }

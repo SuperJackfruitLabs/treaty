@@ -17,13 +17,13 @@ const RAW = "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/";
 interface ErrorCode {
   code: string;
   owner: string;
-  envelope: "error.v1" | "flat-error.v1" | "matrix-error.v1";
+  envelope: "error.v1" | "flat-error.v1" | "matrix-error.v1" | "code-error.v1";
   status: number;
   alsoStatus?: number[];
   meaning: string;
 }
 const codesSchema = new Validator(
-  readJson("schemas/treaty/error-codes.v2.json"),
+  readJson("schemas/treaty/error-codes.v3.json"),
   "2020-12",
   false,
 );
@@ -89,6 +89,36 @@ describe("schemas/common/matrix-error.v1.json", () => {
 
   test("its $id is where it is published", () => {
     expect(schema.$id).toBe(`${RAW}schemas/common/matrix-error.v1.json`);
+  });
+
+  for (const [label, body] of Object.entries(cases.valid)) {
+    test(`accepts ${label}`, () => {
+      expect(validator.validate(body).errors).toEqual([]);
+    });
+  }
+  for (const { why, body } of cases.invalid) {
+    test(`refuses: ${why}`, () => {
+      expect(validator.validate(body).valid).toBe(false);
+    });
+  }
+});
+
+describe("schemas/common/code-error.v1.json", () => {
+  const schema = readJson("schemas/common/code-error.v1.json");
+  const validator = new Validator(schema, "2020-12", false);
+  const cases: {
+    valid: Record<string, unknown>;
+    invalid: { why: string; body: unknown }[];
+  } = readJson("fixtures/common/code-error.v1.cases.json");
+
+  test("its $id is where it is published", () => {
+    expect(schema.$id).toBe(`${RAW}schemas/common/code-error.v1.json`);
+  });
+
+  test("its code pattern is flat-error.v1's (ruling 1 of phase 4)", () => {
+    expect(schema.properties.code.pattern).toBe(
+      readJson("schemas/common/flat-error.v1.json").properties.error.pattern,
+    );
   });
 
   for (const [label, body] of Object.entries(cases.valid)) {
@@ -181,10 +211,11 @@ const CODE_FORM: Record<ErrorCode["envelope"], RegExp> = {
   "error.v1": /^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$/,
   "flat-error.v1": /^[a-z][a-z0-9]*(_[a-z0-9]+)*$/,
   "matrix-error.v1": /^M_[A-Z_]+$/,
+  "code-error.v1": /^[a-z][a-z0-9]*(_[a-z0-9]+)*$/,
 };
 
 describe("contracts/error-codes.json", () => {
-  test("validates against schemas/treaty/error-codes.v2.json", () => {
+  test("validates against schemas/treaty/error-codes.v3.json", () => {
     expect(codesSchema.validate(codesFile).errors).toEqual([]);
   });
 

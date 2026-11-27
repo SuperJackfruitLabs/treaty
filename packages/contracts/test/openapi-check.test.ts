@@ -418,6 +418,84 @@ describe("checkOpenApi", () => {
     });
   });
 
+  describe("a code-error.v1 API, for local IPC only", () => {
+    const salaamDoc = "schemas/http/salaam/sample.v1.openapi.json";
+    const codes = {
+      registry: "treaty error codes",
+      version: 2,
+      codes: [
+        {
+          code: "work_disabled",
+          owner: "salaam",
+          envelope: "code-error.v1",
+          status: 409,
+          meaning: "strict work is off",
+        },
+        {
+          code: "not_found",
+          owner: "salaam",
+          envelope: "flat-error.v1",
+          status: 404,
+          meaning: "a flat code",
+        },
+      ],
+    };
+    const check = (kind: "http" | "ipc", errorCodes: string[]) => {
+      const [first] = registry.crossings;
+      if (!first) throw new Error("the sample registry is empty");
+      return checkOpenApi(
+        createBundle({
+          "schemas/common/code-error.v1.json": json(
+            join(root, "schemas/common/code-error.v1.json"),
+          ),
+          "contracts/error-codes.json": codes,
+          [salaamDoc]: docFor("code-error.v1", errorCodes),
+          ["fixtures/http/salaam/sample.v1.cases.json"]: { operations: {} },
+        }),
+        salaamDoc,
+        {
+          ...registry,
+          crossings: [
+            {
+              ...first,
+              id: "agentpod.sample",
+              owner: "agentpod",
+              consumers: ["salaam"],
+              kind,
+              contract: [salaamDoc],
+            },
+          ],
+        },
+      );
+    };
+
+    test("passes with code-error responses, its owner's codes and an ipc crossing", () => {
+      expect(check("ipc", ["work_disabled"])).toEqual([]);
+    });
+
+    test("is refused when only an http crossing names it", () => {
+      expect(check("http", ["work_disabled"]).join("\n")).toContain(
+        "which is for local IPC only: it must be named by an ipc crossing",
+      );
+    });
+
+    test("names only codes recorded in code-error.v1", () => {
+      expect(check("ipc", ["not_found"]).join("\n")).toContain(
+        "error code not_found travels in flat-error.v1, not code-error.v1",
+      );
+    });
+  });
+
+  test("refuses an http API named only by an ipc crossing", () => {
+    const [first] = registry.crossings;
+    if (!first) throw new Error("the sample registry is empty");
+    const problems = checkOpenApi(bundleWith(), DOC, {
+      ...registry,
+      crossings: [{ ...first, kind: "ipc" }],
+    });
+    expect(problems.join("\n")).toContain("is not named by an http crossing");
+  });
+
   test("refuses an error response in another envelope than the document declares", () => {
     const problems = checkOpenApi(
       bundleWith({

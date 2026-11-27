@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/treaty/error-codes.v3.json",
+  "title": "treaty error codes",
+  "description": "Every error code a suite product's API returns, with its status and the envelope it travels in. v3 adds the code-error.v1 envelope, for local IPC only; v2 (error.v1, flat-error.v1, matrix-error.v1) and v1 (error.v1, flat-error.v1) stay beside it for readers pinned to them.",
+  "type": "object",
+  "required": ["registry", "version", "codes"],
+  "properties": {
+    "registry": {
+      "const": "treaty error codes"
+    },
+    "version": {
+      "const": 3
+    },
+    "description": {
+      "type": "string"
+    },
+    "codes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "owner", "envelope", "status", "meaning"],
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "meaning": {
+            "type": "string",
+            "minLength": 1
+          },
+          "envelope": {
+            "enum": [
+              "error.v1",
+              "flat-error.v1",
+              "matrix-error.v1",
+              "code-error.v1"
+            ],
+            "description": "The common schema the code travels in: schemas/common/<envelope>.json."
+          },
+          "alsoStatus": {
+            "description": "Other statuses the code is answered with on some routes, each a deliberate exception recorded in meaning.",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 1
+          }
+        }
+      }
+    }
+  }
+}
