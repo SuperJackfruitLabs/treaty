@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/agentpod-salaam/acp-failure.v1.json",
+  "title": "A Salaam turn's typed failure over ACP",
+  "description": "What Salaam's ACP adapter attaches as `_meta[\"salaam.dev/failure\"]` when a turn stops on a failure, to a client that advertised `salaam.dev/executionFeatures.failures` (salaam:src/acp/; agentpod:packages/contract/src/salaam-acp.ts SalaamAcpFailure). Closed. `kind` is AgentPod's turn error kind; `requestId` may be a native logical id, not only a UUID.",
+  "type": "object",
+  "required": ["version", "kind", "code", "message"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "kind": {
+      "enum": [
+        "quota",
+        "rate_limit",
+        "auth",
+        "bad_request",
+        "context_exhausted",
+        "timeout",
+        "provider_unavailable",
+        "refusal",
+        "max_tokens",
+        "cancelled",
+        "node_offline",
+        "harness_exited",
+        "harness_disconnected",
+        "unknown"
+      ]
+    },
+    "code": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 16384
+    },
+    "sessionId": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "requestId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "attemptId": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "provider": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "httpStatus": {
+      "type": "integer",
+      "minimum": 100,
+      "maximum": 599
+    },
+    "retryable": {
+      "type": "boolean"
+    },
+    "truncated": {
+      "type": "boolean"
+    }
+  }
+}

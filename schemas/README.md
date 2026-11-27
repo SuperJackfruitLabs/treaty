@@ -7,7 +7,13 @@ publishes at its own URL, held here byte for byte with that `$id`; `contracts/pu
 lists it (`superwitness/run-report.v1.json`).
 
 - `common/`: pieces other contracts reference, such as the error envelopes (`error.v1`,
-  `flat-error.v1`, `matrix-error.v1`, and RFC 6750's `oauth-bearer-error.v1`).
+  `flat-error.v1`, `matrix-error.v1`, and RFC 6750's `oauth-bearer-error.v1`). `code-error.v1`,
+  Salaam's `{code, error}`, is for local IPC only: a socket or helper on one host, never an HTTP
+  API between products.
+- `agentpod-salaam/`: what AgentPod and Salaam exchange on one station beside the operator
+  socket: the station file helper's stdio, the host configuration commands, the pins file, the
+  managed MCP profile and the ACP extension shapes. Cases in `fixtures/agentpod-salaam/cases.json`;
+  the corpora both sides read are beside them.
 - `http/`: HTTP APIs as OpenAPI 3.1 documents ([conventions](http/README.md)).
 - `mcp/`: MCP tool catalogs: each tool's name, scope, input schema and result, with cases in
   `fixtures/mcp/`. Their form is `treaty/mcp-catalog.v1.json`.

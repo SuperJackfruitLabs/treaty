@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/common/code-error.v1.json",
+  "title": "A refusal over a local socket that answers a code and a message",
+  "description": "Salaam's operator socket (HTTP over a Unix socket on one host) answers every refusal `{ \"code\": \"<snake_code>\", \"error\": \"<message>\" }` (salaam:src/service/router.ts, sendError). For local IPC only: an HTTP API between products uses error.v1 (phase 3, ruling 2; phase 4, ruling 1). `code` follows flat-error.v1's code pattern and is a name from contracts/error-codes.json in this envelope; `error` is the message, for people and logs, never for branching. Other fields are allowed beside them.",
+  "type": "object",
+  "required": ["code", "error"],
+  "properties": {
+    "code": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)*$",
+      "maxLength": 64,
+      "description": "AgentPod's node-agent reads a code of at most 64 characters and drops a longer one."
+    },
+    "error": { "type": "string" }
+  }
+}

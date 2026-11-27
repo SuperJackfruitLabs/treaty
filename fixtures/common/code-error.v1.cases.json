@@ -1,0 +1,38 @@
+{
+  "valid": {
+    "a refusal with its message": {
+      "code": "work_disabled",
+      "error": "Strict work is not enabled"
+    },
+    "the catch-all for an unexpected failure": {
+      "code": "internal_error",
+      "error": "Service operation failed"
+    },
+    "an empty message": { "code": "stopping", "error": "" },
+    "a field beside them": {
+      "code": "invalid_field",
+      "error": "Invalid request_id",
+      "field": "request_id"
+    }
+  },
+  "invalid": [
+    { "why": "no code", "body": { "error": "Strict work is not enabled" } },
+    { "why": "no message", "body": { "code": "work_disabled" } },
+    {
+      "why": "flat-error.v1's shape: the code under error",
+      "body": { "error": "work_disabled" }
+    },
+    {
+      "why": "a code that is not snake_case",
+      "body": { "code": "WORK_DISABLED", "error": "Strict work is not enabled" }
+    },
+    {
+      "why": "an error that is an object",
+      "body": {
+        "code": "work_disabled",
+        "error": { "message": "Strict work is not enabled" }
+      }
+    },
+    { "why": "an empty code", "body": { "code": "", "error": "" } }
+  ]
+}

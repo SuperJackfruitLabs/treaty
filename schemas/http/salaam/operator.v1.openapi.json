@@ -1,0 +1,5362 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Salaam operator socket",
+    "version": "1",
+    "description": "The private control socket a Salaam daemon serves to AgentPod's node-agent on the same host: HTTP/1.1 over the Unix socket `<state>/operator.sock`, owner-only, no credential (salaam:src/service/routes.ts operatorRoutes; agentpod:apps/node-agent/internal/salaam/client.go, work.go, mcp.go, skills.go). This document holds the 24 `POST /v1/agentpod/<action>` routes and the 3 reads the node-agent makes; the socket's other routes are Salaam's own. Every body is JSON of at most 1 MiB. A refusal is code-error.v1, `{code, error}`, for local IPC only (phase 4, ruling 1): the node-agent reads only `code`, and only a code of at most 64 characters. Every AgentPod route first needs the daemon started with reviewed AgentPod pins (`authority_disabled` otherwise). An unknown `/v1/agentpod/<action>` with a `request_id` answers 404 `not_found`. Each operation's `x-treaty-error-codes` lists the codes its handler and the functions it calls name; Salaam's codes are in contracts/error-codes.json."
+  },
+  "x-treaty-error-envelope": "code-error.v1",
+  "servers": [
+    {
+      "url": "http://salaam",
+      "description": "Any host name: the client dials `<state>/operator.sock`, a Unix socket in the daemon's private state directory."
+    }
+  ],
+  "paths": {
+    "/v1/agentpod/attach": {
+      "post": {
+        "operationId": "attachAdmission",
+        "summary": "Authenticate an admission",
+        "description": "Salaam's own ACP adapter authenticates the admission the node gave the station (`SALAAM_AGENTPOD_ADMISSION`, `SALAAM_AGENTPOD_TOKEN`). AgentPod's node-agent does not call it. Salaam reads only these fields.",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "authority_binding",
+          "authority_disabled",
+          "authority_expired",
+          "body_too_large",
+          "internal_error",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "session_revoked",
+          "stopping",
+          "unauthorized"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["admission_id", "token"],
+                "properties": {
+                  "admission_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "token": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The receipt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Attached"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Refused: unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, authority_binding, authority_disabled, authority_expired, session_revoked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/status": {
+      "post": {
+        "operationId": "inspectAdmission",
+        "summary": "An admission's state",
+        "description": "Observation only: the lease is not checked fresh. Salaam reads only the fields named here and ignores others; AgentPod's node-agent also sends `request_id`, `lease_sequence` and `reason` on every authority call (agentpod:apps/node-agent/internal/salaam/client.go Request).",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "authority_binding",
+          "authority_disabled",
+          "body_too_large",
+          "internal_error",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "stopping"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["binding"],
+                "properties": {
+                  "binding": {
+                    "$ref": "#/components/schemas/Binding"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The receipt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorityStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, authority_binding, authority_disabled, invalid_authority",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/admit": {
+      "post": {
+        "operationId": "admit",
+        "summary": "Admit a binding",
+        "description": "Admits a station occupancy and run, or replays the admission for the same `request_id`. `continue_from` names an earlier revoked interactive admission (its hub session id) whose conversation this one carries on; `approval_rules` are pinned at admission. Salaam reads only the fields named here and ignores others; AgentPod's node-agent also sends `request_id`, `lease_sequence` and `reason` on every authority call (agentpod:apps/node-agent/internal/salaam/client.go Request).",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "already_continued",
+          "authority_binding",
+          "authority_disabled",
+          "body_too_large",
+          "continuation_refused",
+          "execution_unconfirmed",
+          "internal_error",
+          "invalid_approval_rules",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_continuation",
+          "invalid_field",
+          "invalid_json",
+          "request_conflict",
+          "run_already_admitted",
+          "stale_occupancy",
+          "stale_run_epoch",
+          "stopping"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["binding", "request_id"],
+                "properties": {
+                  "binding": {
+                    "$ref": "#/components/schemas/Binding"
+                  },
+                  "request_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "continue_from": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "approval_rules": {
+                    "$ref": "#/components/schemas/ApprovalRules"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The receipt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Admission"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_approval_rules, invalid_body, invalid_continuation, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, already_continued, authority_binding, authority_disabled, continuation_refused, execution_unconfirmed, invalid_authority, request_conflict, run_already_admitted, stale_occupancy, stale_run_epoch",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/renew": {
+      "post": {
+        "operationId": "renew",
+        "summary": "Renew an admission's lease",
+        "description": "Renews the lease at `lease_sequence`; a rule `approval_rules` no longer lists is dropped. Salaam reads only the fields named here and ignores others; AgentPod's node-agent also sends `request_id`, `lease_sequence` and `reason` on every authority call (agentpod:apps/node-agent/internal/salaam/client.go Request).",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "authority_binding",
+          "authority_disabled",
+          "authority_expired",
+          "body_too_large",
+          "internal_error",
+          "invalid_approval_rules",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "request_conflict",
+          "session_revoked",
+          "stale_authority",
+          "stopping"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["binding", "request_id", "lease_sequence"],
+                "properties": {
+                  "binding": {
+                    "$ref": "#/components/schemas/Binding"
+                  },
+                  "request_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "lease_sequence": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "approval_rules": {
+                    "$ref": "#/components/schemas/ApprovalRules"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The receipt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorityStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_approval_rules, invalid_body, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, authority_binding, authority_disabled, authority_expired, invalid_authority, request_conflict, session_revoked, stale_authority",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/revoke": {
+      "post": {
+        "operationId": "revokeAdmission",
+        "summary": "Revoke an admission",
+        "description": "Revokes the session's execution authority; the receipt commits before any stop, which runs afterwards. Salaam reads only the fields named here and ignores others; AgentPod's node-agent also sends `request_id`, `lease_sequence` and `reason` on every authority call (agentpod:apps/node-agent/internal/salaam/client.go Request).",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "authority_binding",
+          "authority_disabled",
+          "body_too_large",
+          "internal_error",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "request_conflict",
+          "revision_conflict",
+          "stopping"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["binding", "request_id", "reason"],
+                "properties": {
+                  "binding": {
+                    "$ref": "#/components/schemas/Binding"
+                  },
+                  "request_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1024
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Revoked; stopping follows",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorityStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, authority_binding, authority_disabled, invalid_authority, request_conflict, revision_conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/mcp-assign": {
+      "post": {
+        "operationId": "assignManagedMcp",
+        "summary": "Assign the session's managed MCP servers",
+        "description": "Binds the node proxy's servers to the admitted session and waits for every catalog (AgentPod allows 70 seconds). A changed assignment restarts the session. Salaam reads only these fields.",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "authority_binding",
+          "authority_disabled",
+          "body_too_large",
+          "internal_error",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "invalid_mcp_config",
+          "mcp_assignment_mismatch",
+          "mcp_disabled",
+          "mcp_generation_conflict",
+          "mcp_not_ready",
+          "mcp_profile_changed",
+          "mcp_readiness_failed",
+          "mcp_stop_unconfirmed",
+          "stopping"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["binding", "assignment"],
+                "properties": {
+                  "binding": {
+                    "$ref": "#/components/schemas/Binding"
+                  },
+                  "assignment": {
+                    "$ref": "#/components/schemas/McpAssignment"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Every catalog is ready",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/McpAdmission"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json, invalid_mcp_config",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Refused: mcp_disabled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, authority_binding, authority_disabled, invalid_authority, mcp_assignment_mismatch, mcp_generation_conflict, mcp_not_ready, mcp_profile_changed, mcp_readiness_failed, mcp_stop_unconfirmed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/work-capability": {
+      "post": {
+        "operationId": "workCapability",
+        "summary": "Whether strict work is on",
+        "description": "A fresh probe; the body is the empty object.",
+        "x-treaty-error-codes": [
+          "authority_disabled",
+          "body_too_large",
+          "internal_error",
+          "invalid_body",
+          "invalid_json",
+          "invalid_work_payload",
+          "stopping"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "maxProperties": 0
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["version", "enabled"],
+                  "properties": {
+                    "version": {
+                      "const": 1
+                    },
+                    "enabled": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: authority_disabled, invalid_work_payload",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/work-restore": {
+      "post": {
+        "operationId": "restoreCheckpoint",
+        "summary": "Restore a checkpoint's files",
+        "description": "Only for an ended run (revoked, stopped, nothing unresolved) and only exactly as reviewed: Salaam recomputes the restore digest and refuses another. The same `request_id` replays the receipt.",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "authority_binding",
+          "authority_disabled",
+          "body_too_large",
+          "internal_error",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "invalid_work_admission",
+          "invalid_work_payload",
+          "not_found",
+          "request_conflict",
+          "restore_busy",
+          "restore_changed",
+          "restore_unavailable",
+          "restore_unconfirmed",
+          "restore_unsafe",
+          "stopping",
+          "work_authority_mismatch",
+          "work_disabled",
+          "work_missing"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "binding",
+                  "request_id",
+                  "checkpoint_id",
+                  "restore_digest",
+                  "approved_by"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "binding": {
+                    "$ref": "#/components/schemas/Binding"
+                  },
+                  "request_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "checkpoint_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "restore_digest": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "approved_by": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The receipt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestoreReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found, not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, authority_binding, authority_disabled, invalid_authority, invalid_work_admission, invalid_work_payload, request_conflict, restore_busy, restore_changed, restore_unavailable, restore_unconfirmed, restore_unsafe, work_authority_mismatch, work_disabled, work_missing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/work-checkpoints": {
+      "post": {
+        "operationId": "listCheckpoints",
+        "summary": "The run's checkpoints",
+        "description": "Read-only.",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "authority_binding",
+          "authority_disabled",
+          "body_too_large",
+          "internal_error",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "invalid_work_admission",
+          "invalid_work_payload",
+          "stopping",
+          "work_authority_mismatch",
+          "work_disabled",
+          "work_missing"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["binding"],
+                "additionalProperties": false,
+                "properties": {
+                  "binding": {
+                    "$ref": "#/components/schemas/Binding"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The checkpoints",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Checkpoints"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, authority_binding, authority_disabled, invalid_authority, invalid_work_admission, invalid_work_payload, work_authority_mismatch, work_disabled, work_missing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/work-checkpoint-diff": {
+      "post": {
+        "operationId": "diffCheckpoint",
+        "summary": "What restoring a checkpoint would do",
+        "description": "Read-only; reads the live workspace through the station boundary.",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "authority_binding",
+          "authority_disabled",
+          "body_too_large",
+          "internal_error",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "invalid_work_admission",
+          "invalid_work_payload",
+          "not_found",
+          "restore_unavailable",
+          "stopping",
+          "work_authority_mismatch",
+          "work_disabled",
+          "work_missing"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["binding", "checkpoint_id"],
+                "additionalProperties": false,
+                "properties": {
+                  "binding": {
+                    "$ref": "#/components/schemas/Binding"
+                  },
+                  "checkpoint_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The diff",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckpointDiff"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found, not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, authority_binding, authority_disabled, invalid_authority, invalid_work_admission, invalid_work_payload, restore_unavailable, work_authority_mismatch, work_disabled, work_missing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/work-status": {
+      "post": {
+        "operationId": "workStatus",
+        "summary": "The admitted work's status",
+        "description": "Needs strict progression on. The body is exactly `{binding}`; AgentPod allows 120 seconds.",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "authority_binding",
+          "authority_disabled",
+          "body_too_large",
+          "internal_error",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "invalid_work_admission",
+          "invalid_work_payload",
+          "stopping",
+          "work_authority_mismatch",
+          "work_disabled",
+          "work_missing"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["binding"],
+                "additionalProperties": false,
+                "properties": {
+                  "binding": {
+                    "$ref": "#/components/schemas/Binding"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, authority_binding, authority_disabled, invalid_authority, invalid_work_admission, invalid_work_payload, work_authority_mismatch, work_disabled, work_missing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/work-progress": {
+      "post": {
+        "operationId": "progressWork",
+        "summary": "Grant bounded progression",
+        "description": "Binds every admitted step (or those plus the re-run allowance of 3) for the original work request; `compact` is always false. AgentPod sends `request_id` equal to `work_request_id` and 1 to 32 steps.",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "admission_required",
+          "authority_binding",
+          "authority_disabled",
+          "authority_unavailable",
+          "body_too_large",
+          "control_busy",
+          "internal_error",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "invalid_limit",
+          "invalid_work_admission",
+          "invalid_work_payload",
+          "request_conflict",
+          "session_revoked",
+          "stopping",
+          "task_revision_conflict",
+          "task_settled",
+          "verification_required",
+          "work_authority_mismatch",
+          "work_disabled",
+          "work_missing",
+          "work_plan_changed",
+          "work_request_conflict"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "binding",
+                  "request_id",
+                  "work_request_id",
+                  "max_steps",
+                  "compact"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "binding": {
+                    "$ref": "#/components/schemas/Binding"
+                  },
+                  "request_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "work_request_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "max_steps": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "compact": {
+                    "const": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The receipt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json, invalid_limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, admission_required, authority_binding, authority_disabled, authority_unavailable, control_busy, invalid_authority, invalid_limit, invalid_work_admission, invalid_work_payload, request_conflict, session_revoked, task_revision_conflict, task_settled, verification_required, work_authority_mismatch, work_disabled, work_missing, work_plan_changed, work_request_conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/work-abandon": {
+      "post": {
+        "operationId": "abandonWork",
+        "summary": "Retire unreported local success",
+        "description": "For a revoked, stopped run whose local success the producer never recorded.",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "authority_binding",
+          "authority_disabled",
+          "body_too_large",
+          "internal_error",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "invalid_work_admission",
+          "invalid_work_payload",
+          "request_conflict",
+          "stopping",
+          "work_authority_mismatch",
+          "work_disabled",
+          "work_missing",
+          "work_settlement_conflict",
+          "work_settlement_unsafe"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SettlementRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The receipt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbandonReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, authority_binding, authority_disabled, invalid_authority, invalid_work_admission, invalid_work_payload, request_conflict, work_authority_mismatch, work_disabled, work_missing, work_settlement_conflict, work_settlement_unsafe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/work-fail": {
+      "post": {
+        "operationId": "failWork",
+        "summary": "Retire a stopped run with known effects",
+        "description": "Only the daemon attests the known effects; the interrupted history is kept.",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "authority_binding",
+          "authority_disabled",
+          "body_too_large",
+          "internal_error",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "invalid_work_admission",
+          "invalid_work_payload",
+          "mcp_control_failed",
+          "request_conflict",
+          "stopping",
+          "work_authority_mismatch",
+          "work_disabled",
+          "work_missing",
+          "work_settlement_conflict",
+          "work_settlement_unsafe"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SettlementRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The receipt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FailureReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, authority_binding, authority_disabled, invalid_authority, invalid_work_admission, invalid_work_payload, mcp_control_failed, request_conflict, work_authority_mismatch, work_disabled, work_missing, work_settlement_conflict, work_settlement_unsafe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/work-expire": {
+      "post": {
+        "operationId": "expireWork",
+        "summary": "Settle a run stopped on an expired approval",
+        "description": "Only an approval the daemon proves expired and unapplied.",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "approval_mismatch",
+          "authority_binding",
+          "authority_disabled",
+          "body_too_large",
+          "internal_error",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "invalid_work_admission",
+          "invalid_work_payload",
+          "request_conflict",
+          "stopping",
+          "work_authority_mismatch",
+          "work_disabled",
+          "work_missing",
+          "work_settlement_conflict",
+          "work_settlement_unsafe"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExpiryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The receipt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExpiryReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, approval_mismatch, authority_binding, authority_disabled, invalid_authority, invalid_work_admission, invalid_work_payload, request_conflict, work_authority_mismatch, work_disabled, work_missing, work_settlement_conflict, work_settlement_unsafe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/work-settle": {
+      "post": {
+        "operationId": "settleWork",
+        "summary": "Settle work that never dispatched",
+        "description": "Explicit terminal recovery, never an execution or permission grant.",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "authority_binding",
+          "authority_disabled",
+          "body_too_large",
+          "internal_error",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "invalid_work_admission",
+          "invalid_work_payload",
+          "request_conflict",
+          "stopping",
+          "work_authority_mismatch",
+          "work_disabled",
+          "work_missing",
+          "work_settlement_conflict",
+          "work_settlement_unsafe"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SettlementRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The receipt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettlementReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, authority_binding, authority_disabled, invalid_authority, invalid_work_admission, invalid_work_payload, request_conflict, work_authority_mismatch, work_disabled, work_missing, work_settlement_conflict, work_settlement_unsafe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/work-trace": {
+      "post": {
+        "operationId": "traceWork",
+        "summary": "Bind the work root's trace context",
+        "description": "Correlation only; never admits, renews or grants.",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "authority_binding",
+          "authority_disabled",
+          "body_too_large",
+          "internal_error",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "invalid_trace_context",
+          "invalid_trace_record",
+          "invalid_work_admission",
+          "request_conflict",
+          "stopping",
+          "work_authority_mismatch",
+          "work_disabled",
+          "work_missing"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["binding", "schema_version", "traceparent"],
+                "additionalProperties": false,
+                "properties": {
+                  "binding": {
+                    "$ref": "#/components/schemas/Binding"
+                  },
+                  "schema_version": {
+                    "const": "salaam-work-trace/v1"
+                  },
+                  "traceparent": {
+                    "type": "string",
+                    "pattern": "^00-(?!0{32})[a-f0-9]{32}-(?!0{16})[a-f0-9]{16}-[a-f0-9]{2}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The bound context",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TraceReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, authority_binding, authority_disabled, invalid_authority, invalid_trace_context, invalid_trace_record, invalid_work_admission, request_conflict, work_authority_mismatch, work_disabled, work_missing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/work-evidence-artifacts": {
+      "post": {
+        "operationId": "workEvidenceArtifacts",
+        "summary": "Selected artifacts' bytes",
+        "description": "One to sixteen distinct produced artifacts, at most 4 MiB of source in all; AgentPod reads up to 8 MiB and allows 120 seconds.",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "authority_binding",
+          "authority_disabled",
+          "body_too_large",
+          "evidence_artifact_too_large",
+          "evidence_artifact_unavailable",
+          "internal_error",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_evidence_artifacts",
+          "invalid_execution_evidence",
+          "invalid_field",
+          "invalid_json",
+          "invalid_work_admission",
+          "stopping",
+          "unsupported_evidence_version",
+          "work_authority_mismatch",
+          "work_disabled",
+          "work_missing"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["binding", "schema_version", "artifact_ids"],
+                "additionalProperties": false,
+                "properties": {
+                  "binding": {
+                    "$ref": "#/components/schemas/Binding"
+                  },
+                  "schema_version": {
+                    "const": "salaam-execution-artifacts/v1"
+                  },
+                  "artifact_ids": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 16,
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-fA-F0-9-]{36}$"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The bundle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../agentpod/execution-artifacts.v1.json"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, authority_binding, authority_disabled, evidence_artifact_too_large, evidence_artifact_unavailable, invalid_authority, invalid_evidence_artifacts, invalid_execution_evidence, invalid_work_admission, unsupported_evidence_version, work_authority_mismatch, work_disabled, work_missing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/work-evidence": {
+      "post": {
+        "operationId": "workEvidence",
+        "summary": "The execution's evidence",
+        "description": "Committed evidence read with historical ownership, without a live grant. AgentPod reads up to 8 MiB and allows 120 seconds.",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "authority_binding",
+          "authority_disabled",
+          "body_too_large",
+          "internal_error",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_execution_evidence",
+          "invalid_field",
+          "invalid_json",
+          "invalid_work_admission",
+          "stopping",
+          "unsupported_evidence_version",
+          "work_authority_mismatch",
+          "work_disabled",
+          "work_missing"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["binding", "schema_version"],
+                "additionalProperties": false,
+                "properties": {
+                  "binding": {
+                    "$ref": "#/components/schemas/Binding"
+                  },
+                  "schema_version": {
+                    "const": "salaam-execution-evidence/v1"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The evidence",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../agentpod/execution-evidence.v1.json"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, authority_binding, authority_disabled, invalid_authority, invalid_execution_evidence, invalid_work_admission, unsupported_evidence_version, work_authority_mismatch, work_disabled, work_missing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/work-completion": {
+      "post": {
+        "operationId": "workCompletion",
+        "summary": "Verify the succeeded task, fresh",
+        "description": "The body is exactly `{binding}`. AgentPod allows 120 seconds.",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "admission_required",
+          "authority_binding",
+          "authority_disabled",
+          "authority_expired",
+          "authority_unavailable",
+          "body_too_large",
+          "internal_error",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "invalid_work_admission",
+          "invalid_work_payload",
+          "session_revoked",
+          "stopping",
+          "task_busy",
+          "task_uncertain",
+          "verification_required",
+          "verification_unavailable",
+          "work_authority_mismatch",
+          "work_missing",
+          "work_plan_changed"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["binding"],
+                "additionalProperties": false,
+                "properties": {
+                  "binding": {
+                    "$ref": "#/components/schemas/Binding"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Verified",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompletionReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, admission_required, authority_binding, authority_disabled, authority_expired, authority_unavailable, invalid_authority, invalid_work_admission, invalid_work_payload, session_revoked, task_busy, task_uncertain, verification_required, verification_unavailable, work_authority_mismatch, work_missing, work_plan_changed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/work-read": {
+      "post": {
+        "operationId": "answerBoardRead",
+        "summary": "Answer a board read",
+        "description": "The hub served a read the work status listed and relays the answer, once.",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "authority_binding",
+          "authority_disabled",
+          "board_read_not_found",
+          "board_read_settled",
+          "body_too_large",
+          "internal_error",
+          "invalid_authority",
+          "invalid_board_read",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "invalid_work_admission",
+          "stopping",
+          "work_authority_mismatch",
+          "work_disabled",
+          "work_missing"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["binding", "answer"],
+                "additionalProperties": false,
+                "properties": {
+                  "binding": {
+                    "$ref": "#/components/schemas/Binding"
+                  },
+                  "answer": {
+                    "$ref": "#/components/schemas/BoardReadAnswer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The answered read",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BoardRead"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_board_read, invalid_body, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found, board_read_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, authority_binding, authority_disabled, board_read_settled, invalid_authority, invalid_board_read, invalid_work_admission, work_authority_mismatch, work_disabled, work_missing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/work-decisions": {
+      "post": {
+        "operationId": "listWorkDecisions",
+        "summary": "The run's open decisions",
+        "description": "Each open approval, offered once per approval: the same offer, with the same `request_id`, every time it is listed.",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "admission_required",
+          "approval_mismatch",
+          "authority_binding",
+          "authority_disabled",
+          "authority_unavailable",
+          "body_too_large",
+          "internal_error",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "invalid_work_admission",
+          "invalid_work_decision",
+          "request_conflict",
+          "session_revoked",
+          "stopping",
+          "verification_unavailable",
+          "work_authority_mismatch",
+          "work_missing"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["binding"],
+                "additionalProperties": false,
+                "properties": {
+                  "binding": {
+                    "$ref": "#/components/schemas/Binding"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The decisions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkDecisions"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, admission_required, approval_mismatch, authority_binding, authority_disabled, authority_unavailable, invalid_authority, invalid_work_admission, invalid_work_decision, request_conflict, session_revoked, verification_unavailable, work_authority_mismatch, work_missing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/work-decision": {
+      "post": {
+        "operationId": "answerWorkDecision",
+        "summary": "Answer an offered decision",
+        "description": "The offer must be the saved one, unexpired, for this run's plan revision. Always allow needs a workspace owner or admin; AgentPod's hub checks the role and sets the standing rule before it forwards the answer. AgentPod bounds the answer at 64 KiB.",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "admission_required",
+          "approval_mismatch",
+          "approval_stale",
+          "authority_binding",
+          "authority_disabled",
+          "authority_unavailable",
+          "body_too_large",
+          "internal_error",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "invalid_work_admission",
+          "invalid_work_decision",
+          "not_found",
+          "request_conflict",
+          "session_revoked",
+          "stopping",
+          "verification_unavailable",
+          "work_authority_mismatch",
+          "work_missing"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["binding", "answer"],
+                "additionalProperties": false,
+                "properties": {
+                  "binding": {
+                    "$ref": "#/components/schemas/Binding"
+                  },
+                  "answer": {
+                    "$ref": "#/components/schemas/WorkDecisionAnswer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The answer applied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkDecisionReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found, not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, admission_required, approval_mismatch, approval_stale, authority_binding, authority_disabled, authority_unavailable, invalid_authority, invalid_work_admission, invalid_work_decision, request_conflict, session_revoked, verification_unavailable, work_authority_mismatch, work_missing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agentpod/work-admit": {
+      "post": {
+        "operationId": "admitWork",
+        "summary": "Admit a card's work",
+        "description": "On the private owner socket only. The node authenticated its hub reservation; board, card and stage are that producer's assertion, and Salaam checks the digests against the bytes. The same `request_id` replays the receipt. Before it, the node-agent reads a fresh `status` for the binding.",
+        "x-treaty-error-codes": [
+          "admission_not_found",
+          "admission_required",
+          "authority_binding",
+          "authority_disabled",
+          "authority_unavailable",
+          "body_too_large",
+          "internal_error",
+          "invalid_authority",
+          "invalid_body",
+          "invalid_field",
+          "invalid_json",
+          "invalid_plan",
+          "invalid_work_binding",
+          "invalid_work_payload",
+          "invalid_work_record",
+          "request_conflict",
+          "session_revoked",
+          "stopping",
+          "task_busy",
+          "task_exists",
+          "task_revision_conflict",
+          "task_uncertain",
+          "verification_unavailable",
+          "work_authority_mismatch",
+          "work_input_mismatch",
+          "work_request_conflict",
+          "work_uncertain"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Admitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A malformed body or field: invalid_body, invalid_field, invalid_json, invalid_plan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: admission_not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused in the current state: admission_not_found, admission_required, authority_binding, authority_disabled, authority_unavailable, invalid_authority, invalid_work_binding, invalid_work_payload, invalid_work_record, request_conflict, session_revoked, task_busy, task_exists, task_revision_conflict, task_uncertain, verification_unavailable, work_authority_mismatch, work_input_mismatch, work_request_conflict, work_uncertain",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "The body is over 1 MiB: body_too_large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/health": {
+      "get": {
+        "operationId": "health",
+        "summary": "The daemon's health",
+        "description": "Passive: no startup or lifecycle effect. The node-agent reads it to decide whether the daemon is running and bound to AgentPod, for the managed MCP profile digest, and for the station's configuration.",
+        "x-treaty-error-codes": ["stopping", "internal_error"],
+        "responses": {
+          "200": {
+            "description": "Healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sessions": {
+      "get": {
+        "operationId": "listSessions",
+        "summary": "The daemon's sessions",
+        "description": "The node-agent reads it, at most 64 sessions, for the station's skill inventory.",
+        "x-treaty-error-codes": ["stopping", "internal_error"],
+        "responses": {
+          "200": {
+            "description": "The sessions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sessions"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sessions/{sessionId}/context": {
+      "get": {
+        "operationId": "sessionContext",
+        "summary": "A session's reviewed context admission",
+        "description": "What the session's model is given from reviewed bundles; the node-agent reads its skill entries.",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            }
+          }
+        ],
+        "x-treaty-error-codes": ["internal_error", "not_found", "stopping"],
+        "responses": {
+          "200": {
+            "description": "The admission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContextInventory"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found: not_found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected failure that reveals nothing: internal_error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The daemon is stopping: stopping",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../common/code-error.v1.json"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Sha256": {
+        "type": "string",
+        "pattern": "^[a-f0-9]{64}$"
+      },
+      "Uuid": {
+        "type": "string",
+        "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      },
+      "Binding": {
+        "type": "object",
+        "required": [
+          "version",
+          "organization_id",
+          "principal_id",
+          "node_id",
+          "station_id",
+          "station_key",
+          "occupancy_epoch",
+          "hub_session_id",
+          "workspace",
+          "run"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "organization_id": {
+            "type": "string",
+            "pattern": "^org_[a-f0-9]{20}$"
+          },
+          "principal_id": {
+            "type": "string",
+            "pattern": "^prn_[a-f0-9]{20}$"
+          },
+          "node_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+$"
+          },
+          "station_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+$"
+          },
+          "station_key": {
+            "type": "string",
+            "pattern": "^salaam:[a-f0-9]{16}$"
+          },
+          "occupancy_epoch": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "hub_session_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.:-]+$"
+          },
+          "workspace": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096,
+            "pattern": "^/[^\\u0000]*$"
+          },
+          "run": {
+            "type": "object",
+            "required": ["source", "id", "epoch"],
+            "additionalProperties": false,
+            "properties": {
+              "source": {
+                "enum": ["agentpod", "superpipeline"]
+              },
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_.:-]+$"
+              },
+              "epoch": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              }
+            }
+          }
+        },
+        "description": "The authority binding AgentPod's node issues for one station occupancy and run (salaam:src/core/agentpod-protocol.ts agentpodBinding; agentpod:packages/contract/src/salaam-authority.ts SalaamAuthority; the node-agent's Go `Binding` refuses unknown fields). Closed: Salaam compares it canonically, so an extra key is refused. `station_key` is `salaam:` and the first 16 hex characters of the SHA-256 of `workspace`, and organization, node, station key and workspace must equal the daemon's pins file; neither rule is a JSON Schema rule."
+      },
+      "WorkBinding": {
+        "description": "A binding strict work accepts: a SuperPipeline run (`run_` and at least six letters or digits), and no control character in any string (salaam:src/core/agentpod-work-protocol.ts; agentpod:packages/contract/src/salaam-work.ts WorkAuthority).",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Binding"
+          }
+        ],
+        "properties": {
+          "workspace": {
+            "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+          },
+          "run": {
+            "properties": {
+              "source": {
+                "const": "superpipeline"
+              },
+              "id": {
+                "pattern": "^run_[A-Za-z0-9]{6,}$"
+              }
+            }
+          }
+        }
+      },
+      "ApprovalRule": {
+        "type": "object",
+        "required": ["id", "scope", "set_by"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+          },
+          "scope": {
+            "const": "workspace-write"
+          },
+          "set_by": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+          }
+        },
+        "description": "An agent's standing \"Always allow\" rule (salaam:src/agentpod/authority.ts approvalRules). Ids are lower-case UUIDs."
+      },
+      "ApprovalRules": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 16,
+        "items": {
+          "$ref": "#/components/schemas/ApprovalRule"
+        },
+        "description": "1 to 16 rules with distinct ids (`x-uniqueBy`). Absent means none.",
+        "x-uniqueBy": ["id"]
+      },
+      "AuthorityStatus": {
+        "type": "object",
+        "required": [
+          "admission_id",
+          "session_id",
+          "continued_from",
+          "binding",
+          "binding_digest",
+          "lease_sequence",
+          "expires_at",
+          "authorized",
+          "revoked",
+          "owned_execution_stopped",
+          "unresolved_operations",
+          "active_attempts",
+          "interrupted_attempts"
+        ],
+        "properties": {
+          "admission_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "session_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "continued_from": {
+            "type": ["string", "null"]
+          },
+          "binding": {
+            "$ref": "#/components/schemas/Binding"
+          },
+          "binding_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "lease_sequence": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "expires_at": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "authorized": {
+            "type": "boolean"
+          },
+          "revoked": {
+            "type": "boolean"
+          },
+          "owned_execution_stopped": {
+            "type": "boolean"
+          },
+          "unresolved_operations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "active_attempts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "interrupted_attempts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "An admission's state (salaam:src/agentpod/authority.ts status). `binding_digest` is the SHA-256 of the canonical binding; `expires_at` is epoch milliseconds. Salaam always sends `continued_from`; AgentPod's zod and Go struct allow it absent, for an older daemon."
+      },
+      "Admission": {
+        "description": "An admission's state and the station's ACP credential: base64url HMAC-SHA-256 of the admission id under the daemon's control key (salaam:src/agentpod/authority.ts admit, token).",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AuthorityStatus"
+          }
+        ],
+        "required": ["token"],
+        "properties": {
+          "token": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$"
+          }
+        }
+      },
+      "McpToolPin": {
+        "type": "object",
+        "required": ["name", "schema_digest", "policy"],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_.-]+$"
+          },
+          "schema_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "policy": {
+            "enum": ["read", "approval"]
+          }
+        }
+      },
+      "McpServerName": {
+        "enum": ["agentpod", "superlibrary"]
+      },
+      "McpAssignment": {
+        "type": "object",
+        "required": [
+          "version",
+          "binding",
+          "profile_digest",
+          "credential_generation",
+          "servers"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "binding": {
+            "$ref": "#/components/schemas/Binding"
+          },
+          "profile_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "credential_generation": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "servers": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "x-uniqueBy": ["name"],
+            "items": {
+              "type": "object",
+              "required": ["type", "name", "url", "headers"],
+              "additionalProperties": false,
+              "properties": {
+                "type": {
+                  "const": "http"
+                },
+                "name": {
+                  "$ref": "#/components/schemas/McpServerName"
+                },
+                "url": {
+                  "type": "string",
+                  "maxLength": 1024,
+                  "pattern": "^http://(127\\.0\\.0\\.1|\\[::1\\]):(?!80/)(?!0)[0-9]{1,5}/stations/[^/?#]+/mcp-managed-v1/[a-f0-9]{64}/(hub|superlibrary)$"
+                },
+                "headers": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": ["name", "value"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "name": {
+                        "const": "X-Agentpod-Proxy-Key"
+                      },
+                      "value": {
+                        "type": "string",
+                        "minLength": 32,
+                        "maxLength": 128,
+                        "pattern": "^[A-Za-z0-9_-]+$"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "The node's managed MCP assignment for one admitted session (salaam:src/mcp/protocol.ts mcpAssignment; agentpod:packages/contract/src/salaam-mcp.ts SalaamMcpAssignment). Private node control data: it carries the proxy key. Beyond this shape, both sides require each URL to be canonical, its station segment to decode to `binding.station_id`, its digest segment to be the binding's digest, its last segment to name its server (`hub` for agentpod), and every server to share one origin and one key; `fixtures/agentpod-salaam/salaam-mcp-v1.json` holds those cases."
+      },
+      "McpAdmission": {
+        "type": "object",
+        "required": [
+          "version",
+          "profile_digest",
+          "assignment_digest",
+          "binding_digest",
+          "credential_generation",
+          "servers"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "profile_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "assignment_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "binding_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "credential_generation": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "servers": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "x-uniqueBy": ["name"],
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "endpoint_digest",
+                "catalog_digest",
+                "tools"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "$ref": "#/components/schemas/McpServerName"
+                },
+                "endpoint_digest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "catalog_digest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "tools": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 128,
+                  "x-uniqueBy": ["name"],
+                  "items": {
+                    "$ref": "#/components/schemas/McpToolPin"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "The managed MCP readiness receipt (salaam:src/mcp/protocol.ts mcpAdmissionView; agentpod:packages/contract/src/salaam-mcp.ts SalaamMcpAdmission). It names no URL and no key."
+      },
+      "Attached": {
+        "type": "object",
+        "required": ["session_id", "binding"],
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "binding": {
+            "$ref": "#/components/schemas/Binding"
+          },
+          "work_control": {
+            "type": "object",
+            "required": ["version", "owner"],
+            "additionalProperties": false,
+            "properties": {
+              "version": {
+                "const": 1
+              },
+              "owner": {
+                "const": "superpipeline"
+              }
+            }
+          },
+          "managed_mcp": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/McpAdmission"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "description": "What an authenticated admission is bound to (salaam:src/service/control.ts attach). `work_control` is present for a SuperPipeline run when strict progression is on; `managed_mcp` when the daemon has a managed MCP profile, null before an assignment."
+      },
+      "RestoreReceipt": {
+        "type": "object",
+        "required": [
+          "version",
+          "state",
+          "restore_id",
+          "restore_digest",
+          "tree_digest",
+          "writes"
+        ],
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "state": {
+            "enum": ["restored", "partial"]
+          },
+          "restore_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "restore_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "tree_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "writes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["path", "artifact_id"],
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "artifact_id": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "stopped_at": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "description": "A restore's receipt, replayed exactly for the same request (salaam:src/agentpod/station-restore.ts restoreFiles). `partial` names the path it stopped at in `stopped_at`."
+      },
+      "Checkpoint": {
+        "type": "object",
+        "required": [
+          "id",
+          "step_id",
+          "step_key",
+          "tree_digest",
+          "at",
+          "files_changed"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "step_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "step_key": {
+            "type": "string",
+            "minLength": 1
+          },
+          "tree_digest": {
+            "type": "string"
+          },
+          "at": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "files_changed": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "One completed step's checkpoint, from the run's own recorded station writes (salaam:src/agentpod/station-checkpoints.ts StationCheckpoint). `tree_digest` is empty when the run wrote nothing."
+      },
+      "Checkpoints": {
+        "type": "object",
+        "required": ["version", "task_id", "checkpoints"],
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "task_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "checkpoints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Checkpoint"
+            }
+          }
+        }
+      },
+      "CheckpointDiff": {
+        "type": "object",
+        "required": [
+          "version",
+          "task_id",
+          "checkpoint",
+          "current_tree",
+          "recorded_tree",
+          "drift",
+          "restore_digest",
+          "files",
+          "writes"
+        ],
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "task_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "checkpoint": {
+            "$ref": "#/components/schemas/Checkpoint"
+          },
+          "current_tree": {
+            "type": "string"
+          },
+          "recorded_tree": {
+            "type": "string"
+          },
+          "drift": {
+            "type": "boolean"
+          },
+          "restore_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "path",
+                "current",
+                "current_state",
+                "at_checkpoint",
+                "change"
+              ],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "current": {
+                  "type": ["string", "null"]
+                },
+                "current_state": {
+                  "enum": ["content", "absent", "unreadable"]
+                },
+                "at_checkpoint": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": ["state", "content"],
+                      "additionalProperties": false,
+                      "properties": {
+                        "state": {
+                          "const": "content"
+                        },
+                        "content": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": ["state"],
+                      "additionalProperties": false,
+                      "properties": {
+                        "state": {
+                          "const": "absent"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": ["state"],
+                      "additionalProperties": false,
+                      "properties": {
+                        "state": {
+                          "const": "unknown"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "change": {
+                  "enum": ["revert", "delete", "bring_back", "not_restorable"]
+                }
+              }
+            }
+          },
+          "writes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["path", "content", "expected_hash"],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "content": {
+                  "type": ["string", "null"]
+                },
+                "expected_hash": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "description": "What restoring a checkpoint would do to each file the run wrote, against the live workspace (salaam:src/agentpod/station-checkpoints.ts diff). Unchanged files are left out; `writes` is exactly what a restore with this `restore_digest` writes."
+      },
+      "WorkActivity": {
+        "type": "object",
+        "required": [
+          "seq",
+          "phase",
+          "tool_call_id",
+          "title",
+          "kind",
+          "input",
+          "failed"
+        ],
+        "properties": {
+          "seq": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "phase": {
+            "enum": ["started", "finished"]
+          },
+          "tool_call_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "kind": {
+            "type": ["string", "null"]
+          },
+          "input": {
+            "type": ["string", "null"],
+            "maxLength": 2048
+          },
+          "failed": {
+            "type": "boolean"
+          },
+          "output": {
+            "type": "string",
+            "maxLength": 2048
+          }
+        },
+        "description": "One tool step for the card's activity, oldest first, at most 64 (salaam:src/agentpod/work-activity.ts). Observation only."
+      },
+      "BoardReadRequest": {
+        "type": "object",
+        "required": ["id", "action", "args"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "action": {
+            "enum": ["card", "attempts", "library_search", "library_get"]
+          },
+          "args": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "description": "A board read the agent is waiting on, for the owner to serve (salaam:src/runtime/board-reads.ts pending). Salaam's ids are UUIDs; AgentPod's hub takes any id of at most 64 characters. `card` and `attempts` take no arguments, `library_search` one `query` of 1 to 500 characters, `library_get` one `item_id` (`itm_` and 16 hex characters)."
+      },
+      "WorkStatus": {
+        "type": "object",
+        "required": [
+          "version",
+          "work_request_id",
+          "task_id",
+          "plan_revision",
+          "binding_digest",
+          "auto_enabled",
+          "activity",
+          "plan"
+        ],
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "work_request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "task_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "plan_revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "binding_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "auto_enabled": {
+            "type": "boolean"
+          },
+          "activity": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "$ref": "#/components/schemas/WorkActivity"
+            }
+          },
+          "plan": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "required": ["sessionUpdate", "entries"],
+                "additionalProperties": false,
+                "properties": {
+                  "sessionUpdate": {
+                    "const": "plan"
+                  },
+                  "entries": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": ["content", "priority", "status"],
+                      "additionalProperties": false,
+                      "properties": {
+                        "content": {
+                          "type": "string"
+                        },
+                        "priority": {
+                          "const": "medium"
+                        },
+                        "status": {
+                          "enum": ["pending", "in_progress", "completed"]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "board_reads": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 8,
+            "items": {
+              "$ref": "#/components/schemas/BoardReadRequest"
+            }
+          },
+          "settlement_ready": {
+            "const": "known_effects_failure"
+          },
+          "settlement_refused": {
+            "type": "string"
+          }
+        },
+        "description": "The admitted task's view with the work fields beside it (salaam:src/agentpod/work.ts status). The task view's own fields (state, steps, runtime and the rest) are Salaam's task view and are not restated here. `plan` is the ACP plan update for the steps, null for none. `board_reads` is present only when reads are pending; `settlement_ready` only when a stopped run may be retired as a known-effects failure, else `settlement_refused` says which guard refused, for a revoked run."
+      },
+      "ProgressReceipt": {
+        "type": "object",
+        "required": [
+          "version",
+          "request_id",
+          "work_request_id",
+          "task_id",
+          "plan_revision",
+          "binding_digest"
+        ],
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "work_request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "task_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "plan_revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "binding_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "description": "A bounded progression grant, replayed for the same work request (salaam:src/agentpod/work.ts progress)."
+      },
+      "SettlementRequest": {
+        "type": "object",
+        "required": [
+          "binding",
+          "request_id",
+          "work_request_id",
+          "producer_terminal_digest"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "binding": {
+            "$ref": "#/components/schemas/Binding"
+          },
+          "request_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "work_request_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "producer_terminal_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "description": "Explicit terminal recovery of a stopped run (salaam:src/service/work.ts settle, fail, abandon; agentpod:packages/contract/src/salaam-work-settlement.ts SalaamWorkSettlement). Closed. The ids are UUIDs as AgentPod sends them; Salaam's handler checks only 1 to 128 characters."
+      },
+      "ExpiryRequest": {
+        "type": "object",
+        "required": [
+          "binding",
+          "request_id",
+          "work_request_id",
+          "producer_terminal_digest",
+          "decision_request_id"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "binding": {
+            "$ref": "#/components/schemas/Binding"
+          },
+          "request_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "work_request_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "producer_terminal_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "decision_request_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          }
+        },
+        "description": "Recovery of a run stopped on an expired, unapplied approval (salaam:src/service/work.ts expire; SalaamWorkExpiry)."
+      },
+      "SettlementReceipt": {
+        "type": "object",
+        "required": [
+          "version",
+          "state",
+          "effects",
+          "request_id",
+          "work_request_id",
+          "session_id",
+          "task_id",
+          "plan_revision",
+          "binding_digest",
+          "producer_terminal_digest"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "state": {
+            "const": "cancelled"
+          },
+          "effects": {
+            "const": "never_dispatched"
+          },
+          "request_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "work_request_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "session_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "task_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "plan_revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "binding_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "producer_terminal_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "description": "Work that never dispatched, settled (SalaamWorkSettlementReceipt, strict: AgentPod refuses another key)."
+      },
+      "FailureReceipt": {
+        "type": "object",
+        "required": [
+          "version",
+          "state",
+          "effects",
+          "request_id",
+          "work_request_id",
+          "session_id",
+          "task_id",
+          "plan_revision",
+          "binding_digest",
+          "producer_terminal_digest",
+          "evidence_digest"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "state": {
+            "const": "cancelled"
+          },
+          "effects": {
+            "const": "known_effects_preserved"
+          },
+          "request_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "work_request_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "session_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "task_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "plan_revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "binding_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "producer_terminal_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "evidence_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "description": "Work stopped with known effects, retired as a failure with its history kept (SalaamWorkFailureReceipt)."
+      },
+      "AbandonReceipt": {
+        "type": "object",
+        "required": [
+          "version",
+          "state",
+          "request_id",
+          "work_request_id",
+          "session_id",
+          "task_id",
+          "plan_revision",
+          "binding_digest",
+          "producer_terminal_digest",
+          "outcome",
+          "evidence_digest"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "state": {
+            "const": "retired"
+          },
+          "request_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "work_request_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "session_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "task_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "plan_revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "binding_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "producer_terminal_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "outcome": {
+            "const": "unreported_local_success"
+          },
+          "evidence_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "description": "Local success the producer never recorded, retired as historical evidence, never producer success (SalaamWorkAbandonReceipt)."
+      },
+      "ExpiryReceipt": {
+        "type": "object",
+        "required": [
+          "version",
+          "state",
+          "effects",
+          "request_id",
+          "work_request_id",
+          "session_id",
+          "task_id",
+          "plan_revision",
+          "binding_digest",
+          "producer_terminal_digest",
+          "decision_request_id",
+          "approval_id",
+          "operation_digest"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "state": {
+            "const": "cancelled"
+          },
+          "effects": {
+            "const": "expired_approval_unapplied"
+          },
+          "request_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "work_request_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "session_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "task_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "plan_revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "binding_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "producer_terminal_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "decision_request_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "approval_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "operation_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "description": "Work stopped on an expired approval that was never applied (SalaamWorkExpiryReceipt)."
+      },
+      "TraceReceipt": {
+        "type": "object",
+        "required": ["version", "traceparent", "authority"],
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "traceparent": {
+            "type": "string",
+            "pattern": "^00-[a-f0-9]{32}-[a-f0-9]{16}-[a-f0-9]{2}$"
+          },
+          "authority": {
+            "const": false
+          }
+        },
+        "description": "The work root's child trace context; the original context wins after a reconnect (salaam:src/execution/trace.ts bindWorkTrace). Correlation only: `authority` is always false."
+      },
+      "CompletionReceipt": {
+        "type": "object",
+        "required": [
+          "version",
+          "state",
+          "work_request_id",
+          "task_id",
+          "plan_revision",
+          "binding_digest",
+          "completion_id",
+          "evidence_digest"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "state": {
+            "const": "verified"
+          },
+          "work_request_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "task_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "plan_revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "binding_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "completion_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "evidence_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "description": "A fresh protected verification of the succeeded task (salaam:src/agentpod/work.ts completion; agentpod:packages/contract/src/salaam-work-completion.ts, strict)."
+      },
+      "BoardReadAnswer": {
+        "description": "The owner's answer to one board read, relayed by AgentPod's hub (salaam:src/runtime/board-reads.ts answer; agentpod:apps/hub/src/services/bridge/salaam-board-reads.ts). Closed. Salaam bounds `text` at 262144 UTF-8 bytes and `error` at 2048; JSON Schema counts characters, so the byte bounds are Salaam's check. The hub cuts `text` at 204800 characters.",
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["read_id", "ok", "text"],
+            "additionalProperties": false,
+            "properties": {
+              "read_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "ok": {
+                "const": true
+              },
+              "text": {
+                "type": "string",
+                "maxLength": 262144
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["read_id", "ok", "error"],
+            "additionalProperties": false,
+            "properties": {
+              "read_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "ok": {
+                "const": false
+              },
+              "error": {
+                "type": "string",
+                "maxLength": 2048
+              }
+            }
+          }
+        ]
+      },
+      "BoardRead": {
+        "type": "object",
+        "required": ["id", "action", "args", "state"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "action": {
+            "enum": ["card", "attempts", "library_search", "library_get"]
+          },
+          "args": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "state": {
+            "enum": ["pending", "answered"]
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "text": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          }
+        },
+        "description": "The board read after the answer (salaam:src/runtime/board-reads.ts view)."
+      },
+      "DecisionUuid": {
+        "type": "string",
+        "pattern": "^([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-8][a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+      },
+      "WorkDecisionDetail": {
+        "type": "object",
+        "required": ["version", "summary", "reason", "files", "digest"],
+        "additionalProperties": false,
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "reason": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "files": {
+            "type": "array",
+            "maxItems": 16,
+            "items": {
+              "type": "object",
+              "required": ["path", "change", "bytes", "preview"],
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512
+                },
+                "change": {
+                  "enum": ["create", "edit", "delete"]
+                },
+                "bytes": {
+                  "oneOf": [
+                    {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "preview": {
+                  "type": ["string", "null"],
+                  "maxLength": 1200
+                },
+                "preview_truncated": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "description": "What a person approving is shown (salaam:src/agentpod/work-decision-protocol.ts; agentpod:packages/contract/src/salaam-work-decision.ts SalaamApprovalDetail). `preview_truncated` is optional only for an offer saved before it existed; Salaam's builder always sets it."
+      },
+      "WorkDecision": {
+        "type": "object",
+        "required": [
+          "version",
+          "request_id",
+          "work_request_id",
+          "binding_digest",
+          "task_id",
+          "plan_revision",
+          "operation_id",
+          "operation_digest",
+          "approval_id",
+          "approval_revision",
+          "expires_at",
+          "question",
+          "options"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "request_id": {
+            "$ref": "#/components/schemas/DecisionUuid"
+          },
+          "work_request_id": {
+            "$ref": "#/components/schemas/DecisionUuid"
+          },
+          "binding_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "task_id": {
+            "$ref": "#/components/schemas/DecisionUuid"
+          },
+          "plan_revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "operation_id": {
+            "$ref": "#/components/schemas/DecisionUuid"
+          },
+          "operation_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "approval_id": {
+            "$ref": "#/components/schemas/DecisionUuid"
+          },
+          "approval_revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "expires_at": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "detail": {
+            "$ref": "#/components/schemas/WorkDecisionDetail"
+          },
+          "options": {
+            "oneOf": [
+              {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "object",
+                    "required": ["id", "title"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "const": "approve"
+                      },
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": ["id", "title"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "const": "deny"
+                      },
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      }
+                    }
+                  }
+                ],
+                "minItems": 2,
+                "maxItems": 2
+              },
+              {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "object",
+                    "required": ["id", "title"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "const": "approve"
+                      },
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": ["id", "title"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "const": "approve-run"
+                      },
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": ["id", "title"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "const": "deny"
+                      },
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      }
+                    }
+                  }
+                ],
+                "minItems": 3,
+                "maxItems": 3
+              },
+              {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "object",
+                    "required": ["id", "title"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "const": "approve"
+                      },
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": ["id", "title", "requires"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "const": "always"
+                      },
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      },
+                      "requires": {
+                        "const": "workspace-admin"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": ["id", "title"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "const": "deny"
+                      },
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      }
+                    }
+                  }
+                ],
+                "minItems": 3,
+                "maxItems": 3
+              },
+              {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "object",
+                    "required": ["id", "title"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "const": "approve"
+                      },
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": ["id", "title"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "const": "approve-run"
+                      },
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": ["id", "title", "requires"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "const": "always"
+                      },
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      },
+                      "requires": {
+                        "const": "workspace-admin"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": ["id", "title"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "const": "deny"
+                      },
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      }
+                    }
+                  }
+                ],
+                "minItems": 4,
+                "maxItems": 4
+              }
+            ]
+          }
+        },
+        "description": "One open approval of the run, offered for a decision (salaam:src/agentpod/work-decision-protocol.ts workDecision; SalaamWorkDecision). Closed: AgentPod's hub re-hashes the parsed decision, so a key it dropped would change `decision_digest`. Options are approve, then approve-run and always when offered, then deny, in that order. `expires_at` is epoch milliseconds."
+      },
+      "WorkDecisions": {
+        "type": "object",
+        "required": ["version", "decisions"],
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "decisions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkDecision"
+            }
+          }
+        }
+      },
+      "WorkDecisionAnswer": {
+        "type": "object",
+        "required": [
+          "version",
+          "request_id",
+          "decision",
+          "decision_digest",
+          "elicitation_id",
+          "option_id",
+          "answered_by",
+          "answered_at"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "request_id": {
+            "$ref": "#/components/schemas/DecisionUuid"
+          },
+          "decision": {
+            "$ref": "#/components/schemas/WorkDecision"
+          },
+          "decision_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "elicitation_id": {
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^elc_[A-Za-z0-9]{6,}$"
+          },
+          "option_id": {
+            "enum": ["approve", "approve-run", "always", "deny"]
+          },
+          "answered_by": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "answered_at": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d(\\.\\d+)?Z$"
+          }
+        },
+        "description": "A person's answer to an offered decision (workDecisionAnswer; SalaamWorkDecisionAnswer). `decision` is the offer exactly as saved and `decision_digest` its SHA-256; `answered_at` is UTC with a `Z`."
+      },
+      "WorkDecisionReceipt": {
+        "type": "object",
+        "required": [
+          "version",
+          "request_id",
+          "decision_digest",
+          "approval_id",
+          "decision"
+        ],
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "request_id": {
+            "$ref": "#/components/schemas/DecisionUuid"
+          },
+          "decision_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "approval_id": {
+            "$ref": "#/components/schemas/DecisionUuid"
+          },
+          "decision": {
+            "enum": ["approve", "approve-run", "always", "deny"]
+          },
+          "grant_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "description": "The answer applied (salaam:src/agentpod/work-decisions.ts answer). `grant_id` names the run grant an approve-run created."
+      },
+      "WorkIdentity": {
+        "type": "object",
+        "required": [
+          "board_id",
+          "card_id",
+          "stage_key",
+          "input_digest",
+          "plan_digest"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "board_id": {
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^brd_[A-Za-z0-9]{6,}$"
+          },
+          "card_id": {
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^card_[A-Za-z0-9]{6,}$"
+          },
+          "stage_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+          },
+          "input_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "plan_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "description": "The card's work: board, card and stage as the trusted producer asserts them, and the SHA-256 of the canonical work input and task plan."
+      },
+      "WorkAdmission": {
+        "type": "object",
+        "required": ["version", "request_id", "binding", "work"],
+        "additionalProperties": false,
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "request_id": {
+            "type": "string",
+            "pattern": "^([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-8][a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "binding": {
+            "$ref": "#/components/schemas/WorkBinding"
+          },
+          "work": {
+            "$ref": "#/components/schemas/WorkIdentity"
+          }
+        },
+        "description": "A card's work admission (salaam:src/core/agentpod-work-protocol.ts agentpodWorkAdmission; agentpod:packages/contract/src/salaam-work.ts SalaamWorkAdmission). `fixtures/agentpod-salaam/salaam-work-v1.json` holds its cases and the comparison rules against an expected binding and a saved request."
+      },
+      "WorkInput": {
+        "type": "object",
+        "required": ["instructions", "references", "incoming_handoff"],
+        "additionalProperties": false,
+        "properties": {
+          "instructions": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536
+          },
+          "references": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            }
+          },
+          "incoming_handoff": {
+            "type": ["string", "null"],
+            "maxLength": 65536
+          }
+        },
+        "description": "The card's work input (salaam:src/service/work.ts closedWorkInput)."
+      },
+      "TaskPlan": {
+        "type": "object",
+        "required": [
+          "objective",
+          "constraints",
+          "steps",
+          "acceptance",
+          "deliverables",
+          "limits"
+        ],
+        "properties": {
+          "objective": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "constraints": {
+            "type": "array",
+            "maxItems": 16,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            }
+          },
+          "steps": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 32,
+            "x-uniqueBy": ["key"],
+            "items": {
+              "type": "object",
+              "required": [
+                "key",
+                "title",
+                "instruction",
+                "depends_on",
+                "checks"
+              ],
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64,
+                  "pattern": "^[a-zA-Z0-9_-]+$"
+                },
+                "title": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "instruction": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "depends_on": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  }
+                },
+                "checks": {
+                  "type": "array",
+                  "maxItems": 8,
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "acceptance": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "deliverables": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "limits": {
+            "type": "object"
+          }
+        },
+        "description": "The fully expanded task plan (salaam:src/tasks/work.ts parse). Salaam refuses a plan its own parser does not return byte for byte (canonically), so the parser is the rule: its policy for acceptance checks, limits, a completion gate and team steps is Salaam's and is not restated here. Treaty pins the keys every plan carries."
+      },
+      "WorkPayload": {
+        "type": "object",
+        "required": ["admission", "input", "plan"],
+        "additionalProperties": false,
+        "properties": {
+          "admission": {
+            "$ref": "#/components/schemas/WorkAdmission"
+          },
+          "input": {
+            "$ref": "#/components/schemas/WorkInput"
+          },
+          "plan": {
+            "$ref": "#/components/schemas/TaskPlan"
+          }
+        },
+        "description": "Admitting a card's work (salaam:src/service/work.ts admit; agentpod:apps/node-agent/internal/salaam/work.go WorkPayload). AgentPod bounds `input` at 512 KiB and `plan` at 256 KiB."
+      },
+      "WorkReceipt": {
+        "type": "object",
+        "required": [
+          "version",
+          "state",
+          "session_id",
+          "task_id",
+          "request_id",
+          "binding_digest",
+          "plan_revision"
+        ],
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "state": {
+            "const": "admitted"
+          },
+          "session_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "task_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "binding_digest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "plan_revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        },
+        "description": "The task admitted for the card, never success or permission to run (salaam:src/agentpod/work.ts AgentPodWorkReceipt). The node-agent requires `plan_revision` 1 and the session, request and binding digest of its own admission."
+      },
+      "Health": {
+        "type": "object",
+        "required": [
+          "service",
+          "pid",
+          "host_manifest_digest",
+          "host_supervisor_connected",
+          "runtime_node",
+          "agentpod_config",
+          "agentpod_pins_digest",
+          "persona",
+          "operator_mcp",
+          "managed_mcp",
+          "strict_work",
+          "tool_execution",
+          "job_execution",
+          "provider_route",
+          "last_activity_at"
+        ],
+        "properties": {
+          "service": {
+            "const": "healthy"
+          },
+          "pid": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "host_manifest_digest": {
+            "type": ["string", "null"]
+          },
+          "host_supervisor_connected": {
+            "type": ["boolean", "null"]
+          },
+          "runtime_node": {
+            "type": "string"
+          },
+          "service_version": {
+            "type": "string"
+          },
+          "agentpod_config": {
+            "type": ["string", "null"]
+          },
+          "agentpod_pins_digest": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "persona": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "required": ["digest", "text"],
+                "properties": {
+                  "digest": {
+                    "type": "string"
+                  },
+                  "text": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          },
+          "operator_mcp": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "required": ["config", "digest", "servers"],
+                "properties": {
+                  "config": {
+                    "type": "string"
+                  },
+                  "digest": {
+                    "type": "string"
+                  },
+                  "servers": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "managed_mcp": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "required": ["profile_digest"],
+                "properties": {
+                  "profile_digest": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  }
+                }
+              }
+            ]
+          },
+          "strict_work": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "required": ["version"],
+                "properties": {
+                  "version": {
+                    "const": 1
+                  }
+                }
+              }
+            ]
+          },
+          "tool_execution": {
+            "type": "object"
+          },
+          "job_execution": {
+            "type": "object",
+            "required": [
+              "control_error",
+              "schedule_control_error",
+              "inbox_control_error"
+            ],
+            "properties": {
+              "control_error": {},
+              "schedule_control_error": {},
+              "inbox_control_error": {}
+            }
+          },
+          "provider_route": {},
+          "last_activity_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sessions": {}
+        },
+        "description": "The daemon's health (salaam:src/service/system.ts health). The fields AgentPod's node-agent reads are pinned (agentpod:apps/node-agent/internal/salaam/client.go ObserveHealth, mcp.go AssignMCP, observe.go ObserveConfiguration); the rest is Salaam's own. A healthy daemon bound to AgentPod has `agentpod_config` set; `managed_mcp.profile_digest` is what an MCP assignment must name. AgentPod also reads `tools_user`, which Salaam's health does not send: the user tools run as is `tool_execution.user`."
+      },
+      "Session": {
+        "type": "object",
+        "required": ["id", "cwd", "state", "epoch"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cwd": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "epoch": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "description": "A session as the supervisor inspects it (salaam:src/core/protocol.ts Session), with the picker summary beside it. AgentPod reads `id` and `cwd`."
+      },
+      "Sessions": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Session"
+        }
+      },
+      "ContextInventory": {
+        "type": "object",
+        "required": [
+          "version",
+          "revision",
+          "digest",
+          "state",
+          "loaded",
+          "loaded_reason",
+          "entries",
+          "bundles"
+        ],
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "digest": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "state": {
+            "enum": ["empty", "admitted", "stale"]
+          },
+          "loaded": {
+            "type": ["boolean", "null"]
+          },
+          "loaded_reason": {
+            "type": "string"
+          },
+          "entries": {
+            "type": "array",
+            "maxItems": 1024,
+            "items": {
+              "type": "object",
+              "required": ["path", "kind"],
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "kind": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "bundles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["path", "digest"],
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "digest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "manifest_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              }
+            }
+          }
+        },
+        "description": "A session's reviewed context admission (salaam:src/runtime/context-admission.ts inspect; agentpod:apps/node-agent/internal/salaam/skills.go SkillInventory). `empty` has revision 0 and a null digest; otherwise the digest is set. A skill entry also carries `skill_id` and `bundle_digest`.",
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "state": {
+                  "enum": ["admitted", "stale"]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "revision": {
+                  "minimum": 1
+                },
+                "digest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

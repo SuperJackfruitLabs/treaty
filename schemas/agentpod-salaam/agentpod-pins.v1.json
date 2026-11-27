@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/agentpod-salaam/agentpod-pins.v1.json",
+  "title": "A Salaam daemon's AgentPod pins file",
+  "description": "What binds a Salaam daemon to one AgentPod organization, node and station: `~/.config/salaam/agentpod-pins.json` by default, or `--agentpod-config`, written by `salaam host bind` and read by the daemon at start (salaam:src/agentpod/authority.ts readAgentPodPins, src/agentpod/default-config.ts, src/host/bind.ts). AgentPod's node-agent reads `workspace` from it to find the station (agentpod:apps/node-agent/internal/descriptor/salaamharness/salaam_discover.go). An owner-only file of at most 16 KiB with exactly these keys. Beyond the shape, `station_key` must be `salaam:` and the first 16 hex characters of the SHA-256 of `workspace`, `workspace` its own canonical real path, and the daemon's state directory outside it. Every admission's binding must carry these same values.",
+  "type": "object",
+  "required": [
+    "version",
+    "organization_id",
+    "node_id",
+    "station_key",
+    "workspace"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "organization_id": {
+      "type": "string",
+      "pattern": "^org_[a-f0-9]{20}$"
+    },
+    "node_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.:-]+$"
+    },
+    "station_key": {
+      "type": "string",
+      "pattern": "^salaam:[a-f0-9]{16}$"
+    },
+    "workspace": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 4096,
+      "pattern": "^/[^\\u0000]*$"
+    }
+  }
+}

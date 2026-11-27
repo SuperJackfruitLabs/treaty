@@ -19,6 +19,7 @@ describe("schemas/http", () => {
       "schemas/http/agentpod/evidence.v1.openapi.json",
       "schemas/http/agentpod/fleet.v1.openapi.json",
       "schemas/http/agentpod/live-activity.v1.openapi.json",
+      "schemas/http/salaam/operator.v1.openapi.json",
       "schemas/http/superlibrary/api.v1.openapi.json",
       "schemas/http/superpipeline/agent-work.v1.openapi.json",
       "schemas/http/superpipeline/approvals.v1.openapi.json",
@@ -36,9 +37,9 @@ describe("schemas/http", () => {
     });
   }
 
-  test("every http crossing's OpenAPI documents exist", () => {
+  test("every http or ipc crossing's OpenAPI documents exist", () => {
     const missing = registry.crossings
-      .filter((c) => c.kind === "http")
+      .filter((c) => c.kind === "http" || c.kind === "ipc")
       .flatMap((c) => c.contract)
       .filter((p) => p.endsWith(".openapi.json") && !documents.includes(p));
     expect(missing).toEqual([]);

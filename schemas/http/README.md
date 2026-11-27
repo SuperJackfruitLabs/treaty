@@ -26,6 +26,8 @@ Every document keeps these rules, checked by `scripts/openapi.test.ts`:
 - Every 4xx and 5xx response is the document's error envelope, `schemas/common/<envelope>.json`,
   named by `x-treaty-error-envelope` (`error.v1` when it names none). The suite's envelopes are
   `error.v1`, `flat-error.v1` and `matrix-error.v1`; `oauth-bearer-error.v1` is RFC 6750's.
+  `code-error.v1` is for local IPC only (phase 4, ruling 1): a document in it is named by an
+  `ipc` crossing, never an `http` one.
 - An operation names the codes it may return in `x-treaty-error-codes`. Each is the owner's in
   `contracts/error-codes.json`, recorded in the document's envelope. In `oauth-bearer-error.v1`
   a code is RFC 6750's (the schema's `$defs/standardCode`) or the owner's `flat-error.v1` code.
@@ -40,7 +42,8 @@ Every document keeps these rules, checked by `scripts/openapi.test.ts`:
 - Every request has valid and invalid cases, and every success response has valid cases. An
   error response may have cases too, for the fields a document pins beside a code. Each case
   validates as it is labelled.
-- An `http` crossing in `contracts/registry.json` names the document.
+- An `http` crossing in `contracts/registry.json` names the document, or an `ipc` crossing for
+  HTTP over a local socket (Salaam's operator socket, `salaam/operator.v1`).
 
 Within a version, a document may only add: new operations, new optional properties, new response
 statuses. Anything else is a new `v<N+1>` document beside the old one. `bun run compat` enforces

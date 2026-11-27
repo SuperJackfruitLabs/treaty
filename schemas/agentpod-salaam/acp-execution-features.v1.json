@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/agentpod-salaam/acp-execution-features.v1.json",
+  "title": "The execution features Salaam and AgentPod agree on over ACP",
+  "description": "`_meta[\"salaam.dev/executionFeatures\"]` in ACP `initialize`: AgentPod's client capabilities advertise it and Salaam's answer carries it, additive to `salaam.dev/features`, whose strict receipt contract is unchanged (salaam:src/acp/sessions.ts initialize; agentpod:packages/contract/src/salaam-acp.ts SalaamExecutionFeatures). Closed: a feature neither side names would expand authority.",
+  "type": "object",
+  "required": ["failures", "cancellationReceipts", "toolSemantics"],
+  "additionalProperties": false,
+  "properties": {
+    "failures": {
+      "const": 1
+    },
+    "cancellationReceipts": {
+      "const": 1
+    },
+    "toolSemantics": {
+      "const": 1
+    }
+  }
+}

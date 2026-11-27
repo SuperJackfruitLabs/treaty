@@ -40,11 +40,15 @@ function isObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
-/** Encodes a JSON pointer for use as a URI fragment (RFC 6901 §6). */
+/**
+ * Encodes a JSON pointer for use as a URI fragment (RFC 6901 §6). `$` is a legal fragment
+ * character and stays as it is, so a pointer into `$defs` reaches the subschema the validator
+ * indexed under `#/$defs/…`.
+ */
 export function fragment(pointer: string): string {
   return pointer
     .split("/")
-    .map((token) => encodeURIComponent(token))
+    .map((token) => encodeURIComponent(token).replaceAll("%24", "$"))
     .join("/");
 }
 

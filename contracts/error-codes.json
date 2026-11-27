@@ -1,7 +1,7 @@
 {
   "registry": "treaty error codes",
-  "version": 2,
-  "description": "Every error code a suite product's API returns, with the status it carries and the envelope it travels in. SuperPipeline's codes are its statusForCode table, its route-level codes and its entitlement gate's flat product_not_enabled; Accounts' are its flat codes; SuperLibrary's are the flat codes of the routes other products call; AgentPod's are the Matrix errcodes of its Live Activity token routes and the flat codes of its service reads. Seeded 2026-11-22. SuperWitness's are its error.v1 codes in UPPER_SNAKE (phase 4, ruling 2: production sends them in lower case until SuperWitness switches) and its gate's flat product_not_enabled.",
+  "version": 3,
+  "description": "Every error code a suite product's API returns, with the status it carries and the envelope it travels in. SuperPipeline's codes are its statusForCode table, its route-level codes and its entitlement gate's flat product_not_enabled; Accounts' are its flat codes; SuperLibrary's are the flat codes of the routes other products call; AgentPod's are the Matrix errcodes of its Live Activity token routes and the flat codes of its service reads. Seeded 2026-11-22. Salaam's are the code-error.v1 codes of its operator socket's AgentPod routes, local IPC only: the literal codes those handlers and the functions they call name, and two built from a variable (invalid_work_binding, work_input_mismatch).",
   "codes": [
     {
       "code": "AGENT_NOT_ELIGIBLE",
@@ -1615,6 +1615,548 @@
       "envelope": "flat-error.v1",
       "status": 403,
       "meaning": "The token's workspace (`org`, named beside the code) has not enabled SuperWitness. Sent by the authentication gate in front of every route, in the Organization plane's flat shape rather than error.v1; the runs contract declares it in `x-treaty-gate-refusals`."
+    },
+    {
+      "code": "admission_not_found",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "No admission for the binding or session. 404 when attach names an admission id the daemon never issued.",
+      "alsoStatus": [404]
+    },
+    {
+      "code": "admission_required",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The daemon requires a trusted AgentPod admission before execution."
+    },
+    {
+      "code": "already_continued",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The earlier conversation was already continued once."
+    },
+    {
+      "code": "approval_mismatch",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The decision, its operation or its ownership does not match what was saved or offered."
+    },
+    {
+      "code": "approval_stale",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The approval is no longer pending, or the plan revision or deadline changed."
+    },
+    {
+      "code": "authority_binding",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The binding differs from the daemon's reviewed pins or from the admission it names, or the occupant generation changed."
+    },
+    {
+      "code": "authority_disabled",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The daemon was started without reviewed AgentPod pins (--agentpod-config); every AgentPod route answers this."
+    },
+    {
+      "code": "authority_expired",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The admission's lease is not fresh for this daemon, or an expired or revoked admission cannot be renewed."
+    },
+    {
+      "code": "authority_unavailable",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The daemon's AgentPod authority control is unavailable."
+    },
+    {
+      "code": "board_read_not_found",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 404,
+      "meaning": "No such board read for this run."
+    },
+    {
+      "code": "board_read_settled",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "That board read is not pending for this run: it was already answered."
+    },
+    {
+      "code": "body_too_large",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 413,
+      "meaning": "The request body is over 1 MiB."
+    },
+    {
+      "code": "continuation_refused",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "Only an interactive admission on the same station, occupant and workspace can continue an earlier conversation."
+    },
+    {
+      "code": "control_busy",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "A local controller currently owns the session."
+    },
+    {
+      "code": "evidence_artifact_too_large",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The selected artifacts exceed 4 MiB of source."
+    },
+    {
+      "code": "evidence_artifact_unavailable",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "Only selected produced work artifacts may be exported."
+    },
+    {
+      "code": "execution_unconfirmed",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The prior station execution, or the conversation to continue, is not yet revoked, stopped and reconciled."
+    },
+    {
+      "code": "internal_error",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 500,
+      "meaning": "An unexpected failure; the message reveals nothing."
+    },
+    {
+      "code": "invalid_approval_rules",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 400,
+      "meaning": "Malformed approval rules: 1 to 16 closed rules with distinct ids."
+    },
+    {
+      "code": "invalid_authority",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The binding is unsupported or invalid: an identity outside its grammar, an extra key, or a bad version, source or epoch."
+    },
+    {
+      "code": "invalid_board_read",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 400,
+      "meaning": "The board read answer is not a closed answer, or is too large. 409 when the request body is not exactly answer and binding.",
+      "alsoStatus": [409]
+    },
+    {
+      "code": "invalid_body",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 400,
+      "meaning": "The body is not a JSON object."
+    },
+    {
+      "code": "invalid_continuation",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 400,
+      "meaning": "continue_from is not a hub session id."
+    },
+    {
+      "code": "invalid_evidence_artifacts",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "Select one to sixteen distinct artifact ids."
+    },
+    {
+      "code": "invalid_execution_evidence",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The execution's evidence is inconsistent with its task, source or artifacts."
+    },
+    {
+      "code": "invalid_field",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 400,
+      "meaning": "A field is missing, empty, too long or of the wrong type; the message names it."
+    },
+    {
+      "code": "invalid_json",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 400,
+      "meaning": "The body is not JSON."
+    },
+    {
+      "code": "invalid_limit",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "Progression must bind every admitted step, or those and the re-run allowance. 400 when the task driver refuses the bound itself.",
+      "alsoStatus": [400]
+    },
+    {
+      "code": "invalid_mcp_config",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 400,
+      "meaning": "The managed MCP assignment is not a supported shape."
+    },
+    {
+      "code": "invalid_plan",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 400,
+      "meaning": "The task plan is malformed; the message says how."
+    },
+    {
+      "code": "invalid_trace_context",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The trace request is not closed and versioned, or its traceparent is not a supported nonzero W3C one."
+    },
+    {
+      "code": "invalid_trace_record",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The saved trace context's ownership changed."
+    },
+    {
+      "code": "invalid_work_admission",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The work admission is unsupported or invalid; in a comparison, the new admission."
+    },
+    {
+      "code": "invalid_work_binding",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The admitted authority the work admission is compared with is invalid. Built from a variable: work-admit throws checkAgentPodWorkAdmission's code."
+    },
+    {
+      "code": "invalid_work_decision",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The decision payload is not closed, or the answer is not an exact versioned decision answer."
+    },
+    {
+      "code": "invalid_work_payload",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The request body is not the route's closed shape; the message says which."
+    },
+    {
+      "code": "invalid_work_record",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The saved task admission is unavailable or changed."
+    },
+    {
+      "code": "mcp_assignment_mismatch",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The assignment differs from the reviewed profile or the current authority."
+    },
+    {
+      "code": "mcp_control_failed",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "Required MCP execution control failed."
+    },
+    {
+      "code": "mcp_disabled",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 403,
+      "meaning": "The daemon has no reviewed managed MCP host profile."
+    },
+    {
+      "code": "mcp_generation_conflict",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The credential generation is stale or binds a different configuration."
+    },
+    {
+      "code": "mcp_not_ready",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "An MCP catalog has not passed readiness."
+    },
+    {
+      "code": "mcp_profile_changed",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The reviewed private MCP profile is unavailable or changed."
+    },
+    {
+      "code": "mcp_readiness_failed",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "Required MCP protocol and catalog readiness failed."
+    },
+    {
+      "code": "mcp_stop_unconfirmed",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "Stopping the session's MCP transports could not be confirmed."
+    },
+    {
+      "code": "not_found",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 404,
+      "meaning": "No such route, checkpoint, session or operation; for an unknown /v1/agentpod/<action>, an unknown method."
+    },
+    {
+      "code": "request_conflict",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The request id was already used with different input."
+    },
+    {
+      "code": "restore_busy",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "Another run is active on this station."
+    },
+    {
+      "code": "restore_changed",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The workspace or the restore changed since it was reviewed."
+    },
+    {
+      "code": "restore_unavailable",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "A restore or a checkpoint diff needs the station boundary, which this daemon lacks."
+    },
+    {
+      "code": "restore_unconfirmed",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "This restore did not finish; review it again."
+    },
+    {
+      "code": "restore_unsafe",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "Restore is only for a run that has ended and stopped."
+    },
+    {
+      "code": "revision_conflict",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The session's revision changed."
+    },
+    {
+      "code": "run_already_admitted",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "This work-run epoch already has a durable execution; recover its original admission."
+    },
+    {
+      "code": "session_revoked",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The session's execution authority was revoked."
+    },
+    {
+      "code": "stale_authority",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The lease sequence is stale."
+    },
+    {
+      "code": "stale_occupancy",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The station occupancy epoch is stale."
+    },
+    {
+      "code": "stale_run_epoch",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The work-run epoch is stale."
+    },
+    {
+      "code": "stopping",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 503,
+      "meaning": "The daemon is stopping."
+    },
+    {
+      "code": "task_busy",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The session has pending work or an unresolved interruption."
+    },
+    {
+      "code": "task_exists",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "This session already has a durable task."
+    },
+    {
+      "code": "task_revision_conflict",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The task's revision changed."
+    },
+    {
+      "code": "task_settled",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The task is already settled."
+    },
+    {
+      "code": "task_uncertain",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "Interrupted work or uncertain effects must be resolved before completion."
+    },
+    {
+      "code": "unauthorized",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 403,
+      "meaning": "The admission credential is invalid."
+    },
+    {
+      "code": "unsupported_evidence_version",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The evidence request does not name a supported schema_version, or is not closed."
+    },
+    {
+      "code": "verification_required",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "A fresh, unchanged, protected verified completion is required."
+    },
+    {
+      "code": "verification_unavailable",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The reviewed protected station backend is required."
+    },
+    {
+      "code": "work_authority_mismatch",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The work belongs to another authority or session, or its authority changed."
+    },
+    {
+      "code": "work_disabled",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "Strict work, or strict progression, is not enabled on this daemon."
+    },
+    {
+      "code": "work_input_mismatch",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The work admission's board, card, stage or digests differ from the admitted bytes. Built from a variable: work-admit throws checkAgentPodWorkAdmission's code."
+    },
+    {
+      "code": "work_missing",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "No admitted work for the binding."
+    },
+    {
+      "code": "work_plan_changed",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The task plan differs from the original work admission."
+    },
+    {
+      "code": "work_request_conflict",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "Not the original work request, another progression grant exists, or the run already owns a task."
+    },
+    {
+      "code": "work_settlement_conflict",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "Not the exact original work and producer terminal digest."
+    },
+    {
+      "code": "work_settlement_unsafe",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "The run is not in a state this retirement can prove safe: not revoked and stopped, or with uncertainty."
+    },
+    {
+      "code": "work_uncertain",
+      "owner": "salaam",
+      "envelope": "code-error.v1",
+      "status": 409,
+      "meaning": "Station execution is active or not reconciled."
     }
   ]
 }

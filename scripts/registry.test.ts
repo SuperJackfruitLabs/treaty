@@ -275,14 +275,14 @@ describe("contracts/registry.json", () => {
       applicable: 29,
       byStatus: {
         contracted: 26,
-        partial: 0,
-        uncontracted: 2,
-        proposed: 0,
+        partial: 1,
+        uncontracted: 1,
+        proposed: 1,
         external: 1,
         standard: 2,
         deprecated: 2,
       },
-      percent: 90,
+      percent: 87,
     });
   });
 });
