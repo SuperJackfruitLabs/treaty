@@ -70,13 +70,9 @@ func references(t *testing.T, b *Bundle) []string {
 	return out
 }
 
-// References the registry names cases for whose cases file is not the cases shape: its invalid
-// entries say "name" where every other corpus says "why", so `treaty cases` prints nothing for
-// them either. Remove an entry when its fixture is fixed.
-var knownNoCases = map[string]bool{
-	"schemas/superbench/remote-credential-request.v1.json":  true,
-	"schemas/superbench/remote-credential-response.v1.json": true,
-}
+// References the registry names cases for whose cases file is not the cases shape. Empty: every
+// corpus now reads. An entry here must fail the test once its fixture is fixed.
+var knownNoCases = map[string]bool{}
 
 // The Go validator reads every case as the corpus labels it, as the TypeScript validator does in
 // `bun run test`: the two languages cannot disagree on what a contract accepts.

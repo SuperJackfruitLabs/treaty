@@ -100,7 +100,7 @@ func (b *Bundle) location(ref string) (string, error) {
 	}
 	base := where
 	if !strings.HasPrefix(where, "https://") {
-		base = IDOf(where)
+		base = b.idFor(where)
 	}
 	switch {
 	case !hasFrag:
@@ -114,6 +114,19 @@ func (b *Bundle) location(ref string) (string, error) {
 		}
 		return base + "#" + fragment(pointer), nil
 	}
+}
+
+// idFor is the address a file is registered under: its own $id when it carries one (a schema
+// treaty holds under its owner's published address, contracts/published-ids.json), otherwise
+// the address of its path.
+func (b *Bundle) idFor(path string) string {
+	var head struct {
+		ID string `json:"$id"`
+	}
+	if json.Unmarshal(b.files[path], &head) == nil && strings.HasPrefix(head.ID, "https://") {
+		return head.ID
+	}
+	return IDOf(path)
 }
 
 // Schema is the compiled schema a reference names (see location for the forms).
