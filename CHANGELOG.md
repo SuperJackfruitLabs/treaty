@@ -5,6 +5,11 @@ deploys the event relay to production.
 
 ## Unreleased
 
+### Added
+
+- **A Go module, `github.com/SuperJackfruitLabs/treaty`** (`go.mod` at the repository root), released by the same `vX.Y.Z` tag as the npm packages: `go get github.com/SuperJackfruitLabs/treaty@vX.Y.Z`. It embeds `schemas/`, `fixtures/` and `contracts/` at their treaty paths and exports `Manifest()` (every JSON file's sha256, the same as the npm package's `data/manifest.json`), `Validate(path, value)` (JSON Schema 2020-12 through `santhosh-tekuri/jsonschema/v6`, formats asserted, ECMA-262 patterns, every `$ref` from the embedded data and never the network) and `RunCases(path, parse)`, which feeds every valid and invalid case of a schema, or of an OpenAPI operation body addressed as `<document>#<operationId>/request` or `#<operationId>/<status>`, to your parse function and reports the ones it read the other way. No generated types. CI runs `go vet` and `go test`, which check every corpus case is read as labelled and that the module embeds exactly the npm package's files; the release checks that again at the tag before publishing. Documented at `/packages/go/`.
+- **`treaty verify` accepts a pinned Go module in place of vendored copies:** `goModules` in `treaty.json` lists `go.mod` files that must require `github.com/SuperJackfruitLabs/treaty` at exactly the pinned release, with no `replace` for it (`go-module-missing`, `go-module-unpinned`, `go-module-replaced`). The field is in `schemas/treaty/product-manifest.v2.json`; every v1 `treaty.json` is a v2 one, and `verify` now checks against v2.
+
 ## v0.0.22 — 2026-11-26
 
 ### Added

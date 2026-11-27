@@ -28,6 +28,10 @@ products share.
 | [`@superjackfruitlabs/treaty-matrix-events`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-matrix-events)           | The board-room Matrix event contract: a JSON Schema per event type, a valid/invalid corpus, and the builders and parsers moved from the AgentPod hub ([plan](docs/2026-11-11-matrix-contract-plan.md))                         |
 | [`@superjackfruitlabs/treaty-outbox`](https://www.npmjs.com/package/@superjackfruitlabs/treaty-outbox)                         | A transactional outbox and a deduplicating inbox for CloudEvents, on Durable Object SQLite and on Postgres                                                                                                                     |
 
+Go products use the Go module, `github.com/SuperJackfruitLabs/treaty` (`go.mod` at the root):
+the same files as `treaty-contracts`, embedded, with `Validate`, `RunCases` and `Manifest`. It is
+released by the same tag; see [the Go page](https://treaty.superjackfruit.com/packages/go/).
+
 Packages are published to npm from GitHub Actions, with provenance, when a `vX.Y.Z` tag is
 pushed. Each release's notes are on the
 [GitHub releases page](https://github.com/SuperJackfruitLabs/treaty/releases), and

@@ -299,6 +299,18 @@ const onDisk = readdirSync(join(repo, 'fixtures/ecosystem-identity')).filter((f)
 if (JSON.stringify([...corpusFiles].sort()) !== JSON.stringify(onDisk)) fail('CORPUS_FILES is not the corpus on disk');
 for (const f of corpusFiles) if (!has(page('packages/ecosystem-identity.md'), f)) fail(`packages/ecosystem-identity.md does not list ${f}`);
 
+// The Go module's page names everything treaty.go exports, and every `Name()` it names exists.
+{
+  const goSrc = read(join(repo, 'treaty.go'));
+  const goExports = new Set(
+    [...goSrc.matchAll(/^(?:func|type|var|const) ([A-Z][A-Za-z0-9]*)/gm)].map((m) => m[1]),
+  );
+  const goPage = page('packages/go.md');
+  for (const n of goExports) if (!has(goPage, n) && !has(goPage, n + '()')) fail(`packages/go.md does not name the export ${n}`);
+  for (const m of goPage.matchAll(/`([A-Z][A-Za-z0-9]*)\(\)`/g)) if (!goExports.has(m[1])) fail(`packages/go.md names ${m[1]}(), which treaty.go does not export`);
+  if (!page('packages/index.md').includes('(/packages/go/)')) fail('packages/index.md does not link the Go module');
+}
+
 // ---- the version ------------------------------------------------------------------------------
 
 const changelog = read(join(repo, 'CHANGELOG.md'));

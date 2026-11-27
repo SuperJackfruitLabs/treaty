@@ -87,6 +87,7 @@ export default defineConfig({
             { label: 'treaty-matrix-events', slug: 'packages/matrix-events' },
             { label: 'treaty-ecosystem-identity', slug: 'packages/ecosystem-identity' },
             { label: 'treaty-outbox', slug: 'packages/outbox' },
+            { label: 'The Go module', slug: 'packages/go' },
           ],
         },
         {

@@ -29,10 +29,14 @@ treaty holds what software must check. The plans are `docs/2026-11-02-treaty-pla
 - `fixtures/`: shared test corpora, plain data.
 - `contracts/`: treaty's own records: the crossing registry, error codes, compatibility exceptions.
 - `schemas/http/`: OpenAPI 3.1 documents, one per API; cases in `fixtures/http/`.
+- `go.mod`, `treaty.go`, `internal/`: the Go module (`github.com/SuperJackfruitLabs/treaty`). It
+  embeds `schemas/`, `fixtures/` and `contracts/`, so `go.mod` stays at the root, and it is
+  versioned by the same `vX.Y.Z` tag. `bun run go` vets and tests it after `bun run build`.
 
 ## Checks
 
-`bun run check` runs what CI runs: format, typecheck, lint, tests. Run it before pushing.
+`bun run check` runs what CI runs: format, typecheck, lint, tests, the build and the Go module's
+vet and tests. Run it before pushing.
 
 - **Lint is a ratchet** (`bun run lint`, `scripts/lint.mjs`): per-rule counts in
   `scripts/lint-baseline.json` may fall, never rise. After a cleanup run `bun run lint --update`;

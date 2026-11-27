@@ -14,6 +14,7 @@ today). Choose the boundary you need from the table below, then pin its exact ve
 | Check ids, token claims, the card prompt or the run join key against the shared corpus | [`treaty-ecosystem-identity`](/packages/ecosystem-identity/) |
 | Write events in the same transaction as the change, and handle each incoming event once | [`treaty-outbox`](/packages/outbox/) |
 | Check your repository against the contracts it produces and consumes, or validate a body against any schema or HTTP API treaty holds | [`treaty-contracts`](/packages/contracts/) |
+| Do any of that from Go: validate against a schema or an HTTP body, or run treaty's cases through your own parser | the Go module, [`github.com/SuperJackfruitLabs/treaty`](/packages/go/) |
 
 ```sh
 npm install @superjackfruitlabs/treaty-cloudevents@0.0.22
@@ -26,6 +27,9 @@ Every package is an ES module with its TypeScript types. The data packages (`eve
 `matrix-events`, `ecosystem-identity`) export their JSON files by subpath, so a reader in another
 language can take the same files from the package or from the
 [repository](https://github.com/SuperJackfruitLabs/treaty).
+
+Go products use the Go module instead: it embeds the same files as `treaty-contracts`, at the same
+tag (`go get github.com/SuperJackfruitLabs/treaty@vX.Y.Z`). See [the Go module](/packages/go/).
 
 Packages are published from GitHub Actions with npm provenance when a `vX.Y.Z` tag is pushed. Each
 release's notes are on the [GitHub releases page](https://github.com/SuperJackfruitLabs/treaty/releases).
