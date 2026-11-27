@@ -7,7 +7,7 @@ const read = (path: string) =>
   JSON.parse(readFileSync(join(import.meta.dir, "..", path), "utf8"));
 type Cases = {
   valid: Record<string, unknown>;
-  invalid: Array<{ name: string; body: unknown }>;
+  invalid: Array<{ why: string; body: unknown }>;
 };
 const fixture: { request: Cases; response: Cases } = read(
   "fixtures/superbench-api/remote-credentials.json",
@@ -38,8 +38,8 @@ for (const [label, path, cases] of sets) {
       expect(validator.validate(body).errors).toEqual([]);
     });
   }
-  for (const { name, body } of cases.invalid) {
-    test(`remote credential ${label} refuses ${name}`, () => {
+  for (const { why, body } of cases.invalid) {
+    test(`remote credential ${label} refuses ${why}`, () => {
       expect(validator.validate(body).valid).toBe(false);
     });
   }

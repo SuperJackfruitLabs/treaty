@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { loadBundle } from "../packages/contracts/src/node.ts";
 import { readRegistry } from "../packages/contracts/src/registry.ts";
+import { casesFor as loadCases } from "../packages/contracts/src/cases.ts";
 import { validatorFor } from "../packages/contracts/src/schemas.ts";
 
 const root = join(import.meta.dir, "..");
@@ -70,6 +71,15 @@ describe("superbench.local-api cases", () => {
     expect(contractSchemas.length).toBe(16);
     expect(
       contractSchemas.filter((p) => crossing?.cases?.[p] === undefined),
+    ).toEqual([]);
+  });
+
+  test("treaty's case loader finds cases for every schema of the crossing", () => {
+    expect(
+      contractSchemas.filter((p) => {
+        const cases = loadCases(bundle, registry, p);
+        return !cases || cases.invalid.length === 0;
+      }),
     ).toEqual([]);
   });
 
