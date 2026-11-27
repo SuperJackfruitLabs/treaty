@@ -38,55 +38,56 @@ function casesAt(location: string): Cases | undefined {
   return isCases(node) ? node : undefined;
 }
 
-const files = readdirSync(join(root, "schemas/agentpod"))
-  .filter((f) => f.endsWith(".json"))
-  .toSorted();
 const casesFor = new Map(
   registry.crossings.flatMap((c) => Object.entries(c.cases ?? {})),
 );
 
-describe("schemas/agentpod", () => {
-  test("every schema is named by a crossing, with its cases", () => {
-    const named = new Set(registry.crossings.flatMap((c) => c.contract));
-    expect(
-      files
-        .map((f) => `schemas/agentpod/${f}`)
-        .filter((p) => !named.has(p) || !casesFor.has(p)),
-    ).toEqual([]);
-  });
-
-  for (const file of files) {
-    const path = `schemas/agentpod/${file}`;
-    const schema: unknown = bundle.files.get(path);
-    const location = casesFor.get(path) ?? "";
-    const cases = casesAt(location);
-    const validate = validatorFor(bundle, path);
-
-    test(`${file}: its $id is where it is published`, () => {
+for (const dir of ["schemas/agentpod", "schemas/agentpod-salaam"])
+  describe(dir, () => {
+    const files = readdirSync(join(root, dir))
+      .filter((f) => f.endsWith(".json"))
+      .toSorted();
+    test("every schema is named by a crossing, with its cases", () => {
+      const named = new Set(registry.crossings.flatMap((c) => c.contract));
       expect(
-        schema !== null && typeof schema === "object"
-          ? Reflect.get(schema, "$id")
-          : undefined,
-      ).toBe(`${RAW}${path}`);
+        files
+          .map((f) => `${dir}/${f}`)
+          .filter((p) => !named.has(p) || !casesFor.has(p)),
+      ).toEqual([]);
     });
 
-    test(`${file}: has valid and invalid cases`, () => {
-      expect(Object.keys(cases?.valid ?? {}).length).toBeGreaterThan(0);
-      expect(cases?.invalid.length ?? 0).toBeGreaterThan(0);
-    });
+    for (const file of files) {
+      const path = `${dir}/${file}`;
+      const schema: unknown = bundle.files.get(path);
+      const location = casesFor.get(path) ?? "";
+      const cases = casesAt(location);
+      const validate = validatorFor(bundle, path);
 
-    for (const [label, body] of Object.entries(cases?.valid ?? {})) {
-      test(`${file} accepts ${label}`, () => {
-        expect(validate(body).errors).toEqual([]);
+      test(`${file}: its $id is where it is published`, () => {
+        expect(
+          schema !== null && typeof schema === "object"
+            ? Reflect.get(schema, "$id")
+            : undefined,
+        ).toBe(`${RAW}${path}`);
       });
-    }
-    for (const { why, body } of cases?.invalid ?? []) {
-      test(`${file} refuses: ${why}`, () => {
-        expect(validate(body).valid).toBe(false);
+
+      test(`${file}: has valid and invalid cases`, () => {
+        expect(Object.keys(cases?.valid ?? {}).length).toBeGreaterThan(0);
+        expect(cases?.invalid.length ?? 0).toBeGreaterThan(0);
       });
+
+      for (const [label, body] of Object.entries(cases?.valid ?? {})) {
+        test(`${file} accepts ${label}`, () => {
+          expect(validate(body).errors).toEqual([]);
+        });
+      }
+      for (const { why, body } of cases?.invalid ?? []) {
+        test(`${file} refuses: ${why}`, () => {
+          expect(validate(body).valid).toBe(false);
+        });
+      }
     }
-  }
-});
+  });
 
 describe("fixtures/agentpod-live-activity", () => {
   test("the v2 fixture's thinking row carries no counts, as the hub emits it", () => {

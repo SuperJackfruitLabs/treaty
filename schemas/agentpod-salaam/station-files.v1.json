@@ -1,0 +1,638 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/agentpod-salaam/station-files.v1.json",
+  "title": "Salaam's protected station file helper: one request and its answer",
+  "description": "AgentPod's node binary serves `agentpod-node salaam-station-files-v1`; Salaam spawns it once per request with an empty environment, writes one closed JSON request on stdin (at most 2 MiB) and reads one JSON answer on stdout (at most 2 MiB): a receipt with exit 0, or a refusal with exit 1 (salaam:src/agentpod/station-helper.ts, station-files.ts; agentpod:apps/node-agent/cmd/agentpod-node/main.go, internal/stationfs/entry.go, files_linux.go). A message is a request, a receipt or a refusal: `$defs/request`, `$defs/receipt` and `$defs/refusal` name each. Beyond these shapes, a receipt must answer its request (the same root identity, path, snapshot and expected tree, the SHA-256 of the content it read or wrote, a created directory list that is the new file's own ancestors in order, and a read of at most 256 KiB of UTF-8), and the helper refuses what the filesystem refuses (a symlink, a changed tree or root, an excluded name); `fixtures/agentpod-salaam/salaam-station-files-v1.json` holds those cases. A refusal that is exactly `station_request_invalid` came from decoding and provably changed nothing; `station_files_unavailable` says whether an effect may have happened.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/request"
+    },
+    {
+      "$ref": "#/$defs/receipt"
+    },
+    {
+      "$ref": "#/$defs/refusal"
+    }
+  ],
+  "$defs": {
+    "request": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/inspectRequest"
+        },
+        {
+          "$ref": "#/$defs/listRequest"
+        },
+        {
+          "$ref": "#/$defs/searchRequest"
+        },
+        {
+          "$ref": "#/$defs/readRequest"
+        },
+        {
+          "$ref": "#/$defs/snapshotRequest"
+        },
+        {
+          "$ref": "#/$defs/patchRequest"
+        }
+      ]
+    },
+    "receipt": {
+      "description": "A receipt does not name its action: `list` and `search` answer the same shape, and Salaam reads a receipt against the request it sent.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/inspectReceipt"
+        },
+        {
+          "$ref": "#/$defs/listReceipt"
+        },
+        {
+          "$ref": "#/$defs/readReceipt"
+        },
+        {
+          "$ref": "#/$defs/patchReceipt"
+        },
+        {
+          "$ref": "#/$defs/snapshotReceipt"
+        }
+      ]
+    },
+    "refusal": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["version", "ok", "code"],
+          "additionalProperties": false,
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "ok": {
+              "const": false
+            },
+            "code": {
+              "const": "station_request_invalid"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["version", "ok", "code", "effect_state"],
+          "additionalProperties": false,
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "ok": {
+              "const": false
+            },
+            "code": {
+              "const": "station_files_unavailable"
+            },
+            "effect_state": {
+              "enum": ["not_started", "unknown"]
+            }
+          }
+        }
+      ]
+    },
+    "inspectRequest": {
+      "type": "object",
+      "required": ["version", "root", "root_identity", "action"],
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "root": {
+          "type": "string",
+          "minLength": 2,
+          "pattern": "^/(?!.*//)(?!.*/$)(?!(.*/)?\\.\\.?(/|$)).*$"
+        },
+        "root_identity": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "action": {
+          "const": "inspect"
+        }
+      }
+    },
+    "listRequest": {
+      "type": "object",
+      "required": ["version", "action", "root", "root_identity"],
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "root": {
+          "type": "string",
+          "minLength": 2,
+          "pattern": "^/(?!.*//)(?!.*/$)(?!(.*/)?\\.\\.?(/|$)).*$"
+        },
+        "root_identity": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "action": {
+          "const": "list"
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "searchRequest": {
+      "type": "object",
+      "required": ["version", "action", "root", "root_identity", "query"],
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "root": {
+          "type": "string",
+          "minLength": 2,
+          "pattern": "^/(?!.*//)(?!.*/$)(?!(.*/)?\\.\\.?(/|$)).*$"
+        },
+        "root_identity": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "action": {
+          "const": "search"
+        },
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "readRequest": {
+      "type": "object",
+      "required": ["version", "root", "root_identity", "action", "path"],
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "root": {
+          "type": "string",
+          "minLength": 2,
+          "pattern": "^/(?!.*//)(?!.*/$)(?!(.*/)?\\.\\.?(/|$)).*$"
+        },
+        "root_identity": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "action": {
+          "const": "read"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^(?!/)(?!.*//)(?!.*/$)(?!(.*/)?\\.\\.?(/|$))[^\\\\\\u0000-\\u001f\\u007f]+$",
+          "not": {
+            "pattern": "(^|/)(\\.[gG][iI][tT](\\.[^/]*)?|\\.[sS][tT][aA][tT][eE](\\.[^/]*)?|\\.[sS][sS][hH](\\.[^/]*)?|\\.[aA][wW][sS](\\.[^/]*)?|\\.[aA][zZ][uU][rR][eE](\\.[^/]*)?|\\.[cC][oO][nN][fF][iI][gG](\\.[^/]*)?|\\.[nN][pP][mM][rR][cC](\\.[^/]*)?|\\.[nN][eE][tT][rR][cC](\\.[^/]*)?|[cC][rR][eE][dD][eE][nN][tT][iI][aA][lL][sS](\\.[^/]*)?|\\.[sS][aA][lL][aA][aA][mM](\\.[^/]*)?|[nN][oO][dD][eE]_[mM][oO][dD][uU][lL][eE][sS](\\.[^/]*)?|\\.[vV][eE][nN][vV](\\.[^/]*)?|\\.[cC][aA][cC][hH][eE](\\.[^/]*)?|\\.[pP][iI](\\.[^/]*)?|\\.[cC][lL][aA][uU][dD][eE](\\.[^/]*)?|\\.[cC][oO][dD][eE][xX](\\.[^/]*)?|\\.[hH][eE][rR][mM][eE][sS](\\.[^/]*)?|\\.[oO][pP][eE][nN][cC][lL][aA][wW](\\.[^/]*)?|\\.[lL][oO][cC][aA][lL](\\.[^/]*)?|\\.[eE][nN][vV][^/]*|\\.[sS][aA][lL][aA][aA][mM]-[sS][tT][aA][tT][iI][oO][nN]-[^/]*|[^/]*\\.[pP][eE][mM]|[^/]*\\.[kK][eE][yY])(/|$)"
+          },
+          "description": "A clean path beneath the root: no leading slash, no empty, `.` or `..` segment, no backslash or control character, at most 31 slashes (the helper's rule), and no excluded name (`.git`, `.env*`, `.ssh`, `node_modules`, `*.pem`, `*.key` and the rest of agentpod:apps/node-agent/internal/stationfs/files_linux.go excluded, compared case-insensitively)."
+        }
+      }
+    },
+    "snapshotRequest": {
+      "type": "object",
+      "required": [
+        "version",
+        "root",
+        "root_identity",
+        "action",
+        "expected_tree",
+        "snapshot",
+        "request_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "root": {
+          "type": "string",
+          "minLength": 2,
+          "pattern": "^/(?!.*//)(?!.*/$)(?!(.*/)?\\.\\.?(/|$)).*$"
+        },
+        "root_identity": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "action": {
+          "const": "snapshot"
+        },
+        "expected_tree": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "snapshot": {
+          "type": "string",
+          "minLength": 2,
+          "pattern": "^/(?!.*//)(?!.*/$)(?!(.*/)?\\.\\.?(/|$)).*$"
+        },
+        "request_id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "patchRequest": {
+      "type": "object",
+      "required": [
+        "version",
+        "root",
+        "root_identity",
+        "action",
+        "path",
+        "expected_tree",
+        "expected_hash",
+        "content",
+        "request_id",
+        "deadline_ms"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "root": {
+          "type": "string",
+          "minLength": 2,
+          "pattern": "^/(?!.*//)(?!.*/$)(?!(.*/)?\\.\\.?(/|$)).*$"
+        },
+        "root_identity": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "action": {
+          "const": "patch"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^(?!/)(?!.*//)(?!.*/$)(?!(.*/)?\\.\\.?(/|$))[^\\\\\\u0000-\\u001f\\u007f]+$",
+          "not": {
+            "pattern": "(^|/)(\\.[gG][iI][tT](\\.[^/]*)?|\\.[sS][tT][aA][tT][eE](\\.[^/]*)?|\\.[sS][sS][hH](\\.[^/]*)?|\\.[aA][wW][sS](\\.[^/]*)?|\\.[aA][zZ][uU][rR][eE](\\.[^/]*)?|\\.[cC][oO][nN][fF][iI][gG](\\.[^/]*)?|\\.[nN][pP][mM][rR][cC](\\.[^/]*)?|\\.[nN][eE][tT][rR][cC](\\.[^/]*)?|[cC][rR][eE][dD][eE][nN][tT][iI][aA][lL][sS](\\.[^/]*)?|\\.[sS][aA][lL][aA][aA][mM](\\.[^/]*)?|[nN][oO][dD][eE]_[mM][oO][dD][uU][lL][eE][sS](\\.[^/]*)?|\\.[vV][eE][nN][vV](\\.[^/]*)?|\\.[cC][aA][cC][hH][eE](\\.[^/]*)?|\\.[pP][iI](\\.[^/]*)?|\\.[cC][lL][aA][uU][dD][eE](\\.[^/]*)?|\\.[cC][oO][dD][eE][xX](\\.[^/]*)?|\\.[hH][eE][rR][mM][eE][sS](\\.[^/]*)?|\\.[oO][pP][eE][nN][cC][lL][aA][wW](\\.[^/]*)?|\\.[lL][oO][cC][aA][lL](\\.[^/]*)?|\\.[eE][nN][vV][^/]*|\\.[sS][aA][lL][aA][aA][mM]-[sS][tT][aA][tT][iI][oO][nN]-[^/]*|[^/]*\\.[pP][eE][mM]|[^/]*\\.[kK][eE][yY])(/|$)"
+          },
+          "description": "A clean path beneath the root: no leading slash, no empty, `.` or `..` segment, no backslash or control character, at most 31 slashes (the helper's rule), and no excluded name (`.git`, `.env*`, `.ssh`, `node_modules`, `*.pem`, `*.key` and the rest of agentpod:apps/node-agent/internal/stationfs/files_linux.go excluded, compared case-insensitively)."
+        },
+        "expected_tree": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "expected_hash": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "content": {
+          "type": ["string", "null"]
+        },
+        "request_id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "deadline_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      }
+    },
+    "inspectReceipt": {
+      "type": "object",
+      "required": ["version", "ok", "tree_digest", "files", "root_identity"],
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "ok": {
+          "const": true
+        },
+        "tree_digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "files": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "root_identity": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "listReceipt": {
+      "type": "object",
+      "required": [
+        "version",
+        "ok",
+        "tree_digest",
+        "files",
+        "root_identity",
+        "entries",
+        "next_offset"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "ok": {
+          "const": true
+        },
+        "tree_digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "files": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "root_identity": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "entries": {
+          "type": "array",
+          "maxItems": 40,
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "dev",
+              "inode",
+              "bytes",
+              "mode",
+              "mtime",
+              "ctime"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "path": {
+                "type": "string",
+                "maxLength": 512,
+                "pattern": "^(?!/)(?!.*//)(?!.*/$)(?!(.*/)?\\.\\.?(/|$))[^\\\\\\u0000-\\u001f\\u007f]+$"
+              },
+              "dev": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "inode": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "mode": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "mtime": {
+                "type": "object",
+                "required": ["Sec", "Nsec"],
+                "additionalProperties": false,
+                "properties": {
+                  "Sec": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "Nsec": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 999999999
+                  }
+                }
+              },
+              "ctime": {
+                "type": "object",
+                "required": ["Sec", "Nsec"],
+                "additionalProperties": false,
+                "properties": {
+                  "Sec": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "Nsec": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 999999999
+                  }
+                }
+              }
+            }
+          }
+        },
+        "next_offset": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "readReceipt": {
+      "type": "object",
+      "required": [
+        "version",
+        "ok",
+        "tree_digest",
+        "files",
+        "root_identity",
+        "path",
+        "content",
+        "sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "ok": {
+          "const": true
+        },
+        "tree_digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "files": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "root_identity": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^(?!/)(?!.*//)(?!.*/$)(?!(.*/)?\\.\\.?(/|$))[^\\\\\\u0000-\\u001f\\u007f]+$",
+          "not": {
+            "pattern": "(^|/)(\\.[gG][iI][tT](\\.[^/]*)?|\\.[sS][tT][aA][tT][eE](\\.[^/]*)?|\\.[sS][sS][hH](\\.[^/]*)?|\\.[aA][wW][sS](\\.[^/]*)?|\\.[aA][zZ][uU][rR][eE](\\.[^/]*)?|\\.[cC][oO][nN][fF][iI][gG](\\.[^/]*)?|\\.[nN][pP][mM][rR][cC](\\.[^/]*)?|\\.[nN][eE][tT][rR][cC](\\.[^/]*)?|[cC][rR][eE][dD][eE][nN][tT][iI][aA][lL][sS](\\.[^/]*)?|\\.[sS][aA][lL][aA][aA][mM](\\.[^/]*)?|[nN][oO][dD][eE]_[mM][oO][dD][uU][lL][eE][sS](\\.[^/]*)?|\\.[vV][eE][nN][vV](\\.[^/]*)?|\\.[cC][aA][cC][hH][eE](\\.[^/]*)?|\\.[pP][iI](\\.[^/]*)?|\\.[cC][lL][aA][uU][dD][eE](\\.[^/]*)?|\\.[cC][oO][dD][eE][xX](\\.[^/]*)?|\\.[hH][eE][rR][mM][eE][sS](\\.[^/]*)?|\\.[oO][pP][eE][nN][cC][lL][aA][wW](\\.[^/]*)?|\\.[lL][oO][cC][aA][lL](\\.[^/]*)?|\\.[eE][nN][vV][^/]*|\\.[sS][aA][lL][aA][aA][mM]-[sS][tT][aA][tT][iI][oO][nN]-[^/]*|[^/]*\\.[pP][eE][mM]|[^/]*\\.[kK][eE][yY])(/|$)"
+          },
+          "description": "A clean path beneath the root: no leading slash, no empty, `.` or `..` segment, no backslash or control character, at most 31 slashes (the helper's rule), and no excluded name (`.git`, `.env*`, `.ssh`, `node_modules`, `*.pem`, `*.key` and the rest of agentpod:apps/node-agent/internal/stationfs/files_linux.go excluded, compared case-insensitively)."
+        },
+        "content": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "patchReceipt": {
+      "type": "object",
+      "required": [
+        "version",
+        "ok",
+        "tree_digest",
+        "files",
+        "root_identity",
+        "path",
+        "sha256",
+        "before_tree_digest"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "ok": {
+          "const": true
+        },
+        "tree_digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "files": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "root_identity": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^(?!/)(?!.*//)(?!.*/$)(?!(.*/)?\\.\\.?(/|$))[^\\\\\\u0000-\\u001f\\u007f]+$",
+          "not": {
+            "pattern": "(^|/)(\\.[gG][iI][tT](\\.[^/]*)?|\\.[sS][tT][aA][tT][eE](\\.[^/]*)?|\\.[sS][sS][hH](\\.[^/]*)?|\\.[aA][wW][sS](\\.[^/]*)?|\\.[aA][zZ][uU][rR][eE](\\.[^/]*)?|\\.[cC][oO][nN][fF][iI][gG](\\.[^/]*)?|\\.[nN][pP][mM][rR][cC](\\.[^/]*)?|\\.[nN][eE][tT][rR][cC](\\.[^/]*)?|[cC][rR][eE][dD][eE][nN][tT][iI][aA][lL][sS](\\.[^/]*)?|\\.[sS][aA][lL][aA][aA][mM](\\.[^/]*)?|[nN][oO][dD][eE]_[mM][oO][dD][uU][lL][eE][sS](\\.[^/]*)?|\\.[vV][eE][nN][vV](\\.[^/]*)?|\\.[cC][aA][cC][hH][eE](\\.[^/]*)?|\\.[pP][iI](\\.[^/]*)?|\\.[cC][lL][aA][uU][dD][eE](\\.[^/]*)?|\\.[cC][oO][dD][eE][xX](\\.[^/]*)?|\\.[hH][eE][rR][mM][eE][sS](\\.[^/]*)?|\\.[oO][pP][eE][nN][cC][lL][aA][wW](\\.[^/]*)?|\\.[lL][oO][cC][aA][lL](\\.[^/]*)?|\\.[eE][nN][vV][^/]*|\\.[sS][aA][lL][aA][aA][mM]-[sS][tT][aA][tT][iI][oO][nN]-[^/]*|[^/]*\\.[pP][eE][mM]|[^/]*\\.[kK][eE][yY])(/|$)"
+          },
+          "description": "A clean path beneath the root: no leading slash, no empty, `.` or `..` segment, no backslash or control character, at most 31 slashes (the helper's rule), and no excluded name (`.git`, `.env*`, `.ssh`, `node_modules`, `*.pem`, `*.key` and the rest of agentpod:apps/node-agent/internal/stationfs/files_linux.go excluded, compared case-insensitively)."
+        },
+        "sha256": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "before_tree_digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "created_directories": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "snapshotReceipt": {
+      "type": "object",
+      "required": [
+        "version",
+        "ok",
+        "tree_digest",
+        "files",
+        "root_identity",
+        "snapshot",
+        "bytes"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "ok": {
+          "const": true
+        },
+        "tree_digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "files": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "root_identity": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "snapshot": {
+          "type": "string",
+          "minLength": 2,
+          "pattern": "^/(?!.*//)(?!.*/$)(?!(.*/)?\\.\\.?(/|$)).*$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 536870912
+        }
+      }
+    }
+  }
+}

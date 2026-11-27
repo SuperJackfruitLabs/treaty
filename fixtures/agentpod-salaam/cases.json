@@ -1,0 +1,1173 @@
+{
+  "description": "Cases for schemas/agentpod-salaam/, one set per schema. The MCP profile and ACP sets are the corpora's own entries; scripts/agentpod-salaam-corpora.test.ts reads every corpus whole.",
+  "schemas": {
+    "station-files.v1": {
+      "valid": {
+        "an inspect request": {
+          "version": 1,
+          "root": "/srv/station",
+          "root_identity": "3333333333333333333333333333333333333333333333333333333333333333",
+          "action": "inspect"
+        },
+        "a read request": {
+          "version": 1,
+          "root": "/srv/station",
+          "root_identity": "3333333333333333333333333333333333333333333333333333333333333333",
+          "action": "read",
+          "path": "src/a.ts"
+        },
+        "a new file's patch": {
+          "version": 1,
+          "root": "/srv/station",
+          "root_identity": "3333333333333333333333333333333333333333333333333333333333333333",
+          "action": "patch",
+          "path": "runs/r/a.md",
+          "expected_tree": "1111111111111111111111111111111111111111111111111111111111111111",
+          "expected_hash": null,
+          "content": "hello\n",
+          "request_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "deadline_ms": 1792500000000
+        },
+        "a search from an offset": {
+          "version": 1,
+          "root": "/srv/station",
+          "root_identity": "3333333333333333333333333333333333333333333333333333333333333333",
+          "action": "search",
+          "query": "file",
+          "offset": 40
+        },
+        "the corpus inspect receipt": {
+          "version": 1,
+          "ok": true,
+          "tree_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+          "files": 1,
+          "root_identity": "3333333333333333333333333333333333333333333333333333333333333333"
+        },
+        "the corpus read receipt": {
+          "version": 1,
+          "ok": true,
+          "tree_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+          "files": 1,
+          "path": "file.txt",
+          "content": "hello\n",
+          "sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
+          "root_identity": "3333333333333333333333333333333333333333333333333333333333333333"
+        },
+        "the corpus list receipt": {
+          "version": 1,
+          "ok": true,
+          "tree_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+          "files": 1,
+          "entries": [
+            {
+              "path": "file.txt",
+              "dev": 1,
+              "inode": 2,
+              "bytes": 6,
+              "mode": 384,
+              "mtime": {
+                "Sec": 1,
+                "Nsec": 0
+              },
+              "ctime": {
+                "Sec": 1,
+                "Nsec": 0
+              }
+            }
+          ],
+          "next_offset": null,
+          "root_identity": "3333333333333333333333333333333333333333333333333333333333333333"
+        },
+        "the corpus create receipt": {
+          "version": 1,
+          "ok": true,
+          "tree_digest": "2222222222222222222222222222222222222222222222222222222222222222",
+          "files": 1,
+          "before_tree_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+          "path": "new.txt",
+          "sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
+          "root_identity": "3333333333333333333333333333333333333333333333333333333333333333"
+        },
+        "the corpus delete receipt": {
+          "version": 1,
+          "ok": true,
+          "tree_digest": "2222222222222222222222222222222222222222222222222222222222222222",
+          "files": 1,
+          "before_tree_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+          "path": "file.txt",
+          "sha256": null,
+          "root_identity": "3333333333333333333333333333333333333333333333333333333333333333"
+        },
+        "the corpus snapshot receipt": {
+          "version": 1,
+          "ok": true,
+          "tree_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+          "files": 1,
+          "snapshot": "/private/snapshot",
+          "bytes": 6,
+          "root_identity": "3333333333333333333333333333333333333333333333333333333333333333"
+        },
+        "a decoding refusal, which changed nothing": {
+          "version": 1,
+          "ok": false,
+          "code": "station_request_invalid"
+        },
+        "a refusal after an effect may have happened": {
+          "version": 1,
+          "ok": false,
+          "code": "station_files_unavailable",
+          "effect_state": "unknown"
+        }
+      },
+      "invalid": [
+        {
+          "why": "a command field",
+          "body": {
+            "version": 1,
+            "root": "/srv/station",
+            "root_identity": "3333333333333333333333333333333333333333333333333333333333333333",
+            "action": "inspect",
+            "command": "false"
+          }
+        },
+        {
+          "why": "an action the helper does not serve",
+          "body": {
+            "version": 1,
+            "root": "/srv/station",
+            "root_identity": "3333333333333333333333333333333333333333333333333333333333333333",
+            "action": "execute"
+          }
+        },
+        {
+          "why": "a path that climbs out of the root",
+          "body": {
+            "version": 1,
+            "root": "/srv/station",
+            "root_identity": "3333333333333333333333333333333333333333333333333333333333333333",
+            "action": "read",
+            "path": "../outside"
+          }
+        },
+        {
+          "why": "a credential file",
+          "body": {
+            "version": 1,
+            "root": "/srv/station",
+            "root_identity": "3333333333333333333333333333333333333333333333333333333333333333",
+            "action": "read",
+            "path": "config/.env.local"
+          }
+        },
+        {
+          "why": "an excluded name in another case",
+          "body": {
+            "version": 1,
+            "root": "/srv/station",
+            "root_identity": "3333333333333333333333333333333333333333333333333333333333333333",
+            "action": "read",
+            "path": "NODE_MODULES/x.js"
+          }
+        },
+        {
+          "why": "a relative root",
+          "body": {
+            "version": 1,
+            "root": "srv/station",
+            "root_identity": "3333333333333333333333333333333333333333333333333333333333333333",
+            "action": "inspect"
+          }
+        },
+        {
+          "why": "a patch without its deadline",
+          "body": {
+            "version": 1,
+            "root": "/srv/station",
+            "root_identity": "3333333333333333333333333333333333333333333333333333333333333333",
+            "action": "patch",
+            "path": "runs/r/a.md",
+            "expected_tree": "1111111111111111111111111111111111111111111111111111111111111111",
+            "expected_hash": null,
+            "content": "hello\n",
+            "request_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        },
+        {
+          "why": "version 2",
+          "body": {
+            "version": 2,
+            "root": "/srv/station",
+            "root_identity": "3333333333333333333333333333333333333333333333333333333333333333",
+            "action": "inspect"
+          }
+        },
+        {
+          "why": "a receipt with a field of its own",
+          "body": {
+            "version": 1,
+            "ok": true,
+            "tree_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+            "files": 1,
+            "root_identity": "3333333333333333333333333333333333333333333333333333333333333333",
+            "verified": true
+          }
+        },
+        {
+          "why": "a refusal with an effect state it never sends",
+          "body": {
+            "version": 1,
+            "ok": false,
+            "code": "station_files_unavailable",
+            "effect_state": "done"
+          }
+        }
+      ]
+    },
+    "host-config.v1": {
+      "valid": {
+        "observe the manifest": {
+          "stationKey": "salaam:c52ddf65534b7b46",
+          "settings": [
+            "salaam.host.manifest"
+          ]
+        },
+        "plan one manifest": {
+          "stationKey": "salaam:c52ddf65534b7b46",
+          "operationId": "cfg:op-1",
+          "want": [
+            {
+              "settingId": "salaam.host.manifest",
+              "value": {
+                "schema": 6
+              }
+            }
+          ]
+        },
+        "apply a reviewed plan": {
+          "stationKey": "salaam:c52ddf65534b7b46",
+          "operationId": "cfg:op-1",
+          "planDigest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        "inspect an operation": {
+          "stationKey": "salaam:c52ddf65534b7b46",
+          "operationId": "cfg:op-1"
+        },
+        "an observation, one read and one not": {
+          "values": [
+            {
+              "settingId": "salaam.host.manifest",
+              "readable": true,
+              "observed": {
+                "schema": 6,
+                "mode": "agentpod"
+              }
+            },
+            {
+              "settingId": "salaam.host.manifest",
+              "readable": false,
+              "reason": "Error: Configuration belongs to another station"
+            }
+          ]
+        },
+        "a plan": {
+          "schemaVersion": 1,
+          "operationId": "cfg:op-1",
+          "stationKey": "salaam:c52ddf65534b7b46",
+          "entries": [
+            {
+              "settingId": "salaam.host.manifest",
+              "file": "/etc/salaam/stations/salaam:c52ddf65534b7b46/host.json",
+              "keyPath": "$",
+              "policy": "reconcilable",
+              "current": {
+                "schema": 6,
+                "mode": "agentpod"
+              },
+              "intended": {
+                "schema": 6,
+                "mode": "agentpod",
+                "provider": {
+                  "provider": "anthropic"
+                }
+              },
+              "action": "modify",
+              "restartToTakeEffect": true
+            }
+          ],
+          "beforeSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "diff": "- {}\n+ {}\n",
+          "diffTruncated": false,
+          "noOp": false,
+          "restartRequired": true,
+          "createdAt": "2026-11-27T10:15:00.000Z",
+          "planDigest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        "a refused plan": {
+          "schemaVersion": 1,
+          "operationId": "cfg:op-1",
+          "stationKey": "salaam:c52ddf65534b7b46",
+          "entries": [],
+          "beforeSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "diff": "",
+          "diffTruncated": false,
+          "noOp": false,
+          "restartRequired": false,
+          "createdAt": "2026-11-27T10:15:00.000Z",
+          "planDigest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "refusal": {
+            "code": "UNKNOWN_SETTING",
+            "message": "Salaam manages only its reviewed host manifest"
+          }
+        },
+        "an applied receipt": {
+          "plan": {
+            "schemaVersion": 1,
+            "operationId": "cfg:op-1",
+            "stationKey": "salaam:c52ddf65534b7b46",
+            "entries": [
+              {
+                "settingId": "salaam.host.manifest",
+                "file": "/etc/salaam/stations/salaam:c52ddf65534b7b46/host.json",
+                "keyPath": "$",
+                "policy": "reconcilable",
+                "current": {
+                  "schema": 6,
+                  "mode": "agentpod"
+                },
+                "intended": {
+                  "schema": 6,
+                  "mode": "agentpod",
+                  "provider": {
+                    "provider": "anthropic"
+                  }
+                },
+                "action": "modify",
+                "restartToTakeEffect": true
+              }
+            ],
+            "beforeSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "diff": "- {}\n+ {}\n",
+            "diffTruncated": false,
+            "noOp": false,
+            "restartRequired": true,
+            "createdAt": "2026-11-27T10:15:00.000Z",
+            "planDigest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          },
+          "phase": "applied",
+          "updatedAt": "2026-11-27T10:16:00.000Z",
+          "written": [
+            {
+              "settingId": "salaam.host.manifest",
+              "action": "modify",
+              "wrote": {
+                "schema": 6
+              }
+            }
+          ],
+          "afterSha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        },
+        "a conflict": {
+          "plan": {
+            "schemaVersion": 1,
+            "operationId": "cfg:op-1",
+            "stationKey": "salaam:c52ddf65534b7b46",
+            "entries": [
+              {
+                "settingId": "salaam.host.manifest",
+                "file": "/etc/salaam/stations/salaam:c52ddf65534b7b46/host.json",
+                "keyPath": "$",
+                "policy": "reconcilable",
+                "current": {
+                  "schema": 6,
+                  "mode": "agentpod"
+                },
+                "intended": {
+                  "schema": 6,
+                  "mode": "agentpod",
+                  "provider": {
+                    "provider": "anthropic"
+                  }
+                },
+                "action": "modify",
+                "restartToTakeEffect": true
+              }
+            ],
+            "beforeSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "diff": "- {}\n+ {}\n",
+            "diffTruncated": false,
+            "noOp": false,
+            "restartRequired": true,
+            "createdAt": "2026-11-27T10:15:00.000Z",
+            "planDigest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          },
+          "phase": "conflict",
+          "updatedAt": "2026-11-27T10:16:00.000Z",
+          "written": [],
+          "error": "PLAN_STALE: Manifest bytes changed after review"
+        }
+      },
+      "invalid": [
+        {
+          "why": "an observe of another setting",
+          "body": {
+            "stationKey": "salaam:c52ddf65534b7b46",
+            "settings": [
+              "salaam.provider"
+            ]
+          }
+        },
+        {
+          "why": "an operation id with a space",
+          "body": {
+            "stationKey": "salaam:c52ddf65534b7b46",
+            "operationId": "op 1"
+          }
+        },
+        {
+          "why": "a request field no action takes",
+          "body": {
+            "stationKey": "salaam:c52ddf65534b7b46",
+            "operationId": "cfg:op-1",
+            "force": true
+          }
+        },
+        {
+          "why": "a receipt in a phase of its own",
+          "body": {
+            "plan": {
+              "schemaVersion": 1,
+              "operationId": "cfg:op-1",
+              "stationKey": "salaam:c52ddf65534b7b46",
+              "entries": [
+                {
+                  "settingId": "salaam.host.manifest",
+                  "file": "/etc/salaam/stations/salaam:c52ddf65534b7b46/host.json",
+                  "keyPath": "$",
+                  "policy": "reconcilable",
+                  "current": {
+                    "schema": 6,
+                    "mode": "agentpod"
+                  },
+                  "intended": {
+                    "schema": 6,
+                    "mode": "agentpod",
+                    "provider": {
+                      "provider": "anthropic"
+                    }
+                  },
+                  "action": "modify",
+                  "restartToTakeEffect": true
+                }
+              ],
+              "beforeSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "diff": "- {}\n+ {}\n",
+              "diffTruncated": false,
+              "noOp": false,
+              "restartRequired": true,
+              "createdAt": "2026-11-27T10:15:00.000Z",
+              "planDigest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+            },
+            "phase": "done",
+            "updatedAt": "2026-11-27T10:16:00.000Z",
+            "written": []
+          }
+        },
+        {
+          "why": "a plan without its digest",
+          "body": {
+            "schemaVersion": 1,
+            "operationId": "cfg:op-1",
+            "stationKey": "salaam:c52ddf65534b7b46",
+            "entries": [
+              {
+                "settingId": "salaam.host.manifest",
+                "file": "/etc/salaam/stations/salaam:c52ddf65534b7b46/host.json",
+                "keyPath": "$",
+                "policy": "reconcilable",
+                "current": {
+                  "schema": 6,
+                  "mode": "agentpod"
+                },
+                "intended": {
+                  "schema": 6,
+                  "mode": "agentpod",
+                  "provider": {
+                    "provider": "anthropic"
+                  }
+                },
+                "action": "modify",
+                "restartToTakeEffect": true
+              }
+            ],
+            "beforeSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "diff": "- {}\n+ {}\n",
+            "diffTruncated": false,
+            "noOp": false,
+            "restartRequired": true,
+            "createdAt": "2026-11-27T10:15:00.000Z"
+          }
+        }
+      ]
+    },
+    "agentpod-pins.v1": {
+      "valid": {
+        "a station's pins": {
+          "version": 1,
+          "organization_id": "org_00000000000000000001",
+          "node_id": "node_fixture",
+          "station_key": "salaam:c52ddf65534b7b46",
+          "workspace": "/workspace"
+        },
+        "a deeper workspace": {
+          "version": 1,
+          "organization_id": "org_00000000000000000001",
+          "node_id": "node_fixture",
+          "station_key": "salaam:c52ddf65534b7b46",
+          "workspace": "/home/agent/work"
+        }
+      },
+      "invalid": [
+        {
+          "why": "a principal pinned too",
+          "body": {
+            "version": 1,
+            "organization_id": "org_00000000000000000001",
+            "node_id": "node_fixture",
+            "station_key": "salaam:c52ddf65534b7b46",
+            "workspace": "/workspace",
+            "principal_id": "prn_00000000000000000002"
+          }
+        },
+        {
+          "why": "a relative workspace",
+          "body": {
+            "version": 1,
+            "organization_id": "org_00000000000000000001",
+            "node_id": "node_fixture",
+            "station_key": "salaam:c52ddf65534b7b46",
+            "workspace": "work"
+          }
+        },
+        {
+          "why": "a station key that is not salaam's",
+          "body": {
+            "version": 1,
+            "organization_id": "org_00000000000000000001",
+            "node_id": "node_fixture",
+            "station_key": "station:c52ddf65534b7b46",
+            "workspace": "/workspace"
+          }
+        },
+        {
+          "why": "no node",
+          "body": {
+            "version": 1,
+            "organization_id": "org_00000000000000000001",
+            "station_key": "salaam:c52ddf65534b7b46",
+            "workspace": "/workspace"
+          }
+        },
+        {
+          "why": "version 2",
+          "body": {
+            "version": 2,
+            "organization_id": "org_00000000000000000001",
+            "node_id": "node_fixture",
+            "station_key": "salaam:c52ddf65534b7b46",
+            "workspace": "/workspace"
+          }
+        }
+      ]
+    },
+    "mcp-profile.v1": {
+      "valid": {
+        "reviewed-read-profile": {
+          "version": 1,
+          "scope": "agentpod-proxy",
+          "proxy_origin": "http://127.0.0.1:43421",
+          "servers": [
+            {
+              "name": "superlibrary",
+              "protocol_version": "2025-11-25",
+              "catalog_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "tools": [
+                {
+                  "name": "library_search",
+                  "schema_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "policy": "read"
+                }
+              ]
+            }
+          ],
+          "limits": {
+            "request_bytes": 32768,
+            "response_bytes": 262144,
+            "timeout_ms": 10000,
+            "calls_per_attempt": 16
+          }
+        },
+        "literal-ipv6-profile": {
+          "version": 1,
+          "scope": "agentpod-proxy",
+          "proxy_origin": "http://[::1]:43421",
+          "servers": [
+            {
+              "name": "superlibrary",
+              "protocol_version": "2025-11-25",
+              "catalog_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "tools": [
+                {
+                  "name": "library_search",
+                  "schema_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "policy": "read"
+                }
+              ]
+            }
+          ],
+          "limits": {
+            "request_bytes": 32768,
+            "response_bytes": 262144,
+            "timeout_ms": 10000,
+            "calls_per_attempt": 16
+          }
+        }
+      },
+      "invalid": [
+        {
+          "why": "missing-explicit-policy",
+          "body": {
+            "version": 1,
+            "scope": "agentpod-proxy",
+            "proxy_origin": "http://127.0.0.1:43421",
+            "servers": [
+              {
+                "name": "superlibrary",
+                "protocol_version": "2025-11-25",
+                "catalog_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "tools": [
+                  {
+                    "name": "library_search",
+                    "schema_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                  }
+                ]
+              }
+            ],
+            "limits": {
+              "request_bytes": 32768,
+              "response_bytes": 262144,
+              "timeout_ms": 10000,
+              "calls_per_attempt": 16
+            }
+          }
+        },
+        {
+          "why": "annotations-do-not-grant",
+          "body": {
+            "version": 1,
+            "scope": "agentpod-proxy",
+            "proxy_origin": "http://127.0.0.1:43421",
+            "servers": [
+              {
+                "name": "superlibrary",
+                "protocol_version": "2025-11-25",
+                "catalog_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "tools": [
+                  {
+                    "name": "library_search",
+                    "schema_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "policy": "read",
+                    "readOnlyHint": true
+                  }
+                ]
+              }
+            ],
+            "limits": {
+              "request_bytes": 32768,
+              "response_bytes": 262144,
+              "timeout_ms": 10000,
+              "calls_per_attempt": 16
+            }
+          }
+        },
+        {
+          "why": "unbounded-response",
+          "body": {
+            "version": 1,
+            "scope": "agentpod-proxy",
+            "proxy_origin": "http://127.0.0.1:43421",
+            "servers": [
+              {
+                "name": "superlibrary",
+                "protocol_version": "2025-11-25",
+                "catalog_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "tools": [
+                  {
+                    "name": "library_search",
+                    "schema_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "policy": "read"
+                  }
+                ]
+              }
+            ],
+            "limits": {
+              "request_bytes": 32768,
+              "response_bytes": 1048577,
+              "timeout_ms": 10000,
+              "calls_per_attempt": 16
+            }
+          }
+        },
+        {
+          "why": "no-automatic-retries",
+          "body": {
+            "version": 1,
+            "scope": "agentpod-proxy",
+            "proxy_origin": "http://127.0.0.1:43421",
+            "servers": [
+              {
+                "name": "superlibrary",
+                "protocol_version": "2025-11-25",
+                "catalog_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "tools": [
+                  {
+                    "name": "library_search",
+                    "schema_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "policy": "read"
+                  }
+                ]
+              }
+            ],
+            "limits": {
+              "request_bytes": 32768,
+              "response_bytes": 262144,
+              "timeout_ms": 10000,
+              "calls_per_attempt": 16,
+              "retries": 1
+            }
+          }
+        },
+        {
+          "why": "hostname-is-not-literal-loopback",
+          "body": {
+            "version": 1,
+            "scope": "agentpod-proxy",
+            "proxy_origin": "http://localhost:43421",
+            "servers": [
+              {
+                "name": "superlibrary",
+                "protocol_version": "2025-11-25",
+                "catalog_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "tools": [
+                  {
+                    "name": "library_search",
+                    "schema_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "policy": "read"
+                  }
+                ]
+              }
+            ],
+            "limits": {
+              "request_bytes": 32768,
+              "response_bytes": 262144,
+              "timeout_ms": 10000,
+              "calls_per_attempt": 16
+            }
+          }
+        },
+        {
+          "why": "noncanonical-loopback-alias",
+          "body": {
+            "version": 1,
+            "scope": "agentpod-proxy",
+            "proxy_origin": "http://127.1:43421",
+            "servers": [
+              {
+                "name": "superlibrary",
+                "protocol_version": "2025-11-25",
+                "catalog_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "tools": [
+                  {
+                    "name": "library_search",
+                    "schema_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "policy": "read"
+                  }
+                ]
+              }
+            ],
+            "limits": {
+              "request_bytes": 32768,
+              "response_bytes": 262144,
+              "timeout_ms": 10000,
+              "calls_per_attempt": 16
+            }
+          }
+        },
+        {
+          "why": "unknown-profile-field",
+          "body": {
+            "version": 1,
+            "scope": "agentpod-proxy",
+            "proxy_origin": "http://127.0.0.1:43421",
+            "servers": [
+              {
+                "name": "superlibrary",
+                "protocol_version": "2025-11-25",
+                "catalog_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "tools": [
+                  {
+                    "name": "library_search",
+                    "schema_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "policy": "read"
+                  }
+                ]
+              }
+            ],
+            "limits": {
+              "request_bytes": 32768,
+              "response_bytes": 262144,
+              "timeout_ms": 10000,
+              "calls_per_attempt": 16
+            },
+            "autoApprove": true
+          }
+        },
+        {
+          "why": "unreviewed-schema",
+          "body": {
+            "version": 1,
+            "scope": "agentpod-proxy",
+            "proxy_origin": "http://127.0.0.1:43421",
+            "servers": [
+              {
+                "name": "superlibrary",
+                "protocol_version": "2025-11-25",
+                "catalog_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "tools": [
+                  {
+                    "name": "library_search",
+                    "schema_digest": "unreviewed",
+                    "policy": "read"
+                  }
+                ]
+              }
+            ],
+            "limits": {
+              "request_bytes": 32768,
+              "response_bytes": 262144,
+              "timeout_ms": 10000,
+              "calls_per_attempt": 16
+            }
+          }
+        }
+      ]
+    },
+    "acp-failure.v1": {
+      "valid": {
+        "correlated quota": {
+          "version": 1,
+          "kind": "quota",
+          "code": "provider_quota",
+          "message": "Fixture quota exhausted",
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "requestId": "22222222-2222-4222-8222-222222222222",
+          "attemptId": "33333333-3333-4333-8333-333333333333",
+          "provider": "fixture",
+          "model": "fixture-model",
+          "httpStatus": 402,
+          "retryable": false
+        },
+        "native logical id": {
+          "version": 1,
+          "kind": "quota",
+          "code": "provider_quota",
+          "message": "Fixture quota exhausted",
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "requestId": "native-instruction-7",
+          "attemptId": "33333333-3333-4333-8333-333333333333",
+          "provider": "fixture",
+          "model": "fixture-model",
+          "httpStatus": 402,
+          "retryable": false
+        }
+      },
+      "invalid": [
+        {
+          "why": "future version",
+          "body": {
+            "version": 2,
+            "kind": "quota",
+            "code": "provider_quota",
+            "message": "Fixture quota exhausted",
+            "sessionId": "11111111-1111-4111-8111-111111111111",
+            "requestId": "22222222-2222-4222-8222-222222222222",
+            "attemptId": "33333333-3333-4333-8333-333333333333",
+            "provider": "fixture",
+            "model": "fixture-model",
+            "httpStatus": 402,
+            "retryable": false
+          }
+        },
+        {
+          "why": "unknown metadata",
+          "body": {
+            "version": 1,
+            "kind": "quota",
+            "code": "provider_quota",
+            "message": "Fixture quota exhausted",
+            "sessionId": "11111111-1111-4111-8111-111111111111",
+            "requestId": "22222222-2222-4222-8222-222222222222",
+            "attemptId": "33333333-3333-4333-8333-333333333333",
+            "provider": "fixture",
+            "model": "fixture-model",
+            "httpStatus": 402,
+            "retryable": false,
+            "apiKey": "fixture-only"
+          }
+        },
+        {
+          "why": "invalid code",
+          "body": {
+            "version": 1,
+            "kind": "quota",
+            "code": "not a code",
+            "message": "Fixture quota exhausted",
+            "sessionId": "11111111-1111-4111-8111-111111111111",
+            "requestId": "22222222-2222-4222-8222-222222222222",
+            "attemptId": "33333333-3333-4333-8333-333333333333",
+            "provider": "fixture",
+            "model": "fixture-model",
+            "httpStatus": 402,
+            "retryable": false
+          }
+        },
+        {
+          "why": "invalid kind",
+          "body": {
+            "version": 1,
+            "kind": "success",
+            "code": "provider_quota",
+            "message": "Fixture quota exhausted",
+            "sessionId": "11111111-1111-4111-8111-111111111111",
+            "requestId": "22222222-2222-4222-8222-222222222222",
+            "attemptId": "33333333-3333-4333-8333-333333333333",
+            "provider": "fixture",
+            "model": "fixture-model",
+            "httpStatus": 402,
+            "retryable": false
+          }
+        },
+        {
+          "why": "invalid attempt",
+          "body": {
+            "version": 1,
+            "kind": "quota",
+            "code": "provider_quota",
+            "message": "Fixture quota exhausted",
+            "sessionId": "11111111-1111-4111-8111-111111111111",
+            "requestId": "22222222-2222-4222-8222-222222222222",
+            "attemptId": "jsonrpc-7",
+            "provider": "fixture",
+            "model": "fixture-model",
+            "httpStatus": 402,
+            "retryable": false
+          }
+        },
+        {
+          "why": "empty message",
+          "body": {
+            "version": 1,
+            "kind": "quota",
+            "code": "provider_quota",
+            "message": "",
+            "sessionId": "11111111-1111-4111-8111-111111111111",
+            "requestId": "22222222-2222-4222-8222-222222222222",
+            "attemptId": "33333333-3333-4333-8333-333333333333",
+            "provider": "fixture",
+            "model": "fixture-model",
+            "httpStatus": 402,
+            "retryable": false
+          }
+        },
+        {
+          "why": "invalid status",
+          "body": {
+            "version": 1,
+            "kind": "quota",
+            "code": "provider_quota",
+            "message": "Fixture quota exhausted",
+            "sessionId": "11111111-1111-4111-8111-111111111111",
+            "requestId": "22222222-2222-4222-8222-222222222222",
+            "attemptId": "33333333-3333-4333-8333-333333333333",
+            "provider": "fixture",
+            "model": "fixture-model",
+            "httpStatus": 99,
+            "retryable": false
+          }
+        }
+      ]
+    },
+    "acp-cancellation.v1": {
+      "valid": {
+        "settled": {
+          "version": 1,
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "requestId": "44444444-4444-4444-8444-444444444444",
+          "targetRequestId": "22222222-2222-4222-8222-222222222222",
+          "attemptIds": [
+            "33333333-3333-4333-8333-333333333333"
+          ],
+          "state": "confirmed",
+          "activeAttemptIds": [],
+          "unresolvedOperationIds": [],
+          "unconfirmedResources": []
+        },
+        "still active": {
+          "version": 1,
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "requestId": "44444444-4444-4444-8444-444444444444",
+          "targetRequestId": "22222222-2222-4222-8222-222222222222",
+          "attemptIds": [
+            "33333333-3333-4333-8333-333333333333"
+          ],
+          "state": "requested",
+          "activeAttemptIds": [
+            "33333333-3333-4333-8333-333333333333"
+          ],
+          "unresolvedOperationIds": [],
+          "unconfirmedResources": []
+        },
+        "unknown effect": {
+          "version": 1,
+          "sessionId": "11111111-1111-4111-8111-111111111111",
+          "requestId": "44444444-4444-4444-8444-444444444444",
+          "targetRequestId": "22222222-2222-4222-8222-222222222222",
+          "attemptIds": [
+            "33333333-3333-4333-8333-333333333333"
+          ],
+          "state": "unknown",
+          "activeAttemptIds": [],
+          "unresolvedOperationIds": [
+            "op_fixture"
+          ],
+          "unconfirmedResources": []
+        }
+      },
+      "invalid": [
+        {
+          "why": "false stopped claim",
+          "body": {
+            "version": 1,
+            "sessionId": "11111111-1111-4111-8111-111111111111",
+            "requestId": "44444444-4444-4444-8444-444444444444",
+            "targetRequestId": "22222222-2222-4222-8222-222222222222",
+            "attemptIds": [
+              "33333333-3333-4333-8333-333333333333"
+            ],
+            "state": "confirmed",
+            "activeAttemptIds": [
+              "33333333-3333-4333-8333-333333333333"
+            ],
+            "unresolvedOperationIds": [],
+            "unconfirmedResources": []
+          }
+        },
+        {
+          "why": "unresolved effect",
+          "body": {
+            "version": 1,
+            "sessionId": "11111111-1111-4111-8111-111111111111",
+            "requestId": "44444444-4444-4444-8444-444444444444",
+            "targetRequestId": "22222222-2222-4222-8222-222222222222",
+            "attemptIds": [
+              "33333333-3333-4333-8333-333333333333"
+            ],
+            "state": "confirmed",
+            "activeAttemptIds": [],
+            "unresolvedOperationIds": [
+              "op_fixture"
+            ],
+            "unconfirmedResources": []
+          }
+        },
+        {
+          "why": "unconfirmed worker",
+          "body": {
+            "version": 1,
+            "sessionId": "11111111-1111-4111-8111-111111111111",
+            "requestId": "44444444-4444-4444-8444-444444444444",
+            "targetRequestId": "22222222-2222-4222-8222-222222222222",
+            "attemptIds": [
+              "33333333-3333-4333-8333-333333333333"
+            ],
+            "state": "confirmed",
+            "activeAttemptIds": [],
+            "unresolvedOperationIds": [],
+            "unconfirmedResources": [
+              "worker_fixture"
+            ]
+          }
+        },
+        {
+          "why": "unknown field",
+          "body": {
+            "version": 1,
+            "sessionId": "11111111-1111-4111-8111-111111111111",
+            "requestId": "44444444-4444-4444-8444-444444444444",
+            "targetRequestId": "22222222-2222-4222-8222-222222222222",
+            "attemptIds": [
+              "33333333-3333-4333-8333-333333333333"
+            ],
+            "state": "confirmed",
+            "activeAttemptIds": [],
+            "unresolvedOperationIds": [],
+            "unconfirmedResources": [],
+            "confirmed": true
+          }
+        },
+        {
+          "why": "transport id",
+          "body": {
+            "version": 1,
+            "sessionId": "11111111-1111-4111-8111-111111111111",
+            "requestId": "rpc-9",
+            "targetRequestId": "22222222-2222-4222-8222-222222222222",
+            "attemptIds": [
+              "33333333-3333-4333-8333-333333333333"
+            ],
+            "state": "confirmed",
+            "activeAttemptIds": [],
+            "unresolvedOperationIds": [],
+            "unconfirmedResources": []
+          }
+        }
+      ]
+    },
+    "acp-execution-features.v1": {
+      "valid": {
+        "additive feature namespace": {
+          "failures": 1,
+          "cancellationReceipts": 1,
+          "toolSemantics": 1
+        }
+      },
+      "invalid": [
+        {
+          "why": "missing cancellation support",
+          "body": {
+            "failures": 1,
+            "toolSemantics": 1
+          }
+        },
+        {
+          "why": "authority expansion",
+          "body": {
+            "failures": 1,
+            "cancellationReceipts": 1,
+            "toolSemantics": 1,
+            "coding": true
+          }
+        }
+      ]
+    }
+  }
+}

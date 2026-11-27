@@ -1,0 +1,308 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/agentpod-salaam/host-config.v1.json",
+  "title": "Salaam's host configuration commands: config.manage on one station",
+  "description": "AgentPod's node-agent relays the hub's config.manage requests to the pinned Salaam CLI, `salaam host config-<action> --manifest <file>`, one JSON request on stdin (at most 64 KiB) and one JSON answer on stdout, and starts no daemon (agentpod:apps/node-agent/internal/salaam/configuration.go; salaam:src/cli/commands/host.ts, src/host/configuration.ts). The actions are observe, plan, apply and inspect; `$defs` names each request and answer. A refused request is a non-zero exit with no JSON answer, which the node-agent reports as refused. The one setting is the station's reviewed host manifest, `salaam.host.manifest`.",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/observeRequest"
+    },
+    {
+      "$ref": "#/$defs/planRequest"
+    },
+    {
+      "$ref": "#/$defs/applyRequest"
+    },
+    {
+      "$ref": "#/$defs/inspectRequest"
+    },
+    {
+      "$ref": "#/$defs/observation"
+    },
+    {
+      "$ref": "#/$defs/plan"
+    },
+    {
+      "$ref": "#/$defs/receipt"
+    }
+  ],
+  "$defs": {
+    "observeRequest": {
+      "type": "object",
+      "required": ["stationKey", "settings"],
+      "additionalProperties": false,
+      "properties": {
+        "stationKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "settings": {
+          "type": "array",
+          "items": {
+            "const": "salaam.host.manifest"
+          }
+        }
+      }
+    },
+    "planRequest": {
+      "type": "object",
+      "required": ["stationKey", "operationId"],
+      "additionalProperties": false,
+      "properties": {
+        "stationKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "operationId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_.:-]{1,160}$"
+        },
+        "want": {
+          "description": "Exactly one `{settingId, value}` for the manifest; anything else is answered with a refused plan, not an error."
+        }
+      }
+    },
+    "applyRequest": {
+      "type": "object",
+      "required": ["stationKey", "operationId"],
+      "additionalProperties": false,
+      "properties": {
+        "stationKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "operationId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_.:-]{1,160}$"
+        },
+        "planDigest": {
+          "type": "string"
+        }
+      }
+    },
+    "inspectRequest": {
+      "type": "object",
+      "required": ["stationKey", "operationId"],
+      "additionalProperties": false,
+      "properties": {
+        "stationKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "operationId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_.:-]{1,160}$"
+        }
+      }
+    },
+    "observation": {
+      "type": "object",
+      "required": ["values"],
+      "additionalProperties": false,
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": ["settingId", "readable", "observed"],
+                "additionalProperties": false,
+                "properties": {
+                  "settingId": {
+                    "const": "salaam.host.manifest"
+                  },
+                  "readable": {
+                    "const": true
+                  },
+                  "observed": {
+                    "type": "object",
+                    "description": "A reviewed Salaam host manifest (salaam:src/host/host.ts); its own shape is Salaam's, and only schema 2 to 6 in `agentpod` mode is managed."
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": ["settingId", "readable", "reason"],
+                "additionalProperties": false,
+                "properties": {
+                  "settingId": {
+                    "const": "salaam.host.manifest"
+                  },
+                  "readable": {
+                    "const": false
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "description": "What observe answers: each requested setting, read, or with the reason it was not. Observation takes no lock and writes nothing."
+    },
+    "plan": {
+      "type": "object",
+      "required": [
+        "schemaVersion",
+        "operationId",
+        "stationKey",
+        "entries",
+        "beforeSha256",
+        "diff",
+        "diffTruncated",
+        "noOp",
+        "restartRequired",
+        "createdAt",
+        "planDigest"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "operationId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_.:-]{1,160}$"
+        },
+        "stationKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "entries": {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "settingId",
+              "file",
+              "keyPath",
+              "policy",
+              "current",
+              "intended",
+              "action",
+              "restartToTakeEffect"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "settingId": {
+                "const": "salaam.host.manifest"
+              },
+              "file": {
+                "type": "string"
+              },
+              "keyPath": {
+                "const": "$"
+              },
+              "policy": {
+                "const": "reconcilable"
+              },
+              "current": {
+                "type": "object"
+              },
+              "intended": {
+                "type": "object"
+              },
+              "action": {
+                "enum": ["noop", "modify"]
+              },
+              "restartToTakeEffect": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "beforeSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "diff": {
+          "type": "string",
+          "maxLength": 16384
+        },
+        "diffTruncated": {
+          "type": "boolean"
+        },
+        "noOp": {
+          "type": "boolean"
+        },
+        "restartRequired": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "planDigest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "refusal": {
+          "type": "object",
+          "required": ["code", "message"],
+          "additionalProperties": false,
+          "properties": {
+            "code": {
+              "enum": ["SHAPE_UNEXPECTED", "UNKNOWN_SETTING"]
+            },
+            "message": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "description": "A reviewed plan, saved under its operation id (salaam:src/host/configuration.ts Plan). A plan Salaam refuses still answers, with `refusal` and no entries. `planDigest` is the SHA-256 of the canonical plan without `planDigest`, `createdAt` and `operationId`."
+    },
+    "receipt": {
+      "type": "object",
+      "required": ["plan", "phase", "updatedAt", "written"],
+      "additionalProperties": false,
+      "properties": {
+        "plan": {
+          "$ref": "#/$defs/plan"
+        },
+        "phase": {
+          "enum": ["planned", "applying", "applied", "conflict"]
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "written": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["settingId", "action", "wrote"],
+            "additionalProperties": false,
+            "properties": {
+              "settingId": {
+                "const": "salaam.host.manifest"
+              },
+              "action": {
+                "enum": ["noop", "modify"]
+              },
+              "wrote": {}
+            }
+          }
+        },
+        "afterSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "error": {
+          "type": "string",
+          "pattern": "^(PLAN_DIGEST_MISMATCH|PLAN_STALE): "
+        }
+      },
+      "description": "An operation's receipt (salaam:src/host/configuration.ts Receipt). A conflict names `PLAN_DIGEST_MISMATCH` or `PLAN_STALE` in `error`; an applied operation names what it wrote and the manifest's new SHA-256."
+    }
+  }
+}
