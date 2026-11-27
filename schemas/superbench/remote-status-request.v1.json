@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superbench/remote-status-request.v1.json",
+  "title": "PROPOSED SuperBench remote status request",
+  "description": "POST /v2/remote/status. String fields only: version, operation and an optional workspace key; with no key, every workspace is listed. Unknown, duplicate or missing fields are refused, and the body is at most 16 KiB. Operators and readers may ask.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "operation"],
+  "properties": {
+    "version": {
+      "const": "superbench.remote.v1"
+    },
+    "operation": {
+      "const": "remote_status"
+    },
+    "key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$"
+    }
+  }
+}

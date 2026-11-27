@@ -42,6 +42,20 @@ function walk(dir: string): string[] {
   });
 }
 
+/**
+ * Schemas of proposals no product's code implements yet. They stay in treaty, outside the
+ * registry, which lists only crossings found in code (phase 4, ruling 5).
+ */
+const UNLISTED: Record<string, string> = {
+  "schemas/superbench-consumers/":
+    "docs/2026-11-16-superbench-consumer-bindings.md",
+  "schemas/superbench/observation-request.v1.json":
+    "docs/2026-11-16-superbench-reader-observations.md",
+  "schemas/superbench/observation-response.v1.json":
+    "docs/2026-11-16-superbench-reader-observations.md",
+};
+const UNLISTED_PROPOSALS = Object.keys(UNLISTED);
+
 /** Follows a JSON pointer (RFC 6901) into a parsed document. */
 function pointer(doc: unknown, ptr: string): unknown {
   if (ptr === "" || ptr === "/") return doc;
@@ -145,13 +159,29 @@ describe("contracts/registry.json", () => {
 
   test("every schema file is named by a crossing", () => {
     // schemas/treaty/ describes treaty's own files, and schemas/common/ holds pieces other
-    // schemas reference; neither is a crossing of its own.
+    // schemas reference; neither is a crossing of its own. A proposal no code implements
+    // keeps its schemas here and leaves the registry until code does (phase 4, ruling 5).
     const named = new Set(registry.crossings.flatMap((c) => c.contract));
     const unnamed = walk("schemas")
       .filter((p) => p.endsWith(".json"))
       .filter((p) => !/^schemas\/(treaty|common)\//.test(p))
+      .filter((p) => !UNLISTED_PROPOSALS.some((dir) => p.startsWith(dir)))
       .filter((p) => !named.has(p));
     expect(unnamed).toEqual([]);
+  });
+
+  test("an unlisted proposal is no crossing's, and its proposal doc says when it returns", () => {
+    const listed = registry.crossings.flatMap((c) =>
+      c.contract.filter((p) => UNLISTED_PROPOSALS.some((d) => p.startsWith(d))),
+    );
+    expect(listed).toEqual([]);
+    expect(registry.crossings.map((c) => c.id)).not.toContain(
+      "superbench.consumer-bindings",
+    );
+    for (const doc of new Set(Object.values(UNLISTED)))
+      expect(
+        readFileSync(join(root, doc), "utf8").replace(/\s+/g, " "),
+      ).toContain("returns to the registry when");
   });
 
   test("every catalogued event's schema belongs to an event crossing", () => {
@@ -242,17 +272,17 @@ describe("contracts/registry.json", () => {
 
   test("the coverage of the registry is recorded here, so a change to it is a visible diff", () => {
     expect(coverage(registry)).toEqual({
-      applicable: 32,
+      applicable: 29,
       byStatus: {
         contracted: 26,
-        partial: 1,
+        partial: 0,
         uncontracted: 2,
-        proposed: 1,
-        external: 0,
+        proposed: 0,
+        external: 1,
         standard: 2,
         deprecated: 2,
       },
-      percent: 87,
+      percent: 90,
     });
   });
 });

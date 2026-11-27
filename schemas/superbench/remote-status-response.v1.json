@@ -1,0 +1,320 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/SuperJackfruitLabs/treaty/main/schemas/superbench/remote-status-response.v1.json",
+  "title": "PROPOSED SuperBench remote status reply",
+  "description": "Reply to /v2/remote/status: ok true with a result (HTTP 200), or ok false with an error. HTTP status carries the refusal class: 400, 405, 413 and 415 invalid_request, 403 forbidden, 503 unavailable. The result lists the live remote executions by lease identity, sorted by key, and the newest certificate and session audit rows (at most 50 each). Serials are random 63-bit values, sent as decimal strings. A session still open has an empty ended_at and end_reason. Closed: a new field needs a new version. A peer the service does not authorize at all is refused before this route, in response.v2's envelope.",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "operation", "ok", "result"],
+      "properties": {
+        "version": {
+          "const": "superbench.remote.v1"
+        },
+        "operation": {
+          "const": "remote_status"
+        },
+        "ok": {
+          "const": true
+        },
+        "result": {
+          "$ref": "#/$defs/status"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "operation", "ok", "error"],
+      "properties": {
+        "version": {
+          "const": "superbench.remote.v1"
+        },
+        "operation": {
+          "const": "remote_status"
+        },
+        "ok": {
+          "const": false
+        },
+        "error": {
+          "$ref": "#/$defs/error"
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "time": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40,
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$"
+    },
+    "serial": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,18})$"
+    },
+    "generation": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "fingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^SHA256:"
+    },
+    "holder": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,199}$"
+    },
+    "status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "address",
+        "host_key_fingerprint",
+        "remote",
+        "certificates",
+        "sessions"
+      ],
+      "properties": {
+        "address": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^([0-9]{1,3}(\\.[0-9]{1,3}){3}|\\[[0-9A-Fa-f:.]+\\]):[0-9]{1,5}$"
+        },
+        "host_key_fingerprint": {
+          "$ref": "#/$defs/fingerprint"
+        },
+        "remote": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/execution"
+          }
+        },
+        "certificates": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/certificate"
+          }
+        },
+        "sessions": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/session"
+          }
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key",
+        "bench_id",
+        "holder",
+        "lease_id",
+        "execution_id",
+        "generation"
+      ],
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/key"
+        },
+        "bench_id": {
+          "$ref": "#/$defs/id"
+        },
+        "holder": {
+          "$ref": "#/$defs/holder"
+        },
+        "lease_id": {
+          "$ref": "#/$defs/id"
+        },
+        "execution_id": {
+          "$ref": "#/$defs/id"
+        },
+        "generation": {
+          "$ref": "#/$defs/generation"
+        }
+      }
+    },
+    "certificate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "serial",
+        "key",
+        "bench_id",
+        "lease_id",
+        "generation",
+        "execution_id",
+        "holder",
+        "fingerprint",
+        "issued_at",
+        "valid_before"
+      ],
+      "properties": {
+        "serial": {
+          "$ref": "#/$defs/serial"
+        },
+        "key": {
+          "$ref": "#/$defs/key"
+        },
+        "bench_id": {
+          "$ref": "#/$defs/id"
+        },
+        "lease_id": {
+          "$ref": "#/$defs/id"
+        },
+        "generation": {
+          "$ref": "#/$defs/generation"
+        },
+        "execution_id": {
+          "$ref": "#/$defs/id"
+        },
+        "holder": {
+          "$ref": "#/$defs/holder"
+        },
+        "fingerprint": {
+          "$ref": "#/$defs/fingerprint"
+        },
+        "issued_at": {
+          "$ref": "#/$defs/time"
+        },
+        "valid_before": {
+          "$ref": "#/$defs/time"
+        }
+      }
+    },
+    "session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "serial",
+        "key",
+        "bench_id",
+        "fingerprint",
+        "source",
+        "kind",
+        "command_name",
+        "started_at",
+        "ended_at",
+        "bytes_in",
+        "bytes_out",
+        "end_reason"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "serial": {
+          "$ref": "#/$defs/serial"
+        },
+        "key": {
+          "$ref": "#/$defs/key"
+        },
+        "bench_id": {
+          "$ref": "#/$defs/id"
+        },
+        "fingerprint": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": ["shell", "exec", "sftp"]
+        },
+        "command_name": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[^\\u0000-\\u0020\\u007f]*$"
+        },
+        "started_at": {
+          "$ref": "#/$defs/time"
+        },
+        "ended_at": {
+          "anyOf": [
+            {
+              "const": ""
+            },
+            {
+              "$ref": "#/$defs/time"
+            }
+          ]
+        },
+        "bytes_in": {
+          "$ref": "#/$defs/count"
+        },
+        "bytes_out": {
+          "$ref": "#/$defs/count"
+        },
+        "end_reason": {
+          "enum": [
+            "",
+            "exit",
+            "closed",
+            "fenced",
+            "expired",
+            "revoked",
+            "refused"
+          ]
+        }
+      },
+      "if": {
+        "properties": {
+          "end_reason": {
+            "const": ""
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "ended_at": {
+            "const": ""
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "ended_at": {
+            "$ref": "#/$defs/time"
+          }
+        }
+      }
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "enum": ["invalid_request", "forbidden", "unavailable"]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

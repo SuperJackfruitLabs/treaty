@@ -6,6 +6,10 @@ consumer bindings. They do not duplicate its inventory, checkpoint history,
 files, diffs or logs. The accepted coordinator design does not accept these
 additional crossings. No listener, adapter, grant, audience or terminal is added.
 
+No product's code implements these bindings, so `superbench.consumer-bindings` is not in
+`contracts/registry.json` (phase 4, ruling 5). Its schemas and fixtures stay here, and it returns to
+the registry when code on either side implements it.
+
 Schemas live in `schemas/superbench-consumers/`; shared structural cases and
 unexecuted producer obligations live in `fixtures/superbench-consumers/`.
 The script adapter checks data joins only, not authorization or runtime ownership.

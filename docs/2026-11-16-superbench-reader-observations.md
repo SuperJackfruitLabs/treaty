@@ -6,6 +6,11 @@ grouped v2 operation bytes, cancellation, receipt recovery or the event catalogu
 The scoped reader ownership boundary remains proposed. No new issuer, audience,
 reader credential, terminal/write grant or network proxy is implemented here.
 
+SuperBench's Go service serves no route for these observations, and no other product reads them;
+SuperBench's web codec is its own UI, not a crossing. So they are not part of
+`superbench.local-api` in `contracts/registry.json` (phase 4, ruling 5). The schemas and fixtures
+stay here, and the reader returns to the registry when the service implements it.
+
 Canonical addresses:
 
 - `schemas/superbench/observation-request.v1.json`
