@@ -53,6 +53,22 @@ function sources(dir: string): string[] {
 const codeFiles = (root = ROOT) =>
   CODE.flatMap((d) => sources(join(root, d))).map((f) => relative(root, f));
 
+/** Folders that never hold this repository's Go: installed packages, builds, the docs site. */
+const GO_SKIP = new Set([...SKIP, ".git", "docs-site"]);
+
+/**
+ * The Go module's files (go.mod at the root; the package there and its internal/ packages). They
+ * import nothing the layers above describe, but they keep the same size limit.
+ */
+export function goFiles(root = ROOT, dir = ""): string[] {
+  return readdirSync(join(root, dir)).flatMap((name) => {
+    const path = dir === "" ? name : `${dir}/${name}`;
+    if (statSync(join(root, path)).isDirectory())
+      return GO_SKIP.has(name) ? [] : goFiles(root, path);
+    return name.endsWith(".go") ? [path] : [];
+  });
+}
+
 export interface Import {
   from: string;
   to: string;
@@ -197,6 +213,17 @@ describe("architecture", () => {
       stale,
       "these files shrank; lower or remove their OVERSIZE entry",
     ).toEqual([]);
+  });
+
+  test("no Go file grows past the size limit", () => {
+    const files = goFiles();
+    expect(files).toContain("treaty.go");
+    expect(files.some((f) => f.startsWith("internal/"))).toBe(true);
+    const over = files
+      .map((f) => [f, lines(f)] as const)
+      .filter(([, n]) => n > SIZE_LIMIT)
+      .map(([f, n]) => `${f}: ${n} lines, the limit is ${SIZE_LIMIT}`);
+    expect(over).toEqual([]);
   });
 
   test("every part has a layer", () => {

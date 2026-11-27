@@ -41,6 +41,9 @@ npx -y @superjackfruitlabs/treaty-contracts@<version> verify
 - the pin is the installed release, and with `--latest <version>` that it is at most two releases
   behind (`--max-behind <n>` changes that);
 - every vendored copy is byte-identical to the release. `treaty sync` rewrites them.
+- every `go.mod` listed in `goModules` requires the [Go module](/packages/go/) at exactly the
+  pinned release, with no `replace` for it. A Go product lists its `go.mod` there instead of
+  vendoring files.
 
 `treaty cases <schema path>` prints a schema's valid and invalid cases as JSON, so a Go, Rust,
 Swift or Python test can run treaty's corpus through its own parser. For an HTTP API, add

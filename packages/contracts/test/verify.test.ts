@@ -13,6 +13,7 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { buildBundle } from "../scripts/bundle.ts";
+import { goModRequirement } from "../src/gomod.ts";
 import { sync, verify } from "../src/verify.ts";
 
 const root = join(import.meta.dir, "../../..");
@@ -134,6 +135,114 @@ describe("verify", () => {
     expect(verify({ repoRoot: dir, dataDir }).map((p) => p.code)).toEqual([
       "manifest-missing",
     ]);
+  });
+});
+
+const withGoMod =
+  (text: string, path = "node-agent/go.mod") =>
+  (dir: string) => {
+    mkdirSync(join(dir, path, ".."), { recursive: true });
+    writeFileSync(join(dir, path), text);
+  };
+const goMod = (body: string) =>
+  `module example.com/node-agent\n\ngo 1.22\n\n${body}\n`;
+
+describe("a pinned Go module in place of copies", () => {
+  const goClean = {
+    product: "agentpod",
+    treaty: "0.0.15",
+    produces: [],
+    consumes: [],
+    goModules: ["node-agent/go.mod"],
+  };
+  test("a go.mod requiring the pinned release needs no vendored copies", () => {
+    expect(
+      codes(
+        goClean,
+        {},
+        withGoMod(
+          goMod(
+            "require (\n\tgithub.com/SuperJackfruitLabs/treaty v0.0.15 // indirect\n\tgolang.org/x/text v0.14.0\n)",
+          ),
+        ),
+      ),
+    ).toEqual([]);
+    expect(
+      codes(
+        goClean,
+        {},
+        withGoMod(
+          goMod("require github.com/SuperJackfruitLabs/treaty v0.0.15"),
+        ),
+      ),
+    ).toEqual([]);
+  });
+
+  test("go-module-unpinned: another version, or no requirement", () => {
+    expect(
+      codes(
+        goClean,
+        {},
+        withGoMod(
+          goMod("require github.com/SuperJackfruitLabs/treaty v0.0.14"),
+        ),
+      ),
+    ).toEqual(["go-module-unpinned"]);
+    expect(
+      codes(goClean, {}, withGoMod(goMod("require golang.org/x/text v0.14.0"))),
+    ).toEqual(["go-module-unpinned"]);
+    // A commented-out requirement is no requirement.
+    expect(
+      codes(
+        goClean,
+        {},
+        withGoMod(
+          goMod("// require github.com/SuperJackfruitLabs/treaty v0.0.15"),
+        ),
+      ),
+    ).toEqual(["go-module-unpinned"]);
+  });
+
+  test("go-module-replaced: a replace reads something other than the release", () => {
+    expect(
+      codes(
+        goClean,
+        {},
+        withGoMod(
+          goMod(
+            "require github.com/SuperJackfruitLabs/treaty v0.0.15\nreplace github.com/SuperJackfruitLabs/treaty => ../../treaty",
+          ),
+        ),
+      ),
+    ).toEqual(["go-module-replaced"]);
+  });
+
+  test("go-module-missing, and a path outside the repository", () => {
+    expect(codes(goClean)).toEqual(["go-module-missing"]);
+    expect(codes({ ...goClean, goModules: ["../go.mod"] })).toEqual([
+      "manifest-invalid",
+    ]);
+    expect(codes({ ...goClean, goModules: ["node-agent/go.sum"] })).toEqual([
+      "manifest-invalid",
+    ]);
+  });
+
+  test("the go.mod reader", () => {
+    expect(
+      goModRequirement(
+        'require (\n  "github.com/SuperJackfruitLabs/treaty" v0.0.15\n)\nreplace github.com/SuperJackfruitLabs/treaty v0.0.9 => ./x\n',
+      ),
+    ).toEqual({ version: "v0.0.15" });
+    expect(
+      goModRequirement(
+        "require github.com/SuperJackfruitLabs/treaty v0.0.15\nreplace (\n\tgithub.com/SuperJackfruitLabs/treaty v0.0.15 => ./x\n)\n",
+      ),
+    ).toEqual({ version: "v0.0.15", replacedBy: "./x" });
+    expect(
+      goModRequirement(
+        "require github.com/SuperJackfruitLabs/treaty/x v0.0.15",
+      ),
+    ).toEqual({});
   });
 });
 
