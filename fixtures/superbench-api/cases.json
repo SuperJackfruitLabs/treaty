@@ -1,6 +1,6 @@
 {
   "version": "superbench.local-api-cases.v1",
-  "description": "Valid and invalid cases for every schema of superbench.local-api, each decided by the schema alone. A case labelled as in a source corpus is that corpus entry, byte for byte; the rest are written from SuperBench's Go parsers (the superbench: sources). Semantic and lexical refusals stay in the corpora and their own tests.",
+  "description": "Valid and invalid cases for every schema of superbench.local-api but the remote credential (remote-credentials.json), each decided by the schema alone. A case labelled as in a source corpus is that corpus entry, byte for byte; the rest are written from SuperBench's Go parsers (the superbench: sources). Semantic and lexical refusals stay in the corpora and their own tests.",
   "schemas": {
     "cancel-operation.v2": {
       "sources": [
@@ -1471,1113 +1471,6 @@
               "version": "superbench.finite-io.v1",
               "stdin_base64": "@@@@",
               "stdout_limit_bytes": 1048576
-            }
-          }
-        }
-      ]
-    },
-    "observation-request.v1": {
-      "sources": [
-        "fixtures/superbench-api/observations.json"
-      ],
-      "valid": {
-        "mixed_inventory_request": {
-          "version": "superbench.observation.v1",
-          "operation": "inventory"
-        },
-        "checkpoints_request": {
-          "version": "superbench.observation.v1",
-          "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "key": "card_task",
-          "bench_id": "11111111111111111111111111111111",
-          "operation": "checkpoints"
-        },
-        "tree_request": {
-          "version": "superbench.observation.v1",
-          "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "key": "card_task",
-          "bench_id": "11111111111111111111111111111111",
-          "operation": "tree",
-          "member": "a",
-          "path": ""
-        },
-        "file_request": {
-          "version": "superbench.observation.v1",
-          "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "key": "card_task",
-          "bench_id": "11111111111111111111111111111111",
-          "operation": "file",
-          "member": "a",
-          "path": "src/hello.txt",
-          "offset": 0,
-          "length": 65536
-        },
-        "diff_request": {
-          "version": "superbench.observation.v1",
-          "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "key": "card_task",
-          "bench_id": "11111111111111111111111111111111",
-          "operation": "diff",
-          "member": "b",
-          "base_checkpoint": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
-        },
-        "log_request": {
-          "version": "superbench.observation.v1",
-          "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "key": "card_task",
-          "bench_id": "11111111111111111111111111111111",
-          "operation": "log",
-          "run_id": "99999999999999999999999999999999",
-          "offset": 0,
-          "length": 65536
-        }
-      },
-      "invalid": [
-        {
-          "why": "unknown operation",
-          "body": {
-            "version": "superbench.observation.v1",
-            "operation": "attach"
-          }
-        },
-        {
-          "why": "claimed authority",
-          "body": {
-            "version": "superbench.observation.v1",
-            "operation": "inventory",
-            "uid": 0
-          }
-        },
-        {
-          "why": "null cursor",
-          "body": {
-            "version": "superbench.observation.v1",
-            "operation": "inventory",
-            "cursor": null
-          }
-        }
-      ]
-    },
-    "observation-response.v1": {
-      "sources": [
-        "fixtures/superbench-api/observations.json"
-      ],
-      "valid": {
-        "mixed_inventory": {
-          "version": "superbench.observation.v1",
-          "operation": "inventory",
-          "ok": true,
-          "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "observed_at": "2026-11-16T01:00:00Z",
-          "expires_at": "2026-11-16T01:05:00Z",
-          "result": {
-            "items": [
-              {
-                "key": "card_task",
-                "bench_id": "11111111111111111111111111111111",
-                "kind": "workspace",
-                "phase": "ready",
-                "availability": "unleased",
-                "member_names": [
-                  "a",
-                  "b"
-                ],
-                "checkpoint": {
-                  "kind": "workspace",
-                  "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-                  "generation": "22222222222222222222222222222222",
-                  "seal": "3333333333333333333333333333333333333333",
-                  "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
-                  "checkpoint_repository": "a",
-                  "members": [
-                    {
-                      "name": "a",
-                      "branch": "card/task",
-                      "object_format": "sha1",
-                      "commit": "5555555555555555555555555555555555555555"
-                    },
-                    {
-                      "name": "b",
-                      "branch": "card/task",
-                      "object_format": "sha256",
-                      "commit": "6666666666666666666666666666666666666666666666666666666666666666"
-                    }
-                  ]
-                },
-                "pending_checkpoint": false,
-                "history": "latest_only",
-                "host": {
-                  "id": "host_demo",
-                  "label": "Development workspace"
-                },
-                "storage": {
-                  "used": {
-                    "status": "available",
-                    "bytes": 1024
-                  },
-                  "quota": {
-                    "status": "available",
-                    "bytes": 33554432
-                  },
-                  "allocated": {
-                    "status": "unavailable"
-                  }
-                }
-              },
-              {
-                "key": "solo",
-                "bench_id": "77777777777777777777777777777777",
-                "kind": "scalar",
-                "phase": "ready",
-                "availability": "held",
-                "member_names": [],
-                "checkpoint": {
-                  "kind": "scalar",
-                  "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-                  "commit": "8888888888888888888888888888888888888888"
-                },
-                "pending_checkpoint": false,
-                "history": "retained",
-                "host": {
-                  "id": "host_demo",
-                  "label": "Development workspace"
-                },
-                "storage": {
-                  "used": {
-                    "status": "available",
-                    "bytes": 1024
-                  },
-                  "quota": {
-                    "status": "available",
-                    "bytes": 33554432
-                  },
-                  "allocated": {
-                    "status": "unavailable"
-                  }
-                },
-                "holder": {
-                  "name": "work_run",
-                  "source": "run",
-                  "display": "Current work run",
-                  "run": "run_demo"
-                }
-              }
-            ],
-            "complete": true
-          }
-        },
-        "checkpoints_response": {
-          "version": "superbench.observation.v1",
-          "operation": "checkpoints",
-          "ok": true,
-          "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "observed_at": "2026-11-16T01:00:00Z",
-          "expires_at": "2026-11-16T01:05:00Z",
-          "result": {
-            "key": "card_task",
-            "bench_id": "11111111111111111111111111111111",
-            "coverage": "latest_only",
-            "items": [
-              {
-                "checkpoint": {
-                  "kind": "workspace",
-                  "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-                  "generation": "22222222222222222222222222222222",
-                  "seal": "3333333333333333333333333333333333333333",
-                  "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
-                  "checkpoint_repository": "a",
-                  "members": [
-                    {
-                      "name": "a",
-                      "branch": "card/task",
-                      "object_format": "sha1",
-                      "commit": "5555555555555555555555555555555555555555"
-                    },
-                    {
-                      "name": "b",
-                      "branch": "card/task",
-                      "object_format": "sha256",
-                      "commit": "6666666666666666666666666666666666666666666666666666666666666666"
-                    }
-                  ]
-                },
-                "time_source": "unavailable"
-              }
-            ],
-            "complete": true
-          }
-        },
-        "tree_response": {
-          "version": "superbench.observation.v1",
-          "operation": "tree",
-          "ok": true,
-          "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "observed_at": "2026-11-16T01:00:00Z",
-          "expires_at": "2026-11-16T01:05:00Z",
-          "result": {
-            "key": "card_task",
-            "bench_id": "11111111111111111111111111111111",
-            "member": "a",
-            "path": "",
-            "entries": [
-              {
-                "name": "src",
-                "kind": "directory",
-                "readable": true
-              },
-              {
-                "name": "external",
-                "kind": "symlink",
-                "readable": false
-              }
-            ],
-            "complete": true
-          }
-        },
-        "file_response": {
-          "version": "superbench.observation.v1",
-          "operation": "file",
-          "ok": true,
-          "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "observed_at": "2026-11-16T01:00:00Z",
-          "expires_at": "2026-11-16T01:05:00Z",
-          "result": {
-            "key": "card_task",
-            "bench_id": "11111111111111111111111111111111",
-            "member": "a",
-            "path": "src/hello.txt",
-            "offset": 0,
-            "data_base64": "aGVsbG8K",
-            "content_sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
-            "total_bytes": 6,
-            "complete": true
-          }
-        },
-        "diff_response": {
-          "version": "superbench.observation.v1",
-          "operation": "diff",
-          "ok": true,
-          "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "observed_at": "2026-11-16T01:00:00Z",
-          "expires_at": "2026-11-16T01:05:00Z",
-          "result": {
-            "key": "card_task",
-            "bench_id": "11111111111111111111111111111111",
-            "member": "b",
-            "base_checkpoint": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-            "data_base64": "aGVsbG8K",
-            "content_sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
-            "complete": true
-          }
-        },
-        "log_response": {
-          "version": "superbench.observation.v1",
-          "operation": "log",
-          "ok": true,
-          "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "observed_at": "2026-11-16T01:00:00Z",
-          "expires_at": "2026-11-16T01:05:00Z",
-          "result": {
-            "key": "card_task",
-            "bench_id": "11111111111111111111111111111111",
-            "run_id": "99999999999999999999999999999999",
-            "capture": "unsealed",
-            "outcome": "unknown",
-            "offset": 0,
-            "data_base64": "aGVsbG8K",
-            "content_sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
-            "observed_bytes": 6,
-            "capture_complete": false,
-            "complete": true
-          }
-        },
-        "retained_history": {
-          "version": "superbench.observation.v1",
-          "operation": "checkpoints",
-          "ok": true,
-          "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "observed_at": "2026-11-16T01:00:00Z",
-          "expires_at": "2026-11-16T01:05:00Z",
-          "result": {
-            "key": "card_task",
-            "bench_id": "11111111111111111111111111111111",
-            "coverage": "retained",
-            "items": [
-              {
-                "checkpoint": {
-                  "kind": "workspace",
-                  "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-                  "generation": "22222222222222222222222222222222",
-                  "seal": "3333333333333333333333333333333333333333",
-                  "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
-                  "checkpoint_repository": "a",
-                  "members": [
-                    {
-                      "name": "a",
-                      "branch": "card/task",
-                      "object_format": "sha1",
-                      "commit": "5555555555555555555555555555555555555555"
-                    },
-                    {
-                      "name": "b",
-                      "branch": "card/task",
-                      "object_format": "sha256",
-                      "commit": "6666666666666666666666666666666666666666666666666666666666666666"
-                    }
-                  ]
-                },
-                "time_source": "recorded",
-                "confirmed_at": "2026-11-16T00:59:00Z"
-              },
-              {
-                "checkpoint": {
-                  "kind": "workspace",
-                  "id": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-                  "generation": "00000000000000000000000000000000",
-                  "seal": "3333333333333333333333333333333333333333",
-                  "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
-                  "checkpoint_repository": "a",
-                  "members": [
-                    {
-                      "name": "a",
-                      "branch": "card/task",
-                      "object_format": "sha1",
-                      "commit": "5555555555555555555555555555555555555555"
-                    },
-                    {
-                      "name": "b",
-                      "branch": "card/task",
-                      "object_format": "sha256",
-                      "commit": "6666666666666666666666666666666666666666666666666666666666666666"
-                    }
-                  ]
-                },
-                "time_source": "unavailable"
-              }
-            ],
-            "complete": true
-          }
-        },
-        "transferred_source_blocked": {
-          "version": "superbench.observation.v1",
-          "operation": "inventory",
-          "ok": true,
-          "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "observed_at": "2026-11-16T01:00:00Z",
-          "expires_at": "2026-11-16T01:05:00Z",
-          "result": {
-            "items": [
-              {
-                "key": "card_task",
-                "bench_id": "11111111111111111111111111111111",
-                "kind": "workspace",
-                "phase": "ready",
-                "availability": "blocked",
-                "member_names": [
-                  "a",
-                  "b"
-                ],
-                "checkpoint": {
-                  "kind": "workspace",
-                  "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-                  "generation": "22222222222222222222222222222222",
-                  "seal": "3333333333333333333333333333333333333333",
-                  "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
-                  "checkpoint_repository": "a",
-                  "members": [
-                    {
-                      "name": "a",
-                      "branch": "card/task",
-                      "object_format": "sha1",
-                      "commit": "5555555555555555555555555555555555555555"
-                    },
-                    {
-                      "name": "b",
-                      "branch": "card/task",
-                      "object_format": "sha256",
-                      "commit": "6666666666666666666666666666666666666666666666666666666666666666"
-                    }
-                  ]
-                },
-                "pending_checkpoint": false,
-                "history": "latest_only",
-                "transfer_state": "transferred",
-                "host": {
-                  "id": "host_demo",
-                  "label": "Development workspace"
-                },
-                "storage": {
-                  "used": {
-                    "status": "available",
-                    "bytes": 1024
-                  },
-                  "quota": {
-                    "status": "available",
-                    "bytes": 33554432
-                  },
-                  "allocated": {
-                    "status": "unavailable"
-                  }
-                }
-              },
-              {
-                "key": "solo",
-                "bench_id": "77777777777777777777777777777777",
-                "kind": "scalar",
-                "phase": "ready",
-                "availability": "held",
-                "member_names": [],
-                "checkpoint": {
-                  "kind": "scalar",
-                  "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-                  "commit": "8888888888888888888888888888888888888888"
-                },
-                "pending_checkpoint": false,
-                "history": "retained",
-                "host": {
-                  "id": "host_demo",
-                  "label": "Development workspace"
-                },
-                "storage": {
-                  "used": {
-                    "status": "available",
-                    "bytes": 1024
-                  },
-                  "quota": {
-                    "status": "available",
-                    "bytes": 33554432
-                  },
-                  "allocated": {
-                    "status": "unavailable"
-                  }
-                },
-                "holder": {
-                  "name": "work_run",
-                  "source": "run",
-                  "display": "Current work run",
-                  "run": "run_demo"
-                }
-              }
-            ],
-            "complete": true
-          }
-        },
-        "interrupted_absent_log": {
-          "version": "superbench.observation.v1",
-          "operation": "log",
-          "ok": true,
-          "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          "observed_at": "2026-11-16T01:00:00Z",
-          "expires_at": "2026-11-16T01:05:00Z",
-          "result": {
-            "key": "card_task",
-            "bench_id": "11111111111111111111111111111111",
-            "run_id": "99999999999999999999999999999999",
-            "capture": "absent",
-            "outcome": "unknown",
-            "offset": 0,
-            "observed_bytes": 6,
-            "capture_complete": false,
-            "complete": true
-          }
-        },
-        "error_invalid_request": {
-          "version": "superbench.observation.v1",
-          "operation": "file",
-          "ok": false,
-          "error": {
-            "code": "invalid_request",
-            "message": "Observation unavailable"
-          }
-        },
-        "error_forbidden": {
-          "version": "superbench.observation.v1",
-          "operation": "file",
-          "ok": false,
-          "error": {
-            "code": "forbidden",
-            "message": "Observation unavailable"
-          }
-        },
-        "error_not_found": {
-          "version": "superbench.observation.v1",
-          "operation": "file",
-          "ok": false,
-          "error": {
-            "code": "not_found",
-            "message": "Observation unavailable"
-          }
-        },
-        "error_unavailable": {
-          "version": "superbench.observation.v1",
-          "operation": "file",
-          "ok": false,
-          "error": {
-            "code": "unavailable",
-            "message": "Observation unavailable"
-          }
-        },
-        "error_stale_snapshot": {
-          "version": "superbench.observation.v1",
-          "operation": "file",
-          "ok": false,
-          "error": {
-            "code": "stale_snapshot",
-            "message": "Observation unavailable"
-          }
-        },
-        "error_snapshot_expired": {
-          "version": "superbench.observation.v1",
-          "operation": "file",
-          "ok": false,
-          "error": {
-            "code": "snapshot_expired",
-            "message": "Observation unavailable"
-          }
-        },
-        "error_content_unavailable": {
-          "version": "superbench.observation.v1",
-          "operation": "file",
-          "ok": false,
-          "error": {
-            "code": "content_unavailable",
-            "message": "Observation unavailable"
-          }
-        }
-      },
-      "invalid": [
-        {
-          "why": "private lease token",
-          "body": {
-            "version": "superbench.observation.v1",
-            "operation": "inventory",
-            "ok": true,
-            "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "observed_at": "2026-11-16T01:00:00Z",
-            "expires_at": "2026-11-16T01:05:00Z",
-            "result": {
-              "items": [
-                {
-                  "key": "card_task",
-                  "bench_id": "11111111111111111111111111111111",
-                  "kind": "workspace",
-                  "phase": "ready",
-                  "availability": "unleased",
-                  "member_names": [
-                    "a",
-                    "b"
-                  ],
-                  "checkpoint": {
-                    "kind": "workspace",
-                    "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-                    "generation": "22222222222222222222222222222222",
-                    "seal": "3333333333333333333333333333333333333333",
-                    "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
-                    "checkpoint_repository": "a",
-                    "members": [
-                      {
-                        "name": "a",
-                        "branch": "card/task",
-                        "object_format": "sha1",
-                        "commit": "5555555555555555555555555555555555555555"
-                      },
-                      {
-                        "name": "b",
-                        "branch": "card/task",
-                        "object_format": "sha256",
-                        "commit": "6666666666666666666666666666666666666666666666666666666666666666"
-                      }
-                    ]
-                  },
-                  "pending_checkpoint": false,
-                  "history": "latest_only",
-                  "lease_token": "private",
-                  "host": {
-                    "id": "host_demo",
-                    "label": "Development workspace"
-                  },
-                  "storage": {
-                    "used": {
-                      "status": "available",
-                      "bytes": 1024
-                    },
-                    "quota": {
-                      "status": "available",
-                      "bytes": 33554432
-                    },
-                    "allocated": {
-                      "status": "unavailable"
-                    }
-                  }
-                },
-                {
-                  "key": "solo",
-                  "bench_id": "77777777777777777777777777777777",
-                  "kind": "scalar",
-                  "phase": "ready",
-                  "availability": "held",
-                  "member_names": [],
-                  "checkpoint": {
-                    "kind": "scalar",
-                    "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-                    "commit": "8888888888888888888888888888888888888888"
-                  },
-                  "pending_checkpoint": false,
-                  "history": "retained",
-                  "host": {
-                    "id": "host_demo",
-                    "label": "Development workspace"
-                  },
-                  "storage": {
-                    "used": {
-                      "status": "available",
-                      "bytes": 1024
-                    },
-                    "quota": {
-                      "status": "available",
-                      "bytes": 33554432
-                    },
-                    "allocated": {
-                      "status": "unavailable"
-                    }
-                  },
-                  "holder": {
-                    "name": "work_run",
-                    "source": "run",
-                    "display": "Current work run",
-                    "run": "run_demo"
-                  }
-                }
-              ],
-              "complete": true
-            }
-          }
-        },
-        {
-          "why": "private root",
-          "body": {
-            "version": "superbench.observation.v1",
-            "operation": "inventory",
-            "ok": true,
-            "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "observed_at": "2026-11-16T01:00:00Z",
-            "expires_at": "2026-11-16T01:05:00Z",
-            "result": {
-              "items": [
-                {
-                  "key": "card_task",
-                  "bench_id": "11111111111111111111111111111111",
-                  "kind": "workspace",
-                  "phase": "ready",
-                  "availability": "unleased",
-                  "member_names": [
-                    "a",
-                    "b"
-                  ],
-                  "checkpoint": {
-                    "kind": "workspace",
-                    "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-                    "generation": "22222222222222222222222222222222",
-                    "seal": "3333333333333333333333333333333333333333",
-                    "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
-                    "checkpoint_repository": "a",
-                    "members": [
-                      {
-                        "name": "a",
-                        "branch": "card/task",
-                        "object_format": "sha1",
-                        "commit": "5555555555555555555555555555555555555555"
-                      },
-                      {
-                        "name": "b",
-                        "branch": "card/task",
-                        "object_format": "sha256",
-                        "commit": "6666666666666666666666666666666666666666666666666666666666666666"
-                      }
-                    ]
-                  },
-                  "pending_checkpoint": false,
-                  "history": "latest_only",
-                  "root_path": "/private/data",
-                  "host": {
-                    "id": "host_demo",
-                    "label": "Development workspace"
-                  },
-                  "storage": {
-                    "used": {
-                      "status": "available",
-                      "bytes": 1024
-                    },
-                    "quota": {
-                      "status": "available",
-                      "bytes": 33554432
-                    },
-                    "allocated": {
-                      "status": "unavailable"
-                    }
-                  }
-                },
-                {
-                  "key": "solo",
-                  "bench_id": "77777777777777777777777777777777",
-                  "kind": "scalar",
-                  "phase": "ready",
-                  "availability": "held",
-                  "member_names": [],
-                  "checkpoint": {
-                    "kind": "scalar",
-                    "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-                    "commit": "8888888888888888888888888888888888888888"
-                  },
-                  "pending_checkpoint": false,
-                  "history": "retained",
-                  "host": {
-                    "id": "host_demo",
-                    "label": "Development workspace"
-                  },
-                  "storage": {
-                    "used": {
-                      "status": "available",
-                      "bytes": 1024
-                    },
-                    "quota": {
-                      "status": "available",
-                      "bytes": 33554432
-                    },
-                    "allocated": {
-                      "status": "unavailable"
-                    }
-                  },
-                  "holder": {
-                    "name": "work_run",
-                    "source": "run",
-                    "display": "Current work run",
-                    "run": "run_demo"
-                  }
-                }
-              ],
-              "complete": true
-            }
-          }
-        },
-        {
-          "why": "repo url",
-          "body": {
-            "version": "superbench.observation.v1",
-            "operation": "inventory",
-            "ok": true,
-            "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "observed_at": "2026-11-16T01:00:00Z",
-            "expires_at": "2026-11-16T01:05:00Z",
-            "result": {
-              "items": [
-                {
-                  "key": "card_task",
-                  "bench_id": "11111111111111111111111111111111",
-                  "kind": "workspace",
-                  "phase": "ready",
-                  "availability": "unleased",
-                  "member_names": [
-                    "a",
-                    "b"
-                  ],
-                  "checkpoint": {
-                    "kind": "workspace",
-                    "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-                    "generation": "22222222222222222222222222222222",
-                    "seal": "3333333333333333333333333333333333333333",
-                    "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
-                    "checkpoint_repository": "a",
-                    "members": [
-                      {
-                        "name": "a",
-                        "branch": "card/task",
-                        "object_format": "sha1",
-                        "commit": "5555555555555555555555555555555555555555"
-                      },
-                      {
-                        "name": "b",
-                        "branch": "card/task",
-                        "object_format": "sha256",
-                        "commit": "6666666666666666666666666666666666666666666666666666666666666666"
-                      }
-                    ]
-                  },
-                  "pending_checkpoint": false,
-                  "history": "latest_only",
-                  "repository": "https://private.invalid/repo",
-                  "host": {
-                    "id": "host_demo",
-                    "label": "Development workspace"
-                  },
-                  "storage": {
-                    "used": {
-                      "status": "available",
-                      "bytes": 1024
-                    },
-                    "quota": {
-                      "status": "available",
-                      "bytes": 33554432
-                    },
-                    "allocated": {
-                      "status": "unavailable"
-                    }
-                  }
-                },
-                {
-                  "key": "solo",
-                  "bench_id": "77777777777777777777777777777777",
-                  "kind": "scalar",
-                  "phase": "ready",
-                  "availability": "held",
-                  "member_names": [],
-                  "checkpoint": {
-                    "kind": "scalar",
-                    "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-                    "commit": "8888888888888888888888888888888888888888"
-                  },
-                  "pending_checkpoint": false,
-                  "history": "retained",
-                  "host": {
-                    "id": "host_demo",
-                    "label": "Development workspace"
-                  },
-                  "storage": {
-                    "used": {
-                      "status": "available",
-                      "bytes": 1024
-                    },
-                    "quota": {
-                      "status": "available",
-                      "bytes": 33554432
-                    },
-                    "allocated": {
-                      "status": "unavailable"
-                    }
-                  },
-                  "holder": {
-                    "name": "work_run",
-                    "source": "run",
-                    "display": "Current work run",
-                    "run": "run_demo"
-                  }
-                }
-              ],
-              "complete": true
-            }
-          }
-        },
-        {
-          "why": "unavailable size invents zero",
-          "body": {
-            "version": "superbench.observation.v1",
-            "operation": "inventory",
-            "ok": true,
-            "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "observed_at": "2026-11-16T01:00:00Z",
-            "expires_at": "2026-11-16T01:05:00Z",
-            "result": {
-              "items": [
-                {
-                  "key": "card_task",
-                  "bench_id": "11111111111111111111111111111111",
-                  "kind": "workspace",
-                  "phase": "ready",
-                  "availability": "unleased",
-                  "member_names": [
-                    "a",
-                    "b"
-                  ],
-                  "checkpoint": {
-                    "kind": "workspace",
-                    "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-                    "generation": "22222222222222222222222222222222",
-                    "seal": "3333333333333333333333333333333333333333",
-                    "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
-                    "checkpoint_repository": "a",
-                    "members": [
-                      {
-                        "name": "a",
-                        "branch": "card/task",
-                        "object_format": "sha1",
-                        "commit": "5555555555555555555555555555555555555555"
-                      },
-                      {
-                        "name": "b",
-                        "branch": "card/task",
-                        "object_format": "sha256",
-                        "commit": "6666666666666666666666666666666666666666666666666666666666666666"
-                      }
-                    ]
-                  },
-                  "pending_checkpoint": false,
-                  "history": "latest_only",
-                  "host": {
-                    "id": "host_demo",
-                    "label": "Development workspace"
-                  },
-                  "storage": {
-                    "used": {
-                      "status": "available",
-                      "bytes": 1024
-                    },
-                    "quota": {
-                      "status": "available",
-                      "bytes": 33554432
-                    },
-                    "allocated": {
-                      "status": "unavailable",
-                      "bytes": 0
-                    }
-                  }
-                },
-                {
-                  "key": "solo",
-                  "bench_id": "77777777777777777777777777777777",
-                  "kind": "scalar",
-                  "phase": "ready",
-                  "availability": "held",
-                  "member_names": [],
-                  "checkpoint": {
-                    "kind": "scalar",
-                    "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-                    "commit": "8888888888888888888888888888888888888888"
-                  },
-                  "pending_checkpoint": false,
-                  "history": "retained",
-                  "host": {
-                    "id": "host_demo",
-                    "label": "Development workspace"
-                  },
-                  "storage": {
-                    "used": {
-                      "status": "available",
-                      "bytes": 1024
-                    },
-                    "quota": {
-                      "status": "available",
-                      "bytes": 33554432
-                    },
-                    "allocated": {
-                      "status": "unavailable"
-                    }
-                  },
-                  "holder": {
-                    "name": "work_run",
-                    "source": "run",
-                    "display": "Current work run",
-                    "run": "run_demo"
-                  }
-                }
-              ],
-              "complete": true
-            }
-          }
-        },
-        {
-          "why": "private holder capability",
-          "body": {
-            "version": "superbench.observation.v1",
-            "operation": "inventory",
-            "ok": true,
-            "snapshot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "observed_at": "2026-11-16T01:00:00Z",
-            "expires_at": "2026-11-16T01:05:00Z",
-            "result": {
-              "items": [
-                {
-                  "key": "card_task",
-                  "bench_id": "11111111111111111111111111111111",
-                  "kind": "workspace",
-                  "phase": "ready",
-                  "availability": "unleased",
-                  "member_names": [
-                    "a",
-                    "b"
-                  ],
-                  "checkpoint": {
-                    "kind": "workspace",
-                    "id": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-                    "generation": "22222222222222222222222222222222",
-                    "seal": "3333333333333333333333333333333333333333",
-                    "manifest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
-                    "checkpoint_repository": "a",
-                    "members": [
-                      {
-                        "name": "a",
-                        "branch": "card/task",
-                        "object_format": "sha1",
-                        "commit": "5555555555555555555555555555555555555555"
-                      },
-                      {
-                        "name": "b",
-                        "branch": "card/task",
-                        "object_format": "sha256",
-                        "commit": "6666666666666666666666666666666666666666666666666666666666666666"
-                      }
-                    ]
-                  },
-                  "pending_checkpoint": false,
-                  "history": "latest_only",
-                  "host": {
-                    "id": "host_demo",
-                    "label": "Development workspace"
-                  },
-                  "storage": {
-                    "used": {
-                      "status": "available",
-                      "bytes": 1024
-                    },
-                    "quota": {
-                      "status": "available",
-                      "bytes": 33554432
-                    },
-                    "allocated": {
-                      "status": "unavailable"
-                    }
-                  }
-                },
-                {
-                  "key": "solo",
-                  "bench_id": "77777777777777777777777777777777",
-                  "kind": "scalar",
-                  "phase": "ready",
-                  "availability": "held",
-                  "member_names": [],
-                  "checkpoint": {
-                    "kind": "scalar",
-                    "id": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-                    "commit": "8888888888888888888888888888888888888888"
-                  },
-                  "pending_checkpoint": false,
-                  "history": "retained",
-                  "host": {
-                    "id": "host_demo",
-                    "label": "Development workspace"
-                  },
-                  "storage": {
-                    "used": {
-                      "status": "available",
-                      "bytes": 1024
-                    },
-                    "quota": {
-                      "status": "available",
-                      "bytes": 33554432
-                    },
-                    "allocated": {
-                      "status": "unavailable"
-                    }
-                  },
-                  "holder": {
-                    "name": "work_run",
-                    "source": "run",
-                    "display": "Current work run",
-                    "run": "run_demo",
-                    "token": "private"
-                  }
-                }
-              ],
-              "complete": true
             }
           }
         }
@@ -5442,6 +4335,1525 @@
             "error": {
               "code": "conflict",
               "message": "refused"
+            }
+          }
+        }
+      ]
+    },
+    "remote-status-request.v1": {
+      "sources": [
+        "superbench:internal/remoteproto/proto.go"
+      ],
+      "valid": {
+        "one-workspace": {
+          "version": "superbench.remote.v1",
+          "operation": "remote_status",
+          "key": "card-1"
+        },
+        "every-workspace": {
+          "version": "superbench.remote.v1",
+          "operation": "remote_status"
+        }
+      },
+      "invalid": [
+        {
+          "why": "wrong operation",
+          "body": {
+            "version": "superbench.remote.v1",
+            "operation": "writer_certificate",
+            "key": "card-1"
+          }
+        },
+        {
+          "why": "wrong version",
+          "body": {
+            "version": "superbench.v2",
+            "operation": "remote_status",
+            "key": "card-1"
+          }
+        },
+        {
+          "why": "lease token is not a status field",
+          "body": {
+            "version": "superbench.remote.v1",
+            "operation": "remote_status",
+            "key": "card-1",
+            "lease_token": "0123456789abcdef0123456789abcdef"
+          }
+        },
+        {
+          "why": "key starting with dash",
+          "body": {
+            "version": "superbench.remote.v1",
+            "operation": "remote_status",
+            "key": "-card"
+          }
+        },
+        {
+          "why": "empty key",
+          "body": {
+            "version": "superbench.remote.v1",
+            "operation": "remote_status",
+            "key": ""
+          }
+        },
+        {
+          "why": "key as a number",
+          "body": {
+            "version": "superbench.remote.v1",
+            "operation": "remote_status",
+            "key": 1
+          }
+        },
+        {
+          "why": "missing operation",
+          "body": {
+            "version": "superbench.remote.v1",
+            "key": "card-1"
+          }
+        }
+      ]
+    },
+    "remote-status-response.v1": {
+      "sources": [
+        "superbench:internal/remoteapi/handler.go"
+      ],
+      "valid": {
+        "one-live-execution": {
+          "version": "superbench.remote.v1",
+          "operation": "remote_status",
+          "ok": true,
+          "result": {
+            "address": "10.0.0.5:2222",
+            "host_key_fingerprint": "SHA256:aG9zdC1rZXktZml4dHVyZS1maW5nZXJwcmludA",
+            "remote": [
+              {
+                "key": "card-1",
+                "bench_id": "11111111111111111111111111111111",
+                "holder": "run:one",
+                "lease_id": "22222222222222222222222222222222",
+                "execution_id": "33333333333333333333333333333333",
+                "generation": 4
+              }
+            ],
+            "certificates": [
+              {
+                "serial": "6066124781950573056",
+                "key": "card-1",
+                "bench_id": "11111111111111111111111111111111",
+                "lease_id": "22222222222222222222222222222222",
+                "generation": 4,
+                "execution_id": "33333333333333333333333333333333",
+                "holder": "run:one",
+                "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                "issued_at": "2026-11-20T10:00:00Z",
+                "valid_before": "2026-11-20T10:15:00.5Z"
+              }
+            ],
+            "sessions": [
+              {
+                "id": 7,
+                "serial": "6066124781950573056",
+                "key": "card-1",
+                "bench_id": "11111111111111111111111111111111",
+                "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                "source": "10.0.0.9:51234",
+                "kind": "exec",
+                "command_name": "git",
+                "started_at": "2026-11-20T10:01:00Z",
+                "ended_at": "",
+                "bytes_in": 0,
+                "bytes_out": 0,
+                "end_reason": ""
+              },
+              {
+                "id": 6,
+                "serial": "6066124781950573056",
+                "key": "card-1",
+                "bench_id": "11111111111111111111111111111111",
+                "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                "source": "10.0.0.9:51234",
+                "kind": "sftp",
+                "command_name": "",
+                "started_at": "2026-11-20T10:01:00Z",
+                "ended_at": "2026-11-20T10:00:30Z",
+                "bytes_in": 512,
+                "bytes_out": 2048,
+                "end_reason": "closed"
+              }
+            ]
+          }
+        },
+        "nothing-remote": {
+          "version": "superbench.remote.v1",
+          "operation": "remote_status",
+          "ok": true,
+          "result": {
+            "address": "10.0.0.5:2222",
+            "host_key_fingerprint": "SHA256:aG9zdC1rZXktZml4dHVyZS1maW5nZXJwcmludA",
+            "remote": [],
+            "certificates": [],
+            "sessions": []
+          }
+        },
+        "error-invalid_request": {
+          "version": "superbench.remote.v1",
+          "operation": "remote_status",
+          "ok": false,
+          "error": {
+            "code": "invalid_request",
+            "message": "refused"
+          }
+        },
+        "error-forbidden": {
+          "version": "superbench.remote.v1",
+          "operation": "remote_status",
+          "ok": false,
+          "error": {
+            "code": "forbidden",
+            "message": "refused"
+          }
+        },
+        "error-unavailable": {
+          "version": "superbench.remote.v1",
+          "operation": "remote_status",
+          "ok": false,
+          "error": {
+            "code": "unavailable",
+            "message": "refused"
+          }
+        }
+      },
+      "invalid": [
+        {
+          "why": "missing sessions",
+          "body": {
+            "version": "superbench.remote.v1",
+            "operation": "remote_status",
+            "ok": true,
+            "result": {
+              "address": "10.0.0.5:2222",
+              "host_key_fingerprint": "SHA256:aG9zdC1rZXktZml4dHVyZS1maW5nZXJwcmludA",
+              "remote": [
+                {
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "holder": "run:one",
+                  "lease_id": "22222222222222222222222222222222",
+                  "execution_id": "33333333333333333333333333333333",
+                  "generation": 4
+                }
+              ],
+              "certificates": [
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "why": "serial as a number",
+          "body": {
+            "version": "superbench.remote.v1",
+            "operation": "remote_status",
+            "ok": true,
+            "result": {
+              "address": "10.0.0.5:2222",
+              "host_key_fingerprint": "SHA256:aG9zdC1rZXktZml4dHVyZS1maW5nZXJwcmludA",
+              "remote": [
+                {
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "holder": "run:one",
+                  "lease_id": "22222222222222222222222222222222",
+                  "execution_id": "33333333333333333333333333333333",
+                  "generation": 4
+                }
+              ],
+              "certificates": [
+                {
+                  "serial": 6066124781950573000,
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                }
+              ],
+              "sessions": [
+                {
+                  "id": 7,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "exec",
+                  "command_name": "git",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "",
+                  "bytes_in": 0,
+                  "bytes_out": 0,
+                  "end_reason": ""
+                },
+                {
+                  "id": 6,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "sftp",
+                  "command_name": "",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "2026-11-20T10:00:30Z",
+                  "bytes_in": 512,
+                  "bytes_out": 2048,
+                  "end_reason": "closed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "why": "open session with an end time",
+          "body": {
+            "version": "superbench.remote.v1",
+            "operation": "remote_status",
+            "ok": true,
+            "result": {
+              "address": "10.0.0.5:2222",
+              "host_key_fingerprint": "SHA256:aG9zdC1rZXktZml4dHVyZS1maW5nZXJwcmludA",
+              "remote": [
+                {
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "holder": "run:one",
+                  "lease_id": "22222222222222222222222222222222",
+                  "execution_id": "33333333333333333333333333333333",
+                  "generation": 4
+                }
+              ],
+              "certificates": [
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                }
+              ],
+              "sessions": [
+                {
+                  "id": 7,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "exec",
+                  "command_name": "git",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "2026-11-20T10:02:00Z",
+                  "bytes_in": 0,
+                  "bytes_out": 0,
+                  "end_reason": ""
+                },
+                {
+                  "id": 6,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "sftp",
+                  "command_name": "",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "2026-11-20T10:00:30Z",
+                  "bytes_in": 512,
+                  "bytes_out": 2048,
+                  "end_reason": "closed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "why": "ended session without an end time",
+          "body": {
+            "version": "superbench.remote.v1",
+            "operation": "remote_status",
+            "ok": true,
+            "result": {
+              "address": "10.0.0.5:2222",
+              "host_key_fingerprint": "SHA256:aG9zdC1rZXktZml4dHVyZS1maW5nZXJwcmludA",
+              "remote": [
+                {
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "holder": "run:one",
+                  "lease_id": "22222222222222222222222222222222",
+                  "execution_id": "33333333333333333333333333333333",
+                  "generation": 4
+                }
+              ],
+              "certificates": [
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                }
+              ],
+              "sessions": [
+                {
+                  "id": 7,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "exec",
+                  "command_name": "git",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "",
+                  "bytes_in": 0,
+                  "bytes_out": 0,
+                  "end_reason": ""
+                },
+                {
+                  "id": 6,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "sftp",
+                  "command_name": "",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "",
+                  "bytes_in": 512,
+                  "bytes_out": 2048,
+                  "end_reason": "closed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "why": "unknown session kind",
+          "body": {
+            "version": "superbench.remote.v1",
+            "operation": "remote_status",
+            "ok": true,
+            "result": {
+              "address": "10.0.0.5:2222",
+              "host_key_fingerprint": "SHA256:aG9zdC1rZXktZml4dHVyZS1maW5nZXJwcmludA",
+              "remote": [
+                {
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "holder": "run:one",
+                  "lease_id": "22222222222222222222222222222222",
+                  "execution_id": "33333333333333333333333333333333",
+                  "generation": 4
+                }
+              ],
+              "certificates": [
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                }
+              ],
+              "sessions": [
+                {
+                  "id": 7,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "pty",
+                  "command_name": "git",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "",
+                  "bytes_in": 0,
+                  "bytes_out": 0,
+                  "end_reason": ""
+                },
+                {
+                  "id": 6,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "sftp",
+                  "command_name": "",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "2026-11-20T10:00:30Z",
+                  "bytes_in": 512,
+                  "bytes_out": 2048,
+                  "end_reason": "closed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "why": "unknown end reason",
+          "body": {
+            "version": "superbench.remote.v1",
+            "operation": "remote_status",
+            "ok": true,
+            "result": {
+              "address": "10.0.0.5:2222",
+              "host_key_fingerprint": "SHA256:aG9zdC1rZXktZml4dHVyZS1maW5nZXJwcmludA",
+              "remote": [
+                {
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "holder": "run:one",
+                  "lease_id": "22222222222222222222222222222222",
+                  "execution_id": "33333333333333333333333333333333",
+                  "generation": 4
+                }
+              ],
+              "certificates": [
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                }
+              ],
+              "sessions": [
+                {
+                  "id": 7,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "exec",
+                  "command_name": "git",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "",
+                  "bytes_in": 0,
+                  "bytes_out": 0,
+                  "end_reason": ""
+                },
+                {
+                  "id": 6,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "sftp",
+                  "command_name": "",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "2026-11-20T10:00:30Z",
+                  "bytes_in": 512,
+                  "bytes_out": 2048,
+                  "end_reason": "killed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "why": "more than fifty certificates",
+          "body": {
+            "version": "superbench.remote.v1",
+            "operation": "remote_status",
+            "ok": true,
+            "result": {
+              "address": "10.0.0.5:2222",
+              "host_key_fingerprint": "SHA256:aG9zdC1rZXktZml4dHVyZS1maW5nZXJwcmludA",
+              "remote": [
+                {
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "holder": "run:one",
+                  "lease_id": "22222222222222222222222222222222",
+                  "execution_id": "33333333333333333333333333333333",
+                  "generation": 4
+                }
+              ],
+              "certificates": [
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                },
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                }
+              ],
+              "sessions": [
+                {
+                  "id": 7,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "exec",
+                  "command_name": "git",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "",
+                  "bytes_in": 0,
+                  "bytes_out": 0,
+                  "end_reason": ""
+                },
+                {
+                  "id": 6,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "sftp",
+                  "command_name": "",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "2026-11-20T10:00:30Z",
+                  "bytes_in": 512,
+                  "bytes_out": 2048,
+                  "end_reason": "closed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "why": "extra field on an execution",
+          "body": {
+            "version": "superbench.remote.v1",
+            "operation": "remote_status",
+            "ok": true,
+            "result": {
+              "address": "10.0.0.5:2222",
+              "host_key_fingerprint": "SHA256:aG9zdC1rZXktZml4dHVyZS1maW5nZXJwcmludA",
+              "remote": [
+                {
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "holder": "run:one",
+                  "lease_id": "22222222222222222222222222222222",
+                  "execution_id": "33333333333333333333333333333333",
+                  "generation": 4,
+                  "lease_token": "0123456789abcdef0123456789abcdef"
+                }
+              ],
+              "certificates": [
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                }
+              ],
+              "sessions": [
+                {
+                  "id": 7,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "exec",
+                  "command_name": "git",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "",
+                  "bytes_in": 0,
+                  "bytes_out": 0,
+                  "end_reason": ""
+                },
+                {
+                  "id": 6,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "sftp",
+                  "command_name": "",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "2026-11-20T10:00:30Z",
+                  "bytes_in": 512,
+                  "bytes_out": 2048,
+                  "end_reason": "closed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "why": "execution without its id",
+          "body": {
+            "version": "superbench.remote.v1",
+            "operation": "remote_status",
+            "ok": true,
+            "result": {
+              "address": "10.0.0.5:2222",
+              "host_key_fingerprint": "SHA256:aG9zdC1rZXktZml4dHVyZS1maW5nZXJwcmludA",
+              "remote": [
+                {
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "holder": "run:one",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4
+                }
+              ],
+              "certificates": [
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                }
+              ],
+              "sessions": [
+                {
+                  "id": 7,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "exec",
+                  "command_name": "git",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "",
+                  "bytes_in": 0,
+                  "bytes_out": 0,
+                  "end_reason": ""
+                },
+                {
+                  "id": 6,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "sftp",
+                  "command_name": "",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "2026-11-20T10:00:30Z",
+                  "bytes_in": 512,
+                  "bytes_out": 2048,
+                  "end_reason": "closed"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "why": "not found is not a status error",
+          "body": {
+            "version": "superbench.remote.v1",
+            "operation": "remote_status",
+            "ok": false,
+            "error": {
+              "code": "not_found",
+              "message": "refused"
+            }
+          }
+        },
+        {
+          "why": "success with an error",
+          "body": {
+            "version": "superbench.remote.v1",
+            "operation": "remote_status",
+            "ok": true,
+            "result": {
+              "address": "10.0.0.5:2222",
+              "host_key_fingerprint": "SHA256:aG9zdC1rZXktZml4dHVyZS1maW5nZXJwcmludA",
+              "remote": [
+                {
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "holder": "run:one",
+                  "lease_id": "22222222222222222222222222222222",
+                  "execution_id": "33333333333333333333333333333333",
+                  "generation": 4
+                }
+              ],
+              "certificates": [
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                }
+              ],
+              "sessions": [
+                {
+                  "id": 7,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "exec",
+                  "command_name": "git",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "",
+                  "bytes_in": 0,
+                  "bytes_out": 0,
+                  "end_reason": ""
+                },
+                {
+                  "id": 6,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "sftp",
+                  "command_name": "",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "2026-11-20T10:00:30Z",
+                  "bytes_in": 512,
+                  "bytes_out": 2048,
+                  "end_reason": "closed"
+                }
+              ]
+            },
+            "error": {
+              "code": "unavailable",
+              "message": "refused"
+            }
+          }
+        },
+        {
+          "why": "operation is writer certificate",
+          "body": {
+            "version": "superbench.remote.v1",
+            "operation": "writer_certificate",
+            "ok": true,
+            "result": {
+              "address": "10.0.0.5:2222",
+              "host_key_fingerprint": "SHA256:aG9zdC1rZXktZml4dHVyZS1maW5nZXJwcmludA",
+              "remote": [
+                {
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "holder": "run:one",
+                  "lease_id": "22222222222222222222222222222222",
+                  "execution_id": "33333333333333333333333333333333",
+                  "generation": 4
+                }
+              ],
+              "certificates": [
+                {
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "lease_id": "22222222222222222222222222222222",
+                  "generation": 4,
+                  "execution_id": "33333333333333333333333333333333",
+                  "holder": "run:one",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "issued_at": "2026-11-20T10:00:00Z",
+                  "valid_before": "2026-11-20T10:15:00.5Z"
+                }
+              ],
+              "sessions": [
+                {
+                  "id": 7,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "exec",
+                  "command_name": "git",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "",
+                  "bytes_in": 0,
+                  "bytes_out": 0,
+                  "end_reason": ""
+                },
+                {
+                  "id": 6,
+                  "serial": "6066124781950573056",
+                  "key": "card-1",
+                  "bench_id": "11111111111111111111111111111111",
+                  "fingerprint": "SHA256:abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG",
+                  "source": "10.0.0.9:51234",
+                  "kind": "sftp",
+                  "command_name": "",
+                  "started_at": "2026-11-20T10:01:00Z",
+                  "ended_at": "2026-11-20T10:00:30Z",
+                  "bytes_in": 512,
+                  "bytes_out": 2048,
+                  "end_reason": "closed"
+                }
+              ]
             }
           }
         }

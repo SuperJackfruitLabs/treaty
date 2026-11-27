@@ -46,7 +46,15 @@ function walk(dir: string): string[] {
  * Schemas of proposals no product's code implements yet. They stay in treaty, outside the
  * registry, which lists only crossings found in code (phase 4, ruling 5).
  */
-const UNLISTED_PROPOSALS = ["schemas/superbench-consumers/"];
+const UNLISTED: Record<string, string> = {
+  "schemas/superbench-consumers/":
+    "docs/2026-11-16-superbench-consumer-bindings.md",
+  "schemas/superbench/observation-request.v1.json":
+    "docs/2026-11-16-superbench-reader-observations.md",
+  "schemas/superbench/observation-response.v1.json":
+    "docs/2026-11-16-superbench-reader-observations.md",
+};
+const UNLISTED_PROPOSALS = Object.keys(UNLISTED);
 
 /** Follows a JSON pointer (RFC 6901) into a parsed document. */
 function pointer(doc: unknown, ptr: string): unknown {
@@ -138,11 +146,10 @@ describe("contracts/registry.json", () => {
     expect(registry.crossings.map((c) => c.id)).not.toContain(
       "superbench.consumer-bindings",
     );
-    const doc = readFileSync(
-      join(root, "docs/2026-11-16-superbench-consumer-bindings.md"),
-      "utf8",
-    );
-    expect(doc.replace(/\s+/g, " ")).toContain("returns to the registry when");
+    for (const doc of new Set(Object.values(UNLISTED)))
+      expect(
+        readFileSync(join(root, doc), "utf8").replace(/\s+/g, " "),
+      ).toContain("returns to the registry when");
   });
 
   test("every catalogued event's schema belongs to an event crossing", () => {
@@ -235,15 +242,15 @@ describe("contracts/registry.json", () => {
     expect(coverage(registry)).toEqual({
       applicable: 29,
       byStatus: {
-        contracted: 25,
-        partial: 1,
+        contracted: 26,
+        partial: 0,
         uncontracted: 2,
         proposed: 0,
         external: 1,
         standard: 2,
         deprecated: 2,
       },
-      percent: 86,
+      percent: 90,
     });
   });
 });
