@@ -11,7 +11,7 @@ import {
   validateResponse,
 } from "../src/http.ts";
 import { checkOpenApi } from "../src/openapi-check.ts";
-import { createBundle } from "../src/schemas.ts";
+import { createBundle, validatorFor } from "../src/schemas.ts";
 import { parseVersion, releasesBehind } from "../src/verify.ts";
 
 const card = {
@@ -295,5 +295,21 @@ describe("an optional request body", () => {
     const r = validateRequest(bundle, openApi(bundle, path), "x", undefined);
     expect(r.valid).toBe(false);
     expect(r.errors[0]).toContain("requires a body");
+  });
+});
+
+describe("validatorFor", () => {
+  test("a pointer into $defs reaches its subschema", () => {
+    const bundle = createBundle({
+      "schemas/sample/defs.v1.json": {
+        $defs: { name: { type: "string", minLength: 1 } },
+      },
+    });
+    const name = validatorFor(
+      bundle,
+      "schemas/sample/defs.v1.json#/$defs/name",
+    );
+    expect(name("a").errors).toEqual([]);
+    expect(name("").valid).toBe(false);
   });
 });
